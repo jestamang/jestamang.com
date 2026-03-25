@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Merch — Jestamang</title>
+<style>
+@font-face {
+  font-family: 'Luminari';
+  src: url('assets/fonts/Luminari.ttf') format('truetype');
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  position: relative;
+  background: url('assets/homepage/background/Gif2.gif') center center / cover fixed no-repeat;
+  color: #e8dcc8;
+  font-family: 'Luminari', serif;
+  padding-top: 52px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── TOP NAV ── */
+#jtnav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.3);
+}
+
+#jtnav-logo {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+#jtnav-logo img {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
+#jtnav-links {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: 1;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+.jtnav-link {
+  font-family: 'Luminari', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  padding: 0 8px;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+  line-height: 52px;
+}
+
+.jtnav-link:hover { color: #c9a84c; }
+.jtnav-link.jtnav-active { color: #c9a84c; }
+
+.jtnav-dot {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.6rem;
+  padding: 0 2px;
+  line-height: 52px;
+  user-select: none;
+}
+
+#jtnav-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(201, 168, 76, 0.3);
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+#jtnav-platforms {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+  flex-shrink: 0;
+  gap: 0;
+}
+
+#jtnav-platforms .jtnav-link {
+  display: flex;
+  align-items: center;
+  padding: 0 7px;
+  line-height: 52px;
+}
+
+#jtnav-platforms .jtnav-link svg {
+  display: block;
+  opacity: 0.8;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+#jtnav-platforms .jtnav-link:hover svg,
+#jtnav-platforms .jtnav-link.jtnav-active svg {
+  opacity: 1;
+}
+
+#jtnav-mobile-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+#jtnav-mobile-toggle img {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
+#jtnav-mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(0, 0, 0, 0.95);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  overflow: hidden;
+}
+
+#jtnav-mobile-overlay.jtnav-mob-open { display: flex; }
+
+#jtnav-mob-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('assets/homepage/background/Gif2.gif');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+#jtnav-mob-close {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+  font-family: sans-serif;
+  z-index: 1;
+}
+
+#jtnav-mob-close:hover { color: #c9a84c; }
+
+.jtnav-mob-link {
+  font-family: 'Luminari', serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  padding: 14px 0;
+  position: relative;
+  z-index: 1;
+  transition: color 0.2s ease;
+}
+
+.jtnav-mob-link:hover,
+.jtnav-mob-link.jtnav-active { color: #c9a84c; }
+
+.jtnav-mob-divider {
+  width: 60px;
+  height: 1px;
+  background: rgba(201, 168, 76, 0.3);
+  margin: 10px 0;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 767px) {
+  #jtnav-links, #jtnav-divider, #jtnav-platforms { display: none; }
+  #jtnav-mobile-toggle { display: flex; margin-left: auto; }
+}
+
+/* ── PAGE CONTENT ── */
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 32px 80px;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  text-align: center;
+  padding-bottom: 56px;
+}
+
+.page-header h1 {
+  font-family: 'Luminari', serif;
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  letter-spacing: 0.28em;
+  color: #c9a84c;
+  text-transform: uppercase;
+  text-shadow: 0 0 60px rgba(201, 168, 76, 0.45), 0 0 20px rgba(201, 168, 76, 0.25);
+  margin-bottom: 16px;
+}
+
+.page-header .subtitle {
+  font-family: 'Luminari', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+  margin-bottom: 24px;
+}
+
+.gold-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: rgba(201, 168, 76, 0.5);
+  font-size: 1rem;
+  letter-spacing: 0.3em;
+}
+
+.gold-rule::before,
+.gold-rule::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 1px;
+  background: rgba(201, 168, 76, 0.35);
+}
+
+/* ── PRODUCT GRID ── */
+.merch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+/* ── PRODUCT CARD ── */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 28px;
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  transition: all 0.28s ease;
+  text-align: center;
+}
+
+.product-card:nth-child(5n+1) { background: rgba(6, 3, 1, 0.95); }
+.product-card:nth-child(5n+2) { background: rgba(2, 6, 14, 0.95); }
+.product-card:nth-child(5n+3) { background: rgba(8, 2, 8, 0.95); }
+.product-card:nth-child(5n+4) { background: rgba(2, 8, 4, 0.95); }
+.product-card:nth-child(5n+5) { background: rgba(14, 8, 2, 0.95); }
+
+.product-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(201, 168, 76, 0.5);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+}
+
+.product-image-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  min-height: 200px;
+}
+
+.product-image-wrap img {
+  max-width: 100%;
+  max-height: 260px;
+  object-fit: contain;
+  display: block;
+}
+
+.product-name {
+  font-family: 'Luminari', serif;
+  font-size: 1.45rem;
+  letter-spacing: 0.18em;
+  color: #c9a84c;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.product-desc {
+  font-family: 'Luminari', serif;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.6;
+  margin-bottom: 20px;
+  letter-spacing: 0.04em;
+}
+
+.product-price {
+  font-family: 'Luminari', serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  margin-bottom: 20px;
+}
+
+.acquire-btn {
+  display: inline-block;
+  background: #c9a84c;
+  color: #000;
+  font-family: 'Luminari', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: none;
+  padding: 13px 24px;
+  cursor: pointer;
+  transition: background 0.22s, transform 0.18s;
+  text-decoration: none;
+  margin-bottom: 14px;
+  width: 100%;
+}
+
+.acquire-btn:hover {
+  background: #e0bc5a;
+  transform: scale(1.02);
+}
+
+.ask-link {
+  display: block;
+  font-family: 'Luminari', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(201, 168, 76, 0.55);
+  cursor: pointer;
+  background: none;
+  border: none;
+  margin-bottom: 12px;
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.ask-link:hover { color: rgba(201, 168, 76, 0.9); }
+
+.inner-circle-line {
+  font-family: 'Luminari', serif;
+  font-size: 0.65rem;
+  font-style: italic;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.25);
+  line-height: 1.5;
+}
+
+.inner-circle-line a {
+  color: rgba(201, 168, 76, 0.45);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.inner-circle-line a:hover { color: rgba(201, 168, 76, 0.8); }
+
+/* ── INQUIRY MODAL ── */
+#inquiry-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.95);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+#inquiry-modal.modal-open {
+  display: flex;
+}
+
+.modal-panel {
+  max-width: 520px;
+  width: 100%;
+  background: rgba(4, 2, 1, 0.97);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  padding: 48px 40px;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  font-family: 'Luminari', serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.22em;
+  color: #c9a84c;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.modal-subtitle {
+  font-family: 'Luminari', serif;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  letter-spacing: 0.06em;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.modal-rule {
+  width: 100%;
+  height: 1px;
+  background: rgba(201, 168, 76, 0.3);
+  margin-bottom: 28px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-family: 'Luminari', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(201, 168, 76, 0.7);
+  margin-bottom: 7px;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  background: rgba(10, 8, 5, 1);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  color: #fff;
+  font-family: 'Luminari', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: rgba(201, 168, 76, 0.7);
+  box-shadow: 0 0 12px rgba(201, 168, 76, 0.1);
+}
+
+.form-input[readonly] {
+  color: rgba(255, 255, 255, 0.5);
+  cursor: default;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.transmit-btn {
+  width: 100%;
+  background: #c9a84c;
+  color: #000;
+  font-family: 'Luminari', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border: none;
+  padding: 14px 24px;
+  cursor: pointer;
+  transition: background 0.22s;
+  margin-top: 8px;
+  margin-bottom: 14px;
+}
+
+.transmit-btn:hover { background: #e0bc5a; }
+.transmit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.modal-cancel {
+  display: block;
+  text-align: center;
+  font-family: 'Luminari', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(201, 168, 76, 0.4);
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.modal-cancel:hover { color: rgba(201, 168, 76, 0.8); }
+
+.modal-msg {
+  font-family: 'Luminari', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  font-style: italic;
+  text-align: center;
+  padding: 10px 0;
+  display: none;
+  line-height: 1.6;
+}
+
+.modal-msg.success { color: rgba(2, 225, 39, 0.75); display: block; }
+.modal-msg.error   { color: rgba(251, 56, 56, 0.8); display: block; }
+
+@media (max-width: 600px) {
+  .modal-panel { padding: 36px 24px; }
+  .content { padding: 48px 20px 60px; }
+  .merch-grid { gap: 18px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOP NAV ── -->
+<div id="jtnav">
+  <a id="jtnav-logo" href="index.html">
+    <img src="assets/homepage/logo png.png" alt="Jestamang">
+  </a>
+  <div id="jtnav-links">
+    <a class="jtnav-link" href="entities.html" data-page="entities.html">Entities</a>
+    <span class="jtnav-dot">·</span>
+    <a class="jtnav-link" href="albums.html" data-page="albums.html">Albums</a>
+    <span class="jtnav-dot">·</span>
+    <a class="jtnav-link" href="lyrics.html" data-page="lyrics.html">Lyrics</a>
+    <span class="jtnav-dot">·</span>
+    <a class="jtnav-link" href="merch.html" data-page="merch.html">Merch</a>
+    <span class="jtnav-dot">·</span>
+    <a class="jtnav-link" href="photos.html" data-page="photos.html">Photos</a>
+    <span class="jtnav-dot">·</span>
+    <a class="jtnav-link" href="videos.html" data-page="videos.html">Videos</a>
+    <span class="jtnav-dot">·</span>
+    <a class="jtnav-link" href="shows.html" data-page="shows.html">Shows</a>
+    <span class="jtnav-dot">·</span>
+    <a class="jtnav-link" href="blog.html" data-page="blog.html">Blog</a>
+    <span class="jtnav-dot">·</span>
+    <a class="jtnav-link" href="comix.html" data-page="comix.html">Comix</a>
+    <span class="jtnav-dot">·</span>
+    <a class="jtnav-link" href="games.html" data-page="games.html">Games</a>
+    <span class="jtnav-dot">·</span>
+    <a class="jtnav-link" href="email.html" data-page="email.html">Email</a>
+  </div>
+  <div id="jtnav-divider"></div>
+  <div id="jtnav-platforms">
+    <a class="jtnav-link" href="instagram.html" data-page="instagram.html" target="_blank" rel="noopener noreferrer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+    </a>
+    <span class="jtnav-dot">·</span>
+    <a class="jtnav-link" href="youtube.html" data-page="youtube.html" target="_blank" rel="noopener noreferrer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+    </a>
+    <span class="jtnav-dot">·</span>
+    <a class="jtnav-link" href="spotify.html" data-page="spotify.html" target="_blank" rel="noopener noreferrer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+    </a>
+    <span class="jtnav-dot">·</span>
+    <a class="jtnav-link" href="apple-music.html" data-page="apple-music.html" target="_blank" rel="noopener noreferrer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+    </a>
+  </div>
+  <button id="jtnav-mobile-toggle" aria-label="Open navigation">
+    <img src="assets/homepage/jestamang-badge.png" alt="Menu">
+  </button>
+</div>
+
+<!-- ── MOBILE OVERLAY ── -->
+<div id="jtnav-mobile-overlay">
+  <div id="jtnav-mob-bg"></div>
+  <button id="jtnav-mob-close" aria-label="Close navigation">✕</button>
+  <a class="jtnav-mob-link" href="index.html" data-page="index.html">Home</a>
+  <a class="jtnav-mob-link" href="entities.html" data-page="entities.html">Entities</a>
+  <a class="jtnav-mob-link" href="albums.html" data-page="albums.html">Albums</a>
+  <a class="jtnav-mob-link" href="lyrics.html" data-page="lyrics.html">Lyrics</a>
+  <a class="jtnav-mob-link" href="merch.html" data-page="merch.html">Merch</a>
+  <a class="jtnav-mob-link" href="photos.html" data-page="photos.html">Photos</a>
+  <a class="jtnav-mob-link" href="videos.html" data-page="videos.html">Videos</a>
+  <a class="jtnav-mob-link" href="shows.html" data-page="shows.html">Shows</a>
+  <a class="jtnav-mob-link" href="blog.html" data-page="blog.html">Blog</a>
+  <a class="jtnav-mob-link" href="comix.html" data-page="comix.html">Comix</a>
+  <a class="jtnav-mob-link" href="games.html" data-page="games.html">Games</a>
+  <a class="jtnav-mob-link" href="email.html" data-page="email.html">Email</a>
+  <div class="jtnav-mob-divider"></div>
+  <a class="jtnav-mob-link" href="instagram.html" data-page="instagram.html" target="_blank" rel="noopener noreferrer">Instagram</a>
+  <a class="jtnav-mob-link" href="youtube.html" data-page="youtube.html" target="_blank" rel="noopener noreferrer">YouTube</a>
+  <a class="jtnav-mob-link" href="spotify.html" data-page="spotify.html" target="_blank" rel="noopener noreferrer">Spotify</a>
+  <a class="jtnav-mob-link" href="apple-music.html" data-page="apple-music.html" target="_blank" rel="noopener noreferrer">Apple Music</a>
+</div>
+
+<!-- ── MAIN CONTENT ── -->
+<div class="content">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>The Artifact Vault</h1>
+    <p class="subtitle">Sacred objects from the Jestamang universe. Each one carries the mythology.</p>
+    <div class="gold-rule">✦</div>
+  </div>
+
+  <!-- PRODUCT GRID -->
+  <div class="merch-grid" id="merch-grid"></div>
+
+</div>
+
+<!-- ── INQUIRY MODAL ── -->
+<div id="inquiry-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
+  <div class="modal-panel">
+    <p class="modal-title" id="modal-title-text">Send a Transmission</p>
+    <p class="modal-subtitle">Speak your inquiry into the void. It will be received.</p>
+    <div class="modal-rule"></div>
+
+    <form id="inquiry-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="inq-name">Your Name</label>
+        <input class="form-input" type="text" id="inq-name" name="name" autocomplete="name" required placeholder="Enter your name" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="inq-email">Your Signal</label>
+        <input class="form-input" type="email" id="inq-email" name="email" autocomplete="email" required placeholder="your@email.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="inq-item">Artifact</label>
+        <input class="form-input" type="text" id="inq-item" name="item" readonly />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="inq-message">Your Transmission</label>
+        <textarea class="form-textarea" id="inq-message" name="message" rows="5" required placeholder="Write your inquiry here..."></textarea>
+      </div>
+
+      <div id="modal-msg" class="modal-msg"></div>
+
+      <button type="submit" class="transmit-btn" id="transmit-btn">Transmit</button>
+      <button type="button" class="modal-cancel" id="modal-cancel">Depart</button>
+    </form>
+  </div>
+</div>
+
+<!-- ── NAV SCRIPT ── -->
+<script>
+(function () {
+  var page = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.jtnav-link, .jtnav-mob-link').forEach(function (el) {
+    if (el.getAttribute('data-page') === page) el.classList.add('jtnav-active');
+  });
+  var toggle  = document.getElementById('jtnav-mobile-toggle');
+  var overlay = document.getElementById('jtnav-mobile-overlay');
+  var closeBtn = document.getElementById('jtnav-mob-close');
+  if (toggle && overlay) {
+    toggle.addEventListener('click', function () { overlay.classList.add('jtnav-mob-open'); });
+    closeBtn.addEventListener('click', function () { overlay.classList.remove('jtnav-mob-open'); });
+    overlay.querySelectorAll('.jtnav-mob-link').forEach(function (link) {
+      link.addEventListener('click', function () { overlay.classList.remove('jtnav-mob-open'); });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') overlay.classList.remove('jtnav-mob-open');
+    });
+  }
+})();
+</script>
+
+<!-- ── PRODUCT DATA & CARD RENDER ── -->
+<script>
+var products = [
+  {
+    title: 'Cards',
+    image: 'assets/merch/cards.png',
+    desc: 'A deck steeped in ritual — each card a portal, each draw a reckoning.',
+    gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
+  },
+  {
+    title: 'Comix',
+    image: 'assets/merch/comix.png',
+    desc: 'Illustrated chronicles from the edge of the mythology — ink pressed into legend.',
+    gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
+  },
+  {
+    title: 'Polyphonies',
+    image: 'assets/merch/polyphonies.jpeg',
+    desc: 'Many voices folded into one — a physical relic of the harmonic archive.',
+    gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
+  },
+  {
+    title: 'Puzzle',
+    image: 'assets/merch/puzzle.png',
+    desc: 'Assemble the vision piece by piece — the image reveals itself only to the patient.',
+    gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
+  },
+  {
+    title: 'T-Shirt',
+    image: 'assets/merch/t shirt.png',
+    desc: 'Wear the sigil. Carry the world of Jestamang against your skin wherever you walk.',
+    gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
+  }
+];
+
+var bgColors = [
+  'rgba(6,3,1,0.95)',
+  'rgba(2,6,14,0.95)',
+  'rgba(8,2,8,0.95)',
+  'rgba(2,8,4,0.95)',
+  'rgba(14,8,2,0.95)'
+];
+
+var grid = document.getElementById('merch-grid');
+
+products.forEach(function (p, i) {
+  var card = document.createElement('div');
+  card.className = 'product-card';
+  card.style.background = bgColors[i % bgColors.length];
+
+  card.innerHTML =
+    '<div class="product-image-wrap">' +
+      '<img src="' + p.image + '" alt="' + p.title + '" loading="lazy">' +
+    '</div>' +
+    '<div class="product-name">' + p.title + '</div>' +
+    '<div class="product-desc">' + p.desc + '</div>' +
+    '<div class="product-price">Offering: <!-- ADD PRICE --></div>' +
+    '<button class="acquire-btn" data-gumroad-url="' + p.gumroadUrl + '">Acquire This Artifact</button>' +
+    '<button class="ask-link" data-product="' + p.title + '">Ask a Question</button>' +
+    '<div class="inner-circle-line">JOIN THE <a href="login.html">INNER CIRCLE</a> for member pricing</div>';
+
+  // Acquire button
+  card.querySelector('.acquire-btn').addEventListener('click', function () {
+    var url = this.getAttribute('data-gumroad-url');
+    if (url && url.indexOf('<!--') === -1) {
+      window.open(url, '_blank');
+    }
+  });
+
+  // Ask a question
+  card.querySelector('.ask-link').addEventListener('click', function () {
+    openModal(this.getAttribute('data-product'));
+  });
+
+  grid.appendChild(card);
+});
+</script>
+
+<!-- ── MODAL LOGIC ── -->
+<script>
+var modal      = document.getElementById('inquiry-modal');
+var inqItem    = document.getElementById('inq-item');
+var inqName    = document.getElementById('inq-name');
+var inqEmail   = document.getElementById('inq-email');
+var inqMessage = document.getElementById('inq-message');
+var msgBox     = document.getElementById('modal-msg');
+var submitBtn  = document.getElementById('transmit-btn');
+var cancelBtn  = document.getElementById('modal-cancel');
+
+function openModal(productName) {
+  inqItem.value = productName || '';
+  msgBox.className = 'modal-msg';
+  msgBox.textContent = '';
+  submitBtn.disabled = false;
+  modal.classList.add('modal-open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modal.classList.remove('modal-open');
+  document.body.style.overflow = '';
+}
+
+cancelBtn.addEventListener('click', closeModal);
+
+modal.addEventListener('click', function (e) {
+  if (e.target === modal) closeModal();
+});
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+document.getElementById('inquiry-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  var name    = inqName.value.trim();
+  var email   = inqEmail.value.trim();
+  var item    = inqItem.value.trim();
+  var message = inqMessage.value.trim();
+
+  if (!name || !email || !message) {
+    msgBox.textContent = 'Please fill in all required fields.';
+    msgBox.className = 'modal-msg error';
+    return;
+  }
+
+  submitBtn.disabled = true;
+  msgBox.className = 'modal-msg';
+  msgBox.textContent = '';
+
+  // ── FIRESTORE SAVE ──
+  var db = firebase.firestore();
+  db.collection('inquiries').add({
+    name: name,
+    email: email,
+    item: item,
+    message: message,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    status: 'new'
+  })
+  .then(function () {
+
+    // ── EMAIL NOTIFICATION SETUP:
+    // Install EmailJS: https://www.emailjs.com
+    // Replace EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY below
+    // Your notification email: <!-- REPLACE WITH YOUR EMAIL ADDRESS -->
+    //
+    // Uncomment and configure the block below after setting up EmailJS:
+    //
+    // emailjs.init('EMAILJS_PUBLIC_KEY');
+    // return emailjs.send('EMAILJS_SERVICE_ID', 'EMAILJS_TEMPLATE_ID', {
+    //   from_name:  name,
+    //   from_email: email,
+    //   product:    item,
+    //   message:    message
+    // });
+
+    return Promise.resolve();
+  })
+  .then(function () {
+    msgBox.textContent = 'YOUR TRANSMISSION HAS BEEN RECEIVED. We will respond when the time is right.';
+    msgBox.className = 'modal-msg success';
+    document.getElementById('inquiry-form').reset();
+    setTimeout(closeModal, 3000);
+  })
+  .catch(function () {
+    msgBox.textContent = 'THE TRANSMISSION FAILED. Try again or contact directly.';
+    msgBox.className = 'modal-msg error';
+    submitBtn.disabled = false;
+  });
+});
+</script>
+
+<!-- ── FIREBASE SCRIPTS ── -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="assets/js/firebase-config.js"></script>
+<script src="assets/js/jesta-auth.js"></script>
+
+<!-- ── AUTH STATE: PRE-FILL MODAL ── -->
+<script>
+(function () {
+  function tryPrefill() {
+    if (typeof firebase === 'undefined' || !firebase.auth) return;
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        if (user.displayName && !inqName.value) inqName.value = user.displayName;
+        if (user.email && !inqEmail.value)       inqEmail.value = user.email;
+      }
+    });
+  }
+  // Wait for firebase-config.js to initialise
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', tryPrefill);
+  } else {
+    tryPrefill();
+  }
+})();
+</script>
+
+</body>
+</html>

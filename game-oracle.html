@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Oracle — Jestamang</title>
+<style>
+@font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype')}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;height:100%}
+body{font-family:'Luminari',serif;color:#fff;background-image:url('assets/homepage/background/Gif2.gif');background-size:cover;background-position:center;background-attachment:fixed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:72px 20px 60px}
+body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:0;pointer-events:none}
+.oracle-wrap{position:relative;z-index:1;text-align:center;max-width:560px;width:100%}
+.oracle-title{font-size:clamp(1.6rem,5vw,2.8rem);letter-spacing:0.55em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.55);margin-bottom:6px}
+.oracle-sub{font-size:0.62rem;letter-spacing:0.45em;color:rgba(255,255,255,0.25);text-transform:uppercase;margin-bottom:28px}
+.drawn-count{font-size:0.58rem;letter-spacing:0.3em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:16px;min-height:1.2em}
+
+/* Card stage */
+.card-stage{width:260px;height:380px;margin:0 auto 28px;perspective:1200px}
+.oracle-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.55s cubic-bezier(0.4,0,0.2,1)}
+.oracle-card.revealed{transform:rotateY(180deg)}
+.card-face,.card-back{
+  position:absolute;inset:0;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border:1px solid rgba(201,168,76,0.3);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px 18px;overflow:hidden
+}
+.card-back{background:rgba(6,2,1,0.97);gap:12px}
+.card-back-glyph{font-size:3.5rem;color:rgba(201,168,76,0.4);animation:backpulse 4s ease-in-out infinite}
+@keyframes backpulse{0%,100%{color:rgba(201,168,76,0.35);text-shadow:none}50%{color:rgba(201,168,76,0.7);text-shadow:0 0 30px rgba(201,168,76,0.4)}}
+.card-back-label{font-size:0.52rem;letter-spacing:0.5em;color:rgba(201,168,76,0.2);text-transform:uppercase}
+.card-face{
+  background:rgba(6,2,1,0.97);
+  transform:rotateY(180deg);
+  gap:10px;text-align:center;
+  justify-content:flex-start;
+  padding-top:18px
+}
+.card-arcana{
+  font-size:0.52rem;letter-spacing:0.45em;color:rgba(201,168,76,0.5);
+  text-transform:uppercase;
+  border-top:1px solid rgba(201,168,76,0.15);
+  border-bottom:1px solid rgba(201,168,76,0.15);
+  padding:5px 12px;width:100%;flex-shrink:0
+}
+.card-name{
+  font-size:clamp(1rem,3vw,1.35rem);letter-spacing:0.1em;
+  color:#c9a84c;text-shadow:0 0 18px rgba(201,168,76,0.4);
+  line-height:1.2;flex-shrink:0
+}
+.card-glyph{font-size:1.6rem;color:rgba(201,168,76,0.5);flex-shrink:0;font-family:Georgia,'Times New Roman',serif}
+.card-rule{width:50px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.5),transparent);flex-shrink:0}
+.card-reading{
+  font-size:0.72rem;font-style:italic;line-height:1.65;
+  color:rgba(240,228,208,0.8);letter-spacing:0.02em;
+  flex:1;overflow:hidden;display:-webkit-box;
+  -webkit-line-clamp:7;-webkit-box-orient:vertical
+}
+.card-signature{font-size:0.5rem;letter-spacing:0.28em;color:rgba(201,168,76,0.3);text-transform:uppercase;flex-shrink:0}
+
+/* Buttons */
+.oracle-btns{display:flex;flex-direction:column;align-items:center;gap:12px}
+.draw-btn{
+  font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.4em;
+  text-transform:uppercase;color:#000;background:#c9a84c;
+  border:1px solid #c9a84c;padding:13px 52px;cursor:pointer;
+  transition:background 0.2s,box-shadow 0.2s
+}
+.draw-btn:hover{background:#e0bc5a;box-shadow:0 0 28px rgba(201,168,76,0.45)}
+.draw-btn:disabled{opacity:0.35;cursor:default;pointer-events:none}
+.reset-btn{
+  font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.3em;
+  text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;
+  border:1px solid rgba(201,168,76,0.25);padding:8px 24px;cursor:pointer;
+  transition:color 0.2s,border-color 0.2s;visibility:hidden
+}
+.reset-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.6)}
+.reset-btn.show{visibility:visible}
+a.back-link{font-size:0.6rem;letter-spacing:0.3em;color:rgba(201,168,76,0.4);text-decoration:none;text-transform:uppercase;transition:color 0.2s}
+a.back-link:hover{color:#c9a84c}
+</style>
+</head>
+<body>
+
+<div class="oracle-wrap">
+  <h1 class="oracle-title">The Oracle</h1>
+  <p class="oracle-sub">Draw from the deck of the Jestamang Universe</p>
+  <div class="drawn-count" id="drawn-count">&nbsp;</div>
+
+  <div class="card-stage">
+    <div class="oracle-card" id="oracle-card">
+      <div class="card-back">
+        <div class="card-back-glyph">✦</div>
+        <div class="card-back-label">The Oracle Awaits</div>
+      </div>
+      <div class="card-face">
+        <div class="card-arcana" id="c-arcana">&nbsp;</div>
+        <div class="card-name" id="c-name">&nbsp;</div>
+        <div class="card-glyph" id="c-glyph">&nbsp;</div>
+        <div class="card-rule"></div>
+        <div class="card-reading" id="c-reading">&nbsp;</div>
+        <div class="card-signature">— the oracle of jestamang</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="oracle-btns">
+    <button class="draw-btn" id="draw-btn">Draw a Card</button>
+    <button class="reset-btn" id="reset-btn">Reshuffle the Deck</button>
+    <a href="games.html" class="back-link">← Return to the Vault</a>
+  </div>
+</div>
+
+<script>
+var CARDS = [
+  {arcana:'I · The Jester',name:'The Jester',glyph:'Ψ',reading:'What is given freely multiplies. What is hoarded rots. The Jester sees your open hands and grins — this is the correct posture.'},
+  {arcana:'II · Origin',name:'The Prickly Being',glyph:'✶',reading:'A small divine presence has left its marks on your chest. Do not wash them. They are proof of something most will never receive.'},
+  {arcana:'III · Motion',name:'The Parade',glyph:'↯',reading:'Movement is the ritual. The direction matters less than the act of beginning. Set your feet in motion — the path reveals itself under moving feet.'},
+  {arcana:'IV · Season',name:'The New Æon',glyph:'Æ',reading:'The old season does not argue with the new one. It simply yields. Something in you is ready to yield. Let it.'},
+  {arcana:'V · Signal',name:'The Metropolis',glyph:'⌘',reading:'The city speaks to those who have learned its dialect. What sounds like noise to others is transmission to you. Listen deeper.'},
+  {arcana:'VI · Whole',name:'The 600',glyph:'⊛',reading:'The number is not large — it is complete. One contains the whole. You already hold everything required for this moment.'},
+  {arcana:'VII · Freedom',name:'The Circus',glyph:'Ω',reading:'Your cage was assembled from your own hesitation. The door was never locked. You simply forgot to check.'},
+  {arcana:'VIII · Sleep',name:'The Dream',glyph:'≋',reading:'What visited you while you slept was not imaginary. The frenzied realm of dreams is where the real work is done.'},
+  {arcana:'IX · Depth',name:'The Swamp',glyph:'∿',reading:'From the murk rise the most vivid creatures. The clarity you seek is not found in clean water — it is found in depth.'},
+  {arcana:'X · Wheel',name:'The Solstice',glyph:'✺',reading:'The calendar is not neutral. Whoever controls the seasons controls the energy. Reclaim your place on the wheel.'},
+  {arcana:'XI · Recognition',name:'The Chosen Few',glyph:'⁂',reading:'To be chosen is not to be selected. It is to have always been. You were not called — you were recognized.'},
+  {arcana:'XII · Threshold',name:'The Portal',glyph:'⊕',reading:'A door appears only to those already standing before it. You would not sense the threshold if you were not meant to cross it.'},
+  {arcana:'XIII · Time',name:'The Rhythm',glyph:'⌁',reading:'Every soul moves in time whether it hears the music or not. The question is not whether you are dancing — it is whether you know it.'},
+  {arcana:'XIV · Light',name:'The Gold',glyph:'◊',reading:'Not all that shines asks to be spent. Some things are kept luminous simply by being witnessed. Bear witness today.'},
+  {arcana:'XV · Mark',name:'The Claws',glyph:'⍟',reading:'The small marks on your chest are not wounds — they are signatures. Something vast has signed its name into your skin.'},
+  {arcana:'XVI · Unseen',name:'The Veil',glyph:'≀',reading:'What you cannot see is watching with tremendous interest. This is not threat. This is the most affectionate form of attention there is.'},
+  {arcana:'XVII · Rite',name:'The Pagan',glyph:'⊗',reading:'No institution owns your ceremony. No government holds the patent on your reverence. The rite you build yourself is the only holy one.'},
+  {arcana:'XVIII · Memory',name:'The Blood',glyph:'⌇',reading:'The wound remembers what the mind chooses to forget. What pulses in you is older than your name and wiser than your fear.'},
+  {arcana:'XIX · Mirror',name:'The Fat Head',glyph:'⊙',reading:'The jesting being grins when you call it deity. But you are right to call it so. Feed it no further flattery — it has quite enough already.'},
+  {arcana:'XX · Witness',name:'The Children',glyph:'⁕',reading:'Core 6. Chosen few. Born from the dew of a swampy imagination. They do not ask to be understood — only witnessed. Are you watching?'},
+  {arcana:'XXI · Fire',name:'The Circus Spits',glyph:'⁑',reading:'Free, free, FREE! Marvelous — miraculous — meticulous creations beyond the limits of those fussy gods. Today you are one of them. Create without a single shred of doubt.'}
+];
+
+var deck = [], drawn = 0, total = CARDS.length, busy = false;
+
+function initDeck() {
+  deck = CARDS.slice().sort(function(){ return Math.random() - 0.5; });
+  drawn = 0;
+  updateCount();
+}
+
+function updateCount() {
+  var el = document.getElementById('drawn-count');
+  if (drawn === 0) el.innerHTML = '&nbsp;';
+  else if (drawn === total) el.textContent = 'All ' + total + ' cards have spoken';
+  else el.textContent = drawn + ' of ' + total + ' cards drawn';
+}
+
+function fillCard(card) {
+  document.getElementById('c-arcana').textContent = card.arcana;
+  document.getElementById('c-name').textContent = card.name;
+  document.getElementById('c-glyph').textContent = card.glyph;
+  document.getElementById('c-reading').textContent = card.reading;
+}
+
+var drawBtn = document.getElementById('draw-btn');
+var resetBtn = document.getElementById('reset-btn');
+var ocard = document.getElementById('oracle-card');
+
+drawBtn.addEventListener('click', function() {
+  if (busy || !deck.length) return;
+  busy = true;
+  drawBtn.disabled = true;
+
+  var cardData = deck.pop();
+  drawn++;
+  updateCount();
+
+  var isRevealed = ocard.classList.contains('revealed');
+
+  if (isRevealed) {
+    // Flip back to show back face
+    ocard.classList.remove('revealed');
+    // Wait for flip to reach midpoint (~275ms), update content, then flip forward
+    setTimeout(function() {
+      fillCard(cardData);
+      setTimeout(function() {
+        ocard.classList.add('revealed');
+        busy = false;
+        if (!deck.length) {
+          resetBtn.classList.add('show');
+        } else {
+          drawBtn.disabled = false;
+        }
+      }, 80);
+    }, 300);
+  } else {
+    // First draw — just fill and flip
+    fillCard(cardData);
+    setTimeout(function() {
+      ocard.classList.add('revealed');
+      busy = false;
+      if (!deck.length) {
+        resetBtn.classList.add('show');
+      } else {
+        drawBtn.disabled = false;
+      }
+    }, 60);
+  }
+});
+
+resetBtn.addEventListener('click', function() {
+  ocard.classList.remove('revealed');
+  drawBtn.disabled = false;
+  resetBtn.classList.remove('show');
+  setTimeout(function() {
+    document.getElementById('c-arcana').innerHTML = '&nbsp;';
+    document.getElementById('c-name').innerHTML = '&nbsp;';
+    document.getElementById('c-glyph').innerHTML = '&nbsp;';
+    document.getElementById('c-reading').innerHTML = '&nbsp;';
+    initDeck();
+  }, 300);
+});
+
+initDeck();
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="assets/js/firebase-config.js"></script>
+<script src="assets/js/jesta-auth.js"></script>
+</body>
+</html>
