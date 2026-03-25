@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Vault — Jestamang</title>
+<style>
+@font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype')}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{min-height:100%}
+body{font-family:'Luminari',serif;color:#fff;background-image:url('assets/homepage/background/Gif2.gif');background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh;padding-top:52px}
+body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:0;pointer-events:none}
+.game-wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:48px 20px 80px;text-align:center}
+.game-title{font-size:clamp(1.8rem,5vw,3rem);letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.6),0 0 80px rgba(201,168,76,0.2);margin-bottom:6px}
+.game-sub{font-size:0.68rem;letter-spacing:0.4em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:32px}
+.gold-rule{width:100px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.6),transparent);margin:0 auto 28px}
+.stats{display:flex;justify-content:center;gap:48px;margin-bottom:32px}
+.stat{text-align:center}
+.stat-val{font-size:1.5rem;color:#c9a84c;letter-spacing:0.05em}
+.stat-label{font-size:0.55rem;letter-spacing:0.35em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-top:3px}
+.card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:660px;margin:0 auto}
+.mem-card{aspect-ratio:3/4;cursor:pointer;perspective:900px;position:relative}
+.mem-card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1)}
+.mem-card.flipped .mem-card-inner,.mem-card.matched .mem-card-inner{transform:rotateY(180deg)}
+.mem-front,.mem-back{position:absolute;inset:0;backface-visibility:hidden;border:1px solid rgba(201,168,76,0.18);overflow:hidden}
+.mem-back{background:rgba(6,3,1,0.96);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transition:border-color 0.25s}
+.mem-back-glyph{font-size:clamp(1.4rem,3vw,2rem);color:rgba(201,168,76,0.35)}
+.mem-back-text{font-size:0.42rem;letter-spacing:0.4em;color:rgba(201,168,76,0.18);text-transform:uppercase}
+.mem-card:not(.flipped):not(.matched):hover .mem-back{border-color:rgba(201,168,76,0.55)}
+.mem-front{transform:rotateY(180deg)}
+.mem-front img{width:100%;height:100%;object-fit:cover;display:block}
+.mem-card.matched .mem-front{border-color:rgba(201,168,76,0.85);box-shadow:0 0 22px rgba(201,168,76,0.35),inset 0 0 14px rgba(201,168,76,0.07)}
+.mem-card.matched .mem-front::after{content:'✦';position:absolute;bottom:5px;right:7px;font-size:0.65rem;color:rgba(201,168,76,0.7)}
+.controls{margin-top:28px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.ctrl-btn{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.75);background:none;border:1px solid rgba(201,168,76,0.35);padding:9px 26px;cursor:pointer;transition:background 0.2s,color 0.2s,border-color 0.2s}
+.ctrl-btn:hover{background:rgba(201,168,76,0.12);border-color:#c9a84c;color:#c9a84c}
+.ctrl-btn.primary:hover{background:#c9a84c;color:#000}
+a.ctrl-btn{text-decoration:none;display:inline-block}
+#win-overlay{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;flex-direction:column;gap:18px;text-align:center}
+#win-overlay.show{display:flex}
+.win-glyph{font-size:3rem;color:rgba(201,168,76,0.5);animation:wglow 2.5s ease-in-out infinite}
+@keyframes wglow{0%,100%{color:rgba(201,168,76,0.5)}50%{color:#c9a84c;text-shadow:0 0 50px rgba(201,168,76,0.8)}}
+.win-title{font-size:clamp(2.2rem,7vw,4.5rem);letter-spacing:0.5em;color:#c9a84c;text-shadow:0 0 60px rgba(201,168,76,0.7)}
+.win-sub{font-size:0.72rem;letter-spacing:0.28em;color:rgba(255,255,255,0.4);text-transform:uppercase}
+.win-stats-txt{font-size:0.85rem;letter-spacing:0.12em;color:rgba(201,168,76,0.65)}
+@media(max-width:520px){.card-grid{gap:7px}.stats{gap:24px}}
+</style>
+</head>
+<body>
+
+<div class="game-wrap">
+  <h1 class="game-title">Memory Vault</h1>
+  <p class="game-sub">Match the albums · find all 8 pairs</p>
+  <div class="gold-rule"></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="s-moves">0</div><div class="stat-label">Moves</div></div>
+    <div class="stat"><div class="stat-val" id="s-time">0:00</div><div class="stat-label">Time</div></div>
+    <div class="stat"><div class="stat-val" id="s-pairs">0 / 8</div><div class="stat-label">Pairs</div></div>
+  </div>
+  <div class="card-grid" id="grid"></div>
+  <div class="controls">
+    <button class="ctrl-btn primary" id="btn-restart">Shuffle & Restart</button>
+    <a href="games.html" class="ctrl-btn">← Back to Vault</a>
+  </div>
+</div>
+
+<div id="win-overlay">
+  <div class="win-glyph">✦</div>
+  <div class="win-title">The Vault Opens</div>
+  <p class="win-sub">All pairs found</p>
+  <p class="win-stats-txt" id="win-stat-txt"></p>
+  <div class="controls" style="margin-top:12px">
+    <button class="ctrl-btn primary" id="btn-again">Play Again</button>
+    <a href="games.html" class="ctrl-btn">Return to Vault</a>
+  </div>
+</div>
+
+<script>
+var ALBUMS = [
+  {title:'Zodiac', src:'assets/albums/QUARTER DAYS/children/qu01.jpg'},
+  {title:'New \u00C6on', src:'assets/albums/QUARTER DAYS/kek-buh/qu02.jpg'},
+  {title:'Niga Denots', src:'assets/albums/QUARTER DAYS/ace of chase/qu03.jpg'},
+  {title:'Jestress Melody', src:'assets/albums/QUARTER DAYS/cricket om/qu04.jpg'},
+  {title:'The Naples Society', src:'assets/albums/2K2323/jr mason/2k2323jan.jpg'},
+  {title:'Peter Thy Godfather', src:'assets/albums/2K2323/father p journee/2k2323feb.jpg'},
+  {title:'Covers the Taste', src:'assets/albums/2K2323/blue jays/2k2323mar.jpg'},
+  {title:'Sleep Cycle', src:'assets/albums/2K2323/mutt tour/2k2323apr.jpg'}
+];
+
+var moves=0,pairs=0,secs=0,started=false,locked=false,first=null,second=null,ticker=null;
+
+function pad(n){return n<10?'0'+n:n}
+function tick(){secs++;document.getElementById('s-time').textContent=Math.floor(secs/60)+':'+pad(secs%60)}
+function upd(){document.getElementById('s-moves').textContent=moves;document.getElementById('s-pairs').textContent=pairs+' / 8'}
+
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+
+function build(){
+  clearInterval(ticker);
+  moves=0;pairs=0;secs=0;started=false;locked=false;first=null;second=null;
+  document.getElementById('s-time').textContent='0:00';
+  upd();
+  document.getElementById('win-overlay').classList.remove('show');
+  var grid=document.getElementById('grid');
+  grid.innerHTML='';
+  var deck=shuffle(ALBUMS.concat(ALBUMS.map(function(a){return{title:a.title,src:a.src}})));
+  deck.forEach(function(album){
+    var card=document.createElement('div');
+    card.className='mem-card';
+    card.dataset.id=album.title;
+    card.innerHTML='<div class="mem-card-inner"><div class="mem-back"><div class="mem-back-glyph">\u2726</div><div class="mem-back-text">Jestamang</div></div><div class="mem-front"><img src="'+album.src+'" alt="'+album.title+'" loading="lazy"></div></div>';
+    card.addEventListener('click',function(){flip(card)});
+    grid.appendChild(card);
+  });
+}
+
+function flip(card){
+  if(locked||card.classList.contains('flipped')||card.classList.contains('matched'))return;
+  if(!started){started=true;ticker=setInterval(tick,1000)}
+  card.classList.add('flipped');
+  if(!first){first=card;return}
+  second=card;
+  locked=true;
+  moves++;upd();
+  if(first.dataset.id===second.dataset.id){
+    first.classList.add('matched');second.classList.add('matched');
+    pairs++;upd();
+    first=null;second=null;locked=false;
+    if(pairs===8)setTimeout(win,600);
+  } else {
+    var a=first,b=second;
+    first=null;second=null;
+    setTimeout(function(){a.classList.remove('flipped');b.classList.remove('flipped');locked=false},950);
+  }
+}
+
+function win(){
+  clearInterval(ticker);
+  var m=Math.floor(secs/60),s=secs%60;
+  document.getElementById('win-stat-txt').textContent=moves+' moves  ·  '+m+':'+pad(s);
+  document.getElementById('win-overlay').classList.add('show');
+}
+
+document.getElementById('btn-restart').addEventListener('click',build);
+document.getElementById('btn-again').addEventListener('click',build);
+build();
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="assets/js/firebase-config.js"></script>
+<script src="assets/js/jesta-auth.js"></script>
+</body>
+</html>

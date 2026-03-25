@@ -1,0 +1,4 @@
+<!-- GAME SHEETS SECTION BACKUP -->
+<!-- To restore: paste this back into games.html inside #vault .page-wrap -->
+
+<div class="section-heading" style="margin-top:56px"><h2 class="section-title">Game Sheets</h2><p class="section-sub">Print and play. Descend into the ritual.</p></div><div class="games-grid" id="gamesGrid"></div>

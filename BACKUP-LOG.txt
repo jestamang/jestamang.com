@@ -1,0 +1,49 @@
+JESTAMANG.COM — BACKUP LOG
+════════════════════════════════════════════════════════════════
+Date: March 24, 2026
+Note: Full backup before Firebase launch and DNS switch
+════════════════════════════════════════════════════════════════
+
+HTML FILES
+──────────────────────────────────────────────────────────────
+albums.html
+apple-music.html
+arcade.html
+blog.html
+comix.html
+email.html
+entities.html
+game-memory.html
+game-oracle.html
+games.html
+index.html
+instagram.html
+login.html
+lyrics.html
+members.html
+merch.html
+photos.html
+profile.html
+shows.html
+spotify.html
+videos.html
+youtube.html
+
+ASSETS FOLDERS
+──────────────────────────────────────────────────────────────
+assets/albums/
+assets/comix/
+assets/entities/
+assets/fonts/
+assets/games/
+assets/homepage/
+assets/js/
+assets/legal/
+assets/lyrics/
+assets/merch/
+assets/photos/
+assets/videos/
+
+════════════════════════════════════════════════════════════════
+Full backup before Firebase launch and DNS switch
+════════════════════════════════════════════════════════════════
