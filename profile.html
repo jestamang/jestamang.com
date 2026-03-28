@@ -243,6 +243,322 @@ body::before{
 
 /* Account actions */
 .account-actions{display:flex;align-items:center;flex-wrap:wrap;gap:14px;}
+
+/* ══════════════════════════════════════════
+   NATAL CHART CALCULATOR STYLES
+══════════════════════════════════════════ */
+
+/* Calculator form area */
+.natal-calc-form {
+  margin-top: 28px;
+}
+.natal-section-header {
+  font-family:'Luminari',serif;
+  font-size:0.64rem;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.55);
+  text-align:center;
+  margin-bottom:24px;
+}
+.natal-form-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:16px 20px;
+  margin-bottom:24px;
+}
+@media(max-width:600px){.natal-form-grid{grid-template-columns:1fr;}}
+.natal-form-label {
+  font-family:'Luminari',serif;
+  font-size:0.6rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.65);
+  display:block;
+  margin-bottom:6px;
+}
+.natal-calc-btn-row {
+  display:flex;
+  justify-content:center;
+  margin-top:4px;
+}
+
+/* Loading overlay */
+#natal-loading {
+  display:none;
+  text-align:center;
+  padding:48px 0 32px;
+}
+.natal-loading-wheel {
+  width:80px;height:80px;
+  margin:0 auto 28px;
+  animation:natal-spin 3s linear infinite;
+}
+@keyframes natal-spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.natal-loading-text {
+  font-family:'Luminari',serif;
+  font-style:italic;
+  font-size:0.88rem;
+  letter-spacing:0.08em;
+  color:rgba(201,168,76,0.75);
+  min-height:1.5em;
+}
+
+/* Error message */
+#natal-error {
+  display:none;
+  font-family:'Luminari',serif;
+  font-style:italic;
+  font-size:0.82rem;
+  color:rgba(251,100,100,0.8);
+  letter-spacing:0.04em;
+  text-align:center;
+  padding:16px;
+  border:1px solid rgba(251,100,100,0.15);
+  margin-top:16px;
+}
+
+/* ── Result dossier ── */
+#natal-result {
+  display:none;
+  margin-top:32px;
+}
+.natal-result-header {
+  text-align:center;
+  margin-bottom:32px;
+}
+.natal-result-name {
+  font-family:'Luminari',serif;
+  font-size:clamp(2rem,5vw,3rem);
+  letter-spacing:0.4em;
+  color:#c9a84c;
+  text-transform:uppercase;
+  text-shadow:0 0 30px rgba(201,168,76,0.25);
+  margin-bottom:8px;
+}
+.natal-result-sun {
+  font-family:'Luminari',serif;
+  font-size:1.1rem;
+  color:rgba(255,255,255,0.75);
+  letter-spacing:0.12em;
+  margin-bottom:6px;
+}
+.natal-result-badge {
+  font-family:'Luminari',serif;
+  font-size:0.6rem;
+  letter-spacing:0.32em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.5);
+}
+.nc-divider {
+  font-family:'Luminari',serif;
+  font-size:0.6rem;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.5);
+  text-align:center;
+  margin:28px 0 20px;
+}
+/* SVG chart container */
+.natal-wheel-wrap {
+  display:flex;
+  justify-content:center;
+  margin:24px 0;
+}
+.natal-wheel-wrap svg {
+  max-width:420px;
+  width:100%;
+  height:auto;
+}
+/* Planetary table */
+.natal-planets-table {
+  width:100%;
+  border-collapse:collapse;
+}
+.natal-planets-table th {
+  font-family:'Luminari',serif;
+  font-size:0.58rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.55);
+  padding:6px 8px;
+  border-bottom:1px solid rgba(201,168,76,0.12);
+  text-align:left;
+}
+.natal-planets-table td {
+  font-family:'Luminari',serif;
+  font-size:0.82rem;
+  color:rgba(255,255,255,0.72);
+  padding:8px 8px;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  letter-spacing:0.03em;
+}
+.natal-planets-table tr:last-child td {border-bottom:none;}
+.planet-glyph {
+  font-size:1.1rem;
+  color:#c9a84c;
+  margin-right:4px;
+}
+.sign-glyph {
+  color:rgba(201,168,76,0.7);
+  margin-right:3px;
+}
+.house-num-cell {
+  color:rgba(201,168,76,0.5);
+  font-size:0.7rem;
+}
+/* Houses grid */
+.natal-houses-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px 24px;
+}
+@media(max-width:480px){.natal-houses-grid{grid-template-columns:1fr;}}
+.natal-house-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:7px 0;
+  border-bottom:1px solid rgba(201,168,76,0.06);
+  font-family:'Luminari',serif;
+  font-size:0.8rem;
+}
+.natal-house-num {
+  color:rgba(201,168,76,0.55);
+  font-size:0.7rem;
+  letter-spacing:0.1em;
+  min-width:40px;
+}
+.natal-house-sign {
+  color:rgba(255,255,255,0.72);
+  letter-spacing:0.04em;
+}
+/* Elements / Modes */
+.natal-em-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px 32px;
+}
+@media(max-width:480px){.natal-em-grid{grid-template-columns:1fr;}}
+.natal-em-section-label {
+  font-family:'Luminari',serif;
+  font-size:0.58rem;
+  letter-spacing:0.24em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.5);
+  margin-bottom:14px;
+}
+.natal-bar-row {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+.natal-bar-label {
+  font-family:'Luminari',serif;
+  font-size:0.72rem;
+  color:rgba(255,255,255,0.65);
+  letter-spacing:0.05em;
+  min-width:72px;
+}
+.natal-bar-track {
+  flex:1;
+  height:6px;
+  background:rgba(201,168,76,0.12);
+  border-radius:3px;
+  overflow:hidden;
+}
+.natal-bar-fill {
+  height:100%;
+  background:#c9a84c;
+  border-radius:3px;
+  transition:width 0.8s ease;
+}
+.natal-bar-count {
+  font-family:'Luminari',serif;
+  font-size:0.65rem;
+  color:rgba(201,168,76,0.6);
+  min-width:16px;
+  text-align:right;
+}
+/* Aspects list */
+.natal-aspects-list {
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.natal-aspect-row {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-family:'Luminari',serif;
+  font-size:0.78rem;
+  color:rgba(255,255,255,0.65);
+  letter-spacing:0.03em;
+  padding:6px 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.natal-aspect-row:last-child{border-bottom:none;}
+.asp-symbol {
+  font-size:0.95rem;
+  min-width:20px;
+  text-align:center;
+}
+.asp-trine  {color:#4caf80;}
+.asp-square {color:#e05555;}
+.asp-opposition {color:#5599dd;}
+.asp-conjunction {color:#c9a84c;}
+.asp-sextile {color:#88aacc;}
+.asp-label {
+  color:rgba(201,168,76,0.55);
+  font-size:0.65rem;
+  letter-spacing:0.1em;
+}
+/* Share button */
+.natal-share-row {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:16px;
+  margin-top:8px;
+  flex-wrap:wrap;
+}
+.natal-share-note {
+  font-family:'Luminari',serif;
+  font-style:italic;
+  font-size:0.65rem;
+  color:rgba(255,255,255,0.22);
+  letter-spacing:0.04em;
+  text-align:center;
+  margin-top:20px;
+}
+.natal-copied-msg {
+  font-family:'Luminari',serif;
+  font-style:italic;
+  font-size:0.72rem;
+  color:rgba(201,168,76,0.75);
+  letter-spacing:0.06em;
+  opacity:0;
+  transition:opacity 0.3s;
+}
+.natal-copied-msg.show{opacity:1;}
+/* Recalculate link */
+.natal-recalc-link {
+  font-family:'Luminari',serif;
+  font-style:italic;
+  font-size:0.65rem;
+  color:rgba(201,168,76,0.4);
+  letter-spacing:0.05em;
+  cursor:pointer;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  transition:color 0.2s;
+  background:none;
+  border:none;
+  display:block;
+  margin:0 auto;
+}
+.natal-recalc-link:hover{color:rgba(201,168,76,0.8);}
 </style>
 
   <link rel="preload" as="video" href="assets/homepage/background/bg.mp4" type="video/mp4">
@@ -258,7 +574,7 @@ body::before{
 </video>
 
 <style>#jtnav{position:fixed;top:0;left:0;right:0;height:52px;z-index:1000;display:flex;align-items:center;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid rgba(201,168,76,0.3)}#jtnav-logo{display:flex;align-items:center;margin-left:16px;flex-shrink:0;text-decoration:none}#jtnav-logo img{height:32px;width:auto;display:block}#jtnav-links{display:flex;align-items:center;gap:0;flex:1;justify-content:center;flex-wrap:nowrap}.jtnav-link{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.8);text-decoration:none;padding:0 8px;white-space:nowrap;transition:color 0.2s ease;line-height:52px}.jtnav-link:hover{color:#c9a84c}.jtnav-link.jtnav-active{color:#c9a84c}.jtnav-dot{color:rgba(255,255,255,0.3);font-size:0.6rem;padding:0 2px;line-height:52px;user-select:none}#jtnav-divider{width:1px;height:20px;background:rgba(201,168,76,0.3);margin:0 10px;flex-shrink:0}#jtnav-platforms{display:flex;align-items:center;margin-right:16px;flex-shrink:0;gap:0}#jtnav-platforms .jtnav-link{display:flex;align-items:center;padding:0 7px;line-height:52px}#jtnav-platforms .jtnav-link svg{display:block;opacity:0.8;transition:opacity 0.2s,color 0.2s}#jtnav-platforms .jtnav-link:hover svg,#jtnav-platforms .jtnav-link.jtnav-active svg{opacity:1}#jtnav-mobile-toggle{display:none;align-items:center;justify-content:center;margin-right:16px;cursor:pointer;background:none;border:none;padding:0;flex-shrink:0}#jtnav-mobile-toggle img{height:32px;width:auto;display:block}#jtnav-mobile-overlay{display:none;position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,0.95);flex-direction:column;align-items:center;justify-content:center;gap:0;overflow:hidden}#jtnav-mobile-overlay.jtnav-mob-open{display:flex}#jtnav-mob-bg{position:absolute;inset:0;background-image: #000;background-size:cover;background-position:center;opacity:0.06;pointer-events:none}#jtnav-mob-close{position:absolute;top:18px;right:22px;background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.6rem;cursor:pointer;line-height:1;font-family:sans-serif;z-index:1}#jtnav-mob-close:hover{color:#c9a84c}.jtnav-mob-link{font-family:'Luminari',serif;font-size:1.5rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;padding:14px 0;position:relative;z-index:1;transition:color 0.2s ease}.jtnav-mob-link:hover,.jtnav-mob-link.jtnav-active{color:#c9a84c}.jtnav-mob-divider{width:60px;height:1px;background:rgba(201,168,76,0.3);margin:10px 0;position:relative;z-index:1}@media (max-width:767px){#jtnav-links,#jtnav-divider,#jtnav-platforms{display:none}#jtnav-mobile-toggle{display:flex;margin-left:auto}}body{padding-top:52px!important}</style>
-<div id="jtnav"> <a id="jtnav-logo" href="index.html"> <img src="assets/homepage/logo png.png" alt="Jestamang"> </a> <div id="jtnav-links"> <a class="jtnav-link" href="entities.html" data-page="entities.html">Entities</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="albums.html" data-page="albums.html">Albums</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="lyrics.html" data-page="lyrics.html">Lyrics</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="merch.html" data-page="merch.html">Merch</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="photos.html" data-page="photos.html">Photos</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="videos.html" data-page="videos.html">Videos</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="shows.html" data-page="shows.html">Shows</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="blog.html" data-page="blog.html">Blog</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="comix.html" data-page="comix.html">Comix</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="games.html" data-page="games.html">Games</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="email.html" data-page="email.html">Email</a> </div> <div id="jtnav-divider"></div> <div id="jtnav-platforms"> <a class="jtnav-link" href="https://www.instagram.com/jestamang" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://www.youtube.com/@jestamang" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://music.apple.com/us/artist/jestamang/1665724106" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg></a> </div> <button id="jtnav-mobile-toggle" aria-label="Open navigation"> <img src="assets/homepage/jestamang-badge.png" alt="Menu"> </button> </div> <div id="jtnav-mobile-overlay"> <div id="jtnav-mob-bg"></div> <button id="jtnav-mob-close" aria-label="Close navigation">✕</button> <a class="jtnav-mob-link" href="index.html" data-page="index.html">Home</a> <a class="jtnav-mob-link" href="entities.html" data-page="entities.html">Entities</a> <a class="jtnav-mob-link" href="albums.html" data-page="albums.html">Albums</a> <a class="jtnav-mob-link" href="lyrics.html" data-page="lyrics.html">Lyrics</a> <a class="jtnav-mob-link" href="merch.html" data-page="merch.html">Merch</a> <a class="jtnav-mob-link" href="photos.html" data-page="photos.html">Photos</a> <a class="jtnav-mob-link" href="videos.html" data-page="videos.html">Videos</a> <a class="jtnav-mob-link" href="shows.html" data-page="shows.html">Shows</a> <a class="jtnav-mob-link" href="blog.html" data-page="blog.html">Blog</a> <a class="jtnav-mob-link" href="comix.html" data-page="comix.html">Comix</a> <a class="jtnav-mob-link" href="games.html" data-page="games.html">Games</a> <a class="jtnav-mob-link" href="email.html" data-page="email.html">Email</a> <div class="jtnav-mob-divider"></div> <a class="jtnav-mob-link" href="https://www.instagram.com/jestamang" target="_blank" rel="noopener noreferrer">Instagram</a> <a class="jtnav-mob-link" href="https://www.youtube.com/@jestamang" target="_blank" rel="noopener noreferrer">YouTube</a> <a class="jtnav-mob-link" href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" target="_blank" rel="noopener noreferrer">Spotify</a> <a class="jtnav-mob-link" href="https://music.apple.com/us/artist/jestamang/1665724106" target="_blank" rel="noopener noreferrer">Apple Music</a> </div>
+<div id="jtnav"> <a id="jtnav-logo" href="index.html"> <img src="assets/homepage/logo png.png" alt="Jestamang"> </a> <div id="jtnav-links"> <a class="jtnav-link" href="entities.html" data-page="entities.html">Entities</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="albums.html" data-page="albums.html">Albums</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="lyrics.html" data-page="lyrics.html">Lyrics</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="merch.html" data-page="merch.html">Merch</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="photos.html" data-page="photos.html">Photos</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="videos.html" data-page="videos.html">Videos</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="shows.html" data-page="shows.html">Shows</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="blog.html" data-page="blog.html">Blog</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="comix.html" data-page="comix.html">Comix</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="games.html" data-page="games.html">Games</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="email.html" data-page="email.html">Email</a> </div> <div id="jtnav-divider"></div> <div id="jtnav-platforms"> <a class="jtnav-link" href="https://www.instagram.com/jestamang" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://www.youtube.com/@jestamang" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://music.apple.com/us/artist/jestamang/1665724106" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg></a> </div> <button id="jtnav-mobile-toggle" aria-label="Open navigation"> <img src="assets/homepage/jestamang-badge.png" alt="Menu"> </button> </div> <div id="jtnav-mobile-overlay"> <div id="jtnav-mob-bg"></div> <button id="jtnav-mob-close" aria-label="Close navigation">&#x2715;</button> <a class="jtnav-mob-link" href="index.html" data-page="index.html">Home</a> <a class="jtnav-mob-link" href="entities.html" data-page="entities.html">Entities</a> <a class="jtnav-mob-link" href="albums.html" data-page="albums.html">Albums</a> <a class="jtnav-mob-link" href="lyrics.html" data-page="lyrics.html">Lyrics</a> <a class="jtnav-mob-link" href="merch.html" data-page="merch.html">Merch</a> <a class="jtnav-mob-link" href="photos.html" data-page="photos.html">Photos</a> <a class="jtnav-mob-link" href="videos.html" data-page="videos.html">Videos</a> <a class="jtnav-mob-link" href="shows.html" data-page="shows.html">Shows</a> <a class="jtnav-mob-link" href="blog.html" data-page="blog.html">Blog</a> <a class="jtnav-mob-link" href="comix.html" data-page="comix.html">Comix</a> <a class="jtnav-mob-link" href="games.html" data-page="games.html">Games</a> <a class="jtnav-mob-link" href="email.html" data-page="email.html">Email</a> <div class="jtnav-mob-divider"></div> <a class="jtnav-mob-link" href="https://www.instagram.com/jestamang" target="_blank" rel="noopener noreferrer">Instagram</a> <a class="jtnav-mob-link" href="https://www.youtube.com/@jestamang" target="_blank" rel="noopener noreferrer">YouTube</a> <a class="jtnav-mob-link" href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" target="_blank" rel="noopener noreferrer">Spotify</a> <a class="jtnav-mob-link" href="https://music.apple.com/us/artist/jestamang/1665724106" target="_blank" rel="noopener noreferrer">Apple Music</a> </div>
 <script>(function(){var page=window.location.pathname.split('/').pop()||'index.html';document.querySelectorAll('.jtnav-link, .jtnav-mob-link').forEach(function(el){if(el.getAttribute('data-page')===page){el.classList.add('jtnav-active');}});var toggle=document.getElementById('jtnav-mobile-toggle');var overlay=document.getElementById('jtnav-mobile-overlay');var closeBtn=document.getElementById('jtnav-mob-close');if(toggle&&overlay){toggle.addEventListener('click',function(){overlay.classList.add('jtnav-mob-open');});closeBtn.addEventListener('click',function(){overlay.classList.remove('jtnav-mob-open');});overlay.querySelectorAll('.jtnav-mob-link').forEach(function(link){link.addEventListener('click',function(){overlay.classList.remove('jtnav-mob-open');});});document.addEventListener('keydown',function(e){if(e.key==='Escape')overlay.classList.remove('jtnav-mob-open');});}})();</script>
 
 <div id="page-content">
@@ -340,37 +656,37 @@ body::before{
         <div class="dossier-field">
           <span class="dossier-field-label">Sun Sign</span>
           <select class="form-select" id="f-sun">
-            <option value="">— Select —</option>
-            <option>♈ Aries</option><option>♉ Taurus</option><option>♊ Gemini</option>
-            <option>♋ Cancer</option><option>♌ Leo</option><option>♍ Virgo</option>
-            <option>♎ Libra</option><option>♏ Scorpio</option><option>♐ Sagittarius</option>
-            <option>♑ Capricorn</option><option>♒ Aquarius</option><option>♓ Pisces</option>
+            <option value="">&#8212; Select &#8212;</option>
+            <option>&#9800; Aries</option><option>&#9801; Taurus</option><option>&#9802; Gemini</option>
+            <option>&#9803; Cancer</option><option>&#9804; Leo</option><option>&#9805; Virgo</option>
+            <option>&#9806; Libra</option><option>&#9807; Scorpio</option><option>&#9808; Sagittarius</option>
+            <option>&#9809; Capricorn</option><option>&#9810; Aquarius</option><option>&#9811; Pisces</option>
           </select>
         </div>
         <div class="dossier-field">
           <span class="dossier-field-label">Moon Sign</span>
           <select class="form-select" id="f-moon">
-            <option value="">— Select —</option>
-            <option>♈ Aries</option><option>♉ Taurus</option><option>♊ Gemini</option>
-            <option>♋ Cancer</option><option>♌ Leo</option><option>♍ Virgo</option>
-            <option>♎ Libra</option><option>♏ Scorpio</option><option>♐ Sagittarius</option>
-            <option>♑ Capricorn</option><option>♒ Aquarius</option><option>♓ Pisces</option>
+            <option value="">&#8212; Select &#8212;</option>
+            <option>&#9800; Aries</option><option>&#9801; Taurus</option><option>&#9802; Gemini</option>
+            <option>&#9803; Cancer</option><option>&#9804; Leo</option><option>&#9805; Virgo</option>
+            <option>&#9806; Libra</option><option>&#9807; Scorpio</option><option>&#9808; Sagittarius</option>
+            <option>&#9809; Capricorn</option><option>&#9810; Aquarius</option><option>&#9811; Pisces</option>
           </select>
         </div>
         <div class="dossier-field">
           <span class="dossier-field-label">Rising Sign</span>
           <select class="form-select" id="f-rising">
-            <option value="">— Select —</option>
-            <option>♈ Aries</option><option>♉ Taurus</option><option>♊ Gemini</option>
-            <option>♋ Cancer</option><option>♌ Leo</option><option>♍ Virgo</option>
-            <option>♎ Libra</option><option>♏ Scorpio</option><option>♐ Sagittarius</option>
-            <option>♑ Capricorn</option><option>♒ Aquarius</option><option>♓ Pisces</option>
+            <option value="">&#8212; Select &#8212;</option>
+            <option>&#9800; Aries</option><option>&#9801; Taurus</option><option>&#9802; Gemini</option>
+            <option>&#9803; Cancer</option><option>&#9804; Leo</option><option>&#9805; Virgo</option>
+            <option>&#9806; Libra</option><option>&#9807; Scorpio</option><option>&#9808; Sagittarius</option>
+            <option>&#9809; Capricorn</option><option>&#9810; Aquarius</option><option>&#9811; Pisces</option>
           </select>
         </div>
         <div class="dossier-field">
           <span class="dossier-field-label">Favorite Entity</span>
           <select class="form-select" id="f-artist">
-            <option value="">— Select —</option>
+            <option value="">&#8212; Select &#8212;</option>
             <option>Ace of Chase</option><option>Austinich</option><option>Cricket Om</option>
             <option>Israel</option><option>Kek-Buh</option><option>Porphigen</option>
             <option>Jr Mason</option><option>Father P</option><option>Blue Jays</option>
@@ -386,6 +702,131 @@ body::before{
         <button class="btn-gold" id="save-dossier-btn">Seal the Dossier</button>
         <button class="btn-ghost" id="cancel-edit-btn">Cancel</button>
         <span id="save-status" style="font-family:'Luminari',serif;font-size:0.72rem;color:rgba(201,168,76,0.6);font-style:italic;letter-spacing:0.06em;"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       NATAL CHART CALCULATOR
+  ════════════════════════════════════════ -->
+  <div class="dark-card" id="natal-chart-card">
+    <div class="card-title-lg" style="margin-bottom:6px;">Celestial Chart</div>
+    <div style="font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.14em;color:rgba(255,255,255,0.3);font-style:italic;margin-bottom:20px;">Your natal chart, calculated from the stars</div>
+    <div class="gold-rule-sm" style="margin-top:0;"></div>
+
+    <!-- Calculator Form -->
+    <div class="natal-calc-form" id="natal-form-area">
+      <div class="natal-section-header">&#10022; Enter Your Birth Data &#10022;</div>
+      <div class="natal-form-grid">
+        <div>
+          <label class="natal-form-label" for="nc-dob">Date of Birth</label>
+          <input class="form-input" type="date" id="nc-dob">
+        </div>
+        <div>
+          <label class="natal-form-label" for="nc-tob">Time of Birth</label>
+          <input class="form-input" type="time" id="nc-tob" placeholder="HH:MM">
+        </div>
+        <div>
+          <label class="natal-form-label" for="nc-pob">Place of Birth</label>
+          <input class="form-input" type="text" id="nc-pob" placeholder="City, Country">
+        </div>
+      </div>
+      <div class="natal-calc-btn-row">
+        <button class="btn-gold" id="natal-calc-btn" style="padding:13px 36px;font-size:0.76rem;letter-spacing:0.28em;">Calculate My Natal Chart</button>
+      </div>
+      <div id="natal-error"></div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="natal-loading">
+      <svg class="natal-loading-wheel" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="44" stroke="rgba(201,168,76,0.12)" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="36" stroke="rgba(201,168,76,0.08)" stroke-width="1"/>
+        <circle cx="50" cy="50" r="28" stroke="rgba(201,168,76,0.06)" stroke-width="0.8"/>
+        <path d="M50 6 A44 44 0 0 1 94 50" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M50 14 A36 36 0 0 0 14 50" stroke="rgba(201,168,76,0.5)" stroke-width="1" stroke-linecap="round"/>
+        <circle cx="50" cy="6" r="2.5" fill="#c9a84c"/>
+        <circle cx="94" cy="50" r="1.8" fill="rgba(201,168,76,0.6)"/>
+        <!-- zodiac tick marks -->
+        <g stroke="rgba(201,168,76,0.3)" stroke-width="0.8">
+          <line x1="50" y1="6" x2="50" y2="10"/>
+          <line x1="72" y1="12.3" x2="70" y2="15.8"/>
+          <line x1="87.7" y1="28" x2="84.2" y2="30"/>
+          <line x1="94" y1="50" x2="90" y2="50"/>
+          <line x1="87.7" y1="72" x2="84.2" y2="70"/>
+          <line x1="72" y1="87.7" x2="70" y2="84.2"/>
+          <line x1="50" y1="94" x2="50" y2="90"/>
+          <line x1="28" y1="87.7" x2="30" y2="84.2"/>
+          <line x1="12.3" y1="72" x2="15.8" y2="70"/>
+          <line x1="6" y1="50" x2="10" y2="50"/>
+          <line x1="12.3" y1="28" x2="15.8" y2="30"/>
+          <line x1="28" y1="12.3" x2="30" y2="15.8"/>
+        </g>
+        <text x="50" y="53" text-anchor="middle" font-size="9" fill="rgba(201,168,76,0.5)" font-family="serif">&#9737;</text>
+      </svg>
+      <div class="natal-loading-text" id="natal-loading-text">Consulting the celestial record...</div>
+    </div>
+
+    <!-- Result Dossier -->
+    <div id="natal-result">
+      <div class="natal-result-header">
+        <div class="natal-result-name" id="nr-name"></div>
+        <div class="natal-result-sun" id="nr-sun-sub"></div>
+        <div class="natal-result-badge">Member of the Inner Circle</div>
+      </div>
+
+      <!-- Chart Wheel -->
+      <div class="nc-divider">&#10022; Celestial Wheel &#10022;</div>
+      <div class="natal-wheel-wrap" id="nr-wheel"></div>
+
+      <!-- Planetary Positions -->
+      <div class="nc-divider">&#10022; Planetary Positions &#10022;</div>
+      <table class="natal-planets-table">
+        <thead>
+          <tr>
+            <th>Planet</th>
+            <th>Sign</th>
+            <th>Position</th>
+            <th>House</th>
+          </tr>
+        </thead>
+        <tbody id="nr-planets-tbody"></tbody>
+      </table>
+
+      <!-- House Cusps -->
+      <div id="nr-houses-section">
+        <div class="nc-divider">&#10022; House Cusps &#10022;</div>
+        <div class="natal-houses-grid" id="nr-houses-grid"></div>
+      </div>
+
+      <!-- Elements & Modes -->
+      <div class="nc-divider">&#10022; Elements &amp; Modalities &#10022;</div>
+      <div class="natal-em-grid">
+        <div>
+          <div class="natal-em-section-label">Elements</div>
+          <div id="nr-elements"></div>
+        </div>
+        <div>
+          <div class="natal-em-section-label">Modalities</div>
+          <div id="nr-modes"></div>
+        </div>
+      </div>
+
+      <!-- Aspects -->
+      <div class="nc-divider">&#10022; Major Aspects &#10022;</div>
+      <div class="natal-aspects-list" id="nr-aspects"></div>
+
+      <!-- Share -->
+      <div class="nc-divider" style="margin-top:36px;">&#10022; Share &#10022;</div>
+      <div class="natal-share-row">
+        <button class="btn-gold" id="natal-share-btn" style="padding:13px 28px;">Share My Dossier</button>
+        <span class="natal-copied-msg" id="natal-copied-msg">Link copied to the cosmic record &#10022;</span>
+      </div>
+      <div class="natal-share-note">Chart calculated using Meeus astronomical algorithms. For ceremonial purposes only.</div>
+
+      <!-- Recalculate -->
+      <div style="text-align:center;margin-top:24px;">
+        <button class="natal-recalc-link" id="natal-recalc-btn">Recalculate with different birth data</button>
       </div>
     </div>
   </div>
@@ -415,12 +856,657 @@ body::before{
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="assets/js/firebase-config.js"></script>
 <script src="assets/js/jesta-auth.js"></script>
+
+<!-- ═══════════════════════════════════════════════════
+     NATAL CHART ENGINE — Pure JavaScript, Meeus Algorithms
+═══════════════════════════════════════════════════ -->
+<script>
+// ─────────────────────────────────────────────────────
+// CONSTANTS & HELPERS
+// ─────────────────────────────────────────────────────
+const NC = (function(){
+  const DEG = Math.PI / 180;
+  const RAD = 180 / Math.PI;
+
+  function mod360(x){ return ((x % 360) + 360) % 360; }
+  function calcT(jd){ return (jd - 2451545.0) / 36525; }
+
+  // Julian Date from UTC calendar components
+  function toJulianDate(year, month, day, hour, minute, second){
+    second = second || 0;
+    if(month <= 2){ year--; month += 12; }
+    const A = Math.floor(year / 100);
+    const B = 2 - A + Math.floor(A / 4);
+    return Math.floor(365.25 * (year + 4716))
+         + Math.floor(30.6001 * (month + 1))
+         + day + hour/24 + minute/1440 + second/86400 + B - 1524.5;
+  }
+
+  // Obliquity of ecliptic
+  function obliquity(jd){
+    const T = calcT(jd);
+    return 23.4392911 - 0.0130042*T - 0.00000164*T*T + 0.000000504*T*T*T;
+  }
+
+  // Sun longitude (Meeus Ch. 25 low-accuracy)
+  function sunLongitude(jd){
+    const T = calcT(jd);
+    const L0 = 280.46646 + 36000.76983*T + 0.0003032*T*T;
+    const M  = 357.52911 + 35999.05029*T - 0.0001537*T*T;
+    const Mrad = M * DEG;
+    const C = (1.914602 - 0.004817*T - 0.000014*T*T)*Math.sin(Mrad)
+            + (0.019993 - 0.000101*T)*Math.sin(2*Mrad)
+            + 0.000289*Math.sin(3*Mrad);
+    const sunLon = L0 + C;
+    const omega = 125.04 - 1934.136*T;
+    const apparent = sunLon - 0.00569 - 0.00478*Math.sin(omega*DEG);
+    return mod360(apparent);
+  }
+
+  // Moon longitude (Meeus Ch. 47 simplified)
+  function moonLongitude(jd){
+    const T = calcT(jd);
+    const L1 = mod360(218.3164477 + 481267.88123421*T);
+    const D  = mod360(297.8501921 + 445267.1114034*T);
+    const M  = mod360(357.5291092 + 35999.0502909*T);
+    const Mp = mod360(134.9633964 + 477198.8675055*T);
+    const F  = mod360(93.2720950  + 483202.0175233*T);
+    const lon = L1
+      + 6.288774*Math.sin(Mp*DEG)
+      + 1.274027*Math.sin((2*D - Mp)*DEG)
+      + 0.658314*Math.sin(2*D*DEG)
+      + 0.213618*Math.sin(2*Mp*DEG)
+      - 0.185116*Math.sin(M*DEG)
+      - 0.114332*Math.sin(2*F*DEG)
+      + 0.058793*Math.sin((2*D - 2*Mp)*DEG)
+      + 0.057066*Math.sin((2*D - M - Mp)*DEG)
+      + 0.053322*Math.sin((2*D + Mp)*DEG)
+      + 0.045758*Math.sin((2*D - M)*DEG)
+      - 0.040923*Math.sin((M - Mp)*DEG)
+      - 0.034720*Math.sin(D*DEG)
+      - 0.030383*Math.sin((M + Mp)*DEG);
+    return mod360(lon);
+  }
+
+  // Planet orbital elements (J2000, degrees, rates per Julian century)
+  const PLANET_ELEMENTS = {
+    Mercury: { L0:252.2509, Lr:149472.6746, M0:174.7948, Mr:149472.5153, e:0.20563 },
+    Venus:   { L0:181.9798, Lr: 58517.8156, M0: 50.4161, Mr: 58517.8156, e:0.00677 },
+    Mars:    { L0:355.4330, Lr: 19140.2993, M0: 19.3730, Mr: 19140.2993, e:0.09341 },
+    Jupiter: { L0: 34.3515, Lr:  3034.9057, M0: 20.9202, Mr:  3034.9057, e:0.04849 },
+    Saturn:  { L0: 50.0774, Lr:  1222.1138, M0: 57.8385, Mr:  1222.1138, e:0.05551 },
+    Uranus:  { L0:314.0550, Lr:   428.4814, M0:142.5905, Mr:   428.4814, e:0.04630 },
+    Neptune: { L0:304.3487, Lr:   218.4862, M0:267.7659, Mr:   218.4862, e:0.00899 },
+    Pluto:   { L0:238.9290, Lr:   145.1781, M0: 14.8882, Mr:   145.1781, e:0.24883 },
+  };
+
+  function planetLongitude(name, jd){
+    const T = calcT(jd);
+    const el = PLANET_ELEMENTS[name];
+    const L = mod360(el.L0 + el.Lr * T / 100);
+    const M = mod360(el.M0 + el.Mr * T / 100);
+    const Mrad = M * DEG;
+    const e = el.e;
+    const C = (2*e - e*e*e/4)*Math.sin(Mrad)
+            + 1.25*e*e*Math.sin(2*Mrad)
+            + (13/12)*e*e*e*Math.sin(3*Mrad);
+    return mod360(L + C * RAD);
+  }
+
+  // Lilith (Black Moon Lilith — mean apogee)
+  function lilithLongitude(jd){
+    const T = calcT(jd);
+    return mod360(83.3532430 + 40.9023*T*36525/36525 + 0.111*T*T);
+    // More accurate: mean apogee formula
+  }
+
+  // North Node (mean)
+  function northNodeLongitude(jd){
+    const T = calcT(jd);
+    return mod360(125.0445479 - 1934.1362608*T + 0.0020754*T*T);
+  }
+
+  // Local Sidereal Time
+  function localSiderealTime(jd, lng){
+    const T = calcT(jd);
+    const GMST = 280.46061837 + 360.98564736629*(jd - 2451545) + 0.000387933*T*T - T*T*T/38710000;
+    return mod360(GMST + lng);
+  }
+
+  // Ascendant
+  function calcAscendant(jd, lat, lng){
+    const LST = localSiderealTime(jd, lng);
+    const eps = obliquity(jd);
+    const E = eps * DEG;
+    const R = LST * DEG;
+    const latRad = lat * DEG;
+    const y = -Math.cos(R);
+    const x = Math.sin(R)*Math.cos(E) + Math.tan(latRad)*Math.sin(E);
+    let asc = Math.atan2(y, x) * RAD;
+    if(asc < 0) asc += 360;
+    if(Math.cos(R) > 0) asc = mod360(asc + 180);
+    return mod360(asc);
+  }
+
+  // Midheaven (MC)
+  function calcMC(jd, lng){
+    const LST = localSiderealTime(jd, lng);
+    const eps = obliquity(jd);
+    const R = LST * DEG;
+    const E = eps * DEG;
+    let mc = Math.atan2(Math.sin(R), Math.cos(R)*Math.cos(E)) * RAD;
+    if(mc < 0) mc += 360;
+    return mod360(mc);
+  }
+
+  // Equal house cusps
+  function calcHouseCusps(asc){
+    const cusps = [];
+    for(let i = 0; i < 12; i++){
+      cusps.push(mod360(asc + i * 30));
+    }
+    return cusps;
+  }
+
+  // Assign planet to house
+  function planetHouse(lon, cusps){
+    for(let i = 0; i < 12; i++){
+      const start = cusps[i];
+      const end = cusps[(i+1) % 12];
+      if(start <= end){
+        if(lon >= start && lon < end) return i + 1;
+      } else {
+        if(lon >= start || lon < end) return i + 1;
+      }
+    }
+    return 1;
+  }
+
+  // Sign data
+  const SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
+                 'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+  const SIGN_GLYPHS = ['\u2648','\u2649','\u264A','\u264B','\u264C','\u264D',
+                       '\u264E','\u264F','\u2650','\u2651','\u2652','\u2653'];
+
+  function lonToSign(lon){
+    const idx = Math.floor(mod360(lon) / 30) % 12;
+    const posInSign = mod360(lon) % 30;
+    const deg = Math.floor(posInSign);
+    const min = Math.floor((posInSign - deg) * 60);
+    return { sign: SIGNS[idx], glyph: SIGN_GLYPHS[idx], deg, min, totalDeg: mod360(lon), idx };
+  }
+
+  // Element / Mode assignments
+  const ELEMENT = {
+    Aries:'Fire', Leo:'Fire', Sagittarius:'Fire',
+    Taurus:'Earth', Virgo:'Earth', Capricorn:'Earth',
+    Gemini:'Air', Libra:'Air', Aquarius:'Air',
+    Cancer:'Water', Scorpio:'Water', Pisces:'Water'
+  };
+  const MODE = {
+    Aries:'Cardinal', Cancer:'Cardinal', Libra:'Cardinal', Capricorn:'Cardinal',
+    Taurus:'Fixed', Leo:'Fixed', Scorpio:'Fixed', Aquarius:'Fixed',
+    Gemini:'Mutable', Virgo:'Mutable', Sagittarius:'Mutable', Pisces:'Mutable'
+  };
+
+  // Aspect definitions
+  const ASPECTS = [
+    { name:'Conjunction', angle:0,   orb:8,  symbol:'\u260C' },
+    { name:'Opposition',  angle:180, orb:8,  symbol:'\u260D' },
+    { name:'Trine',       angle:120, orb:6,  symbol:'\u25B3' },
+    { name:'Square',      angle:90,  orb:6,  symbol:'\u25A1' },
+    { name:'Sextile',     angle:60,  orb:4,  symbol:'\u2736' },
+  ];
+
+  function angularDiff(a, b){
+    let d = Math.abs(mod360(a) - mod360(b));
+    if(d > 180) d = 360 - d;
+    return d;
+  }
+
+  function findAspects(planets){
+    const names = Object.keys(planets);
+    const result = [];
+    for(let i = 0; i < names.length; i++){
+      for(let j = i+1; j < names.length; j++){
+        const diff = angularDiff(planets[names[i]].totalDeg, planets[names[j]].totalDeg);
+        for(const asp of ASPECTS){
+          if(Math.abs(diff - asp.angle) <= asp.orb){
+            result.push({
+              p1: names[i], p2: names[j],
+              aspect: asp.name, symbol: asp.symbol,
+              orb: Math.abs(diff - asp.angle).toFixed(1)
+            });
+            break;
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  // ─────────────────────────────────────────────
+  // MAIN CALCULATE FUNCTION
+  // ─────────────────────────────────────────────
+  function calculate(dateStr, timeStr, lat, lng){
+    // Parse date/time into UTC Julian Date
+    // dateStr: YYYY-MM-DD, timeStr: HH:MM (local time), we apply tzOffset
+    const [yr, mo, dy] = dateStr.split('-').map(Number);
+    let utcHour = 12, utcMin = 0;
+
+    if(timeStr && timeStr.length >= 4){
+      const [hh, mm] = timeStr.split(':').map(Number);
+      // Approximate timezone from longitude (rough: offset = lng/15)
+      const tzOffsetHours = lng / 15;
+      let localH = hh - tzOffsetHours;
+      utcHour = Math.floor(localH);
+      utcMin  = Math.round((localH - utcHour) * 60) + mm;
+      // Normalise
+      if(utcMin >= 60){ utcHour++; utcMin -= 60; }
+      if(utcMin < 0)  { utcHour--; utcMin += 60; }
+    }
+
+    const jd = toJulianDate(yr, mo, dy, utcHour, utcMin, 0);
+    const hasTime = !!(timeStr && timeStr.length >= 4);
+
+    // Compute all positions
+    const rawPositions = {
+      Sun:     sunLongitude(jd),
+      Moon:    moonLongitude(jd),
+      Mercury: planetLongitude('Mercury', jd),
+      Venus:   planetLongitude('Venus', jd),
+      Mars:    planetLongitude('Mars', jd),
+      Jupiter: planetLongitude('Jupiter', jd),
+      Saturn:  planetLongitude('Saturn', jd),
+      Uranus:  planetLongitude('Uranus', jd),
+      Neptune: planetLongitude('Neptune', jd),
+      Pluto:   planetLongitude('Pluto', jd),
+      'Black Moon Lilith': lilithLongitude(jd),
+      'North Node': northNodeLongitude(jd),
+    };
+
+    // Convert to sign objects
+    const planets = {};
+    for(const [name, lon] of Object.entries(rawPositions)){
+      planets[name] = lonToSign(lon);
+    }
+
+    // ASC, MC, Houses
+    let ascData = null, mcData = null, houseCusps = null;
+    if(hasTime){
+      const ascLon = calcAscendant(jd, lat, lng);
+      const mcLon  = calcMC(jd, lng);
+      ascData = lonToSign(ascLon);
+      mcData  = lonToSign(mcLon);
+      houseCusps = calcHouseCusps(ascLon);
+
+      // Assign houses to planets
+      for(const name of Object.keys(planets)){
+        planets[name].house = planetHouse(planets[name].totalDeg, houseCusps);
+      }
+    }
+
+    // Elements & Modes count (Sun through Saturn + ASC)
+    const coreplanets = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
+    const elements = {Fire:0, Earth:0, Air:0, Water:0};
+    const modes = {Cardinal:0, Fixed:0, Mutable:0};
+    const total = coreplanets.length + (ascData ? 1 : 0);
+    for(const p of coreplanets){
+      elements[ELEMENT[planets[p].sign]]++;
+      modes[MODE[planets[p].sign]]++;
+    }
+    if(ascData){
+      elements[ELEMENT[ascData.sign]]++;
+      modes[MODE[ascData.sign]]++;
+    }
+
+    // Aspects (core planets only)
+    const corePlanObj = {};
+    for(const p of coreplanets){ corePlanObj[p] = planets[p]; }
+    if(ascData) corePlanObj['Ascendant'] = ascData;
+    const aspects = findAspects(corePlanObj);
+
+    return { jd, planets, ascData, mcData, houseCusps, elements, modes, aspects, hasTime, total };
+  }
+
+  // ─────────────────────────────────────────────
+  // SVG CHART WHEEL
+  // ─────────────────────────────────────────────
+  const ELEMENT_COLORS = {
+    Fire:  'rgba(180,60,40,0.18)',
+    Earth: 'rgba(60,120,40,0.18)',
+    Air:   'rgba(60,100,160,0.18)',
+    Water: 'rgba(40,80,140,0.18)',
+  };
+  const SIGN_ELEMENT = {
+    Aries:'Fire', Taurus:'Earth', Gemini:'Air', Cancer:'Water',
+    Leo:'Fire', Virgo:'Earth', Libra:'Air', Scorpio:'Water',
+    Sagittarius:'Fire', Capricorn:'Earth', Aquarius:'Air', Pisces:'Water'
+  };
+
+  // Planet display info
+  const PLANET_INFO = {
+    Sun:     { glyph:'\u2609', color:'#f0c040' },
+    Moon:    { glyph:'\u263D', color:'#d0d8e8' },
+    Mercury: { glyph:'\u263F', color:'#b0b8c8' },
+    Venus:   { glyph:'\u2640', color:'#e8a0c0' },
+    Mars:    { glyph:'\u2642', color:'#e05050' },
+    Jupiter: { glyph:'\u2643', color:'#a88040' },
+    Saturn:  { glyph:'\u2644', color:'#a0a0b0' },
+    Uranus:  { glyph:'\u2645', color:'#80d0c0' },
+    Neptune: { glyph:'\u2646', color:'#6080c0' },
+    Pluto:   { glyph:'\u2647', color:'#906080' },
+    'Black Moon Lilith': { glyph:'\u26B8', color:'#c06080' },
+    'North Node': { glyph:'\u260A', color:'#c9a84c' },
+    Ascendant: { glyph:'AC', color:'#c9a84c' },
+    MC:        { glyph:'MC', color:'#c9a84c' },
+  };
+
+  const ROMAN_HOUSES = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+
+  function generateChartSVG(planets, ascLon, houseCusps, mcLon){
+    const cx = 200, cy = 200;
+    const R  = 188; // outer zodiac ring edge
+    const r1 = 160; // zodiac sign ring inner
+    const r2 = 145; // house ring outer
+    const r3 = 120; // house ring inner / planet orbit
+    const rp = 95;  // planet positions ring
+    const rc = 35;  // inner circle
+    const W  = 400, H = 400;
+
+    function lonToAngle(lon){
+      // ASC at left (180 deg in SVG = 9 o'clock)
+      // Zodiac runs counterclockwise
+      return (180 - (mod360(lon - ascLon) )) % 360;
+    }
+    function polarToXY(angle, r){
+      const a = angle * DEG;
+      return { x: cx + r * Math.cos(a), y: cy - r * Math.sin(a) };
+    }
+    function svgArcPath(cx, cy, r, startAngle, endAngle, sweep){
+      const s = polarToXY(startAngle, r);
+      const e = polarToXY(endAngle, r);
+      const large = sweep > 180 ? 1 : 0;
+      return `M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 0 ${e.x} ${e.y}`;
+    }
+
+    let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background:transparent">`;
+
+    // Outer background circle
+    svg += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="rgba(5,4,2,0.9)" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>`;
+
+    // Zodiac sign segments (12 × 30°)
+    for(let i = 0; i < 12; i++){
+      const signIdx = i;
+      const sign = SIGNS[signIdx];
+      const startAngle = lonToAngle(ascLon + i * 30);
+      const endAngle   = lonToAngle(ascLon + (i+1) * 30);
+      // Arc sector
+      const s  = polarToXY(startAngle, R);
+      const e  = polarToXY(endAngle, R);
+      const s1 = polarToXY(startAngle, r1);
+      const e1 = polarToXY(endAngle, r1);
+      const color = ELEMENT_COLORS[SIGN_ELEMENT[sign]];
+      svg += `<path d="M ${s.x} ${s.y} A ${R} ${R} 0 0 0 ${e.x} ${e.y} L ${e1.x} ${e1.y} A ${r1} ${r1} 0 0 1 ${s1.x} ${s1.y} Z" fill="${color}" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>`;
+
+      // Sign glyph at midpoint
+      const midAngle = lonToAngle(ascLon + (i + 0.5) * 30);
+      const gmid = polarToXY(midAngle, (R + r1) / 2);
+      svg += `<text x="${gmid.x}" y="${gmid.y + 4}" text-anchor="middle" font-size="11" fill="rgba(201,168,76,0.8)" font-family="serif">${SIGN_GLYPHS[signIdx]}</text>`;
+    }
+
+    // House ring
+    svg += `<circle cx="${cx}" cy="${cy}" r="${r2}" fill="none" stroke="rgba(201,168,76,0.15)" stroke-width="0.5"/>`;
+    svg += `<circle cx="${cx}" cy="${cy}" r="${r3}" fill="rgba(5,4,2,0.6)" stroke="rgba(201,168,76,0.2)" stroke-width="0.8"/>`;
+
+    // House division lines
+    if(houseCusps){
+      for(let i = 0; i < 12; i++){
+        const ang = lonToAngle(houseCusps[i]);
+        const inner = polarToXY(ang, rc);
+        const outer = polarToXY(ang, r3);
+        const isAngle = (i === 0 || i === 3 || i === 6 || i === 9);
+        svg += `<line x1="${inner.x}" y1="${inner.y}" x2="${outer.x}" y2="${outer.y}" stroke="${isAngle ? 'rgba(201,168,76,0.5)' : 'rgba(201,168,76,0.18)'}" stroke-width="${isAngle ? 1.2 : 0.6}"/>`;
+
+        // House number
+        const numAng = lonToAngle(houseCusps[i] + 15);
+        const nmid = polarToXY(numAng, (r2 + r3) / 2);
+        svg += `<text x="${nmid.x}" y="${nmid.y + 3.5}" text-anchor="middle" font-size="7" fill="rgba(201,168,76,0.55)" font-family="serif">${ROMAN_HOUSES[i]}</text>`;
+      }
+    }
+
+    // Inner decorative circle
+    svg += `<circle cx="${cx}" cy="${cy}" r="${rc}" fill="rgba(5,4,2,0.95)" stroke="rgba(201,168,76,0.25)" stroke-width="0.8"/>`;
+
+    // Aspect lines (inside inner area)
+    // Draw aspect lines between planets (thin colored lines)
+    const aspColors = { Conjunction:'rgba(201,168,76,0.55)', Opposition:'rgba(80,140,220,0.4)', Trine:'rgba(60,180,110,0.4)', Square:'rgba(210,70,70,0.4)', Sextile:'rgba(100,160,200,0.3)' };
+    const corePlanetNames = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
+    if(houseCusps){ // only draw if we have full chart
+      const planetPos = {};
+      for(const p of corePlanetNames){
+        if(planets[p]){
+          const ang = lonToAngle(planets[p].totalDeg);
+          planetPos[p] = polarToXY(ang, rp - 15);
+        }
+      }
+      // Find aspects and draw lines
+      for(let i = 0; i < corePlanetNames.length; i++){
+        for(let j = i+1; j < corePlanetNames.length; j++){
+          const p1 = corePlanetNames[i], p2 = corePlanetNames[j];
+          if(!planets[p1] || !planets[p2]) continue;
+          const diff = angularDiff(planets[p1].totalDeg, planets[p2].totalDeg);
+          let aspName = null;
+          for(const asp of ASPECTS){
+            if(Math.abs(diff - asp.angle) <= asp.orb){ aspName = asp.name; break; }
+          }
+          if(aspName && planetPos[p1] && planetPos[p2]){
+            const c = aspColors[aspName] || 'rgba(255,255,255,0.1)';
+            svg += `<line x1="${planetPos[p1].x}" y1="${planetPos[p1].y}" x2="${planetPos[p2].x}" y2="${planetPos[p2].y}" stroke="${c}" stroke-width="0.6"/>`;
+          }
+        }
+      }
+    }
+
+    // Planet markers
+    const usedAngles = [];
+    for(const [name, info] of Object.entries(planets)){
+      if(!PLANET_INFO[name]) continue;
+      const pi = PLANET_INFO[name];
+      let ang = lonToAngle(info.totalDeg);
+      // Collision avoidance: nudge if too close to another
+      for(const ua of usedAngles){
+        if(Math.abs(ang - ua) < 8) ang += 9;
+      }
+      usedAngles.push(ang);
+      const pos = polarToXY(ang, rp);
+      // Dot
+      svg += `<circle cx="${pos.x}" cy="${pos.y}" r="3" fill="${pi.color}" opacity="0.9"/>`;
+      // Glyph
+      const gpos = polarToXY(ang, rp - 14);
+      svg += `<text x="${gpos.x}" y="${gpos.y + 4}" text-anchor="middle" font-size="10" fill="${pi.color}" font-family="serif" opacity="0.95">${pi.glyph}</text>`;
+    }
+
+    // ASC / MC markers if present
+    if(houseCusps){
+      const ascAng = lonToAngle(ascLon);
+      const ascPos = polarToXY(ascAng, r3 + 4);
+      svg += `<text x="${ascPos.x}" y="${ascPos.y + 3}" text-anchor="middle" font-size="7" fill="#c9a84c" font-family="serif" font-weight="bold">AC</text>`;
+      if(mcLon !== undefined){
+        const mcAng = lonToAngle(mcLon);
+        const mcPos = polarToXY(mcAng, r3 + 4);
+        svg += `<text x="${mcPos.x}" y="${mcPos.y + 3}" text-anchor="middle" font-size="7" fill="#c9a84c" font-family="serif" font-weight="bold">MC</text>`;
+      }
+    }
+
+    // Center sun symbol
+    svg += `<text x="${cx}" y="${cy + 5}" text-anchor="middle" font-size="14" fill="rgba(201,168,76,0.4)" font-family="serif">\u2609</text>`;
+
+    svg += `</svg>`;
+    return svg;
+  }
+
+  // ─────────────────────────────────────────────
+  // RENDER RESULT DOSSIER
+  // ─────────────────────────────────────────────
+  function formatPos(p){
+    return `${p.deg}\u00B0${String(p.min).padStart(2,'0')}'`;
+  }
+
+  function renderDossier(result, userName, container){
+    // container: object with element IDs or element refs
+
+    const { planets, ascData, mcData, houseCusps, elements, modes, aspects, hasTime, total } = result;
+
+    // Header
+    if(container.nameEl) container.nameEl.textContent = userName.toUpperCase();
+    if(container.sunSubEl){
+      const sun = planets['Sun'];
+      container.sunSubEl.textContent = `${sun.glyph} Sun in ${sun.sign}` + (ascData ? `  \u2022  ${ascData.glyph} ${ascData.sign} Rising` : '');
+    }
+
+    // SVG wheel
+    if(container.wheelEl){
+      if(ascData && houseCusps){
+        container.wheelEl.innerHTML = generateChartSVG(planets, ascData.totalDeg, houseCusps, mcData ? mcData.totalDeg : undefined);
+      } else {
+        // No time: simplified wheel without houses
+        container.wheelEl.innerHTML = generateChartSVG(planets, 0, null, undefined);
+      }
+    }
+
+    // Planets table
+    if(container.planetsEl){
+      const pRows = [
+        ['Sun','☉'],['Moon','☽'],['Mercury','☿'],['Venus','♀'],['Mars','♂'],
+        ['Jupiter','♃'],['Saturn','♄'],['Uranus','♅'],['Neptune','♆'],['Pluto','♇'],
+        ['Black Moon Lilith','⚸'],['North Node','☊'],
+      ];
+      if(ascData) pRows.push(['Ascendant','AC']);
+      if(mcData)  pRows.push(['MC','MC']);
+      let html = '';
+      for(const [name, sym] of pRows){
+        const p = name === 'Ascendant' ? ascData : (name === 'MC' ? mcData : planets[name]);
+        if(!p) continue;
+        const pi = PLANET_INFO[name] || { color:'#fff' };
+        html += `<tr>
+          <td><span style="color:${pi.color};font-size:1rem;">${sym}</span> ${name}</td>
+          <td><span class="sign-glyph">${p.glyph}</span>${p.sign}</td>
+          <td>${formatPos(p)}</td>
+          <td class="house-num-cell">${hasTime && p.house ? 'H' + p.house : '—'}</td>
+        </tr>`;
+      }
+      container.planetsEl.innerHTML = html;
+    }
+
+    // Houses
+    if(container.housesSectionEl){
+      if(hasTime && houseCusps){
+        container.housesSectionEl.style.display = '';
+        if(container.housesGridEl){
+          let html = '';
+          for(let i = 0; i < 12; i++){
+            const h = lonToSign(houseCusps[i]);
+            html += `<div class="natal-house-row">
+              <span class="natal-house-num">${ROMAN_HOUSES[i]}</span>
+              <span class="natal-house-sign">${h.glyph} ${h.sign} ${formatPos(h)}</span>
+            </div>`;
+          }
+          container.housesGridEl.innerHTML = html;
+        }
+      } else {
+        container.housesSectionEl.style.display = 'none';
+      }
+    }
+
+    // Elements
+    if(container.elementsEl){
+      const elOrder = ['Fire','Earth','Air','Water'];
+      const elMax = total || 8;
+      let html = '';
+      for(const el of elOrder){
+        const cnt = elements[el] || 0;
+        html += `<div class="natal-bar-row">
+          <span class="natal-bar-label">${el}</span>
+          <div class="natal-bar-track"><div class="natal-bar-fill" style="width:${Math.round(cnt/elMax*100)}%"></div></div>
+          <span class="natal-bar-count">${cnt}</span>
+        </div>`;
+      }
+      container.elementsEl.innerHTML = html;
+    }
+
+    // Modes
+    if(container.modesEl){
+      const modeOrder = ['Cardinal','Fixed','Mutable'];
+      const mMax = total || 8;
+      let html = '';
+      for(const m of modeOrder){
+        const cnt = modes[m] || 0;
+        html += `<div class="natal-bar-row">
+          <span class="natal-bar-label">${m}</span>
+          <div class="natal-bar-track"><div class="natal-bar-fill" style="width:${Math.round(cnt/mMax*100)}%"></div></div>
+          <span class="natal-bar-count">${cnt}</span>
+        </div>`;
+      }
+      container.modesEl.innerHTML = html;
+    }
+
+    // Aspects
+    if(container.aspectsEl){
+      const aspClasses = { Conjunction:'asp-conjunction', Opposition:'asp-opposition', Trine:'asp-trine', Square:'asp-square', Sextile:'asp-sextile' };
+      let html = '';
+      if(aspects.length === 0){
+        html = '<div class="empty-state" style="padding:12px 0 4px;">No major aspects found within standard orbs.</div>';
+      } else {
+        for(const asp of aspects){
+          const cls = aspClasses[asp.aspect] || '';
+          html += `<div class="natal-aspect-row">
+            <span class="asp-symbol ${cls}">${asp.symbol}</span>
+            <span>${asp.p1}</span>
+            <span class="asp-label">${asp.aspect}</span>
+            <span>${asp.p2}</span>
+            <span class="asp-label" style="margin-left:auto;">${asp.orb}\u00B0 orb</span>
+          </div>`;
+        }
+      }
+      container.aspectsEl.innerHTML = html;
+    }
+  }
+
+  // Public API
+  return {
+    calculate,
+    renderDossier,
+    SIGNS,
+    SIGN_GLYPHS,
+    lonToSign,
+    PLANET_INFO,
+    ROMAN_HOUSES,
+    mod360,
+  };
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════
+     PROFILE PAGE LOGIC (Dossier + Natal Chart + Firebase)
+═══════════════════════════════════════════════════ -->
 <script>
 (function(){
   var db;
   var currentUser;
   var dossierData = {};
   var editMode = false;
+  var savedNatalChart = null;
+
+  // Loading messages cycle
+  var loadingMsgs = [
+    'Consulting the celestial record...',
+    'Mapping your planetary positions...',
+    'Calculating your house cusps...',
+    'Revealing your cosmic signature...',
+  ];
+  var loadingIdx = 0;
+  var loadingTimer = null;
 
   firebase.auth().onAuthStateChanged(function(user){
     if(!user){ window.location.href = 'login.html'; return; }
@@ -431,40 +1517,51 @@ body::before{
 
   function showPage(user){
     document.getElementById('page-content').style.display = 'block';
-
-    // Display name from auth or email prefix
     var name = user.displayName || user.email.split('@')[0];
     document.getElementById('display-name').textContent = name.toUpperCase();
 
-    // Load Firestore user doc
     db.collection('users').doc(user.uid).get()
       .then(function(doc){
         var data = doc.exists ? doc.data() : {};
         dossierData = data;
         renderViewMode(data, user);
         loadFavorites(user.uid);
+
+        // Check for saved natal chart
+        db.collection('users').doc(user.uid).collection('natalChart').doc('chart').get()
+          .then(function(chartDoc){
+            if(chartDoc.exists){
+              var cd = chartDoc.data();
+              savedNatalChart = cd;
+              // Pre-fill form from saved data
+              if(cd.birthDate) document.getElementById('nc-dob').value = cd.birthDate;
+              if(cd.birthTime) document.getElementById('nc-tob').value = cd.birthTime;
+              if(cd.birthPlace) document.getElementById('nc-pob').value = cd.birthPlace;
+              // Display saved result
+              displaySavedChart(cd, user);
+            }
+          })
+          .catch(function(e){ console.log('No saved natal chart or error:', e); });
       })
       .catch(function(e){ console.error('Profile load error:', e); loadFavorites(user.uid); });
   }
 
+  // ── Dossier view/edit (unchanged) ──
+
   function renderViewMode(data, user){
-    // Member since
     var creationTime = user.metadata && user.metadata.creationTime;
     if(creationTime){
       var d = new Date(creationTime);
       document.getElementById('member-since').textContent =
         'Member since ' + d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
     }
-
     function val(v){ return v || null; }
     function setField(id, v){
       var el = document.getElementById(id);
-      if(el){ el.textContent = val(v) || '—'; el.classList.toggle('empty', !val(v)); }
+      if(el){ el.textContent = val(v) || '\u2014'; el.classList.toggle('empty', !val(v)); }
     }
-
     var displayName = data.username || user.displayName || user.email.split('@')[0];
     document.getElementById('display-name').textContent = displayName.toUpperCase();
-
     setField('v-username', data.username);
     setField('v-dob', data.dateOfBirth);
     setField('v-tob', data.timeOfBirth);
@@ -525,7 +1622,6 @@ body::before{
     var statusEl = document.getElementById('save-status');
     saveBtn.disabled = true;
     statusEl.textContent = 'Sealing...';
-
     db.collection('users').doc(currentUser.uid).set(newData, {merge:true})
       .then(function(){
         dossierData = Object.assign({}, dossierData, newData);
@@ -540,6 +1636,8 @@ body::before{
         saveBtn.disabled = false;
       });
   });
+
+  // ── Favorites ──
 
   function loadFavorites(uid){
     var listEl = document.getElementById('favorites-list');
@@ -562,10 +1660,10 @@ body::before{
               '<div class="fav-title">' + escHtml(d.songTitle||'Untitled') + '</div>' +
               '<div class="fav-meta">' +
                 (d.artist ? escHtml(d.artist) : '') +
-                (d.album  ? ' &nbsp;·&nbsp; ' + escHtml(d.album) : '') +
+                (d.album  ? ' &nbsp;&middot;&nbsp; ' + escHtml(d.album) : '') +
               '</div>' +
             '</div>' +
-            '<button class="fav-remove" data-id="' + doc.id + '" title="Remove">✦</button>';
+            '<button class="fav-remove" data-id="' + doc.id + '" title="Remove">&#10022;</button>';
           listEl.appendChild(item);
         });
         listEl.querySelectorAll('.fav-remove').forEach(function(btn){
@@ -583,6 +1681,8 @@ body::before{
       });
   }
 
+  // ── Account ──
+
   document.getElementById('signout-btn').addEventListener('click', function(){
     firebase.auth().signOut().then(function(){ window.location.href = 'index.html'; });
   });
@@ -597,6 +1697,263 @@ body::before{
         alert('The mythology holds your record. You may need to sign in again before deleting your account.');
       });
   });
+
+  // ── NATAL CHART CALCULATOR ──
+
+  document.getElementById('natal-calc-btn').addEventListener('click', function(){
+    runNatalCalculation();
+  });
+
+  document.getElementById('natal-recalc-btn').addEventListener('click', function(){
+    document.getElementById('natal-result').style.display = 'none';
+    document.getElementById('natal-form-area').style.display = 'block';
+    document.getElementById('natal-error').style.display = 'none';
+  });
+
+  document.getElementById('natal-share-btn').addEventListener('click', function(){
+    if(!currentUser) return;
+    var shareUrl = window.location.origin + '/dossier.html?user=' + currentUser.uid;
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(shareUrl).then(function(){
+        showCopied();
+      }).catch(function(){
+        fallbackCopy(shareUrl);
+      });
+    } else {
+      fallbackCopy(shareUrl);
+    }
+  });
+
+  function showCopied(){
+    var msg = document.getElementById('natal-copied-msg');
+    msg.classList.add('show');
+    setTimeout(function(){ msg.classList.remove('show'); }, 2500);
+  }
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); showCopied(); } catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  function setError(msg){
+    var el = document.getElementById('natal-error');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+  function clearError(){
+    var el = document.getElementById('natal-error');
+    el.style.display = 'none';
+    el.textContent = '';
+  }
+
+  function showLoading(){
+    document.getElementById('natal-form-area').style.display = 'none';
+    document.getElementById('natal-loading').style.display = 'block';
+    document.getElementById('natal-result').style.display = 'none';
+    clearError();
+    loadingIdx = 0;
+    document.getElementById('natal-loading-text').textContent = loadingMsgs[0];
+    loadingTimer = setInterval(function(){
+      loadingIdx = (loadingIdx + 1) % loadingMsgs.length;
+      document.getElementById('natal-loading-text').textContent = loadingMsgs[loadingIdx];
+    }, 1400);
+  }
+
+  function hideLoading(){
+    document.getElementById('natal-loading').style.display = 'none';
+    if(loadingTimer){ clearInterval(loadingTimer); loadingTimer = null; }
+  }
+
+  function runNatalCalculation(){
+    var dobVal  = document.getElementById('nc-dob').value.trim();
+    var tobVal  = document.getElementById('nc-tob').value.trim();
+    var pobVal  = document.getElementById('nc-pob').value.trim();
+
+    clearError();
+
+    if(!dobVal){
+      setError('Please enter your date of birth to begin the calculation.');
+      return;
+    }
+    if(!pobVal){
+      setError('Please enter your place of birth to locate your celestial coordinates.');
+      return;
+    }
+
+    showLoading();
+
+    // Geocode via Nominatim
+    fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(pobVal) + '&format=json&limit=1', {
+      headers: { 'Accept-Language': 'en' }
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(!data || data.length === 0){
+        hideLoading();
+        document.getElementById('natal-form-area').style.display = 'block';
+        setError('This location is unknown to the cosmic record. Try a nearby city or more specific name.');
+        return;
+      }
+      var lat = parseFloat(data[0].lat);
+      var lng = parseFloat(data[0].lon);
+
+      // Warn about no time
+      if(!tobVal){
+        // Still proceed without time
+      }
+
+      var result;
+      try {
+        result = NC.calculate(dobVal, tobVal, lat, lng);
+      } catch(e){
+        console.error('Calculation error:', e);
+        hideLoading();
+        document.getElementById('natal-form-area').style.display = 'block';
+        setError('The celestial machinery has faltered. Please try again.');
+        return;
+      }
+
+      hideLoading();
+
+      // If no time: show note
+      if(!tobVal){
+        document.getElementById('nr-houses-section').style.display = 'none';
+        // Could show note about no birth time — handled in renderDossier via hasTime flag
+      }
+
+      var userName = (dossierData && dossierData.username) ||
+                     (currentUser && (currentUser.displayName || currentUser.email.split('@')[0])) ||
+                     'Member';
+
+      // Render
+      NC.renderDossier(result, userName, {
+        nameEl:        document.getElementById('nr-name'),
+        sunSubEl:      document.getElementById('nr-sun-sub'),
+        wheelEl:       document.getElementById('nr-wheel'),
+        planetsEl:     document.getElementById('nr-planets-tbody'),
+        housesSectionEl: document.getElementById('nr-houses-section'),
+        housesGridEl:  document.getElementById('nr-houses-grid'),
+        elementsEl:    document.getElementById('nr-elements'),
+        modesEl:       document.getElementById('nr-modes'),
+        aspectsEl:     document.getElementById('nr-aspects'),
+      });
+
+      document.getElementById('natal-result').style.display = 'block';
+      document.getElementById('natal-form-area').style.display = 'none';
+
+      // Save to Firestore
+      var chartSaveData = {
+        birthDate:  dobVal,
+        birthTime:  tobVal,
+        birthPlace: pobVal,
+        lat: lat,
+        lng: lng,
+        planets: {},
+        hasTime: result.hasTime,
+        elements: result.elements,
+        modes: result.modes,
+        aspects: result.aspects.slice(0, 20),
+        calculatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      // Serialize planets
+      for(var pn in result.planets){
+        chartSaveData.planets[pn] = {
+          sign: result.planets[pn].sign,
+          glyph: result.planets[pn].glyph,
+          deg: result.planets[pn].deg,
+          min: result.planets[pn].min,
+          totalDeg: result.planets[pn].totalDeg,
+          house: result.planets[pn].house || null,
+        };
+      }
+      if(result.ascData){
+        chartSaveData.ascendant = {
+          sign: result.ascData.sign, glyph: result.ascData.glyph,
+          deg: result.ascData.deg, min: result.ascData.min,
+          totalDeg: result.ascData.totalDeg
+        };
+      }
+      if(result.mcData){
+        chartSaveData.mc = {
+          sign: result.mcData.sign, glyph: result.mcData.glyph,
+          deg: result.mcData.deg, min: result.mcData.min,
+          totalDeg: result.mcData.totalDeg
+        };
+      }
+      if(result.houseCusps){
+        chartSaveData.houseCusps = result.houseCusps;
+      }
+
+      db.collection('users').doc(currentUser.uid).collection('natalChart').doc('chart')
+        .set(chartSaveData)
+        .then(function(){ savedNatalChart = chartSaveData; console.log('Natal chart saved.'); })
+        .catch(function(e){ console.error('Error saving natal chart:', e); });
+
+      // Also update user doc with sun/moon/rising
+      var autoUpdate = {};
+      if(result.planets['Sun']){
+        autoUpdate.sunSign = result.planets['Sun'].glyph + ' ' + result.planets['Sun'].sign;
+      }
+      if(result.planets['Moon']){
+        autoUpdate.moonSign = result.planets['Moon'].glyph + ' ' + result.planets['Moon'].sign;
+      }
+      if(result.ascData){
+        autoUpdate.risingSign = result.ascData.glyph + ' ' + result.ascData.sign;
+      }
+      if(Object.keys(autoUpdate).length > 0 && currentUser){
+        db.collection('users').doc(currentUser.uid).set(autoUpdate, {merge:true}).catch(function(){});
+      }
+    })
+    .catch(function(e){
+      console.error('Geocoding error:', e);
+      hideLoading();
+      document.getElementById('natal-form-area').style.display = 'block';
+      setError('Could not reach the celestial coordinates service. Check your connection and try again.');
+    });
+  }
+
+  // Display saved chart from Firestore
+  function displaySavedChart(cd, user){
+    if(!cd || !cd.planets) return;
+
+    // Reconstruct result object from saved data
+    var result = {
+      planets:    cd.planets,
+      ascData:    cd.ascendant || null,
+      mcData:     cd.mc || null,
+      houseCusps: cd.houseCusps || null,
+      elements:   cd.elements || {Fire:0,Earth:0,Air:0,Water:0},
+      modes:      cd.modes || {Cardinal:0,Fixed:0,Mutable:0},
+      aspects:    cd.aspects || [],
+      hasTime:    cd.hasTime || false,
+      total:      8,
+    };
+
+    var userName = (dossierData && dossierData.username) ||
+                   (user && (user.displayName || user.email.split('@')[0])) ||
+                   'Member';
+
+    NC.renderDossier(result, userName, {
+      nameEl:        document.getElementById('nr-name'),
+      sunSubEl:      document.getElementById('nr-sun-sub'),
+      wheelEl:       document.getElementById('nr-wheel'),
+      planetsEl:     document.getElementById('nr-planets-tbody'),
+      housesSectionEl: document.getElementById('nr-houses-section'),
+      housesGridEl:  document.getElementById('nr-houses-grid'),
+      elementsEl:    document.getElementById('nr-elements'),
+      modesEl:       document.getElementById('nr-modes'),
+      aspectsEl:     document.getElementById('nr-aspects'),
+    });
+
+    document.getElementById('natal-result').style.display = 'block';
+    document.getElementById('natal-form-area').style.display = 'none';
+  }
 
   function escHtml(s){
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
