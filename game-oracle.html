@@ -8,7 +8,7 @@
 @font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype')}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%;height:100%}
-body{font-family:'Luminari',serif;color:#fff;background-image:url('assets/homepage/background/Gif2.gif');background-size:cover;background-position:center;background-attachment:fixed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:72px 20px 60px}
+body{font-family:'Luminari',serif;color:#fff;background-image: #000;background-size:cover;background-position:center;background-attachment:fixed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:72px 20px 60px}
 body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:0;pointer-events:none}
 .oracle-wrap{position:relative;z-index:1;text-align:center;max-width:560px;width:100%}
 .oracle-title{font-size:clamp(1.6rem,5vw,2.8rem);letter-spacing:0.55em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.55);margin-bottom:6px}
@@ -80,8 +80,18 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.88);z-ind
 a.back-link{font-size:0.6rem;letter-spacing:0.3em;color:rgba(201,168,76,0.4);text-decoration:none;text-transform:uppercase;transition:color 0.2s}
 a.back-link:hover{color:#c9a84c}
 </style>
+
+  <link rel="preload" as="video" href="assets/homepage/background/bg.mp4" type="video/mp4">
+  <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
+  <link rel="dns-prefetch" href="https://www.gstatic.com">
+  <link rel="dns-prefetch" href="https://apis.google.com">
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com">
 </head>
 <body>
+<video id="jt-bg" autoplay muted loop playsinline aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none">
+  <source src="assets/homepage/background/bg.webm" type="video/webm">
+  <source src="assets/homepage/background/bg.mp4" type="video/mp4">
+</video>
 
 <div class="oracle-wrap">
   <h1 class="oracle-title">The Oracle</h1>
@@ -221,10 +231,10 @@ resetBtn.addEventListener('click', function() {
 initDeck();
 </script>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="assets/js/firebase-config.js"></script>
-<script src="assets/js/jesta-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
+<script src="assets/js/firebase-config.js" defer></script>
+<script src="assets/js/jesta-auth.js" defer></script>
 </body>
 </html>

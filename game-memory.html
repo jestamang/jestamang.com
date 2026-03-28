@@ -8,7 +8,7 @@
 @font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype')}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{min-height:100%}
-body{font-family:'Luminari',serif;color:#fff;background-image:url('assets/homepage/background/Gif2.gif');background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh;padding-top:52px}
+body{font-family:'Luminari',serif;color:#fff;background-image: #000;background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh;padding-top:52px}
 body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:0;pointer-events:none}
 .game-wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:48px 20px 80px;text-align:center}
 .game-title{font-size:clamp(1.8rem,5vw,3rem);letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.6),0 0 80px rgba(201,168,76,0.2);margin-bottom:6px}
@@ -45,8 +45,18 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 .win-stats-txt{font-size:0.85rem;letter-spacing:0.12em;color:rgba(201,168,76,0.65)}
 @media(max-width:520px){.card-grid{gap:7px}.stats{gap:24px}}
 </style>
+
+  <link rel="preload" as="video" href="assets/homepage/background/bg.mp4" type="video/mp4">
+  <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
+  <link rel="dns-prefetch" href="https://www.gstatic.com">
+  <link rel="dns-prefetch" href="https://apis.google.com">
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com">
 </head>
 <body>
+<video id="jt-bg" autoplay muted loop playsinline aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none">
+  <source src="assets/homepage/background/bg.webm" type="video/webm">
+  <source src="assets/homepage/background/bg.mp4" type="video/mp4">
+</video>
 
 <div class="game-wrap">
   <h1 class="game-title">Memory Vault</h1>
@@ -146,10 +156,10 @@ document.getElementById('btn-again').addEventListener('click',build);
 build();
 </script>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="assets/js/firebase-config.js"></script>
-<script src="assets/js/jesta-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
+<script src="assets/js/firebase-config.js" defer></script>
+<script src="assets/js/jesta-auth.js" defer></script>
 </body>
 </html>
