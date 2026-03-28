@@ -4,6 +4,36 @@
 .fav-btn:hover{color:rgba(201,168,76,0.7);transform:scale(1.2)}
 .fav-btn.saved{color:#c9a84c}
 .fav-btn[title]:hover::after{content:attr(title);position:absolute;font-size:0.55rem;color:rgba(201,168,76,0.6);white-space:nowrap;left:0;bottom:110%;letter-spacing:0.1em}
+/* jt-mobile-global-base */
+@media (max-width: 768px) {
+  /* Prevent iOS input zoom */
+  input, textarea, select { font-size: 16px !important; }
+  /* Overflow lock */
+  body { overflow-x: hidden; }
+  /* background-attachment fix for iOS */
+  body, .bg-wrap { background-attachment: scroll !important; }
+  /* All containers box-sizing */
+  * { box-sizing: border-box; }
+  /* Video bg: use absolute not fixed on mobile */
+  #jt-bg { position: absolute !important; }
+  /* Minimum touch targets */
+  button, a, [role="button"] { min-height: 44px; }
+  /* Hide home-btn on mobile */
+  .home-btn { display: none !important; }
+}
+/* jt-mobile-albums */
+@media (max-width: 768px) {
+  /* Album drawer full-width on mobile */
+  .album-drawer, .album-drawer.open { padding: 20px 16px 24px; }
+  /* Tracklist readable on small screens */
+  .drawer-tracklist li { font-size: 0.85rem; padding: 10px 12px; }
+  /* Platform links wrap */
+  .drawer-platform-row { flex-wrap: wrap; gap: 8px; justify-content: center; }
+  /* Expanded cover art */
+  .album-art { max-width: 200px; margin: 0 auto; }
+  /* Content padding */
+  .page-wrap { padding: 16px 16px 60px; }
+}
 </style>
 
   <link rel="preload" as="video" href="assets/homepage/background/bg.mp4" type="video/mp4">

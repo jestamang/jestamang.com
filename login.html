@@ -204,6 +204,30 @@ body::before{
   border-top:1px solid rgba(201,168,76,0.15);
   padding-top:16px;
 }
+/* jt-mobile-global-base */
+@media (max-width: 768px) {
+  /* Prevent iOS input zoom */
+  input, textarea, select { font-size: 16px !important; }
+  /* Overflow lock */
+  body { overflow-x: hidden; }
+  /* background-attachment fix for iOS */
+  body, .bg-wrap { background-attachment: scroll !important; }
+  /* All containers box-sizing */
+  * { box-sizing: border-box; }
+  /* Video bg: use absolute not fixed on mobile */
+  #jt-bg { position: absolute !important; }
+  /* Minimum touch targets */
+  button, a, [role="button"] { min-height: 44px; }
+  /* Hide home-btn on mobile */
+  .home-btn { display: none !important; }
+}
+/* jt-mobile-login */
+@media (max-width: 768px) {
+  .login-panel { padding: 32px 20px !important; width: 95vw !important; max-width: 95vw !important; }
+  .auth-input { font-size: 16px !important; }
+  .sso-btn { padding: 16px !important; min-height: 52px !important; width: 100% !important; }
+  #submit-btn { padding: 16px !important; min-height: 52px !important; width: 100% !important; }
+}
 </style>
 
   <link rel="preload" as="video" href="assets/homepage/background/bg.mp4" type="video/mp4">

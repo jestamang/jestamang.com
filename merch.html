@@ -577,6 +577,38 @@ body::before {
   .content { padding: 48px 20px 60px; }
   .merch-grid { gap: 18px; }
 }
+/* jt-mobile-global-base */
+@media (max-width: 768px) {
+  /* Prevent iOS input zoom */
+  input, textarea, select { font-size: 16px !important; }
+  /* Overflow lock */
+  body { overflow-x: hidden; }
+  /* background-attachment fix for iOS */
+  body, .bg-wrap { background-attachment: scroll !important; }
+  /* All containers box-sizing */
+  * { box-sizing: border-box; }
+  /* Video bg: use absolute not fixed on mobile */
+  #jt-bg { position: absolute !important; }
+  /* Minimum touch targets */
+  button, a, [role="button"] { min-height: 44px; }
+  /* Hide home-btn on mobile */
+  .home-btn { display: none !important; }
+}
+/* jt-mobile-merch */
+@media (max-width: 768px) {
+  /* Product grid single column */
+  .product-grid, .merch-grid { grid-template-columns: 1fr !important; }
+  /* Cards full width */
+  .product-card, .merch-card { width: 100% !important; max-width: 100% !important; margin: 0 0 20px !important; }
+  /* Product images */
+  .product-image, .merch-img, .product-card img { max-height: 280px; object-fit: contain; width: 100%; }
+  /* Acquire / buy buttons */
+  .acquire-btn, .buy-btn, .merch-btn { width: 100% !important; padding: 16px !important; font-size: 0.8rem !important; }
+  /* Modal */
+  .modal-panel, .inquiry-panel, #inquiry-modal .modal-content { width: 95vw !important; padding: 28px 20px !important; }
+  /* Modal inputs already covered by global, but enforce width */
+  .modal-panel input, .modal-panel textarea, .modal-panel select { width: 100% !important; }
+}
 </style>
 
   <link rel="preload" as="video" href="assets/homepage/background/bg.mp4" type="video/mp4">
