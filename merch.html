@@ -777,17 +777,6 @@ products.forEach(function (p, i) {
   card.className = 'product-card';
   card.style.background = bgColors[i % bgColors.length];
 
-  var mailSubject = encodeURIComponent('I want to acquire ' + p.title);
-  var mailBody = encodeURIComponent(
-    'Hello,\n\n' +
-    'I am interested in purchasing ' + p.title + ' for ' + p.price + '.\n\n' +
-    'My name:\n' +
-    'My address:\n' +
-    'Any notes:\n'
-  );
-  /* REPLACE mailto: WITH GUMROAD URL WHEN READY */
-  var acquireHref = 'mailto:thejestamang@gmail.com?subject=' + mailSubject + '&body=' + mailBody;
-
   card.innerHTML =
     '<div class="product-image-wrap">' +
       '<img src="' + p.image + '" alt="' + p.title + '" loading="lazy">' +
@@ -795,16 +784,20 @@ products.forEach(function (p, i) {
     '<div class="product-name">' + p.title + '</div>' +
     '<div class="product-desc">' + p.desc + '</div>' +
     '<div class="product-price">Offering: ' + p.price + '</div>' +
-    '<a class="acquire-btn" href="' + acquireHref + '">Acquire This Artifact</a>' +
+    /* REPLACE openModal WITH GUMROAD URL WHEN READY */
+    '<button class="acquire-btn" data-product="' + p.title + '">Acquire This Artifact</button>' +
     '<button class="ask-link" data-product="' + p.title + '">Ask a Question</button>' +
     '<div class="inner-circle-line">JOIN THE <a href="login.html">INNER CIRCLE</a> for member pricing</div>';
+
+  // Acquire — opens inquiry modal pre-filled
+  card.querySelector('.acquire-btn').addEventListener('click', function () {
+    openModal(this.getAttribute('data-product'));
+  });
 
   // Ask a question
   card.querySelector('.ask-link').addEventListener('click', function () {
     openModal(this.getAttribute('data-product'));
   });
-
-  // Remove acquire-btn click handler (now an <a> tag — href handles it)
 
   grid.appendChild(card);
 });
@@ -863,33 +856,28 @@ document.getElementById('inquiry-form').addEventListener('submit', function (e) 
   msgBox.className = 'modal-msg';
   msgBox.textContent = '';
 
-  // ── FIRESTORE SAVE ──
-  var db = firebase.firestore();
-  db.collection('inquiries').add({
-    name: name,
-    email: email,
-    item: item,
-    message: message,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    status: 'new'
-  })
+  // ── MAILTO FALLBACK (always fires immediately) ──
+  var subject = encodeURIComponent('Inquiry: ' + item);
+  var body = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\nProduct: ' + item + '\n\n' + message);
+  window.open('mailto:thejestamang@gmail.com?subject=' + subject + '&body=' + body);
+
+  // ── FIRESTORE SAVE (if available) ──
+  var savePromise;
+  if (typeof firebase !== 'undefined' && firebase.firestore) {
+    savePromise = firebase.firestore().collection('inquiries').add({
+      name: name,
+      email: email,
+      item: item,
+      message: message,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      status: 'new'
+    });
+  } else {
+    savePromise = Promise.resolve();
+  }
+
+  savePromise
   .then(function () {
-
-    // ── EMAIL NOTIFICATION SETUP:
-    // Install EmailJS: https://www.emailjs.com
-    // Replace EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY below
-    // Your notification email: <!-- REPLACE WITH YOUR EMAIL ADDRESS -->
-    //
-    // Uncomment and configure the block below after setting up EmailJS:
-    //
-    // emailjs.init('EMAILJS_PUBLIC_KEY');
-    // return emailjs.send('EMAILJS_SERVICE_ID', 'EMAILJS_TEMPLATE_ID', {
-    //   from_name:  name,
-    //   from_email: email,
-    //   product:    item,
-    //   message:    message
-    // });
-
     return Promise.resolve();
   })
   .then(function () {
