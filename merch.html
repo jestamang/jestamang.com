@@ -727,30 +727,35 @@ var products = [
     title: 'Cards',
     image: 'assets/merch/cards.png',
     desc: 'A deck steeped in ritual — each card a portal, each draw a reckoning.',
+    price: '$20',
     gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
   },
   {
     title: 'Comix',
     image: 'assets/merch/comix.png',
     desc: 'Illustrated chronicles from the edge of the mythology — ink pressed into legend.',
+    price: '$20',
     gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
   },
   {
     title: 'Polyphonies',
     image: 'assets/merch/polyphonies.jpeg',
     desc: 'Many voices folded into one — a physical relic of the harmonic archive.',
+    price: '$30',
     gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
   },
   {
     title: 'Puzzle',
     image: 'assets/merch/puzzle.png',
     desc: 'Assemble the vision piece by piece — the image reveals itself only to the patient.',
+    price: '$30',
     gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
   },
   {
     title: 'T-Shirt',
     image: 'assets/merch/t shirt.png',
     desc: 'Wear the sigil. Carry the world of Jestamang against your skin wherever you walk.',
+    price: '$30',
     gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
   }
 ];
@@ -776,7 +781,7 @@ products.forEach(function (p, i) {
     '</div>' +
     '<div class="product-name">' + p.title + '</div>' +
     '<div class="product-desc">' + p.desc + '</div>' +
-    '<div class="product-price">Offering: <!-- ADD PRICE --></div>' +
+    '<div class="product-price">Offering: ' + p.price + '</div>' +
     '<button class="acquire-btn" data-gumroad-url="' + p.gumroadUrl + '">Acquire This Artifact</button>' +
     '<button class="ask-link" data-product="' + p.title + '">Ask a Question</button>' +
     '<div class="inner-circle-line">JOIN THE <a href="login.html">INNER CIRCLE</a> for member pricing</div>';
