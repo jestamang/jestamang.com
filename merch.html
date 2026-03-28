@@ -41,7 +41,7 @@ body::before {
   left: 0;
   right: 0;
   height: 52px;
-  z-index: 1000;
+  z-index: 9999;
   display: flex;
   align-items: center;
   background: rgba(0, 0, 0, 0.75);
@@ -251,7 +251,7 @@ body::before {
   #jtnav-mobile-toggle { display: flex; position: static; margin-left: 16px; }
   #jtnav-mob-login { display: flex !important; align-items: center; font-family: 'Luminari', serif; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255, 255, 255, 0.85); text-decoration: none; padding: 0 14px; white-space: nowrap; line-height: 52px; margin-left: auto; }
   #jtnav-mob-login:hover { color: #c9a84c; }
-  #jtnav { position: relative; }
+  #jtnav { position: fixed; width: 100%; -webkit-transform: translateZ(0); transform: translateZ(0); will-change: transform; }
   #jtnav-logo { position: absolute; left: 50%; transform: translateX(-50%); margin: 0; }
   .home-btn { display: none !important; }
 }
@@ -631,6 +631,8 @@ body::before {
   /* Modal inputs already covered by global, but enforce width */
   .modal-panel input, .modal-panel textarea, .modal-panel select { width: 100% !important; }
 }
+
+#jtnav.jtnav-scrolled { background: rgba(0,0,0,0.95) !important; border-bottom: 1px solid rgba(201,168,76,0.5) !important; }
 </style>
 
   <link rel="preload" as="video" href="assets/homepage/background/bg.mp4" type="video/mp4">
@@ -803,6 +805,7 @@ body::before {
   }
 })();
 </script>
+<script>(function(){var nav=document.getElementById('jtnav');if(nav){window.addEventListener('scroll',function(){if(window.scrollY>50){nav.classList.add('jtnav-scrolled');}else{nav.classList.remove('jtnav-scrolled');}},{passive:true});}})();</script>
 
 <!-- ── PRODUCT DATA & CARD RENDER ── -->
 <script>
