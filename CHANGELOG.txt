@@ -1,0 +1,69 @@
+JESTAMANG.COM — CHANGELOG
+════════════════════════════════════════════════════════════════
+
+[2026-03-28] FULL SITE AUDIT — PERFORMANCE, SEO, SECURITY, UX
+────────────────────────────────────────────────────────────────
+
+SEO & SOCIAL SHARING (all 23 HTML pages)
+  - Added <link rel="icon"> favicon using logo png.png on every page
+  - Added <link rel="apple-touch-icon"> for iPhone home screen saves
+  - Added <meta name="description"> with unique copy per page
+  - Added Open Graph tags (og:title, og:description, og:image, og:type, og:url)
+  - Added Twitter Card tags (twitter:card, twitter:title, twitter:description, twitter:image)
+  - OG image points to https://jestamang.com/assets/homepage/logo%20png.png
+  Pages updated: index.html, albums.html, entities.html, lyrics.html, merch.html,
+  photos.html, videos.html, email.html, comix.html, games.html, instagram.html,
+  youtube.html, spotify.html, apple-music.html, blog.html, shows.html, login.html,
+  profile.html, members.html, arcade.html, dossier.html, game-memory.html, game-oracle.html
+
+SECURITY
+  - Fixed rel="noopener" → rel="noopener noreferrer" on fallback external links
+    in instagram.html, youtube.html, spotify.html, apple-music.html
+  - Prevents referrer leaking to destination pages on tab navigation
+
+404 PAGE
+  - Created 404.html — "YOU ARE LOST" page in full Jestamang aesthetic
+  - Video background, gold title, narrator-voice subtitle, home button
+  - GitHub Pages automatically serves 404.html on broken URLs
+
+NAV BAR (all 18 nav pages, applied 2026-03-28)
+  - z-index raised from 1000 → 9999 (nothing can overlap nav)
+  - Mobile: #jtnav fixed to position:fixed (was position:relative — caused scroll disappear)
+  - Added translateZ(0) + will-change:transform GPU acceleration for iOS
+  - Added .jtnav-scrolled scroll effect — denser bg after 50px scroll
+
+HOMEPAGE (index.html)
+  - Mobile: text logo shown, character PNG hidden (user preference)
+  - Instagram icon enlarged to 120px using ID selector to beat !important CSS
+  - Desktop right-nav Instagram icon enlarged via #insta-icon-desktop
+
+ALBUMS
+  - Fixed mobile tab bar flex-wrap:nowrap — tabs now scroll in one row
+
+MERCH
+  - Mobile nav updated to 2-col grid overlay matching all other pages
+  - MENU/logo/login layout corrected on mobile
+
+GAMES
+  - Darts, Cornhole, Beer Pong removed from display (data preserved in comments)
+
+LOGIN
+  - Apple sign-in JS block removed (HTML button was already gone)
+  - Google sign-in: popup → redirect fallback for popup-blocked browsers
+  - authDomain changed to jestamang.com for clean OAuth redirect URLs
+
+────────────────────────────────────────────────────────────────
+[2026-03-24] FIREBASE INTEGRATION + FULL SITE BUILD
+────────────────────────────────────────────────────────────────
+  - Firebase config rewritten from ES module → compat SDK
+  - Video backgrounds added to all pages (bg.mp4 / bg.webm)
+  - Global mobile nav: MENU / Logo / Log In layout on all pages
+  - 2-column scrollable mobile overlay menu on all pages
+  - Merch prices added, ACQUIRE buttons open inquiry modal
+  - Full natal chart calculator on profile.html (Meeus algorithms)
+  - dossier.html public natal chart sharing page created
+  - entities.html, lyrics.html mobile layout overhauls
+  - Full mobile audit + global base CSS applied to all pages
+  - Git backup committed and pushed to GitHub
+
+════════════════════════════════════════════════════════════════

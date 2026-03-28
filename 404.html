@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You Are Lost — Jestamang</title>
+<link rel="icon" type="image/png" href="assets/homepage/logo%20png.png">
+<link rel="apple-touch-icon" href="assets/homepage/logo%20png.png">
+<meta name="robots" content="noindex">
+<style>
+@font-face { font-family: 'Luminari'; src: url('assets/fonts/Luminari.ttf') format('truetype'); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Luminari', serif;
+  background: #000;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.85) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+body::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30vh;
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+video#jt-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  pointer-events: none;
+}
+.container {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 40px 24px;
+  max-width: 600px;
+}
+.ornament {
+  font-size: 1.4rem;
+  color: rgba(201,168,76,0.5);
+  letter-spacing: 0.6em;
+  margin-bottom: 32px;
+  display: block;
+}
+.error-code {
+  font-size: clamp(5rem, 20vw, 10rem);
+  letter-spacing: 0.15em;
+  color: rgba(201,168,76,0.15);
+  line-height: 1;
+  margin-bottom: 8px;
+  text-shadow: 0 0 80px rgba(201,168,76,0.1);
+}
+h1 {
+  font-size: clamp(1.6rem, 6vw, 3rem);
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  text-shadow: 0 0 40px rgba(201,168,76,0.4), 0 0 80px rgba(201,168,76,0.15);
+  margin-bottom: 28px;
+}
+.rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: rgba(201,168,76,0.4);
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  margin-bottom: 28px;
+}
+.rule::before, .rule::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 1px;
+  background: rgba(201,168,76,0.3);
+}
+.narrator {
+  font-style: italic;
+  font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+  color: rgba(255,255,255,0.55);
+  line-height: 1.8;
+  letter-spacing: 0.06em;
+  margin-bottom: 48px;
+  padding: 0 12px;
+}
+.home-link {
+  display: inline-block;
+  font-family: 'Luminari', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #000;
+  background: #c9a84c;
+  text-decoration: none;
+  padding: 14px 36px;
+  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+}
+.home-link:hover {
+  background: #e0bb60;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(201,168,76,0.35);
+}
+@media (max-width: 768px) {
+  body, .bg-wrap { background-attachment: scroll !important; }
+  #jt-bg { position: absolute !important; object-position: center top; }
+}
+</style>
+</head>
+<body>
+<video id="jt-bg" autoplay muted loop playsinline aria-hidden="true">
+  <source src="assets/homepage/background/bg.webm" type="video/webm">
+  <source src="assets/homepage/background/bg.mp4" type="video/mp4">
+</video>
+
+<div class="container">
+  <span class="ornament">✦ ✦ ✦</span>
+  <div class="error-code">404</div>
+  <h1>You Are Lost</h1>
+  <div class="rule">✦</div>
+  <p class="narrator">
+    This page does not exist in the Jestamang universe.<br>
+    Return to where you came from.
+  </p>
+  <a href="index.html" class="home-link">Return Home</a>
+</div>
+</body>
+</html>
