@@ -17,6 +17,32 @@
 .gbtn-comment:hover{background:#c9a84c;color:#000}
 .comment-join-link{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.25em;text-transform:uppercase;color:rgba(201,168,76,0.45);text-decoration:none;border:1px solid rgba(201,168,76,0.2);padding:8px 20px;display:inline-block;transition:color 0.2s,border-color 0.2s}
 .comment-join-link:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
+/* jt-mobile-global-base */
+@media (max-width: 768px) {
+  /* Prevent iOS input zoom */
+  input, textarea, select { font-size: 16px !important; }
+  /* Overflow lock */
+  body { overflow-x: hidden; }
+  /* background-attachment fix for iOS */
+  body, .bg-wrap { background-attachment: scroll !important; }
+  /* All containers box-sizing */
+  * { box-sizing: border-box; }
+  /* Video bg: use absolute not fixed on mobile */
+  #jt-bg { position: absolute !important; }
+  /* Minimum touch targets */
+  button, a, [role="button"] { min-height: 44px; }
+  /* Hide home-btn on mobile */
+  .home-btn { display: none !important; }
+}
+/* jt-mobile-blog */
+@media (max-width: 768px) {
+  .post { width: 100%; padding: 20px 16px; }
+  .post-body { font-size: 0.9rem; line-height: 1.7; }
+  .page-wrap { padding: 80px 16px 60px; }
+  /* Comment form if present */
+  .comment-textarea, textarea { font-size: 16px !important; width: 100%; }
+  .comment-submit, .submit-btn { width: 100%; padding: 14px; }
+}
 </style>
 
   <link rel="preload" as="video" href="assets/homepage/background/bg.mp4" type="video/mp4">

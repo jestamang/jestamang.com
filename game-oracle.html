@@ -79,6 +79,28 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.88);z-ind
 .reset-btn.show{visibility:visible}
 a.back-link{font-size:0.6rem;letter-spacing:0.3em;color:rgba(201,168,76,0.4);text-decoration:none;text-transform:uppercase;transition:color 0.2s}
 a.back-link:hover{color:#c9a84c}
+/* jt-mobile-global-base */
+@media (max-width: 768px) {
+  /* Prevent iOS input zoom */
+  input, textarea, select { font-size: 16px !important; }
+  /* Overflow lock */
+  body { overflow-x: hidden; }
+  /* background-attachment fix for iOS */
+  body, .bg-wrap { background-attachment: scroll !important; }
+  /* All containers box-sizing */
+  * { box-sizing: border-box; }
+  /* Video bg: use absolute not fixed on mobile */
+  #jt-bg { position: absolute !important; }
+  /* Minimum touch targets */
+  button, a, [role="button"] { min-height: 44px; }
+  /* Hide home-btn on mobile */
+  .home-btn { display: none !important; }
+}
+/* jt-mobile-game_oracle */
+@media (max-width: 768px) {
+  canvas { max-width: 100% !important; height: auto !important; touch-action: manipulation; }
+  .game-ui, .game-panel { padding: 12px 16px !important; font-size: 0.85rem !important; }
+}
 </style>
 
   <link rel="preload" as="video" href="assets/homepage/background/bg.mp4" type="video/mp4">

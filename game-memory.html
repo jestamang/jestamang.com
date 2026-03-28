@@ -44,6 +44,28 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 .win-sub{font-size:0.72rem;letter-spacing:0.28em;color:rgba(255,255,255,0.4);text-transform:uppercase}
 .win-stats-txt{font-size:0.85rem;letter-spacing:0.12em;color:rgba(201,168,76,0.65)}
 @media(max-width:520px){.card-grid{gap:7px}.stats{gap:24px}}
+/* jt-mobile-global-base */
+@media (max-width: 768px) {
+  /* Prevent iOS input zoom */
+  input, textarea, select { font-size: 16px !important; }
+  /* Overflow lock */
+  body { overflow-x: hidden; }
+  /* background-attachment fix for iOS */
+  body, .bg-wrap { background-attachment: scroll !important; }
+  /* All containers box-sizing */
+  * { box-sizing: border-box; }
+  /* Video bg: use absolute not fixed on mobile */
+  #jt-bg { position: absolute !important; }
+  /* Minimum touch targets */
+  button, a, [role="button"] { min-height: 44px; }
+  /* Hide home-btn on mobile */
+  .home-btn { display: none !important; }
+}
+/* jt-mobile-game_memory */
+@media (max-width: 768px) {
+  canvas { max-width: 100% !important; height: auto !important; touch-action: manipulation; }
+  .game-ui, .game-panel { padding: 12px 16px !important; font-size: 0.85rem !important; }
+}
 </style>
 
   <link rel="preload" as="video" href="assets/homepage/background/bg.mp4" type="video/mp4">

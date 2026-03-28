@@ -254,6 +254,30 @@ body::before{
   transition:background 0.25s;
 }
 .readonly-cta:hover{background:#dfc060;}
+/* jt-mobile-global-base */
+@media (max-width: 768px) {
+  /* Prevent iOS input zoom */
+  input, textarea, select { font-size: 16px !important; }
+  /* Overflow lock */
+  body { overflow-x: hidden; }
+  /* background-attachment fix for iOS */
+  body, .bg-wrap { background-attachment: scroll !important; }
+  /* All containers box-sizing */
+  * { box-sizing: border-box; }
+  /* Video bg: use absolute not fixed on mobile */
+  #jt-bg { position: absolute !important; }
+  /* Minimum touch targets */
+  button, a, [role="button"] { min-height: 44px; }
+  /* Hide home-btn on mobile */
+  .home-btn { display: none !important; }
+}
+/* jt-mobile-dossier */
+@media (max-width: 768px) {
+  .dossier-body { padding: 16px; }
+  .dossier-name { font-size: clamp(1.4rem, 5vw, 2rem); padding: 20px 16px 0; }
+  .dossier-top { grid-template-columns: 1fr !important; }
+  .dossier-chart-img { max-width: 280px; margin: 0 auto; display: block; }
+}
 </style>
 
   <link rel="preload" as="video" href="assets/homepage/background/bg.mp4" type="video/mp4">

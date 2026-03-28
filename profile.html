@@ -559,6 +559,33 @@ body::before{
   margin:0 auto;
 }
 .natal-recalc-link:hover{color:rgba(201,168,76,0.8);}
+/* jt-mobile-global-base */
+@media (max-width: 768px) {
+  /* Prevent iOS input zoom */
+  input, textarea, select { font-size: 16px !important; }
+  /* Overflow lock */
+  body { overflow-x: hidden; }
+  /* background-attachment fix for iOS */
+  body, .bg-wrap { background-attachment: scroll !important; }
+  /* All containers box-sizing */
+  * { box-sizing: border-box; }
+  /* Video bg: use absolute not fixed on mobile */
+  #jt-bg { position: absolute !important; }
+  /* Minimum touch targets */
+  button, a, [role="button"] { min-height: 44px; }
+  /* Hide home-btn on mobile */
+  .home-btn { display: none !important; }
+}
+/* jt-mobile-profile */
+@media (max-width: 768px) {
+  input, select, textarea { font-size: 16px !important; width: 100% !important; }
+  .dark-card, .profile-card, .settings-panel { padding: 20px 16px !important; }
+  #page-content { padding: 40px 16px 60px !important; }
+  /* Natal chart SVG */
+  .natal-chart, #natal-chart-svg, svg.natal { width: 100% !important; max-width: 340px !important; margin: 0 auto !important; display: block !important; }
+  /* Save / calculate buttons */
+  .save-btn, .calc-btn, button[type="submit"] { width: 100% !important; min-height: 52px !important; }
+}
 </style>
 
   <link rel="preload" as="video" href="assets/homepage/background/bg.mp4" type="video/mp4">

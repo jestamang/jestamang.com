@@ -1,5 +1,28 @@
 <!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <title>YouTube — Jestamang</title>
-<style>@font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype')}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%;overflow:hidden}body{font-family:'Luminari',serif;background-color:#0a0a0a;background-image: #000;background-size:cover;background-position:center;background-attachment:fixed;color:#fff;min-height:100vh}body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:0}.home-btn{position:fixed;top:16px;left:16px;z-index:100;font-family:'Luminari',serif;font-size:0.85rem;letter-spacing:0.1em;color:#c9a84c;text-decoration:none;background:rgba(0,0,0,0.75);border:1px solid #c9a84c;padding:8px 16px;transition:background 0.2s,color 0.2s}.home-btn:hover{background:#c9a84c;color:#000}.portal{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;text-align:center;padding:24px}.portal-icon{font-size:3rem;opacity:0.75;filter:drop-shadow(0 0 12px rgba(201,168,76,0.5))}.portal-title{font-family:'Luminari',serif;font-size:clamp(2.4rem,8vw,4.5rem);letter-spacing:0.5em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.5),0 0 80px rgba(201,168,76,0.2)}.portal-subtitle{font-family:'Luminari',serif;font-size:1rem;letter-spacing:0.18em;color:rgba(255,255,255,0.6);font-style:italic}.progress-wrap{width:220px;height:2px;background:rgba(201,168,76,0.15);position:relative;overflow:hidden}.progress-fill{height:100%;background:#c9a84c;width:0%;animation:fillBar 2s linear forwards;box-shadow:0 0 8px rgba(201,168,76,0.6)}@keyframes fillBar{from{width:0%}to{width:100%}}.manual-link{font-family:'Luminari',serif;font-size:0.8rem;letter-spacing:0.15em;color:rgba(201,168,76,0.5);margin-top:8px}.manual-link a{color:#c9a84c;text-decoration:none;border-bottom:1px solid rgba(201,168,76,0.35);transition:color 0.2s,border-color 0.2s}.manual-link a:hover{color:#fff;border-color:#fff}</style>
+<style>@font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype')}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%;overflow:hidden}body{font-family:'Luminari',serif;background-color:#0a0a0a;background-image: #000;background-size:cover;background-position:center;background-attachment:fixed;color:#fff;min-height:100vh}body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:0}.home-btn{position:fixed;top:16px;left:16px;z-index:100;font-family:'Luminari',serif;font-size:0.85rem;letter-spacing:0.1em;color:#c9a84c;text-decoration:none;background:rgba(0,0,0,0.75);border:1px solid #c9a84c;padding:8px 16px;transition:background 0.2s,color 0.2s}.home-btn:hover{background:#c9a84c;color:#000}.portal{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;text-align:center;padding:24px}.portal-icon{font-size:3rem;opacity:0.75;filter:drop-shadow(0 0 12px rgba(201,168,76,0.5))}.portal-title{font-family:'Luminari',serif;font-size:clamp(2.4rem,8vw,4.5rem);letter-spacing:0.5em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.5),0 0 80px rgba(201,168,76,0.2)}.portal-subtitle{font-family:'Luminari',serif;font-size:1rem;letter-spacing:0.18em;color:rgba(255,255,255,0.6);font-style:italic}.progress-wrap{width:220px;height:2px;background:rgba(201,168,76,0.15);position:relative;overflow:hidden}.progress-fill{height:100%;background:#c9a84c;width:0%;animation:fillBar 2s linear forwards;box-shadow:0 0 8px rgba(201,168,76,0.6)}@keyframes fillBar{from{width:0%}to{width:100%}}.manual-link{font-family:'Luminari',serif;font-size:0.8rem;letter-spacing:0.15em;color:rgba(201,168,76,0.5);margin-top:8px}.manual-link a{color:#c9a84c;text-decoration:none;border-bottom:1px solid rgba(201,168,76,0.35);transition:color 0.2s,border-color 0.2s}.manual-link a:hover{color:#fff;border-color:#fff}/* jt-mobile-global-base */
+@media (max-width: 768px) {
+  /* Prevent iOS input zoom */
+  input, textarea, select { font-size: 16px !important; }
+  /* Overflow lock */
+  body { overflow-x: hidden; }
+  /* background-attachment fix for iOS */
+  body, .bg-wrap { background-attachment: scroll !important; }
+  /* All containers box-sizing */
+  * { box-sizing: border-box; }
+  /* Video bg: use absolute not fixed on mobile */
+  #jt-bg { position: absolute !important; }
+  /* Minimum touch targets */
+  button, a, [role="button"] { min-height: 44px; }
+  /* Hide home-btn on mobile */
+  .home-btn { display: none !important; }
+}
+/* jt-mobile-youtube */
+@media (max-width: 768px) {
+  iframe, .embed-wrap iframe { width: 100% !important; min-height: 60vh !important; }
+  .portal, .embed-container { padding: 8px !important; }
+  .portal-title { letter-spacing: 0.2em; font-size: clamp(1.8rem, 7vw, 3rem); }
+}
+</style>
 
   <link rel="preload" as="video" href="assets/homepage/background/bg.mp4" type="video/mp4">
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
