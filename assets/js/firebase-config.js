@@ -28,7 +28,7 @@
 
 const firebaseConfig = {
   apiKey:            "AIzaSyAKmVVW1i-ry05po5odA7VZNCN4vlPSwH8",
-  authDomain:        "jestamang.com",
+  authDomain:        "jestamang-e1bda.firebaseapp.com",
   projectId:         "jestamang-e1bda",
   storageBucket:     "jestamang-e1bda.firebasestorage.app",
   messagingSenderId: "16240344094",
