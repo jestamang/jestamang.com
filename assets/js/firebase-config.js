@@ -22,6 +22,11 @@
 //     match /inquiries/{docId} {
 //       allow create: if true;
 //     }
+//     match /posts/{docId} {
+//       allow read: if true;
+//       allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+//       allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
+//     }
 //   }
 // }
 // ════════════════════════════════════════════════════════════════
