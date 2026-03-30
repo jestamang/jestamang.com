@@ -14,8 +14,7 @@
     '.jtnav-auth-link:hover{color:#c9a84c}',
     '.jtnav-auth-star{font-size:0.8rem;color:rgba(201,168,76,0.55);text-decoration:none;padding:0 6px;line-height:52px;transition:color 0.2s}',
     '.jtnav-auth-star:hover{color:#c9a84c}',
-    '#jtnav-mob-login{display:none}',
-    '@media(max-width:767px){#jtnav-auth{display:none}#jtnav-mob-login{display:flex!important}}'
+    '#jtnav-mob-login{display:none!important}'
   ].join('');
   document.head.appendChild(style);
 
