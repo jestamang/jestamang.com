@@ -40,7 +40,7 @@ body::before{
 /* Header */
 .profile-name{
   font-family:'Luminari',serif;
-  font-size:clamp(2.5rem,6vw,4rem);
+  font-size:clamp(1.6rem,4vw,2.4rem);
   letter-spacing:0.4em;
   color:#c9a84c;
   text-transform:uppercase;
@@ -662,14 +662,6 @@ body::before{
           <span class="dossier-field-label">Rising Sign</span>
           <span class="dossier-field-value" id="v-rising"></span>
         </div>
-        <div class="dossier-field">
-          <span class="dossier-field-label">Favorite Entity</span>
-          <span class="dossier-field-value" id="v-artist"></span>
-        </div>
-        <div class="dossier-field" style="grid-column:1/-1;">
-          <span class="dossier-field-label">Favorite Album</span>
-          <span class="dossier-field-value" id="v-album"></span>
-        </div>
       </div>
     </div>
 
@@ -721,20 +713,6 @@ body::before{
             <option>&#9806; Libra</option><option>&#9807; Scorpio</option><option>&#9808; Sagittarius</option>
             <option>&#9809; Capricorn</option><option>&#9810; Aquarius</option><option>&#9811; Pisces</option>
           </select>
-        </div>
-        <div class="dossier-field">
-          <span class="dossier-field-label">Favorite Entity</span>
-          <select class="form-select" id="f-artist">
-            <option value="">&#8212; Select &#8212;</option>
-            <option>Ace of Chase</option><option>Austinich</option><option>Cricket Om</option>
-            <option>Israel</option><option>Kek-Buh</option><option>Porphigen</option>
-            <option>Jr Mason</option><option>Father P</option><option>Blue Jays</option>
-            <option>Mutt Tour</option>
-          </select>
-        </div>
-        <div class="dossier-field" style="grid-column:1/-1;">
-          <span class="dossier-field-label">Favorite Album</span>
-          <input class="form-input" type="text" id="f-album" placeholder="Album title">
         </div>
       </div>
       <div class="btn-row">
@@ -1608,8 +1586,6 @@ const NC = (function(){
     setField('v-sun', data.sunSign);
     setField('v-moon', data.moonSign);
     setField('v-rising', data.risingSign);
-    setField('v-artist', data.favoriteArtist);
-    setField('v-album', data.favoriteAlbum);
   }
 
   function populateEditForm(data){
@@ -1620,8 +1596,6 @@ const NC = (function(){
     document.getElementById('f-sun').value       = data.sunSign       || '';
     document.getElementById('f-moon').value      = data.moonSign      || '';
     document.getElementById('f-rising').value    = data.risingSign    || '';
-    document.getElementById('f-artist').value    = data.favoriteArtist|| '';
-    document.getElementById('f-album').value     = data.favoriteAlbum || '';
   }
 
   document.getElementById('edit-dossier-btn').addEventListener('click', function(){
@@ -1634,6 +1608,29 @@ const NC = (function(){
 
   document.getElementById('cancel-edit-btn').addEventListener('click', function(){
     exitEditMode();
+  });
+
+  // Auto-fill Sun Sign from Date of Birth
+  function sunSignFromDob(dateStr){
+    if(!dateStr) return '';
+    var d = new Date(dateStr + 'T12:00:00');
+    var m = d.getMonth() + 1, day = d.getDate();
+    if((m===3&&day>=21)||(m===4&&day<=19)) return '\u2648 Aries';
+    if((m===4&&day>=20)||(m===5&&day<=20)) return '\u2649 Taurus';
+    if((m===5&&day>=21)||(m===6&&day<=20)) return '\u264A Gemini';
+    if((m===6&&day>=21)||(m===7&&day<=22)) return '\u264B Cancer';
+    if((m===7&&day>=23)||(m===8&&day<=22)) return '\u264C Leo';
+    if((m===8&&day>=23)||(m===9&&day<=22)) return '\u264D Virgo';
+    if((m===9&&day>=23)||(m===10&&day<=22)) return '\u264E Libra';
+    if((m===10&&day>=23)||(m===11&&day<=21)) return '\u264F Scorpio';
+    if((m===11&&day>=22)||(m===12&&day<=21)) return '\u2650 Sagittarius';
+    if((m===12&&day>=22)||(m===1&&day<=19)) return '\u2651 Capricorn';
+    if((m===1&&day>=20)||(m===2&&day<=18)) return '\u2652 Aquarius';
+    return '\u2653 Pisces';
+  }
+  document.getElementById('f-dob').addEventListener('change', function(){
+    var sign = sunSignFromDob(this.value);
+    if(sign) document.getElementById('f-sun').value = sign;
   });
 
   function exitEditMode(){
@@ -1653,8 +1650,6 @@ const NC = (function(){
       sunSign:        document.getElementById('f-sun').value,
       moonSign:       document.getElementById('f-moon').value,
       risingSign:     document.getElementById('f-rising').value,
-      favoriteArtist: document.getElementById('f-artist').value,
-      favoriteAlbum:  document.getElementById('f-album').value.trim(),
       updatedAt:      firebase.firestore.FieldValue.serverTimestamp()
     };
     var saveBtn = document.getElementById('save-dossier-btn');
