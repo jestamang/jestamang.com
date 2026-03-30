@@ -312,9 +312,10 @@ body::before {
 
 /* ── PRODUCT GRID ── */
 .merch-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
 }
 
 /* ── PRODUCT CARD ── */
@@ -323,20 +324,17 @@ body::before {
   flex-direction: column;
   align-items: center;
   padding: 32px 28px;
-  border: 1px solid rgba(201, 168, 76, 0.2);
-  transition: all 0.28s ease;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  transition: all 0.3s ease;
   text-align: center;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  max-width: 380px;
+  width: 100%;
 }
-
-.product-card:nth-child(5n+1) { background: rgba(6, 3, 1, 0.95); }
-.product-card:nth-child(5n+2) { background: rgba(2, 6, 14, 0.95); }
-.product-card:nth-child(5n+3) { background: rgba(8, 2, 8, 0.95); }
-.product-card:nth-child(5n+4) { background: rgba(2, 8, 4, 0.95); }
-.product-card:nth-child(5n+5) { background: rgba(14, 8, 2, 0.95); }
 
 .product-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(201, 168, 76, 0.5);
+  border-color: rgba(201, 168, 76, 0.7);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
 }
 
@@ -347,6 +345,9 @@ body::before {
   justify-content: center;
   margin-bottom: 24px;
   min-height: 200px;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .product-image-wrap img {
@@ -362,41 +363,61 @@ body::before {
   letter-spacing: 0.18em;
   color: #c9a84c;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   line-height: 1.3;
 }
 
-.product-desc {
+.product-subtitle {
   font-family: 'Luminari', serif;
   font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  color: rgba(240, 230, 210, 0.7);
+  margin-bottom: 16px;
   font-style: italic;
-  color: rgba(255, 255, 255, 0.45);
-  line-height: 1.6;
-  margin-bottom: 20px;
-  letter-spacing: 0.04em;
 }
 
 .product-price {
   font-family: 'Luminari', serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.22em;
+  font-size: 1.2rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #c9a84c;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
+}
+
+.product-desc {
+  font-family: 'Luminari', serif;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: rgba(240, 230, 210, 0.85);
+  line-height: 1.8;
+  margin-bottom: 14px;
+  letter-spacing: 0.03em;
+  max-width: 320px;
+}
+
+.product-tagline {
+  font-family: 'Luminari', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: rgba(201, 168, 76, 0.6);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  line-height: 1.7;
 }
 
 .acquire-btn {
   display: block;
-  background: #c9a84c;
-  color: #000;
+  background: transparent;
+  color: #c9a84c;
   font-family: 'Luminari', serif;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  border: none;
-  padding: 13px 24px;
+  border: 1px solid #c9a84c;
+  padding: 14px 24px;
   cursor: pointer;
-  transition: background 0.22s, transform 0.18s;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   text-decoration: none;
   text-align: center;
   margin-bottom: 14px;
@@ -405,8 +426,9 @@ body::before {
 }
 
 .acquire-btn:hover {
-  background: #e0bc5a;
-  transform: scale(1.02);
+  background: #c9a84c;
+  color: #000;
+  border-color: #c9a84c;
 }
 
 .ask-link {
@@ -620,13 +642,13 @@ body::before {
 /* jt-mobile-merch */
 @media (max-width: 768px) {
   /* Product grid single column */
-  .product-grid, .merch-grid { grid-template-columns: 1fr !important; }
+  .merch-grid { flex-direction: column; align-items: center; gap: 1.5rem; }
   /* Cards full width */
-  .product-card, .merch-card { width: 100% !important; max-width: 100% !important; margin: 0 0 20px !important; }
+  .product-card { max-width: 100% !important; width: 100% !important; padding: 20px !important; }
   /* Product images */
-  .product-image, .merch-img, .product-card img { max-height: 280px; object-fit: contain; width: 100%; }
+  .product-image-wrap img { max-height: 280px; object-fit: contain; width: 100%; }
   /* Acquire / buy buttons */
-  .acquire-btn, .buy-btn, .merch-btn { width: 100% !important; padding: 16px !important; font-size: 0.8rem !important; }
+  .acquire-btn { min-height: 50px !important; font-size: 0.85rem !important; }
   /* Modal */
   .modal-panel, .inquiry-panel, #inquiry-modal .modal-content { width: 95vw !important; padding: 28px 20px !important; }
   /* Modal inputs already covered by global, but enforce width */
@@ -737,8 +759,8 @@ body::before {
 
   <!-- PAGE HEADER -->
   <div class="page-header">
-    <h1>The Artifact Vault</h1>
-    <p class="subtitle">Sacred objects from the Jestamang universe. Each one carries the mythology.</p>
+    <h1>The Artifacts</h1>
+    <p class="subtitle">Physical objects from the Jestamang universe.<br>Each one made with intention. Each one limited.</p>
     <div class="gold-rule">✦</div>
   </div>
 
@@ -824,48 +846,58 @@ body::before {
 <script>
 var products = [
   {
-    title: 'Cards',
+    title: 'The Jestamang Card Deck',
+    subtitle: '52 Unique Cards',
     image: 'assets/merch/cards.png',
-    desc: 'A deck steeped in ritual — each card a portal, each draw a reckoning.',
-    price: '$20',
+    desc: 'Fifty-two original illustrations drawn from the Jestamang universe. Each card is its own artifact — an entity, a symbol, a moment from the mythology rendered in ink. No two cards are the same. No reprints are planned. This deck will not exist forever.',
+    tagline: '52 unique illustrations · Standard deck size · Limited availability',
+    price: 'Offering: $60',
     gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
   },
   {
-    title: 'Comix',
+    title: 'Jestamang Comix',
+    subtitle: 'The Original Publication',
     image: 'assets/merch/comix.png',
-    desc: 'Illustrated chronicles from the edge of the mythology — ink pressed into legend.',
-    price: '$20',
+    desc: 'The Jestamang story in sequential art. Sixteen pages of original illustration telling the mythology in a form that predates the digital world. Printed and bound by hand. This is where the story lives when it is not music.',
+    tagline: '16 pages · Original artwork · Hand assembled',
+    price: 'Offering: $30',
     gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
   },
   {
     title: 'Polyphonies',
+    subtitle: 'The Jestamang Text',
     image: 'assets/merch/polyphonies.jpeg',
-    desc: 'Many voices folded into one — a physical relic of the harmonic archive.',
-    price: '$30',
+    desc: 'The written document of the Jestamang mythology. Polyphonies is the text that exists alongside the music — a companion to the catalog, a record of the cosmology, a book that rewards those who read it slowly.',
+    tagline: 'Sacred text · Limited print run · Companion to the catalog',
+    price: 'Offering: $40',
     gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
   },
   {
-    title: 'Puzzle',
+    title: 'The Jestamang Puzzle',
+    subtitle: 'Original Artwork',
     image: 'assets/merch/puzzle.png',
-    desc: 'Assemble the vision piece by piece — the image reveals itself only to the patient.',
-    price: '$30',
+    desc: 'An original Jestamang image rendered as a puzzle. The act of assembly is the point — the mythology reveals itself one piece at a time. Take your time with this one.',
+    tagline: 'Original artwork · High quality print · Ships assembled in box',
+    price: 'Offering: $45',
     gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
   },
   {
-    title: 'T-Shirt',
+    title: 'Jestamang T-Shirt',
+    subtitle: 'Wear the Mythology',
     image: 'assets/merch/t shirt.png',
-    desc: 'Wear the sigil. Carry the world of Jestamang against your skin wherever you walk.',
-    price: '$30',
+    desc: 'The Jestamang image on your body. Printed on a quality shirt. For those who want to carry the mythology into the world wherever they go.',
+    tagline: 'Quality print · Available in multiple sizes · Ships within 7 days',
+    price: 'Offering: $35',
     gumroadUrl: '<!-- GUMROAD URL: paste your Gumroad product link here -->'
   }
 ];
 
 var bgColors = [
-  'rgba(6,3,1,0.95)',
-  'rgba(2,6,14,0.95)',
-  'rgba(8,2,8,0.95)',
-  'rgba(2,8,4,0.95)',
-  'rgba(14,8,2,0.95)'
+  'rgba(20,15,60,0.85)',
+  'rgba(15,40,20,0.85)',
+  'rgba(45,10,55,0.85)',
+  'rgba(60,30,10,0.85)',
+  'rgba(55,10,15,0.85)'
 ];
 
 var grid = document.getElementById('merch-grid');
@@ -880,8 +912,10 @@ products.forEach(function (p, i) {
       '<img src="' + p.image + '" alt="' + p.title + '" loading="lazy">' +
     '</div>' +
     '<div class="product-name">' + p.title + '</div>' +
+    '<div class="product-subtitle">' + p.subtitle + '</div>' +
+    '<div class="product-price">' + p.price + '</div>' +
     '<div class="product-desc">' + p.desc + '</div>' +
-    '<div class="product-price">Offering: ' + p.price + '</div>' +
+    '<div class="product-tagline">' + p.tagline + '</div>' +
     /* REPLACE openModal WITH GUMROAD URL WHEN READY */
     '<button class="acquire-btn" data-product="' + p.title + '">Acquire This Artifact</button>' +
     '<button class="ask-link" data-product="' + p.title + '">Ask a Question</button>' +
