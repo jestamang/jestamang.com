@@ -61,12 +61,29 @@ document.getElementById('contact-form').addEventListener('submit', function(e) {
   var btn = document.getElementById('submit-btn');
   var successMsg = document.getElementById('success-msg');
   var errorMsg = document.getElementById('error-msg');
+  var fromName  = document.getElementById('name').value.trim();
+  var fromEmail = document.getElementById('email').value.trim();
+  var subject   = document.getElementById('subject').value.trim() || '(no subject)';
+  var message   = document.getElementById('message').value.trim();
   btn.textContent = 'Transmitting...';
   btn.disabled = true;
   successMsg.style.display = 'none';
   errorMsg.style.display = 'none';
-  emailjs.sendForm('jestamang', 'template_5l4a1lk', this)
+  emailjs.send('jestamang', 'template_5l4a1lk', {
+    from_name:  fromName,
+    from_email: fromEmail,
+    reply_to:   fromEmail,
+    subject:    subject,
+    message:    message
+  })
     .then(function() {
+      emailjs.send('jestamang', 'template_cteslf8', {
+        from_name:  fromName,
+        from_email: fromEmail,
+        reply_to:   'thejestamang@gmail.com',
+        subject:    subject,
+        message:    message
+      });
       btn.textContent = 'Transmitted';
       successMsg.style.display = 'block';
       document.getElementById('contact-form').reset();
