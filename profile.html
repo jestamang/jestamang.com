@@ -9,7 +9,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:'Luminari',serif;
-  background-image: #000;
+  background-color:#000;
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
@@ -33,41 +33,115 @@ body::before{
   z-index:1;
   max-width:860px;
   margin:0 auto;
-  padding:60px 32px 80px;
+  padding:48px 32px 100px;
+  opacity:0;
+  animation:pageIn 0.6s ease forwards;
 }
-@media(max-width:600px){#page-content{padding:40px 18px 60px;}}
+@keyframes pageIn{to{opacity:1;}}
+@media(max-width:600px){#page-content{padding:32px 18px 80px;}}
 
-/* Header */
+/* ── Section fade-in ── */
+.profile-section{
+  opacity:0;
+  transform:translateY(18px);
+  animation:sectionIn 0.5s ease forwards;
+}
+.profile-section:nth-child(1){animation-delay:0.1s;}
+.profile-section:nth-child(2){animation-delay:0.25s;}
+.profile-section:nth-child(3){animation-delay:0.4s;}
+.profile-section:nth-child(4){animation-delay:0.55s;}
+.profile-section:nth-child(5){animation-delay:0.7s;}
+.profile-section:nth-child(6){animation-delay:0.85s;}
+.profile-section:nth-child(7){animation-delay:1.0s;}
+@keyframes sectionIn{to{opacity:1;transform:translateY(0);}}
+
+/* ── Hero ── */
+.profile-hero{
+  text-align:center;
+  padding:40px 0 36px;
+  margin-bottom:0;
+}
+.avatar-ring-wrap{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:28px;
+}
+.avatar-ring{
+  position:absolute;
+  inset:-12px;
+  border-radius:50%;
+  border:1px solid rgba(201,168,76,0.5);
+  box-shadow:0 0 24px rgba(201,168,76,0.25),inset 0 0 24px rgba(201,168,76,0.08);
+  animation:ringPulse 3s ease-in-out infinite;
+}
+.avatar-ring-outer{
+  position:absolute;
+  inset:-22px;
+  border-radius:50%;
+  border:1px solid rgba(201,168,76,0.18);
+  animation:ringPulse 3s ease-in-out infinite 0.5s;
+}
+@keyframes ringPulse{
+  0%,100%{opacity:0.5;transform:scale(1);}
+  50%{opacity:1;transform:scale(1.03);}
+}
+.avatar-img{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  border:2px solid rgba(201,168,76,0.6);
+  object-fit:cover;
+  position:relative;
+  z-index:1;
+  display:block;
+}
+@media(max-width:600px){.avatar-img{width:90px;height:90px;}}
+
+/* ── Username / Header ── */
 .username-wrap{
   display:flex;
   align-items:center;
   justify-content:center;
   gap:10px;
   flex-wrap:wrap;
-  margin-bottom:10px;
+  margin-bottom:8px;
 }
 .profile-name{
   font-family:'Luminari',serif;
-  font-size:clamp(1.6rem,4vw,2.4rem);
-  letter-spacing:0.4em;
+  font-size:clamp(1.8rem,5vw,2.8rem);
+  letter-spacing:0.45em;
   color:#c9a84c;
   text-transform:uppercase;
-  text-shadow:0 0 40px rgba(201,168,76,0.2);
+  text-shadow:0 0 60px rgba(201,168,76,0.35),0 0 120px rgba(201,168,76,0.1);
   margin-bottom:0;
   word-break:break-word;
+  animation:shimmer 4s ease-in-out infinite;
+  background:linear-gradient(90deg,#c9a84c 0%,#f5e0a0 40%,#c9a84c 60%,#a07830 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+@keyframes shimmer{
+  0%{background-position:0% center;}
+  50%{background-position:100% center;}
+  100%{background-position:0% center;}
 }
 .username-edit-btn{
   background:none;
   border:none;
-  color:rgba(201,168,76,0.5);
-  font-size:1rem;
+  color:rgba(201,168,76,0.4);
+  font-size:0.9rem;
   cursor:pointer;
   padding:4px 6px;
   line-height:1;
   transition:color 0.2s;
   flex-shrink:0;
+  -webkit-text-fill-color:rgba(201,168,76,0.4);
 }
-.username-edit-btn:hover{ color:#c9a84c; }
+.username-edit-btn:hover{color:#c9a84c;-webkit-text-fill-color:#c9a84c;}
 #username-edit-form{
   display:flex;
   align-items:center;
@@ -89,202 +163,277 @@ body::before{
   width:220px;
   max-width:80vw;
 }
-.username-input:focus{ border-color:#c9a84c; }
+.username-input:focus{
+  border-color:#c9a84c;
+  box-shadow:0 0 14px rgba(201,168,76,0.2);
+}
 .profile-subtitle{
   font-family:'Luminari',serif;
-  font-size:0.75rem;
-  letter-spacing:0.3em;
+  font-size:0.68rem;
+  letter-spacing:0.4em;
   text-transform:uppercase;
-  color:rgba(201,168,76,0.65);
-  margin-bottom:8px;
+  color:rgba(201,168,76,0.55);
+  margin-bottom:10px;
 }
 .profile-since{
   font-family:'Luminari',serif;
-  font-style:italic;
-  font-size:0.76rem;
-  color:rgba(255,255,255,0.35);
-  letter-spacing:0.06em;
-  margin-bottom:28px;
+  font-size:0.72rem;
+  color:rgba(255,255,255,0.3);
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  margin-bottom:32px;
 }
 .gold-rule{
-  width:100%;
+  width:60%;
+  margin:0 auto 48px;
   height:1px;
-  background:linear-gradient(to right,transparent,rgba(201,168,76,0.4),transparent);
-  margin-bottom:40px;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,0.5),transparent);
+  position:relative;
 }
+.gold-rule::before,.gold-rule::after{
+  content:'✦';
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  color:rgba(201,168,76,0.4);
+  font-size:0.6rem;
+}
+.gold-rule::before{left:-14px;}
+.gold-rule::after{right:-14px;}
 .gold-rule-sm{
   width:100%;
   height:1px;
-  background:linear-gradient(to right,transparent,rgba(201,168,76,0.25),transparent);
-  margin:20px 0;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,0.2),transparent);
+  margin:16px 0 20px;
 }
 
-/* Dark cards */
+/* ── Dark cards ── */
 .dark-card{
-  background:rgba(10,8,5,0.95);
-  border:1px solid rgba(201,168,76,0.25);
-  padding:32px 28px;
-  margin-bottom:32px;
+  background:rgba(8,6,3,0.97);
+  border:1px solid rgba(201,168,76,0.2);
+  border-top:1px solid rgba(201,168,76,0.35);
+  padding:36px 32px;
+  margin-bottom:28px;
+  position:relative;
+  transition:border-color 0.3s;
+}
+.dark-card::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:1px;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,0.5),transparent);
 }
 @media(max-width:600px){.dark-card{padding:24px 18px;}}
 .card-title{
   font-family:'Luminari',serif;
-  font-size:0.72rem;
-  letter-spacing:0.3em;
+  font-size:0.65rem;
+  letter-spacing:0.4em;
   text-transform:uppercase;
-  color:#c9a84c;
+  color:rgba(201,168,76,0.6);
   margin-bottom:20px;
 }
 .card-title-lg{
   font-family:'Luminari',serif;
-  font-size:clamp(1.1rem,3vw,1.6rem);
-  letter-spacing:0.3em;
+  font-size:clamp(1rem,2.5vw,1.45rem);
+  letter-spacing:0.35em;
   text-transform:uppercase;
-  color:#c9a84c;
+  background:linear-gradient(90deg,#c9a84c,#f5e0a0,#c9a84c);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:shimmer 5s ease-in-out infinite;
   margin-bottom:6px;
-  text-shadow:0 0 20px rgba(201,168,76,0.15);
 }
 
-/* Dossier view / edit */
+/* ── Dossier view / edit ── */
 .dossier-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:18px 28px;
+  gap:20px 32px;
 }
 @media(max-width:520px){.dossier-grid{grid-template-columns:1fr;}}
-.dossier-field{display:flex;flex-direction:column;gap:4px;}
+.dossier-field{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  padding:12px 14px;
+  border-left:2px solid transparent;
+  transition:border-color 0.2s,background 0.2s;
+}
+.dossier-field:has(.dossier-field-value:not(.empty)){
+  border-left-color:rgba(201,168,76,0.3);
+  background:rgba(201,168,76,0.03);
+}
 .dossier-field-label{
   font-family:'Luminari',serif;
-  font-size:0.75rem;
-  letter-spacing:0.22em;
+  font-size:0.65rem;
+  letter-spacing:0.3em;
   text-transform:uppercase;
-  color:rgba(201,168,76,0.65);
+  color:rgba(201,168,76,0.5);
 }
 .dossier-field-value{
   font-family:'Luminari',serif;
-  font-size:0.88rem;
-  color:rgba(255,255,255,0.75);
-  letter-spacing:0.04em;
+  font-size:0.9rem;
+  color:rgba(232,220,200,0.85);
+  letter-spacing:0.05em;
   min-height:1.4em;
+  text-shadow:0 0 20px rgba(201,168,76,0.1);
 }
-.dossier-field-value.empty{color:rgba(255,255,255,0.2);font-style:italic;}
+.dossier-field-value.empty{
+  color:rgba(255,255,255,0.18);
+  font-style:italic;
+  letter-spacing:0.05em;
+}
 
-/* Form inputs */
+/* ── Form inputs ── */
 .form-input,.form-select{
   display:block;
   width:100%;
-  background:rgba(10,8,5,1);
+  background:rgba(5,4,2,1);
   border:1px solid rgba(201,168,76,0.2);
-  color:white;
+  color:rgba(232,220,200,0.9);
   font-family:'Luminari',serif;
   font-size:0.85rem;
   letter-spacing:0.04em;
-  padding:9px 12px;
+  padding:10px 14px;
   outline:none;
   transition:border-color 0.25s,box-shadow 0.25s;
   -webkit-appearance:none;
 }
-.form-input::placeholder{color:rgba(255,255,255,0.2);}
+.form-input::placeholder{color:rgba(255,255,255,0.18);}
 .form-input:focus,.form-select:focus{
-  border-color:rgba(201,168,76,0.6);
-  box-shadow:0 0 10px rgba(201,168,76,0.1);
+  border-color:rgba(201,168,76,0.7);
+  box-shadow:0 0 16px rgba(201,168,76,0.12),inset 0 0 8px rgba(201,168,76,0.04);
 }
 .form-select option{background:#0a0805;color:white;}
 
-/* Buttons */
+/* ── Buttons ── */
 .btn-gold{
-  background:#c9a84c;
+  background:linear-gradient(135deg,#c9a84c,#dfc060);
   border:none;
   color:#000;
+  font-family:'Luminari',serif;
+  font-size:0.72rem;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  padding:12px 26px;
+  cursor:pointer;
+  transition:box-shadow 0.25s,transform 0.15s;
+  text-decoration:none;
+  display:inline-block;
+}
+.btn-gold:hover{
+  box-shadow:0 0 28px rgba(201,168,76,0.5),0 4px 16px rgba(0,0,0,0.4);
+  transform:translateY(-1px);
+}
+.btn-ghost{
+  background:transparent;
+  border:1px solid rgba(201,168,76,0.35);
+  color:rgba(201,168,76,0.7);
   font-family:'Luminari',serif;
   font-size:0.72rem;
   letter-spacing:0.22em;
   text-transform:uppercase;
   padding:11px 22px;
   cursor:pointer;
-  transition:background 0.25s,box-shadow 0.25s;
+  transition:border-color 0.25s,color 0.25s,box-shadow 0.25s;
 }
-.btn-gold:hover{background:#dfc060;box-shadow:0 0 18px rgba(201,168,76,0.3);}
-.btn-ghost{
-  background:transparent;
-  border:1px solid rgba(201,168,76,0.3);
-  color:rgba(201,168,76,0.75);
-  font-family:'Luminari',serif;
-  font-size:0.72rem;
-  letter-spacing:0.18em;
-  text-transform:uppercase;
-  padding:10px 20px;
-  cursor:pointer;
-  transition:border-color 0.25s,color 0.25s;
+.btn-ghost:hover{
+  border-color:#c9a84c;
+  color:#c9a84c;
+  box-shadow:0 0 14px rgba(201,168,76,0.15);
 }
-.btn-ghost:hover{border-color:rgba(201,168,76,0.75);color:#c9a84c;}
-.btn-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:20px;}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:24px;}
 .btn-danger{
   background:transparent;
   border:none;
-  color:rgba(255,255,255,0.25);
+  color:rgba(255,255,255,0.2);
   font-family:'Luminari',serif;
-  font-size:0.75rem;
+  font-size:0.65rem;
   letter-spacing:0.14em;
   text-decoration:underline;
   text-underline-offset:3px;
   cursor:pointer;
   margin-left:auto;
   transition:color 0.2s;
+  min-height:44px;
 }
-.btn-danger:hover{color:rgba(251,56,56,0.7);}
+.btn-danger:hover{color:rgba(251,56,56,0.6);}
 
-/* Dossier header row */
-.dossier-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:24px;}
+/* ── Dossier header row ── */
+.dossier-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:24px;
+  padding-bottom:20px;
+  border-bottom:1px solid rgba(201,168,76,0.1);
+}
 
-/* Favorites */
+/* ── Favorites ── */
 .fav-item{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:12px 0;
-  border-bottom:1px solid rgba(201,168,76,0.08);
+  padding:14px 14px 14px 18px;
+  border-left:2px solid rgba(201,168,76,0.3);
+  margin-bottom:10px;
+  background:rgba(201,168,76,0.03);
   gap:12px;
+  transition:border-color 0.2s,background 0.2s;
 }
-.fav-item:last-child{border-bottom:none;}
+.fav-item:hover{border-left-color:#c9a84c;background:rgba(201,168,76,0.06);}
+.fav-item:last-child{margin-bottom:0;}
 .fav-info{flex:1;}
 .fav-title{
   font-family:'Luminari',serif;
   font-size:0.88rem;
-  color:rgba(255,255,255,0.82);
+  color:rgba(232,220,200,0.85);
   letter-spacing:0.04em;
-  margin-bottom:2px;
+  margin-bottom:3px;
 }
 .fav-meta{
   font-family:'Luminari',serif;
-  font-size:0.75rem;
-  letter-spacing:0.08em;
+  font-size:0.72rem;
+  letter-spacing:0.1em;
   color:rgba(201,168,76,0.5);
 }
 .fav-remove{
   background:none;
   border:none;
-  color:rgba(201,168,76,0.4);
+  color:rgba(201,168,76,0.3);
   font-size:0.75rem;
   cursor:pointer;
-  padding:4px 6px;
+  padding:4px 8px;
   transition:color 0.2s;
   flex-shrink:0;
+  min-height:44px;
 }
 .fav-remove:hover{color:#c9a84c;}
 .empty-state{
   font-family:'Luminari',serif;
   font-style:italic;
   font-size:0.82rem;
-  color:rgba(255,255,255,0.3);
-  letter-spacing:0.04em;
-  line-height:1.7;
+  color:rgba(201,168,76,0.35);
+  letter-spacing:0.08em;
+  line-height:1.8;
   text-align:center;
-  padding:24px 0 8px;
+  padding:28px 0 12px;
 }
 
-/* Account actions */
-.account-actions{display:flex;align-items:center;flex-wrap:wrap;gap:14px;}
+/* ── Account actions ── */
+.account-actions{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:14px;
+  justify-content:center;
+  padding-top:4px;
+}
 
 /* ══════════════════════════════════════════
    NATAL CHART CALCULATOR STYLES
@@ -660,22 +809,29 @@ body::before{
 
 <div id="page-content">
 
-  <!-- Header -->
-  <div class="username-wrap">
-    <h1 class="profile-name" id="display-name">&#8212;</h1>
-    <button class="username-edit-btn" id="username-edit-btn" title="Change username">&#9998;</button>
+  <!-- Hero -->
+  <div class="profile-hero profile-section">
+    <div class="avatar-ring-wrap">
+      <div class="avatar-ring-outer"></div>
+      <div class="avatar-ring"></div>
+      <img class="avatar-img" src="assets/homepage/jestamang-badge.png" alt="Jestamang Emblem">
+    </div>
+    <div class="username-wrap">
+      <h1 class="profile-name" id="display-name">&#8212;</h1>
+      <button class="username-edit-btn" id="username-edit-btn" title="Change username">&#9998;</button>
+    </div>
+    <div id="username-edit-form" style="display:none;">
+      <input class="username-input" id="username-input" type="text" maxlength="30" placeholder="Username" autocomplete="off">
+      <button class="btn-gold" id="username-save-btn">Save</button>
+      <button class="btn-ghost" id="username-cancel-btn">Cancel</button>
+    </div>
+    <div class="profile-subtitle">Member of the Inner Circle</div>
+    <div class="profile-since" id="member-since"></div>
+    <div class="gold-rule"></div>
   </div>
-  <div id="username-edit-form" style="display:none;">
-    <input class="username-input" id="username-input" type="text" maxlength="30" placeholder="Username" autocomplete="off">
-    <button class="btn-gold" id="username-save-btn">Save</button>
-    <button class="btn-ghost" id="username-cancel-btn">Cancel</button>
-  </div>
-  <div class="profile-subtitle">Member of the Inner Circle</div>
-  <div class="profile-since" id="member-since"></div>
-  <div class="gold-rule"></div>
 
   <!-- Natal Dossier -->
-  <div class="dark-card">
+  <div class="dark-card profile-section">
     <div class="dossier-header">
       <div class="card-title-lg">Natal Dossier</div>
       <button class="btn-ghost" id="edit-dossier-btn">Edit Dossier</button>
@@ -776,7 +932,7 @@ body::before{
   <!-- ════════════════════════════════════════
        NATAL CHART CALCULATOR
   ════════════════════════════════════════ -->
-  <div class="dark-card" id="natal-chart-card">
+  <div class="dark-card profile-section" id="natal-chart-card">
     <div class="card-title-lg" style="margin-bottom:6px;">Celestial Chart</div>
     <div style="font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.14em;color:rgba(255,255,255,0.3);font-style:italic;margin-bottom:20px;">Your natal chart, calculated from the stars</div>
     <div class="gold-rule-sm" style="margin-top:0;"></div>
@@ -899,7 +1055,7 @@ body::before{
   </div>
 
   <!-- Saved Favorites -->
-  <div class="dark-card">
+  <div class="dark-card profile-section">
     <div class="card-title-lg" style="margin-bottom:4px;">Saved Transmissions</div>
     <div class="gold-rule-sm"></div>
     <div id="favorites-list">
@@ -908,7 +1064,7 @@ body::before{
   </div>
 
   <!-- Post to Blog -->
-  <div class="dark-card">
+  <div class="dark-card profile-section">
     <div class="card-title-lg" style="margin-bottom:4px;">Post to Blog</div>
     <div class="gold-rule-sm"></div>
     <div style="margin-top:16px;">
@@ -922,11 +1078,14 @@ body::before{
   </div>
 
   <!-- Account Actions -->
-  <div class="dark-card">
-    <div class="card-title">Account</div>
+  <div class="dark-card profile-section" style="text-align:center;">
+    <div class="card-title" style="margin-bottom:24px;">Account</div>
     <div class="account-actions">
-      <a class="btn-gold" href="index.html">Homepage</a>
+      <a class="btn-gold" href="members.html">Members Only</a>
+      <a class="btn-ghost" href="index.html">Homepage</a>
       <button class="btn-ghost" id="signout-btn">Sign Out</button>
+    </div>
+    <div style="margin-top:20px;">
       <button class="btn-danger" id="delete-account-btn">Delete Account</button>
     </div>
   </div>
@@ -1630,12 +1789,20 @@ const NC = (function(){
 
   // ── Dossier view/edit (unchanged) ──
 
+  function toRoman(n){
+    var val=[1000,900,500,400,100,90,50,40,10,9,5,4,1];
+    var sym=['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
+    var r='';
+    for(var i=0;i<val.length;i++){while(n>=val[i]){r+=sym[i];n-=val[i];}}
+    return r;
+  }
   function renderViewMode(data, user){
     var creationTime = user.metadata && user.metadata.creationTime;
     if(creationTime){
       var d = new Date(creationTime);
+      var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
       document.getElementById('member-since').textContent =
-        'Member since ' + d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+        'Initiated \u00B7 ' + months[d.getMonth()] + ' ' + toRoman(d.getDate()) + ' ' + toRoman(d.getFullYear());
     }
     function val(v){ return v || null; }
     function setField(id, v){
