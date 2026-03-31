@@ -22,9 +22,12 @@
   function insertAuthNav() {
     var toggle = document.getElementById('jtnav-mobile-toggle');
     if (!toggle) return;
-    var wrap = document.createElement('div');
-    wrap.id = 'jtnav-auth';
-    toggle.parentNode.insertBefore(wrap, toggle);
+    var wrap = document.getElementById('jtnav-auth');
+    if (!wrap) {
+      wrap = document.createElement('div');
+      wrap.id = 'jtnav-auth';
+      toggle.parentNode.insertBefore(wrap, toggle);
+    }
 
     // Mobile overlay auth
     var overlay = document.getElementById('jtnav-mobile-overlay');
