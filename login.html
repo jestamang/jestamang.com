@@ -279,13 +279,18 @@ body::before{
 
     <div class="divider-or"><span>or</span></div>
 
-    <label class="field-label" for="email-input">Your Signal</label>
-    <input class="auth-input" type="email" id="email-input" placeholder="signal@domain.com" autocomplete="email">
+    <form id="auth-form" autocomplete="on" onsubmit="return false;" style="margin:0;padding:0;">
+      <label class="field-label" id="name-label" for="name-input" style="display:none;">Your Name</label>
+      <input class="auth-input" type="text" id="name-input" name="name" placeholder="Your name" autocomplete="name" style="display:none;">
 
-    <label class="field-label" for="pw-input">Your Key</label>
-    <input class="auth-input" type="password" id="pw-input" placeholder="············" autocomplete="current-password">
+      <label class="field-label" for="email-input">Your Signal</label>
+      <input class="auth-input" type="email" id="email-input" name="email" placeholder="signal@domain.com" autocomplete="email">
 
-    <button id="submit-btn" type="button">Initiate</button>
+      <label class="field-label" for="pw-input">Your Key</label>
+      <input class="auth-input" type="password" id="pw-input" name="password" placeholder="············" autocomplete="current-password">
+
+      <button id="submit-btn" type="submit">Initiate</button>
+    </form>
 
     <div class="toggle-mode" id="toggle-mode-wrap">
       First time? <a id="toggle-link" href="#">Declare Yourself</a>
@@ -314,15 +319,23 @@ body::before{
   var errorDiv = document.getElementById('auth-error');
   var emailInput = document.getElementById('email-input');
   var pwInput = document.getElementById('pw-input');
+  var nameInput = document.getElementById('name-input');
+  var nameLabel = document.getElementById('name-label');
 
   function setMode(m){
     mode = m;
     if(mode === 'signup'){
       submitBtn.textContent = 'Declare Yourself';
       toggleWrap.innerHTML = 'Returning? <a id="toggle-link" href="#">Enter Here</a>';
+      nameLabel.style.display = 'block';
+      nameInput.style.display = 'block';
+      pwInput.setAttribute('autocomplete', 'new-password');
     } else {
       submitBtn.textContent = 'Initiate';
       toggleWrap.innerHTML = 'First time? <a id="toggle-link" href="#">Declare Yourself</a>';
+      nameLabel.style.display = 'none';
+      nameInput.style.display = 'none';
+      pwInput.setAttribute('autocomplete', 'current-password');
     }
     document.getElementById('toggle-link').addEventListener('click',function(e){
       e.preventDefault();
@@ -369,16 +382,22 @@ body::before{
     clearError();
     if(!email || !pw){ showError('Both signal and key are required to enter.'); return; }
     submitBtn.disabled = true;
-    var promise = mode === 'signup'
-      ? firebase.auth().createUserWithEmailAndPassword(email, pw)
-      : firebase.auth().signInWithEmailAndPassword(email, pw);
+    var promise;
+    if(mode === 'signup'){
+      var name = nameInput.value.trim();
+      promise = firebase.auth().createUserWithEmailAndPassword(email, pw).then(function(cred){
+        if(name) return cred.user.updateProfile({displayName: name});
+      });
+    } else {
+      promise = firebase.auth().signInWithEmailAndPassword(email, pw);
+    }
     promise
       .then(function(){ window.location.href = 'profile.html'; })
       .catch(function(err){ showError(translateError(err.code)); submitBtn.disabled = false; });
   });
 
   // Allow Enter key to submit
-  [emailInput, pwInput].forEach(function(inp){
+  [nameInput, emailInput, pwInput].forEach(function(inp){
     inp.addEventListener('keydown', function(e){ if(e.key==='Enter') submitBtn.click(); });
   });
 

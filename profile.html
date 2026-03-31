@@ -750,6 +750,16 @@ body::before{
   margin:0 auto;
 }
 .natal-recalc-link:hover{color:rgba(201,168,76,0.8);}
+/* ── Circle account buttons ── */
+.circ-actions{display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;padding-top:8px;}
+.circ-btn{display:inline-flex;background:none;border:none;padding:0;cursor:pointer;text-decoration:none;transition:filter 0.22s;}
+.circ-btn:hover{filter:drop-shadow(0 0 14px rgba(201,168,76,0.55));}
+.circ-btn circle{transition:fill 0.22s,stroke 0.22s;}
+.circ-btn:hover circle.circ-face{fill:#c9a84c;}
+.circ-btn text,.circ-btn textPath{transition:fill 0.22s;}
+.circ-btn:hover text{fill:#0a0600 !important;}
+@media(max-width:768px){.circ-actions{gap:20px;}.circ-btn svg{width:70px;height:70px;}}
+
 /* jt-mobile-global-base */
 @media (max-width: 768px) {
   /* Prevent iOS input zoom */
@@ -814,7 +824,7 @@ body::before{
     <div class="avatar-ring-wrap">
       <div class="avatar-ring-outer"></div>
       <div class="avatar-ring"></div>
-      <img class="avatar-img" src="assets/homepage/jestamang-badge.png" alt="Jestamang Emblem">
+      <img class="avatar-img" src="assets/homepage/logo png.png" alt="Jestamang Emblem">
     </div>
     <div class="username-wrap">
       <h1 class="profile-name" id="display-name">&#8212;</h1>
@@ -856,18 +866,6 @@ body::before{
           <span class="dossier-field-label">Place of Birth</span>
           <span class="dossier-field-value" id="v-pob"></span>
         </div>
-        <div class="dossier-field">
-          <span class="dossier-field-label">Sun Sign</span>
-          <span class="dossier-field-value" id="v-sun"></span>
-        </div>
-        <div class="dossier-field">
-          <span class="dossier-field-label">Moon Sign</span>
-          <span class="dossier-field-value" id="v-moon"></span>
-        </div>
-        <div class="dossier-field">
-          <span class="dossier-field-label">Rising Sign</span>
-          <span class="dossier-field-value" id="v-rising"></span>
-        </div>
       </div>
     </div>
 
@@ -889,36 +887,6 @@ body::before{
         <div class="dossier-field">
           <span class="dossier-field-label">Place of Birth</span>
           <input class="form-input" type="text" id="f-pob" placeholder="City, Country">
-        </div>
-        <div class="dossier-field">
-          <span class="dossier-field-label">Sun Sign</span>
-          <select class="form-select" id="f-sun">
-            <option value="">&#8212; Select &#8212;</option>
-            <option>&#9800; Aries</option><option>&#9801; Taurus</option><option>&#9802; Gemini</option>
-            <option>&#9803; Cancer</option><option>&#9804; Leo</option><option>&#9805; Virgo</option>
-            <option>&#9806; Libra</option><option>&#9807; Scorpio</option><option>&#9808; Sagittarius</option>
-            <option>&#9809; Capricorn</option><option>&#9810; Aquarius</option><option>&#9811; Pisces</option>
-          </select>
-        </div>
-        <div class="dossier-field">
-          <span class="dossier-field-label">Moon Sign</span>
-          <select class="form-select" id="f-moon">
-            <option value="">&#8212; Select &#8212;</option>
-            <option>&#9800; Aries</option><option>&#9801; Taurus</option><option>&#9802; Gemini</option>
-            <option>&#9803; Cancer</option><option>&#9804; Leo</option><option>&#9805; Virgo</option>
-            <option>&#9806; Libra</option><option>&#9807; Scorpio</option><option>&#9808; Sagittarius</option>
-            <option>&#9809; Capricorn</option><option>&#9810; Aquarius</option><option>&#9811; Pisces</option>
-          </select>
-        </div>
-        <div class="dossier-field">
-          <span class="dossier-field-label">Rising Sign</span>
-          <select class="form-select" id="f-rising">
-            <option value="">&#8212; Select &#8212;</option>
-            <option>&#9800; Aries</option><option>&#9801; Taurus</option><option>&#9802; Gemini</option>
-            <option>&#9803; Cancer</option><option>&#9804; Leo</option><option>&#9805; Virgo</option>
-            <option>&#9806; Libra</option><option>&#9807; Scorpio</option><option>&#9808; Sagittarius</option>
-            <option>&#9809; Capricorn</option><option>&#9810; Aquarius</option><option>&#9811; Pisces</option>
-          </select>
         </div>
       </div>
       <div class="btn-row">
@@ -1079,13 +1047,47 @@ body::before{
 
   <!-- Account Actions -->
   <div class="dark-card profile-section" style="text-align:center;">
-    <div class="card-title" style="margin-bottom:24px;">Account</div>
-    <div class="account-actions">
-      <a class="btn-gold" href="members.html">Members Only</a>
-      <a class="btn-ghost" href="index.html">Homepage</a>
-      <button class="btn-ghost" id="signout-btn">Sign Out</button>
+    <div class="card-title" style="margin-bottom:28px;">Account</div>
+    <div class="circ-actions">
+
+      <!-- HOME -->
+      <a class="circ-btn" href="index.html" aria-label="Home">
+        <svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+          <defs><path id="arc-home" d="M 11,45 A 34,34 0 0 0 79,45"/></defs>
+          <circle cx="45" cy="45" r="43" class="circ-face" fill="rgba(5,3,1,0.97)" stroke="#c9a84c" stroke-width="2"/>
+          <text font-family="Luminari,serif" font-size="9" letter-spacing="5" fill="rgba(201,168,76,0.85)">
+            <textPath href="#arc-home" startOffset="50%" text-anchor="middle">HOME</textPath>
+          </text>
+          <text x="45" y="60" text-anchor="middle" font-family="Luminari,serif" font-size="20" fill="rgba(201,168,76,0.5)">✦</text>
+        </svg>
+      </a>
+
+      <!-- MEMBERS -->
+      <a class="circ-btn" href="members.html" aria-label="Members">
+        <svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+          <defs><path id="arc-members" d="M 11,45 A 34,34 0 0 0 79,45"/></defs>
+          <circle cx="45" cy="45" r="43" class="circ-face" fill="rgba(5,3,1,0.97)" stroke="#c9a84c" stroke-width="2"/>
+          <text font-family="Luminari,serif" font-size="8" letter-spacing="3" fill="rgba(201,168,76,0.85)">
+            <textPath href="#arc-members" startOffset="50%" text-anchor="middle">MEMBERS</textPath>
+          </text>
+          <text x="45" y="60" text-anchor="middle" font-family="Luminari,serif" font-size="20" fill="rgba(201,168,76,0.5)">✦</text>
+        </svg>
+      </a>
+
+      <!-- LOG OUT -->
+      <button class="circ-btn" id="signout-btn" aria-label="Log Out">
+        <svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+          <defs><path id="arc-logout" d="M 11,45 A 34,34 0 0 0 79,45"/></defs>
+          <circle cx="45" cy="45" r="43" class="circ-face" fill="rgba(5,3,1,0.97)" stroke="#c9a84c" stroke-width="2"/>
+          <text font-family="Luminari,serif" font-size="8" letter-spacing="3" fill="rgba(201,168,76,0.85)">
+            <textPath href="#arc-logout" startOffset="50%" text-anchor="middle">LOG OUT</textPath>
+          </text>
+          <text x="45" y="60" text-anchor="middle" font-family="Luminari,serif" font-size="20" fill="rgba(201,168,76,0.5)">✦</text>
+        </svg>
+      </button>
+
     </div>
-    <div style="margin-top:20px;">
+    <div style="margin-top:24px;">
       <button class="btn-danger" id="delete-account-btn">Delete Account</button>
     </div>
   </div>
@@ -1815,9 +1817,6 @@ const NC = (function(){
     setField('v-dob', data.dateOfBirth);
     setField('v-tob', data.timeOfBirth);
     setField('v-pob', data.placeOfBirth);
-    setField('v-sun', data.sunSign);
-    setField('v-moon', data.moonSign);
-    setField('v-rising', data.risingSign);
   }
 
   function populateEditForm(data){
@@ -1825,9 +1824,6 @@ const NC = (function(){
     document.getElementById('f-dob').value       = data.dateOfBirth   || '';
     document.getElementById('f-tob').value       = data.timeOfBirth   || '';
     document.getElementById('f-pob').value       = data.placeOfBirth  || '';
-    document.getElementById('f-sun').value       = data.sunSign       || '';
-    document.getElementById('f-moon').value      = data.moonSign      || '';
-    document.getElementById('f-rising').value    = data.risingSign    || '';
   }
 
   document.getElementById('edit-dossier-btn').addEventListener('click', function(){
@@ -1842,28 +1838,6 @@ const NC = (function(){
     exitEditMode();
   });
 
-  // Auto-fill Sun Sign from Date of Birth
-  function sunSignFromDob(dateStr){
-    if(!dateStr) return '';
-    var d = new Date(dateStr + 'T12:00:00');
-    var m = d.getMonth() + 1, day = d.getDate();
-    if((m===3&&day>=21)||(m===4&&day<=19)) return '\u2648 Aries';
-    if((m===4&&day>=20)||(m===5&&day<=20)) return '\u2649 Taurus';
-    if((m===5&&day>=21)||(m===6&&day<=20)) return '\u264A Gemini';
-    if((m===6&&day>=21)||(m===7&&day<=22)) return '\u264B Cancer';
-    if((m===7&&day>=23)||(m===8&&day<=22)) return '\u264C Leo';
-    if((m===8&&day>=23)||(m===9&&day<=22)) return '\u264D Virgo';
-    if((m===9&&day>=23)||(m===10&&day<=22)) return '\u264E Libra';
-    if((m===10&&day>=23)||(m===11&&day<=21)) return '\u264F Scorpio';
-    if((m===11&&day>=22)||(m===12&&day<=21)) return '\u2650 Sagittarius';
-    if((m===12&&day>=22)||(m===1&&day<=19)) return '\u2651 Capricorn';
-    if((m===1&&day>=20)||(m===2&&day<=18)) return '\u2652 Aquarius';
-    return '\u2653 Pisces';
-  }
-  document.getElementById('f-dob').addEventListener('change', function(){
-    var sign = sunSignFromDob(this.value);
-    if(sign) document.getElementById('f-sun').value = sign;
-  });
 
   function exitEditMode(){
     document.getElementById('dossier-view').style.display = 'block';
@@ -1879,9 +1853,6 @@ const NC = (function(){
       dateOfBirth:    document.getElementById('f-dob').value,
       timeOfBirth:    document.getElementById('f-tob').value,
       placeOfBirth:   document.getElementById('f-pob').value.trim(),
-      sunSign:        document.getElementById('f-sun').value,
-      moonSign:       document.getElementById('f-moon').value,
-      risingSign:     document.getElementById('f-rising').value,
       updatedAt:      firebase.firestore.FieldValue.serverTimestamp()
     };
     var saveBtn = document.getElementById('save-dossier-btn');
