@@ -9,8 +9,8 @@
   var style = document.createElement('style');
   style.textContent = [
     '#jtnav-auth{display:flex;align-items:center;flex-shrink:0}',
-    '#jtnav-auth-sep{width:1px;height:20px;background:rgba(201,168,76,0.3);margin:0 10px;flex-shrink:0}',
-    '.jtnav-auth-link{font-family:\'Luminari\',serif;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(201,168,76,0.75);text-decoration:none;padding:0 8px;white-space:nowrap;transition:color 0.2s;line-height:52px}',
+    '#jtnav-auth-sep{width:1px;height:20px;background:rgba(201,168,76,0.3);margin:0 8px;flex-shrink:0}',
+    '.jtnav-auth-link{font-family:\'Luminari\',serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(201,168,76,0.75);text-decoration:none;padding:0 6px;white-space:nowrap;transition:color 0.2s;line-height:52px}',
     '.jtnav-auth-link:hover{color:#c9a84c}',
     '.jtnav-auth-star{font-size:0.8rem;color:rgba(201,168,76,0.55);text-decoration:none;padding:0 6px;line-height:52px;transition:color 0.2s}',
     '.jtnav-auth-star:hover{color:#c9a84c}',
@@ -40,6 +40,27 @@
     }
   }
 
+  // ── Render logged-in nav with a display name ─────────────────
+  function renderAuthNav(wrap, mobWrap, displayName) {
+    var shortName = displayName.length > 14 ? displayName.slice(0, 12) + '\u2026' : displayName;
+    wrap.innerHTML =
+      '<div id="jtnav-auth-sep"></div>' +
+      '<a class="jtnav-auth-link" href="profile.html" title="Your Dossier">' + shortName + '</a>' +
+      '<a class="jtnav-auth-star" href="members.html" title="Inner Circle">\u2736</a>';
+    if (mobWrap) {
+      mobWrap.innerHTML =
+        '<div class="jtnav-mob-divider"></div>' +
+        '<a class="jtnav-mob-link" href="profile.html">My Dossier</a>' +
+        '<a class="jtnav-mob-link" href="members.html">Inner Circle</a>' +
+        '<a class="jtnav-mob-link" href="#" id="jtnav-mob-so">Depart for Now</a>';
+      var so = document.getElementById('jtnav-mob-so');
+      if (so) so.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.jestaAuth.signOut();
+      });
+    }
+  }
+
   // ── Update nav based on auth state ───────────────────────────
   function updateNav(user) {
     var wrap = document.getElementById('jtnav-auth');
@@ -47,23 +68,16 @@
     if (!wrap) return;
 
     if (user) {
-      var name = (user.displayName || user.email || '').split('@')[0];
-      var shortName = name.length > 14 ? name.slice(0, 12) + '…' : name;
-      wrap.innerHTML =
-        '<div id="jtnav-auth-sep"></div>' +
-        '<a class="jtnav-auth-link" href="profile.html" title="Your Dossier">' + shortName + '</a>' +
-        '<a class="jtnav-auth-star" href="members.html" title="Inner Circle">✦</a>';
-      if (mobWrap) {
-        mobWrap.innerHTML =
-          '<div class="jtnav-mob-divider"></div>' +
-          '<a class="jtnav-mob-link" href="profile.html">My Dossier</a>' +
-          '<a class="jtnav-mob-link" href="members.html">Inner Circle</a>' +
-          '<a class="jtnav-mob-link" href="#" id="jtnav-mob-so">Depart for Now</a>';
-        var so = document.getElementById('jtnav-mob-so');
-        if (so) so.addEventListener('click', function (e) {
-          e.preventDefault();
-          window.jestaAuth.signOut();
-        });
+      var fallback = (user.displayName || user.email || '').split('@')[0];
+      // Show fallback immediately, then upgrade to Firestore username if available
+      renderAuthNav(wrap, mobWrap, fallback);
+      if (window.jestaDB) {
+        window.jestaDB.collection('users').doc(user.uid).get()
+          .then(function (doc) {
+            var name = (doc.exists && doc.data().username) ? doc.data().username : fallback;
+            renderAuthNav(wrap, mobWrap, name);
+          })
+          .catch(function () {});
       }
     } else {
       wrap.innerHTML =
