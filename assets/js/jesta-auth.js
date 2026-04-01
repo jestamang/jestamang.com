@@ -16,7 +16,8 @@
     '.jtnav-auth-star:hover{color:#c9a84c}',
     /* On mobile: hide the desktop auth div, show only the right mob-login link */
     '@media(max-width:767px){#jtnav-auth{display:none!important}}',
-    '#jtnav-mob-login{font-family:\'Luminari\',serif!important;color:#c9a84c!important;font-size:0.62rem!important;letter-spacing:0.16em!important;text-transform:uppercase!important;transition:opacity 0.2s!important}',
+    '#jtnav-mob-login{display:none!important}',
+    '@media(max-width:767px){#jtnav-mob-login{display:flex!important;align-items:center;font-family:\'Luminari\',serif!important;color:#c9a84c!important;font-size:0.62rem!important;letter-spacing:0.16em!important;text-transform:uppercase!important;transition:opacity 0.2s!important}}',
     '#jtnav-mob-login:hover{opacity:0.75}'
   ].join('');
   document.head.appendChild(style);
