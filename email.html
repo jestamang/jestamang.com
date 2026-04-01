@@ -18,22 +18,22 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* ── DEITY CARD ── */
 .pb-deity-wrap{display:flex;justify-content:center;margin-bottom:48px}
-.pb-deity-card{width:160px;cursor:pointer;border:2px solid transparent;border-radius:6px;overflow:hidden;transition:border-color 0.25s,box-shadow 0.25s;background:rgba(0,0,0,0.4)}
-.pb-deity-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
-.pb-deity-card .pb-card-foot{padding:8px 8px 10px;background:rgba(0,0,0,0.75);text-align:center}
-.pb-deity-card .pb-card-name{font-size:0.72rem;letter-spacing:0.1em;color:rgba(232,220,200,0.9);text-transform:uppercase;line-height:1.3;margin-bottom:3px}
-.pb-deity-card .pb-card-addr{font-size:0.58rem;letter-spacing:0.06em;color:rgba(201,168,76,0.65)}
-.pb-deity-card.selected{border-color:#c9a84c;box-shadow:0 0 24px rgba(201,168,76,0.45)}
+.pb-deity-card{width:220px;cursor:pointer;border:2px solid transparent;border-radius:6px;overflow:hidden;transition:border-color 0.25s,box-shadow 0.25s;background:rgba(0,0,0,0.15)}
+.pb-deity-card img,.pb-deity-card.pb-card img{width:100%;height:auto;object-fit:contain;display:block;max-height:300px;aspect-ratio:unset}
+.pb-deity-card .pb-card-foot{padding:10px 10px 12px;background:rgba(0,0,0,0.8);text-align:center}
+.pb-deity-card .pb-card-name{font-size:0.78rem;letter-spacing:0.14em;color:rgba(232,220,200,0.95);text-transform:uppercase;line-height:1.3;margin-bottom:3px}
+.pb-deity-card .pb-card-addr{font-size:0.6rem;letter-spacing:0.06em;color:rgba(201,168,76,0.7)}
+.pb-deity-card.selected{border-color:#c9a84c;box-shadow:0 0 28px rgba(201,168,76,0.5)}
 
 /* ── GRID ── */
-.pb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.pb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
 
 /* ── GRID CARDS ── */
-.pb-card{cursor:pointer;border:2px solid transparent;border-radius:4px;overflow:hidden;transition:border-color 0.25s,box-shadow 0.25s;background:rgba(0,0,0,0.35)}
-.pb-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
-.pb-card-foot{padding:6px 6px 8px;background:rgba(0,0,0,0.75);text-align:center}
-.pb-card-name{font-size:0.62rem;letter-spacing:0.06em;color:rgba(232,220,200,0.85);text-transform:uppercase;line-height:1.3;margin-bottom:2px}
-.pb-card-addr{font-size:0.52rem;letter-spacing:0.04em;color:rgba(201,168,76,0.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pb-card{cursor:pointer;border:2px solid transparent;border-radius:4px;overflow:hidden;transition:border-color 0.25s,box-shadow 0.25s;background:rgba(0,0,0,0.35);display:flex;flex-direction:column}
+.pb-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;flex-shrink:0}
+.pb-card-foot{padding:7px 7px 9px;background:rgba(0,0,0,0.8);text-align:center;flex:1;display:flex;flex-direction:column;justify-content:center}
+.pb-card-name{font-size:0.62rem;letter-spacing:0.06em;color:rgba(232,220,200,0.9);text-transform:uppercase;line-height:1.35;margin-bottom:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pb-card-addr{font-size:0.5rem;letter-spacing:0.04em;color:rgba(201,168,76,0.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pb-card.selected{border-color:#c9a84c;box-shadow:0 0 18px rgba(201,168,76,0.4)}
 
 /* ── ORNAMENT DIVIDER ── */
@@ -68,10 +68,13 @@ input::placeholder,textarea::placeholder{color:rgba(255,255,255,0.25)}
 
 /* ── MOBILE ── */
 @media (max-width:600px){
-  .pb-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+  .pb-grid{grid-template-columns:repeat(3,1fr);gap:8px}
   .pb-card-addr{display:none}
+  .pb-card-name{font-size:0.58rem;letter-spacing:0.04em}
   .compose-to{flex-wrap:wrap}
-  .pb-deity-card{width:130px}
+  .pb-deity-card{width:170px}
+  .pb-deity-card img{max-height:240px}
+  .pb-deity-card .pb-card-name{font-size:0.72rem}
 }
 
 /* jt-mobile-global-base */
