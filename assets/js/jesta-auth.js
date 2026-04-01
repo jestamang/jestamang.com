@@ -14,7 +14,10 @@
     '.jtnav-auth-link:hover{color:#c9a84c}',
     '.jtnav-auth-star{font-size:0.8rem;color:rgba(201,168,76,0.55);text-decoration:none;padding:0 6px;line-height:52px;transition:color 0.2s}',
     '.jtnav-auth-star:hover{color:#c9a84c}',
-    '#jtnav-mob-login{display:none!important}'
+    /* On mobile: hide the desktop auth div, show only the right mob-login link */
+    '@media(max-width:767px){#jtnav-auth{display:none!important}}',
+    '#jtnav-mob-login{font-family:\'Luminari\',serif!important;color:#c9a84c!important;font-size:0.62rem!important;letter-spacing:0.16em!important;text-transform:uppercase!important;transition:opacity 0.2s!important}',
+    '#jtnav-mob-login:hover{opacity:0.75}'
   ].join('');
   document.head.appendChild(style);
 
@@ -70,15 +73,17 @@
     var mobWrap = document.getElementById('jtnav-mob-auth');
     if (!wrap) return;
 
+    var mobLogin = document.getElementById('jtnav-mob-login');
     if (user) {
       var fallback = (user.displayName || user.email || '').split('@')[0];
-      // Show fallback immediately, then upgrade to Firestore username if available
       renderAuthNav(wrap, mobWrap, fallback);
+      if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = fallback.length > 10 ? fallback.slice(0,9)+'\u2026' : fallback; }
       if (window.jestaDB) {
         window.jestaDB.collection('users').doc(user.uid).get()
           .then(function (doc) {
             var name = (doc.exists && doc.data().username) ? doc.data().username : fallback;
             renderAuthNav(wrap, mobWrap, name);
+            if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = name.length > 10 ? name.slice(0,9)+'\u2026' : name; }
           })
           .catch(function () {});
       }
@@ -91,6 +96,7 @@
           '<div class="jtnav-mob-divider"></div>' +
           '<a class="jtnav-mob-link" href="login.html">Enter the Circle</a>';
       }
+      if (mobLogin) { mobLogin.href = 'login.html'; mobLogin.textContent = 'Log In'; }
     }
   }
 
