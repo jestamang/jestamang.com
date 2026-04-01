@@ -4,6 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>You Are Lost — Jestamang</title>
+<script>
+(function(){
+  var path = window.location.pathname.toLowerCase().replace(/^\//, '').replace(/\/?(index\.html)?$/, '');
+  var map = {
+    'albums':'albums.html','videos':'videos.html','entities':'entities.html',
+    'lyrics':'lyrics.html','merch':'merch.html','photos':'photos.html',
+    'shows':'shows.html','blog':'blog.html','games':'games.html',
+    'email':'email.html','members':'members.html','login':'login.html',
+    'profile':'profile.html','arcade':'arcade.html','comix':'comix.html',
+    'children':'entities.html','cartoons':'comix.html',
+    'nons':'albums.html#nons','quarter-days':'albums.html#quarter-days',
+    '2k2323':'albums.html#2k2323','2k2123':'albums.html#2k2123'
+  };
+  var dest = map[path];
+  if (dest) { window.location.replace(dest); }
+})();
+</script>
 <link rel="icon" type="image/png" href="assets/homepage/logo%20png.png">
 <link rel="apple-touch-icon" href="assets/homepage/logo%20png.png">
 <meta name="robots" content="noindex">
