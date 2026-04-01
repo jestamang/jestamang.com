@@ -18,8 +18,34 @@
 }
 /* jt-mobile-photos */
 @media (max-width: 768px) {
-  .photo-grid, .photos-grid { column-count: 2 !important; column-gap: 8px !important; }
-  .load-more-btn, #load-more { width: 100% !important; padding: 14px !important; }
+  .content { padding: 16px 0 60px; }
+  .page-header { padding: 16px 16px 18px; }
+  .page-header h1 { font-size: 1.8rem; letter-spacing: 0.15em; margin-bottom: 6px; }
+  .page-header p { font-size: 0.7rem; letter-spacing: 0.12em; }
+  .tabs-wrapper { top: 52px; padding: 0 8px; margin: 0 0 16px; }
+  .tab { font-size: 0.67rem; letter-spacing: 0.09em; padding: 5px 9px; }
+  .group-section { margin-bottom: 24px; }
+  .group-title { font-size: 0.68rem; letter-spacing: 0.18em; margin-bottom: 8px; padding: 0 12px 8px; }
+  .photo-grid {
+    column-count: unset !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 3px !important;
+    column-gap: unset !important;
+  }
+  .photo-item {
+    margin-bottom: 0 !important;
+    break-inside: auto;
+    aspect-ratio: 1;
+    overflow: hidden;
+  }
+  .photo-item img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+  .load-more-wrap { padding: 20px 16px 12px; }
+  .load-more-btn { width: 100% !important; padding: 14px !important; }
 }
 </style>
 
