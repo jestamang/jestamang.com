@@ -17,9 +17,10 @@
   .home-btn { display: none !important; }
   /* Hide any stray login buttons on mobile homepage */
   .mobile-login-btn { display: none !important; }
-  /* Logo + nav spacing */
-  .logo-wrap { margin-bottom: 12px !important; }
-  .mobile-nav { padding-top: 8px !important; }
+  /* Mobile: flex column so logo + icons stack tight together */
+  body { display:flex !important; flex-direction:column !important; align-items:stretch; }
+  .logo-wrap { position:relative !important; padding-top:58px !important; margin-bottom:4px !important; width:100%; }
+  .mobile-nav { position:relative !important; bottom:auto !important; padding:0 10px 10px !important; }
   /* Shrink oversized icons */
   .mobile-nav .nav-icon[src*="instagram2"] { height: 50px !important; width: 50px !important; }
   .mobile-nav .nav-icon[src*="apple music"] { height: 50px !important; width: 50px !important; }
