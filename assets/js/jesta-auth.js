@@ -105,4 +105,23 @@
   } else {
     insertAuthNav();
   }
+
+  // ── Button press animation ────────────────────────────────────
+  var ps = document.createElement('style');
+  ps.textContent =
+    '@keyframes jtPress{0%,100%{transform:scale(1)}45%{transform:scale(0.93)filter:brightness(1.18)}}' +
+    '.jt-press{animation:jtPress 0.19s cubic-bezier(0.36,0.07,0.19,0.97) forwards!important}';
+  document.head.appendChild(ps);
+  document.addEventListener('pointerdown', function(e) {
+    var el = e.target.closest(
+      'button, .tab, .tab-btn, .al-card, .album-card, .art-btn, .circ-btn,' +
+      ' .load-more-btn, .home-link, .merch-card, .entity-card, .video-card,' +
+      ' .album-card, .game-card, .jtnav-mob-link'
+    );
+    if (!el || el.disabled) return;
+    el.classList.remove('jt-press');
+    void el.offsetWidth;
+    el.classList.add('jt-press');
+    el.addEventListener('animationend', function() { el.classList.remove('jt-press'); }, { once: true });
+  }, { passive: true });
 })();
