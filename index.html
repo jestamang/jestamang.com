@@ -1,5 +1,5 @@
 <!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Jestamang</title>
-<style>@font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype');font-display:swap}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}body{font-family:'Luminari',serif;background-image: #000;background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;height:100vh;overflow:hidden;position:relative;color:white}body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 35%,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.75) 100%);z-index:1;pointer-events:none}body::after{content:'';position:fixed;bottom:0;left:0;right:0;height:38vh;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 40%,transparent 100%);z-index:8;pointer-events:none}.logo-wrap{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;flex-direction:column;align-items:center;padding-top:2.8vh;animation:fadeInDown 1.4s cubic-bezier(0.22,1,0.36,1) 0.1s both}.logo{max-width:560px;width:78%;opacity:0.9;filter:drop-shadow(0 0 40px rgba(0,0,0,1)) drop-shadow(0 0 12px rgba(201,168,76,0.15))}.center-image{position:absolute;bottom:0;left:50%;transform:translateX(-50%);height:80vh;width:auto;max-width:45vw;z-index:7;opacity:0.8;filter:drop-shadow(0 20px 60px rgba(0,0,0,0.85));animation:riseUpCenter 1.6s cubic-bezier(0.22,1,0.36,1) 0.35s both}.nav-item{display:flex;flex-direction:column;align-items:center;gap:0;padding:2px 6px;text-decoration:none;opacity:0;animation:fadeIn 0.7s ease forwards;transition:transform 0.35s cubic-bezier(0.22,1,0.36,1),opacity 0.35s ease;margin-bottom:0.5rem;width:65px}.nav-item:hover{transform:translateY(-4px) scale(1.08)}.nav-icon{height:48px;width:48px;object-fit:contain;display:block;margin:0 auto;filter:drop-shadow(0 2px 10px rgba(0,0,0,1));transition:filter 0.4s ease,transform 0.35s ease}.nav-item:hover .nav-icon{filter:drop-shadow(0 0 10px rgba(201,168,76,0.85)) drop-shadow(0 0 22px rgba(201,168,76,0.4)) brightness(1.2)}@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}.nav-icon-breathe{animation:breathe 3s ease-in-out infinite}.nav-item:hover .nav-icon-breathe{animation-play-state:paused}.nav-label{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,230,210,0.85);text-shadow:0 1px 10px rgba(0,0,0,1),0 1px 4px rgba(0,0,0,0.9);white-space:nowrap;text-align:center;margin-top:3px;transition:color 0.4s ease,text-shadow 0.4s ease}.nav-item:hover .nav-label{color:#c9a84c;text-shadow:0 0 14px rgba(201,168,76,0.8),0 0 30px rgba(201,168,76,0.3)}.left-nav{position:absolute;left:2vw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;z-index:30;width:80px}.left-nav .nav-item:nth-child(1){animation-delay:1.10s}.left-nav .nav-item:nth-child(2){animation-delay:1.22s}.left-nav .nav-item:nth-child(3){animation-delay:1.34s}.left-nav .nav-item:nth-child(4){animation-delay:1.46s}.left-nav .nav-item:nth-child(5){animation-delay:1.58s}.left-nav .nav-item:nth-child(6){animation-delay:1.70s}.left-nav .nav-item:nth-child(7){animation-delay:1.82s}.left-nav .nav-item:nth-child(8){animation-delay:1.94s}.right-nav{position:absolute;right:2vw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;z-index:30;width:80px}.right-nav .nav-item:nth-child(1){animation-delay:1.16s}.right-nav .nav-item:nth-child(2){animation-delay:1.28s}.right-nav .nav-item:nth-child(3){animation-delay:1.40s}.right-nav .nav-item:nth-child(4){animation-delay:1.52s}.right-nav .nav-item:nth-child(5){animation-delay:1.64s}.right-nav .nav-item:nth-child(6){animation-delay:1.76s}.right-nav .nav-item:nth-child(7){animation-delay:1.88s}.right-nav .nav-item:nth-child(8){animation-delay:2.00s}@keyframes loginShimmer{0%,100%{filter:drop-shadow(0 2px 10px rgba(0,0,0,1)) brightness(1)}50%{filter:drop-shadow(0 0 10px rgba(201,168,76,0.7)) brightness(1.3)}}.login-shimmer{animation:loginShimmer 2.5s ease-in-out infinite}.login-shimmer:hover{animation-play-state:paused}.mobile-nav{display:none;position:absolute;bottom:10px;left:0;right:0;z-index:30;padding:0 12px}.mobile-nav-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px 8px}.mobile-nav .nav-item{opacity:1;animation:none;padding:5px 4px}.mobile-nav .nav-icon{height:44px;width:44px}.mobile-nav .nav-item{margin-bottom:0;width:auto}.mobile-nav .nav-label{font-size:0.44rem;letter-spacing:0.12em}@keyframes fadeInDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}@keyframes riseUp{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}@keyframes riseUpCenter{from{opacity:0;transform:translateX(-50%) translateY(36px)}to{opacity:0.8;transform:translateX(-50%) translateY(0)}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes blogPulse{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.08);filter:brightness(1.3) drop-shadow(0 0 6px rgba(201,168,76,0.6))}}.blog-icon{animation:blogPulse 3s ease-in-out infinite}.blog-icon:hover{animation-play-state:paused}@media (max-width:900px){.center-image{height:72vh}}@media (max-width:768px){.left-nav,.right-nav{display:none}.mobile-nav{display:block}.logo-wrap{padding-top:64px;margin-bottom:30px}.logo{width:72vw;max-width:280px;filter:none;box-shadow:none}.logo-rule{width:60%;margin-top:1vh}.center-image{display:none!important}body::after{height:32vh}.mobile-nav .nav-item{width:auto;margin-bottom:0}.mobile-nav .nav-icon{height:45px!important;width:45px!important;object-fit:contain}.mobile-nav .nav-label{font-size:0.6rem;letter-spacing:0.12em}#jt-bg{object-fit:cover!important;object-position:center top!important;position:absolute!important}}@media (max-width:480px){.mobile-nav-grid{grid-template-columns:repeat(4,1fr)}}/* jt-mobile-global-base */
+<style>@font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype');font-display:swap}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}body{font-family:'Luminari',serif;background-image: #000;background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;min-height:100vh;position:relative;color:white}#hp-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 35%,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.75) 100%);z-index:1;pointer-events:none}#hp-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:38vh;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 40%,transparent 100%);z-index:8;pointer-events:none}.logo-wrap{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;flex-direction:column;align-items:center;padding-top:2.8vh;animation:fadeInDown 1.4s cubic-bezier(0.22,1,0.36,1) 0.1s both}.logo{max-width:560px;width:78%;opacity:0.9;filter:drop-shadow(0 0 40px rgba(0,0,0,1)) drop-shadow(0 0 12px rgba(201,168,76,0.15))}.center-image{position:absolute;bottom:0;left:50%;transform:translateX(-50%);height:80vh;width:auto;max-width:45vw;z-index:7;opacity:0.8;filter:drop-shadow(0 20px 60px rgba(0,0,0,0.85));animation:riseUpCenter 1.6s cubic-bezier(0.22,1,0.36,1) 0.35s both}.nav-item{display:flex;flex-direction:column;align-items:center;gap:0;padding:2px 6px;text-decoration:none;opacity:0;animation:fadeIn 0.7s ease forwards;transition:transform 0.35s cubic-bezier(0.22,1,0.36,1),opacity 0.35s ease;margin-bottom:0.5rem;width:65px}.nav-item:hover{transform:translateY(-4px) scale(1.08)}.nav-icon{height:48px;width:48px;object-fit:contain;display:block;margin:0 auto;filter:drop-shadow(0 2px 10px rgba(0,0,0,1));transition:filter 0.4s ease,transform 0.35s ease}.nav-item:hover .nav-icon{filter:drop-shadow(0 0 10px rgba(201,168,76,0.85)) drop-shadow(0 0 22px rgba(201,168,76,0.4)) brightness(1.2)}@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}.nav-icon-breathe{animation:breathe 3s ease-in-out infinite}.nav-item:hover .nav-icon-breathe{animation-play-state:paused}.nav-label{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,230,210,0.85);text-shadow:0 1px 10px rgba(0,0,0,1),0 1px 4px rgba(0,0,0,0.9);white-space:nowrap;text-align:center;margin-top:3px;transition:color 0.4s ease,text-shadow 0.4s ease}.nav-item:hover .nav-label{color:#c9a84c;text-shadow:0 0 14px rgba(201,168,76,0.8),0 0 30px rgba(201,168,76,0.3)}.left-nav{position:absolute;left:2vw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;z-index:30;width:80px}.left-nav .nav-item:nth-child(1){animation-delay:1.10s}.left-nav .nav-item:nth-child(2){animation-delay:1.22s}.left-nav .nav-item:nth-child(3){animation-delay:1.34s}.left-nav .nav-item:nth-child(4){animation-delay:1.46s}.left-nav .nav-item:nth-child(5){animation-delay:1.58s}.left-nav .nav-item:nth-child(6){animation-delay:1.70s}.left-nav .nav-item:nth-child(7){animation-delay:1.82s}.left-nav .nav-item:nth-child(8){animation-delay:1.94s}.right-nav{position:absolute;right:2vw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;z-index:30;width:80px}.right-nav .nav-item:nth-child(1){animation-delay:1.16s}.right-nav .nav-item:nth-child(2){animation-delay:1.28s}.right-nav .nav-item:nth-child(3){animation-delay:1.40s}.right-nav .nav-item:nth-child(4){animation-delay:1.52s}.right-nav .nav-item:nth-child(5){animation-delay:1.64s}.right-nav .nav-item:nth-child(6){animation-delay:1.76s}.right-nav .nav-item:nth-child(7){animation-delay:1.88s}.right-nav .nav-item:nth-child(8){animation-delay:2.00s}@keyframes loginShimmer{0%,100%{filter:drop-shadow(0 2px 10px rgba(0,0,0,1)) brightness(1)}50%{filter:drop-shadow(0 0 10px rgba(201,168,76,0.7)) brightness(1.3)}}.login-shimmer{animation:loginShimmer 2.5s ease-in-out infinite}.login-shimmer:hover{animation-play-state:paused}.mobile-nav{display:none;position:absolute;bottom:10px;left:0;right:0;z-index:30;padding:0 12px}.mobile-nav-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px 8px}.mobile-nav .nav-item{opacity:1;animation:none;padding:5px 4px}.mobile-nav .nav-icon{height:44px;width:44px}.mobile-nav .nav-item{margin-bottom:0;width:auto}.mobile-nav .nav-label{font-size:0.44rem;letter-spacing:0.12em}@keyframes fadeInDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}@keyframes riseUp{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}@keyframes riseUpCenter{from{opacity:0;transform:translateX(-50%) translateY(36px)}to{opacity:0.8;transform:translateX(-50%) translateY(0)}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes blogPulse{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.08);filter:brightness(1.3) drop-shadow(0 0 6px rgba(201,168,76,0.6))}}.blog-icon{animation:blogPulse 3s ease-in-out infinite}.blog-icon:hover{animation-play-state:paused}@media (max-width:900px){.center-image{height:72vh}}@media (max-width:768px){.left-nav,.right-nav{display:none}.mobile-nav{display:block}.logo-wrap{padding-top:64px;margin-bottom:30px}.logo{width:72vw;max-width:280px;filter:none;box-shadow:none}.logo-rule{width:60%;margin-top:1vh}.center-image{display:none!important}body::after{height:32vh}.mobile-nav .nav-item{width:auto;margin-bottom:0}.mobile-nav .nav-icon{height:45px!important;width:45px!important;object-fit:contain}.mobile-nav .nav-label{font-size:0.6rem;letter-spacing:0.12em}#jt-bg{object-fit:cover!important;object-position:center top!important;position:absolute!important}}@media (max-width:480px){.mobile-nav-grid{grid-template-columns:repeat(4,1fr)}}/* jt-mobile-global-base */
 @media (max-width: 768px) {
   /* Prevent iOS input zoom */
   input, textarea, select { font-size: 16px !important; }
@@ -25,6 +25,66 @@
   .blog-icon { display: block !important; }
   .mobile-nav .nav-icon[src*="events"] { display: block !important; }
 }
+#hp-hero{height:100vh;position:relative;overflow:hidden}
+.hp-scroll-hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(201,168,76,0.45);font-size:0.55rem;letter-spacing:0.35em;text-transform:uppercase;animation:hpBounce 2.2s ease-in-out infinite;pointer-events:none;user-select:none}
+.hp-scroll-hint span{font-size:1.1rem;line-height:1}
+@keyframes hpBounce{0%,100%{transform:translateX(-50%) translateY(0)}55%{transform:translateX(-50%) translateY(9px)}}
+#hp-preview{position:relative;z-index:2;background:#000}
+.hp-section{padding:80px 60px;border-top:1px solid rgba(201,168,76,0.1);opacity:0;transform:translateY(48px);transition:opacity 0.85s ease,transform 0.85s ease}
+.hp-section.revealed{opacity:1;transform:translateY(0)}
+.hp-inner{display:flex;align-items:center;gap:64px;max-width:1280px;margin:0 auto}
+.hp-section:nth-child(even) .hp-inner{flex-direction:row-reverse}
+.hp-text{flex:0 0 260px}
+.hp-visual{flex:1;min-width:0}
+.hp-eyebrow{font-size:0.58rem;letter-spacing:0.5em;text-transform:uppercase;color:rgba(201,168,76,0.5);margin-bottom:14px;display:block}
+.hp-title{font-size:clamp(1.8rem,3.5vw,2.8rem);color:#c9a84c;text-shadow:0 0 40px rgba(201,168,76,0.2);margin-bottom:12px;line-height:1.1}
+.hp-desc{font-size:0.8rem;letter-spacing:0.06em;color:rgba(255,255,255,0.42);line-height:1.85;margin-bottom:28px}
+.hp-cta{display:inline-block;font-family:'Luminari',serif;font-size:0.67rem;letter-spacing:0.3em;text-transform:uppercase;color:#000;background:#c9a84c;text-decoration:none;padding:12px 28px;transition:background 0.25s,transform 0.2s,box-shadow 0.25s}
+.hp-cta:hover{background:#e0bb60;transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,0.3)}
+.hp-rule{width:36px;height:1px;background:rgba(201,168,76,0.3);margin:16px 0 24px}
+.hp-strip{display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:none}
+.hp-strip::-webkit-scrollbar{display:none}
+.hp-strip img{height:175px;width:auto;object-fit:cover;border:1px solid rgba(201,168,76,0.12);flex-shrink:0;filter:brightness(0.82);transition:filter 0.3s,transform 0.3s}
+.hp-strip img:hover{filter:brightness(1.05);transform:scale(1.03)}
+.hp-album-strip{display:flex;gap:14px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:none}
+.hp-album-strip::-webkit-scrollbar{display:none}
+.hp-album-card{flex-shrink:0;width:136px;text-align:center}
+.hp-album-card img{width:136px;height:136px;object-fit:cover;border:1px solid rgba(201,168,76,0.18);display:block;filter:brightness(0.82);transition:filter 0.3s,transform 0.3s}
+.hp-album-card:hover img{filter:brightness(1.05);transform:scale(1.02)}
+.hp-album-card span{display:block;font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.55);margin-top:8px}
+.hp-lyric-card{background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.14);padding:40px 32px;position:relative}
+.hp-lyric-card::before{content:'✦';position:absolute;top:-11px;left:50%;transform:translateX(-50%);color:rgba(201,168,76,0.4);background:#000;padding:0 14px;font-size:0.9rem}
+.hp-lyric-artists{display:flex;flex-direction:column;gap:0}
+.hp-lyric-row{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid rgba(201,168,76,0.08);padding:12px 0;font-size:0.7rem}
+.hp-lyric-row:first-child{padding-top:0}
+.hp-lyric-row:last-child{border-bottom:none;padding-bottom:0}
+.hp-lyric-artist{letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.65)}
+.hp-lyric-count{letter-spacing:0.15em;color:rgba(201,168,76,0.5);font-size:0.62rem}
+.hp-comix-duo{display:flex;gap:12px}
+.hp-comix-duo img{flex:1;width:50%;object-fit:contain;border:1px solid rgba(201,168,76,0.14);filter:brightness(0.85);transition:filter 0.3s}
+.hp-comix-duo img:hover{filter:brightness(1)}
+.hp-games-card{background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.14);padding:36px 28px}
+.hp-games-list{list-style:none;display:flex;flex-direction:column}
+.hp-games-list li{font-size:0.72rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(255,255,255,0.6);border-bottom:1px solid rgba(201,168,76,0.1);padding:14px 0}
+.hp-games-list li:first-child{padding-top:0}
+.hp-games-list li:last-child{border-bottom:none}
+.hp-merch-strip{display:flex;gap:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:none}
+.hp-merch-strip::-webkit-scrollbar{display:none}
+.hp-merch-item{flex-shrink:0;width:120px;text-align:center}
+.hp-merch-item img{width:120px;height:120px;object-fit:cover;border:1px solid rgba(201,168,76,0.18);display:block;filter:brightness(0.85);transition:filter 0.3s,transform 0.3s}
+.hp-merch-item:hover img{filter:brightness(1.05);transform:scale(1.03)}
+.hp-merch-name{display:block;font-size:0.5rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(201,168,76,0.65);margin-top:8px;margin-bottom:3px}
+.hp-merch-price{display:block;font-size:0.52rem;letter-spacing:0.1em;color:rgba(255,255,255,0.38)}
+.hp-blog-card{background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.14);padding:40px 32px}
+.hp-blog-date{display:block;font-size:0.58rem;letter-spacing:0.38em;text-transform:uppercase;color:rgba(201,168,76,0.5);margin-bottom:16px}
+.hp-blog-ttl{font-size:clamp(1.1rem,2.5vw,1.6rem);color:#c9a84c;margin-bottom:16px;line-height:1.3;letter-spacing:0.06em}
+.hp-blog-excerpt{font-size:0.78rem;letter-spacing:0.06em;color:rgba(255,255,255,0.48);line-height:1.95;font-style:italic}
+.hp-photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.hp-photo-grid img{width:100%;aspect-ratio:1;object-fit:cover;display:block;border:1px solid rgba(201,168,76,0.08);filter:brightness(0.78);transition:filter 0.3s,transform 0.3s}
+.hp-photo-grid img:hover{filter:brightness(1);transform:scale(1.02)}
+#hp-preview footer{border-top:1px solid rgba(201,168,76,0.1)}
+@media(max-width:900px){.hp-section{padding:72px 40px}}
+@media(max-width:768px){#hp-hero{height:auto;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}.hp-scroll-hint{display:none}#hp-preview{padding:0}.hp-section{padding:52px 20px}.hp-inner{flex-direction:column!important;gap:28px}.hp-text{flex:none;width:100%}.hp-visual{width:100%}.hp-strip img{height:125px}.hp-album-card{width:108px}.hp-album-card img{width:108px;height:108px}.hp-comix-duo{flex-direction:column}.hp-comix-duo img{width:100%;flex:none}.hp-photo-grid{grid-template-columns:repeat(2,1fr)}.hp-merch-item{width:108px}.hp-merch-item img{width:108px;height:108px}.hp-cta{display:block;text-align:center;padding:14px 20px;min-height:44px}}
 </style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
@@ -43,7 +103,234 @@
 <meta name="twitter:description" content="Official home of Jestamang — music, mythology, art, and the universe within.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 </head> <body>
+<div id="hp-hero">
 <img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72"> <div class="logo-wrap"> <img src="assets/homepage/logo txt.png" alt="Jestamang" class="logo"> </div> <img src="assets/homepage/logo png.png" alt="Jestamang" class="center-image"> <nav class="left-nav" aria-label="Main navigation"> <a href="entities.html" class="nav-item"> <img src="assets/homepage/nav-icons/entities.gif" alt="" class="nav-icon"> <span class="nav-label">Entities</span> </a> <a href="albums.html" class="nav-item"> <img src="assets/homepage/nav-icons/albums.gif" alt="" class="nav-icon"> <span class="nav-label">Albums</span> </a> <a href="lyrics.html" class="nav-item"> <img src="assets/homepage/nav-icons/lyrics.gif" alt="" class="nav-icon"> <span class="nav-label">Lyrics</span> </a> <a href="merch.html" class="nav-item"> <img src="assets/homepage/nav-icons/merch.gif" alt="" class="nav-icon"> <span class="nav-label">Merch</span> </a> <a href="photos.html" class="nav-item"> <img src="assets/homepage/nav-icons/photos.gif" alt="" class="nav-icon"> <span class="nav-label">Photos</span> </a> <a href="videos.html" class="nav-item"> <img src="assets/homepage/nav-icons/videos.gif" alt="" class="nav-icon"> <span class="nav-label">Videos</span> </a> <a href="blog.html" class="nav-item"> <img src="assets/homepage/nav-icons/blog.png" alt="" class="nav-icon blog-icon"> <span class="nav-label">Blog</span> </a> <a href="email.html" class="nav-item"> <img src="assets/homepage/nav-icons/E-mail.gif" alt="" class="nav-icon"> <span class="nav-label">Email</span> </a> </nav> <nav class="right-nav" aria-label="Social and store navigation"> <a href="instagram.html" class="nav-item"> <img src="assets/homepage/nav-icons/instagram2.gif" alt="" class="nav-icon" id="insta-icon-desktop"> <span class="nav-label">Instagram</span> </a> <a href="https://www.youtube.com/@jestamang" class="nav-item" target="_blank" rel="noopener noreferrer"> <img src="assets/homepage/nav-icons/youtube2.gif" alt="" class="nav-icon"> <span class="nav-label">YouTube</span> </a> <a href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" class="nav-item" target="_blank" rel="noopener noreferrer"> <img src="assets/homepage/nav-icons/spotify.gif" alt="" class="nav-icon"> <span class="nav-label">Spotify</span> </a> <a href="https://music.apple.com/us/artist/jestamang/1665724106" class="nav-item" target="_blank" rel="noopener noreferrer"> <img src="assets/homepage/nav-icons/apple music.gif" alt="" class="nav-icon"> <span class="nav-label">Apple Music</span> </a> <a href="comix.html" class="nav-item"> <img src="assets/homepage/nav-icons/comix2.png" alt="" class="nav-icon nav-icon-breathe"> <span class="nav-label">Comix</span> </a> <a href="games.html" class="nav-item"> <img src="assets/homepage/nav-icons/games.gif" alt="" class="nav-icon"> <span class="nav-label">Games</span> </a> <a href="shows.html" class="nav-item"> <img src="assets/homepage/nav-icons/events.gif" alt="" class="nav-icon"> <span class="nav-label">Events</span> </a> <a href="login.html" class="nav-item" id="hp-login-desktop"> <img src="assets/homepage/nav-icons/log%20in.png" alt="" class="nav-icon login-shimmer"> <span class="nav-label" id="hp-login-label-desktop">Login</span> </a> </nav> <nav class="mobile-nav" aria-label="Navigation"> <div class="mobile-nav-grid"> <a href="entities.html" class="nav-item"> <img src="assets/homepage/nav-icons/entities.gif" alt="" class="nav-icon"> <span class="nav-label">Entities</span> </a> <a href="albums.html" class="nav-item"> <img src="assets/homepage/nav-icons/albums.gif" alt="" class="nav-icon"> <span class="nav-label">Albums</span> </a> <a href="merch.html" class="nav-item"> <img src="assets/homepage/nav-icons/merch.gif" alt="" class="nav-icon"> <span class="nav-label">Merch</span> </a> <a href="photos.html" class="nav-item"> <img src="assets/homepage/nav-icons/photos.gif" alt="" class="nav-icon"> <span class="nav-label">Photos</span> </a> <a href="videos.html" class="nav-item"> <img src="assets/homepage/nav-icons/videos.gif" alt="" class="nav-icon"> <span class="nav-label">Videos</span> </a> <a href="blog.html" class="nav-item"> <img src="assets/homepage/nav-icons/blog.png" alt="" class="nav-icon blog-icon"> <span class="nav-label">Blog</span> </a> <a href="email.html" class="nav-item"> <img src="assets/homepage/nav-icons/E-mail.gif" alt="" class="nav-icon"> <span class="nav-label">Email</span> </a> <a href="lyrics.html" class="nav-item"> <img src="assets/homepage/nav-icons/lyrics.gif" alt="" class="nav-icon"> <span class="nav-label">Lyrics</span> </a> <a href="instagram.html" class="nav-item"> <img src="assets/homepage/nav-icons/instagram2.gif" alt="" class="nav-icon" id="insta-icon-mobile"> <span class="nav-label">Instagram</span> </a> <a href="https://www.youtube.com/@jestamang" class="nav-item" target="_blank" rel="noopener noreferrer"> <img src="assets/homepage/nav-icons/youtube2.gif" alt="" class="nav-icon"> <span class="nav-label">YouTube</span> </a> <a href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" class="nav-item" target="_blank" rel="noopener noreferrer"> <img src="assets/homepage/nav-icons/spotify.gif" alt="" class="nav-icon"> <span class="nav-label">Spotify</span> </a> <a href="https://music.apple.com/us/artist/jestamang/1665724106" class="nav-item" target="_blank" rel="noopener noreferrer"> <img src="assets/homepage/nav-icons/apple music.gif" alt="" class="nav-icon"> <span class="nav-label">Apple Music</span> </a> <a href="comix.html" class="nav-item"> <img src="assets/homepage/nav-icons/comix2.png" alt="" class="nav-icon nav-icon-breathe"> <span class="nav-label">Comix</span> </a> <a href="games.html" class="nav-item"> <img src="assets/homepage/nav-icons/games.gif" alt="" class="nav-icon"> <span class="nav-label">Games</span> </a> <a href="shows.html" class="nav-item"> <img src="assets/homepage/nav-icons/events.gif" alt="" class="nav-icon" style="display:block!important"> <span class="nav-label">Events</span> </a> <a href="login.html" class="nav-item" id="hp-login-mobile"> <img src="assets/homepage/nav-icons/log%20in.png" alt="" class="nav-icon login-shimmer"> <span class="nav-label" id="hp-login-label-mobile">Login</span> </a> </div> </nav>
+<div class="hp-scroll-hint"><span>↓</span><small>Scroll</small></div>
+</div>
+
+<section id="hp-preview">
+
+  <!-- ENTITIES -->
+  <div class="hp-section">
+    <div class="hp-inner">
+      <div class="hp-text">
+        <span class="hp-eyebrow">The Universe</span>
+        <h2 class="hp-title">Entities</h2>
+        <div class="hp-rule"></div>
+        <p class="hp-desc">The artists and collaborators woven into the Jestamang mythology. Each entity is a world of their own.</p>
+        <a href="entities.html" class="hp-cta">Enter</a>
+      </div>
+      <div class="hp-visual">
+        <div class="hp-strip">
+          <img src="assets/entities/ace of chase.jpg" alt="Ace of Chase" loading="lazy">
+          <img src="assets/entities/alissa orange.JPG" alt="Alissa Orange" loading="lazy">
+          <img src="assets/entities/caleb mars.jpg" alt="Caleb Mars" loading="lazy">
+          <img src="assets/entities/hodge.jpg" alt="Hodge" loading="lazy">
+          <img src="assets/entities/mutt tour.jpg" alt="Mutt Tour" loading="lazy">
+          <img src="assets/entities/perfect trip.jpg" alt="Perfect Trip" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALBUMS -->
+  <div class="hp-section">
+    <div class="hp-inner">
+      <div class="hp-text">
+        <span class="hp-eyebrow">The Catalog</span>
+        <h2 class="hp-title">Albums</h2>
+        <div class="hp-rule"></div>
+        <p class="hp-desc">Four studio records and a growing body of work. Every album is a chapter in the mythology.</p>
+        <a href="albums.html" class="hp-cta">Enter</a>
+      </div>
+      <div class="hp-visual">
+        <div class="hp-album-strip">
+          <div class="hp-album-card">
+            <img src="assets/albums/QUARTER DAYS/children/qu01.jpg" alt="Quarter Days" loading="lazy">
+            <span>Quarter Days</span>
+          </div>
+          <div class="hp-album-card">
+            <img src="assets/albums/QUARTER DAYS/kek-buh/qu02.jpg" alt="Quarter Days" loading="lazy">
+            <span>Quarter Days</span>
+          </div>
+          <div class="hp-album-card">
+            <img src="assets/albums/QUARTER DAYS/ace of chase/qu03.jpg" alt="Quarter Days" loading="lazy">
+            <span>Quarter Days</span>
+          </div>
+          <div class="hp-album-card">
+            <img src="assets/albums/NONS/caleb mars/non1.jpg" alt="Nons" loading="lazy">
+            <span>Nons</span>
+          </div>
+          <div class="hp-album-card">
+            <img src="assets/albums/NONS/mutt tour/non3.jpg" alt="Nons" loading="lazy">
+            <span>Nons</span>
+          </div>
+          <div class="hp-album-card">
+            <img src="assets/albums/2K2323/ace of chase/2k2323nov.jpg" alt="2K2323" loading="lazy">
+            <span>2K2323</span>
+          </div>
+          <div class="hp-album-card">
+            <img src="assets/albums/2K2123/alissa orange/2k2123aug.jpg" alt="2K2123" loading="lazy">
+            <span>2K2123</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LYRICS -->
+  <div class="hp-section">
+    <div class="hp-inner">
+      <div class="hp-text">
+        <span class="hp-eyebrow">The Words</span>
+        <h2 class="hp-title">Lyrics</h2>
+        <div class="hp-rule"></div>
+        <p class="hp-desc">Full lyrics to every release. The words behind the music — verse by verse, song by song.</p>
+        <a href="lyrics.html" class="hp-cta">Enter</a>
+      </div>
+      <div class="hp-visual">
+        <div class="hp-lyric-card">
+          <div class="hp-lyric-artists">
+            <div class="hp-lyric-row"><span class="hp-lyric-artist">Ace of Chase</span><span class="hp-lyric-count">Archive</span></div>
+            <div class="hp-lyric-row"><span class="hp-lyric-artist">Alissa Orange</span><span class="hp-lyric-count">Archive</span></div>
+            <div class="hp-lyric-row"><span class="hp-lyric-artist">Atlas is Alice Lillenger</span><span class="hp-lyric-count">Archive</span></div>
+            <div class="hp-lyric-row"><span class="hp-lyric-artist">Caleb Mars Hickman</span><span class="hp-lyric-count">Archive</span></div>
+            <div class="hp-lyric-row"><span class="hp-lyric-artist">Mutt Tour</span><span class="hp-lyric-count">Archive</span></div>
+            <div class="hp-lyric-row"><span class="hp-lyric-artist">Perfect Trip</span><span class="hp-lyric-count">Archive</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMIX -->
+  <div class="hp-section">
+    <div class="hp-inner">
+      <div class="hp-text">
+        <span class="hp-eyebrow">Sequential Art</span>
+        <h2 class="hp-title">Comix</h2>
+        <div class="hp-rule"></div>
+        <p class="hp-desc">The Jestamang mythology in sequential art. Original illustrations. The story told in panels.</p>
+        <a href="comix.html" class="hp-cta">Enter</a>
+      </div>
+      <div class="hp-visual">
+        <div class="hp-comix-duo">
+          <img src="assets/comix/1.png" alt="Jestamang Comix" loading="lazy">
+          <img src="assets/comix/2.png" alt="Jestamang Comix" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAMES -->
+  <div class="hp-section">
+    <div class="hp-inner">
+      <div class="hp-text">
+        <span class="hp-eyebrow">The Arcade</span>
+        <h2 class="hp-title">Games</h2>
+        <div class="hp-rule"></div>
+        <p class="hp-desc">Play within the mythology. Card games, memory, cosmic divination. All built for the Jestagang.</p>
+        <a href="games.html" class="hp-cta">Enter</a>
+      </div>
+      <div class="hp-visual">
+        <div class="hp-games-card">
+          <ul class="hp-games-list">
+            <li>Memory Vault</li>
+            <li>The Daily Sigil</li>
+            <li>21</li>
+            <li>Texas Hold Em</li>
+            <li>Cornhole</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MERCH -->
+  <div class="hp-section">
+    <div class="hp-inner">
+      <div class="hp-text">
+        <span class="hp-eyebrow">The Offerings</span>
+        <h2 class="hp-title">Merch</h2>
+        <div class="hp-rule"></div>
+        <p class="hp-desc">Artifacts from the Jestamang universe. Limited. Physical. Made to last.</p>
+        <a href="merch.html" class="hp-cta">Enter</a>
+      </div>
+      <div class="hp-visual">
+        <div class="hp-merch-strip">
+          <div class="hp-merch-item">
+            <img src="assets/merch/cards.png" alt="The Jestamang Card Deck" loading="lazy">
+            <span class="hp-merch-name">Card Deck</span>
+            <span class="hp-merch-price">$60</span>
+          </div>
+          <div class="hp-merch-item">
+            <img src="assets/merch/comix.png" alt="Jestamang Comix" loading="lazy">
+            <span class="hp-merch-name">Comix</span>
+            <span class="hp-merch-price">$30</span>
+          </div>
+          <div class="hp-merch-item">
+            <img src="assets/merch/polyphonies.jpeg" alt="Polyphonies" loading="lazy">
+            <span class="hp-merch-name">Polyphonies</span>
+            <span class="hp-merch-price">$40</span>
+          </div>
+          <div class="hp-merch-item">
+            <img src="assets/merch/puzzle.png" alt="The Jestamang Puzzle" loading="lazy">
+            <span class="hp-merch-name">Puzzle</span>
+            <span class="hp-merch-price">$45</span>
+          </div>
+          <div class="hp-merch-item">
+            <img src="assets/merch/t shirt.png" alt="Jestamang T-Shirt" loading="lazy">
+            <span class="hp-merch-name">T-Shirt</span>
+            <span class="hp-merch-price">$35</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOG -->
+  <div class="hp-section">
+    <div class="hp-inner">
+      <div class="hp-text">
+        <span class="hp-eyebrow">Dispatches</span>
+        <h2 class="hp-title">Blog</h2>
+        <div class="hp-rule"></div>
+        <p class="hp-desc">Writings from the Jestamang universe. Updates, reflections, and communications for the Jestagang.</p>
+        <a href="blog.html" class="hp-cta">Enter</a>
+      </div>
+      <div class="hp-visual">
+        <div class="hp-blog-card">
+          <span class="hp-blog-date">Jan 17, 2026</span>
+          <h3 class="hp-blog-ttl">For the Jestagang</h3>
+          <p class="hp-blog-excerpt">So I had been interested in art &amp; music since a small child. These dispatches are for those who came along for the ride.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHOTOS -->
+  <div class="hp-section">
+    <div class="hp-inner">
+      <div class="hp-text">
+        <span class="hp-eyebrow">The Archive</span>
+        <h2 class="hp-title">Photos</h2>
+        <div class="hp-rule"></div>
+        <p class="hp-desc">Images from within the mythology. Moments, portraits, and scenes from the Jestamang world.</p>
+        <a href="photos.html" class="hp-cta">Enter</a>
+      </div>
+      <div class="hp-visual">
+        <div class="hp-photo-grid">
+          <img src="assets/photos/addison.jpg" alt="" loading="lazy">
+          <img src="assets/photos/atlas is alice lillenger.jpg" alt="" loading="lazy">
+          <img src="assets/photos/austinich.jpg" alt="" loading="lazy">
+          <img src="assets/photos/beach records.jpg" alt="" loading="lazy">
+          <img src="assets/photos/big boy new cat records.jpg" alt="" loading="lazy">
+          <img src="assets/photos/big smoke.jpg" alt="" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </div>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
@@ -95,4 +382,15 @@
   <span style="margin: 0 8px; color: rgba(201,168,76,0.9)">✦</span>
   <a href="refund.html" style="color: rgba(201,168,76,0.9); text-decoration: none;">Refund Policy</a>
 </footer>
+</section><!-- /#hp-preview -->
+<script>
+(function(){
+  var secs=document.querySelectorAll('.hp-section');
+  if(!secs.length||!window.IntersectionObserver){secs.forEach(function(s){s.classList.add('revealed');});return;}
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('revealed');io.unobserve(e.target);}});
+  },{threshold:0.1});
+  secs.forEach(function(s){io.observe(s);});
+})();
+</script>
 </body> </html>
