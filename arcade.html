@@ -348,67 +348,6 @@ canvas{
 .pk-pot-row{text-align:center;font-size:0.8rem;letter-spacing:0.25em;color:rgba(201,168,76,0.7);padding:8px 0}
 .pk-pot-row span{color:#c9a84c}
 .pk-actions{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0;justify-content:center}
-/* SNAKE EYES SPECIFIC */
-.se-dice-row{display:flex;gap:20px;justify-content:center;padding:20px 0}
-.se-die-wrap .die{width:80px;height:80px;padding:12px;gap:6px}
-.se-die-wrap .pip{width:14px;height:14px}
-.se-score-row{display:flex;justify-content:space-around;font-size:0.78rem;letter-spacing:0.2em;color:rgba(201,168,76,0.7);padding:10px 0}
-.se-score-row span{color:#c9a84c;font-size:1.1rem}
-.se-turn-row{text-align:center;font-size:0.72rem;letter-spacing:0.2em;color:rgba(201,168,76,0.5);padding:6px 0}
-.se-turn-row span{color:#c9a84c;font-size:0.9rem}
-#se-flash{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  background:rgba(180,0,0,0.35);
-  align-items:center;
-  justify-content:center;
-  font-size:5rem;
-  color:#fff;
-  pointer-events:none;
-  animation:flashAnim 1.2s ease;
-}
-@keyframes flashAnim{0%{opacity:0}20%{opacity:1}80%{opacity:1}100%{opacity:0}}
-/* CRAPS SPECIFIC */
-.cr-dice-row{display:flex;gap:24px;justify-content:center;padding:24px 0}
-.cr-die-wrap .die{width:80px;height:80px;padding:12px;gap:6px}
-.cr-die-wrap .pip{width:14px;height:14px}
-.cr-phase-display{text-align:center;font-size:0.75rem;letter-spacing:0.3em;color:rgba(201,168,76,0.6);text-transform:uppercase;margin-bottom:6px}
-.cr-point-display{text-align:center;font-size:3rem;color:#c9a84c;letter-spacing:0.15em;min-height:60px;line-height:1}
-.cr-bet-types{display:flex;gap:12px;justify-content:center;margin:12px 0}
-.cr-bet-btn{
-  font-family:'Luminari',serif;
-  font-size:0.72rem;
-  letter-spacing:0.2em;
-  text-transform:uppercase;
-  padding:10px 24px;
-  cursor:pointer;
-  border:1px solid rgba(201,168,76,0.35);
-  background:none;
-  color:rgba(201,168,76,0.7);
-  transition:all 0.2s;
-}
-.cr-bet-btn:hover,.cr-bet-btn.selected{background:rgba(201,168,76,0.15);border-color:#c9a84c;color:#c9a84c}
-.cr-bet-btn:disabled{opacity:0.3;cursor:default;pointer-events:none}
-/* DARTS SPECIFIC */
-.dt-scores{display:flex;justify-content:space-around;font-size:0.85rem;letter-spacing:0.2em;color:rgba(201,168,76,0.7);padding:12px 0;margin-bottom:8px}
-.dt-scores .big{font-size:2rem;color:#c9a84c;display:block}
-.dt-turn-indicator{text-align:center;font-size:0.7rem;letter-spacing:0.25em;color:rgba(201,168,76,0.5);text-transform:uppercase;margin-bottom:8px}
-.dt-dart-slots{display:flex;gap:8px;justify-content:center;padding:8px 0;margin-bottom:8px}
-.dt-dart-slot{
-  padding:5px 12px;
-  border:1px solid rgba(201,168,76,0.2);
-  font-size:0.7rem;
-  letter-spacing:0.1em;
-  color:rgba(201,168,76,0.3);
-  min-width:60px;
-  text-align:center;
-}
-.dt-dart-slot.filled{border-color:rgba(201,168,76,0.6);color:rgba(201,168,76,0.9)}
-/* BEER PONG SPECIFIC */
-.bp-scores{display:flex;justify-content:space-around;padding:12px 0;font-size:0.78rem;letter-spacing:0.2em;color:rgba(201,168,76,0.7)}
-.bp-scores .n{color:#c9a84c;font-size:1.2rem}
 /* CORNHOLE SPECIFIC */
 .ch-scores{display:flex;justify-content:space-around;padding:12px 0;font-size:0.78rem;letter-spacing:0.2em;color:rgba(201,168,76,0.7)}
 .ch-scores .n{color:#c9a84c;font-size:1.4rem}
@@ -484,10 +423,6 @@ canvas{
   .game-msg { font-size: 0.8rem; }
   .total-display { font-size: 0.78rem; }
 
-  /* Dice */
-  .se-die-wrap .die, .cr-die-wrap .die { width: 60px !important; height: 60px !important; padding: 8px !important; gap: 4px !important; }
-  .se-die-wrap .pip, .cr-die-wrap .pip { width: 10px !important; height: 10px !important; }
-
   /* Canvas games */
   canvas { max-width: 100% !important; height: auto !important; transform: scale(0.85); transform-origin: top center; }
 }
@@ -529,31 +464,27 @@ canvas{
 .mv-overlay-stats{font-size:0.85rem;letter-spacing:0.12em;color:rgba(201,168,76,0.65)}
 .win-title{font-size:clamp(2rem,7vw,4rem);letter-spacing:0.5em;color:#c9a84c;text-shadow:0 0 60px rgba(201,168,76,0.7)}
 @media(max-width:768px){.mv-grid{gap:7px;max-width:100%}.mv-hud{gap:18px}.mv-back-badge{width:60%}}
-/* ORACLE */
+/* DAILY SIGIL */
 .oracle-wrap-inner{text-align:center}
 .drawn-count{font-size:0.58rem;letter-spacing:0.3em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:16px;min-height:1.2em}
 .card-stage{width:260px;height:380px;margin:0 auto 28px;perspective:1200px}
-.oracle-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.55s cubic-bezier(0.4,0,0.2,1)}
+.oracle-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1)}
 .oracle-card.revealed{transform:rotateY(180deg)}
-.card-face,.card-back-o{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid rgba(201,168,76,0.3);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 18px;overflow:hidden}
-.card-back-o{background:rgba(6,2,1,0.97);gap:12px}
-.card-back-glyph{font-size:3.5rem;color:rgba(201,168,76,0.4);animation:backpulse 4s ease-in-out infinite}
-@keyframes backpulse{0%,100%{color:rgba(201,168,76,0.35);text-shadow:none}50%{color:rgba(201,168,76,0.7);text-shadow:0 0 30px rgba(201,168,76,0.4)}}
-.card-back-label{font-size:0.52rem;letter-spacing:0.5em;color:rgba(201,168,76,0.2);text-transform:uppercase}
-.card-face{background:rgba(6,2,1,0.97);transform:rotateY(180deg);gap:10px;text-align:center;justify-content:flex-start;padding-top:18px}
-.card-arcana{font-size:0.52rem;letter-spacing:0.45em;color:rgba(201,168,76,0.5);text-transform:uppercase;border-top:1px solid rgba(201,168,76,0.15);border-bottom:1px solid rgba(201,168,76,0.15);padding:5px 12px;width:100%;flex-shrink:0}
-.card-cname{font-size:clamp(1rem,3vw,1.35rem);letter-spacing:0.1em;color:#c9a84c;text-shadow:0 0 18px rgba(201,168,76,0.4);line-height:1.2;flex-shrink:0}
-.card-cglyph{font-size:1.6rem;color:rgba(201,168,76,0.5);flex-shrink:0;font-family:Georgia,'Times New Roman',serif}
-.card-crule{width:50px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.5),transparent);flex-shrink:0}
-.card-reading{font-size:0.72rem;font-style:italic;line-height:1.65;color:rgba(240,228,208,0.8);letter-spacing:0.02em;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:7;-webkit-box-orient:vertical}
+.card-face,.card-back-o{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 18px;overflow:hidden}
+.card-back-o{background:linear-gradient(135deg,#b8922e,#c9a84c,#e0c060,#c9a84c,#a07828);border:2px solid rgba(201,168,76,0.9);gap:12px;box-shadow:0 0 40px rgba(201,168,76,0.25)}
+@keyframes backpulse{0%,100%{opacity:0.7;filter:drop-shadow(0 0 6px rgba(201,168,76,0.4))}50%{opacity:1;filter:drop-shadow(0 0 18px rgba(201,168,76,0.8))}}
+.card-back-label{font-size:0.52rem;letter-spacing:0.5em;color:rgba(20,10,2,0.65);text-transform:uppercase;font-family:'Luminari',serif;margin-top:8px}
+.card-face{background:rgba(4,2,1,0.98);border:1px solid rgba(201,168,76,0.5);transform:rotateY(180deg);gap:10px;text-align:center;justify-content:flex-start;padding-top:18px;box-shadow:inset 0 0 40px rgba(201,168,76,0.05)}
+.card-arcana{font-size:0.52rem;letter-spacing:0.45em;color:rgba(201,168,76,0.5);text-transform:uppercase;border-top:1px solid rgba(201,168,76,0.2);border-bottom:1px solid rgba(201,168,76,0.2);padding:5px 12px;width:100%;flex-shrink:0}
+.card-cname{font-size:clamp(1rem,3vw,1.35rem);letter-spacing:0.12em;color:#c9a84c;text-shadow:0 0 22px rgba(201,168,76,0.5);line-height:1.2;flex-shrink:0;font-family:'Luminari',serif}
+.card-cglyph{font-size:1.6rem;color:rgba(201,168,76,0.6);flex-shrink:0}
+.card-crule{width:50px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.6),transparent);flex-shrink:0}
+.card-reading{font-size:0.75rem;font-style:italic;line-height:1.7;color:rgba(240,228,208,0.85);letter-spacing:0.03em;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:7;-webkit-box-orient:vertical}
 .card-signature{font-size:0.5rem;letter-spacing:0.28em;color:rgba(201,168,76,0.3);text-transform:uppercase;flex-shrink:0}
 .oracle-btns{display:flex;flex-direction:column;align-items:center;gap:12px}
-.draw-btn{font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.4em;text-transform:uppercase;color:#000;background:#c9a84c;border:1px solid #c9a84c;padding:13px 52px;cursor:pointer;transition:background 0.2s,box-shadow 0.2s}
+.draw-btn{font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.4em;text-transform:uppercase;color:#000;background:#c9a84c;border:1px solid #c9a84c;padding:13px 52px;cursor:pointer;transition:background 0.2s,box-shadow 0.2s;min-height:44px}
 .draw-btn:hover{background:#e0bc5a;box-shadow:0 0 28px rgba(201,168,76,0.45)}
 .draw-btn:disabled{opacity:0.35;cursor:default;pointer-events:none}
-.reset-btn{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;border:1px solid rgba(201,168,76,0.25);padding:8px 24px;cursor:pointer;transition:color 0.2s,border-color 0.2s;visibility:hidden}
-.reset-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.6)}
-.reset-btn.show{visibility:visible}
 </style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
@@ -561,15 +492,15 @@ canvas{
   <link rel="dns-prefetch" href="https://firestore.googleapis.com">
 <link rel="icon" type="image/png" href="assets/homepage/logo%20png.png">
 <link rel="apple-touch-icon" href="assets/homepage/logo%20png.png">
-<meta name="description" content="The Jestamang Arcade. Play blackjack, poker, craps, and more.">
+<meta name="description" content="The Jestamang Arcade. Play blackjack, poker, cornhole, and more.">
 <meta property="og:title" content="Arcade — Jestamang">
-<meta property="og:description" content="The Jestamang Arcade. Play blackjack, poker, craps, and more.">
+<meta property="og:description" content="The Jestamang Arcade. Play blackjack, poker, cornhole, and more.">
 <meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jestamang.com/arcade.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Arcade — Jestamang">
-<meta name="twitter:description" content="The Jestamang Arcade. Play blackjack, poker, craps, and more.">
+<meta name="twitter:description" content="The Jestamang Arcade. Play blackjack, poker, cornhole, and more.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 </head>
 <body>
@@ -579,14 +510,10 @@ canvas{
 
 <div id="arcade-nav">
   <a class="anav-link" href="#memory">Memory Vault</a>
-  <a class="anav-link" href="#oracle">The Oracle</a>
+  <a class="anav-link" href="#oracle">The Daily Sigil</a>
   <a class="anav-link" href="#blackjack">21</a>
-  <a class="anav-link" href="#snake-eyes">Snake Eyes</a>
   <a class="anav-link" href="#poker">Hold Em</a>
   <a class="anav-link" href="#cornhole">Cornhole</a>
-  <a class="anav-link" href="#beer-pong">Beer Pong</a>
-  <a class="anav-link" href="#craps">Let's Roll</a>
-  <a class="anav-link" href="#darts">Darts</a>
 </div>
 
 <div class="page-content">
@@ -602,7 +529,7 @@ canvas{
       <div class="mv-hud">
         <div class="mv-hud-item">
           <span class="mv-hud-label">Lives</span>
-          <div class="mv-hud-val mv-lives" id="mv-lives"><span class="life-on">✦</span><span class="life-on">✦</span><span class="life-on">✦</span></div>
+          <div class="mv-hud-val mv-lives" id="mv-lives"><span class="life-on">✦</span><span class="life-on">✦</span><span class="life-on">✦</span><span class="life-on">✦</span><span class="life-on">✦</span><span class="life-on">✦</span></div>
         </div>
         <div class="mv-hud-item">
           <span class="mv-hud-label">Time</span>
@@ -664,29 +591,33 @@ canvas{
   <div class="g-div"><span>✦ ✦ ✦</span></div>
 
   <section id="oracle" class="game-section">
-    <h2 class="game-title">The Oracle</h2>
-    <p class="game-lore">Draw from the deck of fate. Twenty-one cards await.</p>
+    <h2 class="game-title">The Daily Sigil</h2>
+    <p class="game-lore">One draw per day. The stars decide what you carry.</p>
     <div class="game-area oracle-wrap-inner">
       <div class="drawn-count" id="drawn-count">&nbsp;</div>
       <div class="card-stage">
         <div class="oracle-card" id="oracle-card">
-          <div class="card-back-o">
-            <div class="card-back-glyph">✦</div>
-            <div class="card-back-label">The Oracle Awaits</div>
+          <div class="card-back-o" id="sigil-back">
+            <img src="assets/homepage/jestamang-badge.png" alt="" aria-hidden="true" style="width:62%;height:62%;object-fit:contain;opacity:0.75;animation:backpulse 4s ease-in-out infinite">
+            <div class="card-back-label" style="margin-top:10px">The Daily Sigil</div>
           </div>
           <div class="card-face">
             <div class="card-arcana" id="c-arcana">&nbsp;</div>
             <div class="card-cname" id="c-name">&nbsp;</div>
-            <div class="card-cglyph" id="c-glyph">&nbsp;</div>
+            <div class="card-cglyph" id="c-glyph">✦</div>
             <div class="card-crule"></div>
             <div class="card-reading" id="c-reading">&nbsp;</div>
-            <div class="card-signature">— the oracle of jestamang</div>
+            <div class="card-signature">— the daily sigil of jestamang</div>
           </div>
         </div>
       </div>
       <div class="oracle-btns">
-        <button class="draw-btn" id="draw-btn">Draw a Card</button>
-        <button class="reset-btn" id="reset-btn">Reshuffle the Deck</button>
+        <button class="draw-btn" id="draw-btn">Draw Your Sigil</button>
+        <button class="gbtn" id="sigil-share-btn" style="display:none;font-size:0.72rem;letter-spacing:0.25em;margin-top:4px">Share ✦</button>
+      </div>
+      <div id="sigil-countdown" style="display:none;text-align:center;margin-top:18px;font-size:0.72rem;letter-spacing:0.22em;color:rgba(201,168,76,0.55);line-height:1.8">
+        <div style="font-size:0.62rem;letter-spacing:0.35em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:6px">YOUR SIGIL HAS BEEN CAST · RETURN WHEN THE STARS SHIFT</div>
+        <div id="sigil-timer" style="font-size:1.1rem;color:#c9a84c;letter-spacing:0.2em">00:00:00</div>
       </div>
     </div>
     <div class="instr-box">
@@ -695,10 +626,11 @@ canvas{
       </button>
       <div class="instr-content">
         <ul class="instr-list">
-          <li>Click Draw a Card to flip and receive a reading</li>
-          <li>21 unique cards in the deck — each holds a different message</li>
-          <li>Click again to draw a new card</li>
-          <li>Reshuffle the deck after all 21 have been drawn</li>
+          <li>One card is drawn per day — the draw locks for 24 hours</li>
+          <li>Click Draw Your Sigil to flip and receive your cosmic reading</li>
+          <li>22 unique cards from the Jestamang universe</li>
+          <li>Your sigil persists across reloads within the 24-hour window</li>
+          <li>Share your daily sigil with one click after drawing</li>
         </ul>
       </div>
     </div>
@@ -754,44 +686,6 @@ canvas{
       </div>
     </div>
   </section>
-
-  <div class="g-div"><span>✦ ✦ ✦</span></div>
-
-  <!-- ═══════════════════════════════════════════════════
-       GAME 2: SNAKE EYES
-  ═══════════════════════════════════════════════════ -->
-  <section id="snake-eyes" class="game-section">
-    <h2 class="game-title">Snake Eyes</h2>
-    <p class="game-lore">Roll and climb. The ones watch. Greed will find you.</p>
-    <div class="game-area">
-      <div class="se-score-row">
-        <div>YOU<br><span id="se-pscore">0</span></div>
-        <div style="color:rgba(255,255,255,0.2);font-size:1.5rem">vs</div>
-        <div><span id="se-cname">CPU</span><br><span id="se-cscore">0</span></div>
-      </div>
-      <div class="se-dice-row">
-        <div class="se-die-wrap"><div class="die" id="se-d1"></div></div>
-        <div class="se-die-wrap"><div class="die" id="se-d2"></div></div>
-      </div>
-      <div class="se-turn-row">Turn Points: <span id="se-turn">0</span></div>
-      <div class="game-msg" id="se-msg">Your turn. Roll the dice.</div>
-      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:8px 0">
-        <button class="gbtn primary" id="se-roll">Roll</button>
-        <button class="gbtn" id="se-bank">Bank</button>
-        <button class="gbtn" id="se-new">New Game</button>
-      </div>
-    </div>
-  
-    <div class="instr-box">
-      <button class="instr-toggle" onclick="_toggleInstr(this)">
-        How to Play <span class="instr-arrow">&#9662;</span>
-      </button>
-      <div class="instr-content">
-        <ul class="instr-list"><li>Roll the dice each turn to accumulate points</li><li>Click Bank at any time to lock in your turn points safely</li><li>Roll snake eyes (both dice show 1) and lose all unbanked points for that turn</li><li>Rolling any other doubles multiplies your points for that roll</li><li>Rolling a total of 7 gives a Lucky 7 bonus</li><li>First player to reach 100 wins</li></ul>
-      </div>
-    </div>
-  </section>
-  <div id="se-flash">🐍</div>
 
   <div class="g-div"><span>✦ ✦ ✦</span></div>
 
@@ -883,117 +777,6 @@ canvas{
       </button>
       <div class="instr-content">
         <ul class="instr-list"><li>Click and hold the power meter to charge your throw, release to toss</li><li>Bag through the hole = 3 pts · Bag landing on the board = 1 pt</li><li>Cancellation scoring: only the net difference between each round's totals counts</li><li>First team to reach exactly 21 wins</li></ul>
-      </div>
-    </div>
-  </section>
-
-  <div class="g-div"><span>✦ ✦ ✦</span></div>
-
-  <!-- ═══════════════════════════════════════════════════
-       GAME 5: BEER PONG
-  ═══════════════════════════════════════════════════ -->
-  <section id="beer-pong" class="game-section">
-    <h2 class="game-title">Beer Pong</h2>
-    <p class="game-lore">Ten cups. One ball. The ritual of aim. May the arc be in your favor.</p>
-    <div class="game-area">
-      <div class="bp-scores">
-        <div>YOU: <span class="n" id="bp-phit">0</span>/10 sunk</div>
-        <div><span id="bp-cname">CPU</span>: <span class="n" id="bp-chit">0</span>/10 sunk</div>
-      </div>
-      <canvas id="bp-canvas" width="480" height="560"></canvas>
-      <div class="game-msg" id="bp-msg">Click the canvas to aim and throw.</div>
-      <div style="text-align:center;margin-top:10px">
-        <button class="gbtn" id="bp-new">New Game</button>
-      </div>
-    </div>
-  
-    <div class="instr-box">
-      <button class="instr-toggle" onclick="_toggleInstr(this)">
-        How to Play <span class="instr-arrow">&#9662;</span>
-      </button>
-      <div class="instr-content">
-        <ul class="instr-list"><li>Top-down view — you and the AI each have 10 cups arranged in a triangle</li><li>Click to aim, click again to shoot the ball</li><li>Sink a cup and it's removed from the rack</li><li>Sink all 10 of the opponent's cups to win</li><li>AI opponent shoots at roughly 72% accuracy — you go first</li></ul>
-      </div>
-    </div>
-  </section>
-
-  <div class="g-div"><span>✦ ✦ ✦</span></div>
-
-  <!-- ═══════════════════════════════════════════════════
-       GAME 6: CRAPS
-  ═══════════════════════════════════════════════════ -->
-  <section id="craps" class="game-section">
-    <h2 class="game-title">Let's Roll</h2>
-    <p class="game-lore">The bones speak. Seven liberates. Seven destroys. The table remembers everything.</p>
-    <div class="game-area">
-      <div class="cr-phase-display" id="cr-phase">Come Out Roll</div>
-      <div class="cr-point-display" id="cr-point"></div>
-      <div class="cr-dice-row">
-        <div class="cr-die-wrap"><div class="die" id="cr-d1"></div></div>
-        <div class="cr-die-wrap"><div class="die" id="cr-d2"></div></div>
-      </div>
-      <div style="text-align:center;margin-bottom:8px;font-size:0.72rem;letter-spacing:0.2em;color:rgba(201,168,76,0.6)">
-        CHIPS: <b id="cr-chips" style="color:#c9a84c">500</b> &nbsp; BET: <b id="cr-bet" style="color:#c9a84c">0</b>
-      </div>
-      <div class="cr-bet-types">
-        <button class="cr-bet-btn" id="cr-pass">Pass Line</button>
-        <button class="cr-bet-btn" id="cr-dontpass">Don't Pass</button>
-      </div>
-      <div class="chip-row" style="justify-content:center;margin:8px 0">
-        <button class="chip chip-10" id="cr-add10">10</button>
-        <button class="chip chip-25" id="cr-add25">25</button>
-        <button class="chip chip-100" id="cr-add100">100</button>
-      </div>
-      <div style="display:flex;gap:10px;justify-content:center;margin-top:10px">
-        <button class="gbtn primary" id="cr-roll">Roll</button>
-        <button class="gbtn" id="cr-new">New Game</button>
-      </div>
-      <div class="game-msg" id="cr-msg">Choose Pass Line or Don't Pass, place your bet, then roll.</div>
-    </div>
-  
-    <div class="instr-box">
-      <button class="instr-toggle" onclick="_toggleInstr(this)">
-        How to Play <span class="instr-arrow">&#9662;</span>
-      </button>
-      <div class="instr-content">
-        <ul class="instr-list"><li>Select a chip and click the Pass or Don't Pass bet area to wager</li><li>Come-out roll: rolling 7 or 11 wins Pass bets; rolling 2, 3, or 12 loses them</li><li>Any other number becomes the Point — roll the Point again before rolling a 7 to win Pass</li><li>Rolling a 7 before hitting the Point wins Don't Pass bets</li><li>Keep betting rounds to grow or protect your stack</li></ul>
-      </div>
-    </div>
-  </section>
-
-  <div class="g-div"><span>✦ ✦ ✦</span></div>
-
-  <!-- ═══════════════════════════════════════════════════
-       GAME 7: DARTS
-  ═══════════════════════════════════════════════════ -->
-  <section id="darts" class="game-section">
-    <h2 class="game-title">Darts</h2>
-    <p class="game-lore">Five-hundred-and-one steps to zero. Aim for the double. Do not bust.</p>
-    <div class="game-area">
-      <div class="dt-scores">
-        <div>YOU<br><span class="big" id="dt-pscore">501</span></div>
-        <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);align-self:center">501</div>
-        <div><span id="dt-cname">CPU</span><br><span class="big" id="dt-cscore">501</span></div>
-      </div>
-      <div class="dt-turn-indicator" id="dt-turn">Your Turn — Click to throw</div>
-      <div class="dt-dart-slots" id="dt-darts">
-        <div class="dt-dart-slot" id="dt-slot0">—</div>
-        <div class="dt-dart-slot" id="dt-slot1">—</div>
-        <div class="dt-dart-slot" id="dt-slot2">—</div>
-      </div>
-      <canvas id="dt-canvas" width="500" height="500"></canvas>
-      <div class="game-msg" id="dt-msg">Click the board to throw. Last dart must be a double to finish.</div>
-      <div style="text-align:center;margin-top:10px">
-        <button class="gbtn" id="dt-new">New Game</button>
-      </div>
-    </div>
-  
-    <div class="instr-box">
-      <button class="instr-toggle" onclick="_toggleInstr(this)">
-        How to Play <span class="instr-arrow">&#9662;</span>
-      </button>
-      <div class="instr-content">
-        <ul class="instr-list"><li>Both players start at 501 and count down to exactly 0</li><li>Click anywhere on the dartboard to throw — each dart lands near your aim with slight randomness</li><li>Bust: if your score would drop below 0 or land on 1, your turn is cancelled and score unchanged</li><li>You must finish exactly on a double ring or the bullseye (double bull)</li><li>AI targets Triple 20 and adjusts strategy as it closes in on 0</li></ul>
       </div>
     </div>
   </section>
@@ -1164,139 +947,7 @@ function _pickCpuName(used){used=used||[];var pool=_CARTOON_NAMES.filter(functio
   document.getElementById('bj-new').onclick=()=>{chips=500;bet=0;phase='bet';newDeck();pHand=[];dHand=[];msg('New game. Place your bet.');renderHands();};
 })();
 
-/* ════════════════════════════════════════════════════════════
-   GAME 2: SNAKE EYES
-════════════════════════════════════════════════════════════ */
-(function seGame(){var SE_CPU=_pickCpuName();document.getElementById('se-cname').textContent=SE_CPU;
-  let pScore=0,cScore=0,turnPts=0,myTurn=true,rolling=false;
-  const GOAL=100;
-
-  function updateScores(){
-    document.getElementById('se-pscore').textContent=pScore;
-    document.getElementById('se-cscore').textContent=cScore;
-  }
-
-  function rollDice(){
-    if(rolling||!myTurn)return;
-    rolling=true;
-    document.getElementById('se-roll').disabled=true;
-    document.getElementById('se-bank').disabled=true;
-    const d1=document.getElementById('se-d1'),d2=document.getElementById('se-d2');
-    d1.classList.add('rolling');d2.classList.add('rolling');
-    let ticks=0;
-    const int=setInterval(()=>{
-      _renderDie(d1,Math.ceil(Math.random()*6));
-      _renderDie(d2,Math.ceil(Math.random()*6));
-      if(++ticks>=8){
-        clearInterval(int);
-        const r1=Math.ceil(Math.random()*6),r2=Math.ceil(Math.random()*6);
-        _renderDie(d1,r1);_renderDie(d2,r2);
-        d1.classList.remove('rolling');d2.classList.remove('rolling');
-        rolling=false;
-        processRoll(r1,r2);
-      }
-    },80);
-  }
-
-  function processRoll(r1,r2){
-    if(r1===1&&r2===1){snakeEyes();return;}
-    let pts=r1+r2;
-    const dbl=r1===r2;
-    if(dbl)pts*=2;
-    if(!dbl&&r1+r2===7)pts+=7;
-    turnPts+=pts;
-    let m=`Rolled ${r1}+${r2}=${r1+r2}`;
-    if(dbl)m+=` — Doubles! ×2 (+${pts})`;
-    else if(r1+r2===7)m+=` — Lucky 7! +7 bonus`;
-    document.getElementById('se-msg').textContent=m;
-    document.getElementById('se-turn').textContent=turnPts;
-    document.getElementById('se-roll').disabled=false;
-    document.getElementById('se-bank').disabled=false;
-  }
-
-  function snakeEyes(){
-    const flash=document.getElementById('se-flash');
-    flash.style.display='flex';
-    setTimeout(()=>{flash.style.display='none';},1200);
-    if(myTurn){pScore=0;document.getElementById('se-msg').textContent='SNAKE EYES — all your points are lost!';}
-    else{cScore=0;document.getElementById('se-msg').textContent=SE_CPU+' rolled Snake Eyes! '+SE_CPU+' loses all points!';}
-    turnPts=0;
-    updateScores();
-    setTimeout(()=>endTurn(),1000);
-  }
-
-  function bank(){
-    if(!myTurn)return;
-    pScore+=turnPts;turnPts=0;
-    document.getElementById('se-msg').textContent=`Banked! Your total: ${pScore}`;
-    updateScores();
-    if(pScore>=GOAL){endGame('You win!');return;}
-    endTurn();
-  }
-
-  function endTurn(){
-    myTurn=!myTurn;
-    document.getElementById('se-turn').textContent=0;
-    if(myTurn){
-      document.getElementById('se-roll').disabled=false;
-      document.getElementById('se-bank').disabled=false;
-    }else{
-      document.getElementById('se-roll').disabled=true;
-      document.getElementById('se-bank').disabled=true;
-      setTimeout(aiTurn,800);
-    }
-  }
-
-  function aiTurn(){
-    let aiPts=0;
-    const aiRoll=()=>{
-      const r1=Math.ceil(Math.random()*6),r2=Math.ceil(Math.random()*6);
-      const d1=document.getElementById('se-d1'),d2=document.getElementById('se-d2');
-      _renderDie(d1,r1);_renderDie(d2,r2);
-      if(r1===1&&r2===1){
-        cScore=0;document.getElementById('se-msg').textContent=SE_CPU+' rolled Snake Eyes! All '+SE_CPU+' points lost!';
-        updateScores();setTimeout(()=>endTurn(),1000);return;
-      }
-      let pts=r1+r2;if(r1===r2)pts*=2;if(!( r1===r2)&&r1+r2===7)pts+=7;
-      aiPts+=pts;
-      document.getElementById('se-turn').textContent=aiPts;
-      document.getElementById('se-msg').textContent=SE_CPU+' rolled '+r1+'+'+r2+'. Turn pts: '+aiPts;
-      if(aiPts>=20||(cScore+aiPts>=GOAL)){
-        cScore+=aiPts;aiPts=0;
-        document.getElementById('se-turn').textContent=0;
-        document.getElementById('se-msg').textContent=SE_CPU+' banks. '+SE_CPU+' total: '+cScore;
-        updateScores();
-        if(cScore>=GOAL){endGame(SE_CPU+' wins!');return;}
-        setTimeout(()=>endTurn(),800);
-      }else{
-        setTimeout(aiRoll,900);
-      }
-    };
-    setTimeout(aiRoll,600);
-  }
-
-  function endGame(m){
-    document.getElementById('se-msg').textContent=m;
-    document.getElementById('se-roll').disabled=true;
-    document.getElementById('se-bank').disabled=true;
-  }
-
-  document.getElementById('se-roll').onclick=rollDice;
-  document.getElementById('se-bank').onclick=bank;
-  document.getElementById('se-new').onclick=()=>{
-    pScore=0;cScore=0;turnPts=0;myTurn=true;
-    updateScores();
-    document.getElementById('se-turn').textContent=0;
-    document.getElementById('se-msg').textContent='Your turn. Roll the dice.';
-    document.getElementById('se-roll').disabled=false;
-    document.getElementById('se-bank').disabled=false;
-    _renderDie(document.getElementById('se-d1'),1);
-    _renderDie(document.getElementById('se-d2'),1);
-  };
-
-  _renderDie(document.getElementById('se-d1'),1);
-  _renderDie(document.getElementById('se-d2'),1);
-})();
+/* Snake Eyes, Beer Pong, Craps, and Darts removed */
 
 /* ════════════════════════════════════════════════════════════
    GAME 3: TEXAS HOLD EM POKER
@@ -1759,551 +1410,8 @@ function _pickCpuName(used){used=used||[];var pool=_CARTOON_NAMES.filter(functio
   drawScene();
 })();
 
-/* ════════════════════════════════════════════════════════════
-   GAME 5: BEER PONG
-════════════════════════════════════════════════════════════ */
-(function bpGame(){var BP_CPU=_pickCpuName();document.getElementById('bp-cname').textContent=BP_CPU;
-  const canvas=document.getElementById('bp-canvas');
-  const ctx=canvas.getContext('2d');
-  const W=canvas.width,H=canvas.height;
 
-  // Cup formations
-  function makeCups(isTop){
-    const cups=[];
-    const yBase=isTop?80:H-80;
-    const yDir=isTop?1:-1;
-    // row1=4, row2=3, row3=2, row4=1 (standard triangle)
-    const rows=[[4,yBase],[3,yBase+yDir*42],[2,yBase+yDir*84],[1,yBase+yDir*126]];
-    for(const [count,y] of rows){
-      const startX=W/2-(count-1)*22;
-      for(let i=0;i<count;i++){
-        cups.push({x:startX+i*44,y,r:18,sunk:false});
-      }
-    }
-    return cups;
-  }
 
-  let playerCups=makeCups(false);
-  let cpuCups=makeCups(true);
-  let ball=null,pHit=0,cHit=0,gameOver=false,playerTurn=true;
-  let aimX=W/2,aimY=H/2;
-  let pending=false;
-
-  function drawAll(){
-    ctx.clearRect(0,0,W,H);
-    ctx.fillStyle='rgba(4,2,1,0.97)';ctx.fillRect(0,0,W,H);
-
-    // Table outline
-    ctx.strokeStyle='rgba(201,168,76,0.15)';ctx.lineWidth=1;
-    ctx.strokeRect(20,20,W-40,H-40);
-
-    // Center line
-    ctx.setLineDash([4,8]);
-    ctx.strokeStyle='rgba(201,168,76,0.1)';ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(20,H/2);ctx.lineTo(W-20,H/2);ctx.stroke();
-    ctx.setLineDash([]);
-
-    // Draw all cups
-    function drawCups(cups,isPlayer){
-      for(const c of cups){
-        if(c.sunk)continue;
-        ctx.beginPath();
-        ctx.arc(c.x,c.y,c.r,0,Math.PI*2);
-        ctx.fillStyle=isPlayer?'rgba(201,100,50,0.7)':'rgba(50,100,201,0.7)';
-        ctx.fill();
-        ctx.strokeStyle=isPlayer?'rgba(201,168,76,0.6)':'rgba(201,168,76,0.5)';
-        ctx.lineWidth=1.5;ctx.stroke();
-        ctx.fillStyle='rgba(201,168,76,0.5)';
-        ctx.font='bold 9px Luminari,serif';ctx.textAlign='center';ctx.textBaseline='middle';
-        ctx.fillText('J',c.x,c.y);
-      }
-    }
-    drawCups(playerCups,true);
-    drawCups(cpuCups,false);
-
-    // Labels
-    ctx.fillStyle='rgba(255,255,255,0.2)';ctx.font='10px Luminari,serif';
-    ctx.textAlign='center';ctx.textBaseline='top';
-    ctx.fillText(BP_CPU,W/2,25);
-    ctx.textBaseline='bottom';
-    ctx.fillText('YOU',W/2,H-25);
-
-    // Aim line from throw point
-    if(playerTurn&&!ball&&!gameOver){
-      ctx.setLineDash([4,6]);
-      ctx.strokeStyle='rgba(201,168,76,0.2)';ctx.lineWidth=1;
-      ctx.beginPath();ctx.moveTo(W/2,H-10);ctx.lineTo(aimX,aimY);ctx.stroke();
-      ctx.setLineDash([]);
-    }
-
-    // Ball
-    if(ball){
-      ctx.beginPath();
-      ctx.arc(ball.x,ball.y,8,0,Math.PI*2);
-      ctx.fillStyle='rgba(255,255,230,0.95)';
-      ctx.fill();
-      ctx.strokeStyle='rgba(201,168,76,0.7)';ctx.lineWidth=1;ctx.stroke();
-    }
-  }
-
-  function throwBall(targetX,targetY,isAI,cb){
-    const sx=W/2,sy=isAI?20:H-20;
-    const dx=targetX-sx,dy=targetY-sy;
-    const steps=40;
-    let t=0;
-    ball={x:sx,y:sy};
-    function anim(){
-      if(!ball)return;
-      t++;
-      ball.x=sx+(dx/steps)*t;
-      ball.y=sy+(dy/steps)*t;
-      drawAll();
-      if(t>=steps){ball=null;drawAll();if(cb)cb();return;}
-      requestAnimationFrame(anim);
-    }
-    anim();
-  }
-
-  function checkHit(tx,ty,cups){
-    for(const c of cups){
-      if(!c.sunk){
-        const d=Math.sqrt((tx-c.x)**2+(ty-c.y)**2);
-        if(d<=c.r+6)return c;
-      }
-    }
-    return null;
-  }
-
-  canvas.addEventListener('mousemove',e=>{
-    const rect=canvas.getBoundingClientRect();
-    aimX=e.clientX-rect.left;
-    aimY=e.clientY-rect.top;
-    if(!ball&&playerTurn&&!gameOver)drawAll();
-  });
-
-  canvas.addEventListener('click',e=>{
-    if(!playerTurn||ball||gameOver||pending)return;
-    const rect=canvas.getBoundingClientRect();
-    const cx=e.clientX-rect.left,cy=e.clientY-rect.top;
-    pending=true;
-    throwBall(cx,cy,false,()=>{
-      const hit=checkHit(cx,cy,cpuCups);
-      if(hit){hit.sunk=true;pHit++;document.getElementById('bp-phit').textContent=pHit;document.getElementById('bp-msg').textContent='You sunk one!';}
-      else{document.getElementById('bp-msg').textContent='Miss!';}
-      drawAll();
-      if(pHit>=10){gameOver=true;document.getElementById('bp-msg').textContent='You win!';pending=false;return;}
-      playerTurn=false;drawAll();
-      setTimeout(aiShot,1500);
-    });
-  });
-
-  canvas.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0];const rect=canvas.getBoundingClientRect();aimX=t.clientX-rect.left;aimY=t.clientY-rect.top;if(!ball&&playerTurn&&!gameOver)drawAll();},{passive:false});
-  canvas.addEventListener('touchend',e=>{e.preventDefault();if(!playerTurn||ball||gameOver||pending)return;const t=e.changedTouches[0];const rect=canvas.getBoundingClientRect();const cx=t.clientX-rect.left,cy=t.clientY-rect.top;canvas.dispatchEvent(new MouseEvent('click',{clientX:t.clientX,clientY:t.clientY}));},{passive:false});
-
-  function aiShot(){
-    if(gameOver){pending=false;return;}
-    const alive=playerCups.filter(c=>!c.sunk);
-    if(alive.length===0){pending=false;return;}
-    const target=alive[Math.floor(Math.random()*alive.length)];
-    const hit=Math.random()<0.72;
-    const tx=hit?target.x+(-5+Math.random()*10):target.x+(-40+Math.random()*80);
-    const ty=hit?target.y+(-5+Math.random()*10):target.y+(-40+Math.random()*80);
-    throwBall(tx,ty,true,()=>{
-      if(hit){target.sunk=true;cHit++;document.getElementById('bp-chit').textContent=cHit;document.getElementById('bp-msg').textContent=BP_CPU+' sunk one!';}
-      else{document.getElementById('bp-msg').textContent=BP_CPU+' missed!';}
-      drawAll();
-      if(cHit>=10){gameOver=true;document.getElementById('bp-msg').textContent=BP_CPU+' wins!';pending=false;return;}
-      playerTurn=true;pending=false;drawAll();
-    });
-  }
-
-  document.getElementById('bp-new').onclick=()=>{
-    playerCups=makeCups(false);cpuCups=makeCups(true);
-    ball=null;pHit=0;cHit=0;gameOver=false;playerTurn=true;pending=false;
-    document.getElementById('bp-phit').textContent=0;
-    document.getElementById('bp-chit').textContent=0;
-    document.getElementById('bp-msg').textContent='Click the canvas to aim and throw.';
-    drawAll();
-  };
-
-  drawAll();
-})();
-
-/* ════════════════════════════════════════════════════════════
-   GAME 6: CRAPS
-════════════════════════════════════════════════════════════ */
-(function crGame(){
-  let crChips=500,crBet=0,crBetType=null,crPoint=null,crPhase='comeout',crBusy=false;
-
-  function crMsg(t){document.getElementById('cr-msg').textContent=t;}
-
-  function updateDisplay(){
-    document.getElementById('cr-chips').textContent=crChips;
-    document.getElementById('cr-bet').textContent=crBet;
-    document.getElementById('cr-phase').textContent=crPoint?`Point: ${crPoint}`:'Come Out Roll';
-    document.getElementById('cr-point').textContent=crPoint||'';
-    document.getElementById('cr-pass').disabled=crBetType!==null&&crBetType!=='pass';
-    document.getElementById('cr-dontpass').disabled=crBetType!==null&&crBetType!=='dontpass';
-  }
-
-  function crRollDice(cb){
-    crBusy=true;document.getElementById('cr-roll').disabled=true;
-    const d1=document.getElementById('cr-d1'),d2=document.getElementById('cr-d2');
-    d1.classList.add('rolling');d2.classList.add('rolling');
-    let t=0;
-    const int=setInterval(()=>{
-      _renderDie(d1,Math.ceil(Math.random()*6));
-      _renderDie(d2,Math.ceil(Math.random()*6));
-      if(++t>=10){
-        clearInterval(int);
-        const r1=Math.ceil(Math.random()*6),r2=Math.ceil(Math.random()*6);
-        _renderDie(d1,r1);_renderDie(d2,r2);
-        d1.classList.remove('rolling');d2.classList.remove('rolling');
-        crBusy=false;
-        cb(r1,r2);
-      }
-    },80);
-  }
-
-  function crRoll(){
-    if(crBusy||crBetType===null||crBet===0){
-      if(crBetType===null)crMsg('Choose Pass Line or Don\'t Pass first.');
-      else if(crBet===0)crMsg('Place a bet first.');
-      return;
-    }
-    crRollDice((r1,r2)=>{
-      const sum=r1+r2;
-      if(crPhase==='comeout'){
-        if([7,11].includes(sum)){
-          if(crBetType==='pass'){crChips+=crBet*2;crMsg(`${sum}! Pass Line wins ${crBet} chips!`);}
-          else{crMsg(`${sum}! Don't Pass loses.`);}
-          crReset();
-        }else if([2,3,12].includes(sum)){
-          if(crBetType==='dontpass'&&sum!==12){crChips+=crBet*2;crMsg(`${sum}! Don't Pass wins!`);}
-          else if(crBetType==='dontpass'&&sum===12){crChips+=crBet;crMsg('12 — Push on Don\'t Pass.');}
-          else{crMsg(`${sum}! Craps — Pass Line loses.`);}
-          crReset();
-        }else{
-          crPoint=sum;crPhase='point';
-          document.getElementById('cr-point').textContent=sum;
-          document.getElementById('cr-phase').textContent=`Point: ${sum}`;
-          crMsg(`Point is ${sum}. Roll again — hit ${sum} before a 7.`);
-          document.getElementById('cr-roll').disabled=false;
-        }
-      }else{
-        if(sum===crPoint){
-          if(crBetType==='pass'){crChips+=crBet*2;crMsg(`${sum}! Point made — Pass Line wins!`);}
-          else{crMsg(`${sum}! Point made — Don't Pass loses.`);}
-          crReset();
-        }else if(sum===7){
-          if(crBetType==='dontpass'){crChips+=crBet*2;crMsg(`7 out! Don't Pass wins!`);}
-          else{crMsg(`7 out — Pass Line loses.`);}
-          crReset();
-        }else{
-          crMsg(`Rolled ${sum}. Keep rolling...`);
-          document.getElementById('cr-roll').disabled=false;
-        }
-      }
-      document.getElementById('cr-chips').textContent=crChips;
-    });
-  }
-
-  function crReset(){
-    crPhase='comeout';crPoint=null;crBet=0;crBetType=null;
-    document.getElementById('cr-phase').textContent='Come Out Roll';
-    document.getElementById('cr-point').textContent='';
-    document.getElementById('cr-bet').textContent=0;
-    document.getElementById('cr-chips').textContent=crChips;
-    document.getElementById('cr-pass').disabled=false;
-    document.getElementById('cr-pass').classList.remove('selected');
-    document.getElementById('cr-dontpass').disabled=false;
-    document.getElementById('cr-dontpass').classList.remove('selected');
-    if(crChips<=0){crChips=500;document.getElementById('cr-chips').textContent=500;crMsg('Out of chips — reloaded 500.');}
-  }
-
-  function crAddBet(n){
-    if(crBetType===null){crMsg('Choose a bet type first (Pass Line or Don\'t Pass).');return;}
-    if(crPhase!=='comeout'){crMsg('Can only bet on Come Out roll.');return;}
-    const a=Math.min(n,crChips);crChips-=a;crBet+=a;
-    document.getElementById('cr-bet').textContent=crBet;
-    document.getElementById('cr-chips').textContent=crChips;
-  }
-
-  document.getElementById('cr-pass').onclick=()=>{
-    if(crPhase!=='comeout')return;
-    crBetType='pass';
-    document.getElementById('cr-pass').classList.add('selected');
-    document.getElementById('cr-dontpass').classList.remove('selected');
-    crMsg('Pass Line selected. Add chips and roll.');
-  };
-
-  document.getElementById('cr-dontpass').onclick=()=>{
-    if(crPhase!=='comeout')return;
-    crBetType='dontpass';
-    document.getElementById('cr-dontpass').classList.add('selected');
-    document.getElementById('cr-pass').classList.remove('selected');
-    crMsg('Don\'t Pass selected. Add chips and roll.');
-  };
-
-  document.getElementById('cr-add10').onclick=()=>crAddBet(10);
-  document.getElementById('cr-add25').onclick=()=>crAddBet(25);
-  document.getElementById('cr-add100').onclick=()=>crAddBet(100);
-  document.getElementById('cr-roll').onclick=crRoll;
-  document.getElementById('cr-new').onclick=()=>{crChips=500;crReset();crMsg('New game. Choose your bet type and roll.');};
-
-  // Init dice
-  _renderDie(document.getElementById('cr-d1'),1);
-  _renderDie(document.getElementById('cr-d2'),6);
-  updateDisplay();
-})();
-
-/* ════════════════════════════════════════════════════════════
-   GAME 7: DARTS (501)
-════════════════════════════════════════════════════════════ */
-(function dtGame(){var DT_CPU=_pickCpuName();document.getElementById('dt-cname').textContent=DT_CPU;
-  const canvas=document.getElementById('dt-canvas');
-  const ctx=canvas.getContext('2d');
-  const CW=canvas.width,CH=canvas.height;
-  const CX=CW/2,CY=265;
-  const R=190;
-
-  const SEGMENTS=[20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5];
-  const COLORS=[['#1a1a1a','rgba(201,168,76,0.9)'],['#eee','rgba(80,80,80,0.9)']];// [dark,cream] alternating
-  const RED_SEGS=[20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5];// all segments
-
-  let pScore=501,cScore=501;
-  let dartsLeft=3,turnDarts=[],playerTurn=true,gameOver=false,busy=false;
-  let dartMarks=[];
-  let preTurnPScore=501,preTurnCScore=501;
-
-  function drawBoard(){
-    ctx.clearRect(0,0,CW,CH);
-    ctx.fillStyle='rgba(4,2,1,0.97)';ctx.fillRect(0,0,CW,CH);
-
-    const segAngle=(Math.PI*2)/20;
-    const startAngle=-Math.PI/2-segAngle/2;
-
-    // Draw segments
-    for(let i=0;i<20;i++){
-      const seg=SEGMENTS[i];
-      const a1=startAngle+i*segAngle;
-      const a2=a1+segAngle;
-      const isEven=i%2===0;
-
-      // Double ring
-      drawArc(a1,a2,R*0.94,R,isEven?'#2d6b2d':'#8b1c1c');
-      // Outer single
-      drawArc(a1,a2,R*0.63,R*0.94,isEven?'#111':'#ccc8b8');
-      // Triple ring
-      drawArc(a1,a2,R*0.57,R*0.63,isEven?'#2d6b2d':'#8b1c1c');
-      // Inner single
-      drawArc(a1,a2,R*0.08,R*0.57,isEven?'#111':'#ccc8b8');
-
-      // Segment wire
-      ctx.beginPath();
-      ctx.moveTo(CX+Math.cos(a1)*R*0.08,CY+Math.sin(a1)*R*0.08);
-      ctx.lineTo(CX+Math.cos(a1)*R,CY+Math.sin(a1)*R);
-      ctx.strokeStyle='rgba(60,40,20,0.5)';ctx.lineWidth=0.8;ctx.stroke();
-    }
-
-    // Single bull
-    ctx.beginPath();
-    ctx.arc(CX,CY,R*0.08,0,Math.PI*2);
-    ctx.fillStyle='#2d6b2d';ctx.fill();
-    ctx.strokeStyle='rgba(60,40,20,0.5)';ctx.lineWidth=1;ctx.stroke();
-
-    // Double bull (bullseye)
-    ctx.beginPath();
-    ctx.arc(CX,CY,R*0.04,0,Math.PI*2);
-    ctx.fillStyle='#8b1c1c';ctx.fill();
-
-    // Numbers
-    ctx.font=`bold 13px Luminari,serif`;
-    ctx.textAlign='center';ctx.textBaseline='middle';
-    for(let i=0;i<20;i++){
-      const a=startAngle+(i+0.5)*segAngle;
-      const nr=R*1.09;
-      ctx.fillStyle='#c9a84c';
-      ctx.fillText(SEGMENTS[i],CX+Math.cos(a)*nr,CY+Math.sin(a)*nr);
-    }
-
-    // Outer ring
-    ctx.beginPath();
-    ctx.arc(CX,CY,R,0,Math.PI*2);
-    ctx.strokeStyle='rgba(201,168,76,0.3)';ctx.lineWidth=2;ctx.stroke();
-
-    // Dart marks
-    for(const m of dartMarks){
-      if(m.turn!==undefined){
-        ctx.globalAlpha=m.alpha||1;
-        ctx.beginPath();ctx.arc(m.x,m.y,5,0,Math.PI*2);
-        ctx.fillStyle=m.color||'rgba(201,168,76,0.9)';
-        ctx.fill();
-        ctx.strokeStyle='rgba(0,0,0,0.8)';ctx.lineWidth=1;ctx.stroke();
-        ctx.globalAlpha=1;
-      }
-    }
-  }
-
-  function drawArc(a1,a2,r1,r2,color){
-    ctx.beginPath();
-    ctx.arc(CX,CY,r2,a1,a2);
-    ctx.arc(CX,CY,r1,a2,a1,true);
-    ctx.closePath();
-    ctx.fillStyle=color;ctx.fill();
-  }
-
-  function scoreAt(x,y){
-    const dx=x-CX,dy=y-CY;
-    const dist=Math.sqrt(dx*dx+dy*dy);
-    if(dist<=R*0.04)return{pts:50,label:'Bullseye',mult:2};
-    if(dist<=R*0.08)return{pts:25,label:'Bull',mult:1};
-    if(dist>R)return{pts:0,label:'Miss',mult:1};
-    const segAngle=Math.PI*2/20;
-    const startAngle=-Math.PI/2-segAngle/2;
-    let angle=Math.atan2(dy,dx)-startAngle;
-    while(angle<0)angle+=Math.PI*2;
-    while(angle>=Math.PI*2)angle-=Math.PI*2;
-    const idx=Math.floor(angle/segAngle)%20;
-    const seg=SEGMENTS[idx];
-    let mult=1,label=`${seg}`;
-    if(dist>=R*0.94)return{pts:0,label:'Wire',mult:1};// outer wire
-    if(dist>=R*0.57&&dist<=R*0.63){mult=3;label=`T${seg}`;}
-    else if(dist>=R*0.94&&dist<=R){mult=2;label=`D${seg}`;}
-    else if(dist<R*0.94&&dist>=R*0.63){mult=1;}
-    // Double ring
-    if(dist>=R*0.94){mult=2;label=`D${seg}`;}
-    return{pts:seg*mult,label,mult,seg};
-  }
-
-  function throwDart(ex,ey){
-    // Apply Gaussian-like spread
-    const spread=R*0.10;
-    const ox=(Math.random()-0.5)*spread*2*(Math.random()+0.5);
-    const oy=(Math.random()-0.5)*spread*2*(Math.random()+0.5);
-    const lx=ex+ox,ly=ey+oy;
-    return{x:lx,y:ly,...scoreAt(lx,ly)};
-  }
-
-  function playerThrow(e){
-    if(!playerTurn||busy||gameOver||dartsLeft<=0)return;
-    const rect=canvas.getBoundingClientRect();
-    const ex=e.clientX-rect.left,ey=e.clientY-rect.top;
-    const result=throwDart(ex,ey);
-    // Check bust
-    const rem=pScore-result.pts;
-    const slotEl=document.getElementById('dt-slot'+(3-dartsLeft));
-
-    if(rem<0||(rem===1)||(rem===0&&result.mult<2&&result.pts!==50)){
-      // Bust
-      slotEl.textContent='BUST';slotEl.className='dt-dart-slot filled';
-      document.getElementById('dt-msg').textContent=`Bust! (${result.label}) Turn cancelled.`;
-      pScore=preTurnPScore;
-      document.getElementById('dt-pscore').textContent=pScore;
-      dartMarks=dartMarks.filter(m=>m.turn!=='player-current');
-      drawBoard();
-      setTimeout(()=>{endPlayerTurn();},800);
-      return;
-    }
-
-    dartMarks.push({x:result.x,y:result.y,color:'rgba(201,168,76,0.95)',turn:'player-current',alpha:1});
-    pScore=rem;dartsLeft--;
-    document.getElementById('dt-pscore').textContent=pScore;
-    slotEl.textContent=result.label+(result.pts>0?` (${result.pts})`:'');
-    slotEl.className='dt-dart-slot filled';
-    document.getElementById('dt-msg').textContent=`${result.label} — ${result.pts} pts. Remaining: ${pScore}`;
-    drawBoard();
-
-    if(pScore===0){
-      gameOver=true;document.getElementById('dt-msg').textContent='You win! Checkout!';
-      document.getElementById('dt-turn').textContent='You Win!';
-      return;
-    }
-    if(dartsLeft===0){setTimeout(endPlayerTurn,600);}
-  }
-
-  function endPlayerTurn(){
-    dartMarks=dartMarks.map(m=>m.turn==='player-current'?{...m,turn:'player-old',alpha:0.5,color:'rgba(201,168,76,0.4)'}:m);
-    playerTurn=false;dartsLeft=3;
-    preTurnCScore=cScore;
-    document.getElementById('dt-turn').textContent=DT_CPU+' Turn';
-    for(let i=0;i<3;i++){const s=document.getElementById('dt-slot'+i);s.textContent='—';s.className='dt-dart-slot';}
-    setTimeout(aiTurn,800);
-  }
-
-  function aiTurn(){
-    if(gameOver)return;
-    busy=true;
-    let aiDartsLeft=3;
-    let aiScoreSnapshot=cScore;
-
-    function aiThrowOne(){
-      if(aiDartsLeft<=0){
-        busy=false;dartMarks=dartMarks.map(m=>m.turn==='ai-current'?{...m,turn:'ai-old',alpha:0.4,color:'rgba(180,80,255,0.4)'}:m);
-        playerTurn=true;dartsLeft=3;
-        preTurnPScore=pScore;
-        document.getElementById('dt-turn').textContent='Your Turn — Click to throw';
-        for(let i=0;i<3;i++){const s=document.getElementById('dt-slot'+i);s.textContent='—';s.className='dt-dart-slot';}
-        drawBoard();return;
-      }
-      // AI aims for T20 area with spread
-      const t20Angle=-Math.PI/2;// top
-      const t20R=R*0.6;
-      const aimX=CX+Math.cos(t20Angle)*t20R;
-      const aimY=CY+Math.sin(t20Angle)*t20R;
-      const spread=R*0.18;
-      const lx=aimX+(Math.random()-0.5)*spread*2;
-      const ly=aimY+(Math.random()-0.5)*spread*2;
-      const result=scoreAt(lx,ly);
-
-      // Bust check for AI
-      const rem=cScore-result.pts;
-      const slotIdx=3-aiDartsLeft;
-      const slotEl=document.getElementById('dt-slot'+slotIdx);
-      if(rem<0||(rem===1)||(rem===0&&result.mult<2&&result.pts!==50)){
-        slotEl.textContent='BUST';slotEl.className='dt-dart-slot filled';
-        document.getElementById('dt-msg').textContent=DT_CPU+' bust! ('+result.label+')';
-        cScore=aiScoreSnapshot;
-        document.getElementById('dt-cscore').textContent=cScore;
-        dartMarks=dartMarks.filter(m=>m.turn!=='ai-current');
-        setTimeout(()=>{busy=false;playerTurn=true;dartsLeft=3;preTurnPScore=pScore;
-          document.getElementById('dt-turn').textContent='Your Turn — Click to throw';
-          for(let i=0;i<3;i++){const s=document.getElementById('dt-slot'+i);s.textContent='—';s.className='dt-dart-slot';}
-          drawBoard();},600);
-        return;
-      }
-
-      dartMarks.push({x:lx,y:ly,color:'rgba(180,80,255,0.9)',turn:'ai-current',alpha:1});
-      cScore=rem;aiDartsLeft--;
-      document.getElementById('dt-cscore').textContent=cScore;
-      slotEl.textContent=result.label+(result.pts>0?` (${result.pts})`:'');
-      slotEl.className='dt-dart-slot filled';
-      document.getElementById('dt-msg').textContent=DT_CPU+': '+result.label+' — '+result.pts+' pts. '+DT_CPU+' remaining: '+cScore;
-      drawBoard();
-
-      if(cScore===0){gameOver=true;document.getElementById('dt-msg').textContent=DT_CPU+' wins! Checkout!';document.getElementById('dt-turn').textContent=DT_CPU+' Wins!';busy=false;return;}
-      setTimeout(aiThrowOne,1000);
-    }
-    setTimeout(aiThrowOne,1000);
-  }
-
-  canvas.addEventListener('click',e=>{if(playerTurn&&!busy&&!gameOver&&dartsLeft>0)playerThrow(e);});
-  canvas.addEventListener('touchend',e=>{e.preventDefault();if(playerTurn&&!busy&&!gameOver&&dartsLeft>0){const t=e.changedTouches[0];playerThrow(t);}},{passive:false});
-
-  document.getElementById('dt-new').onclick=()=>{
-    pScore=501;cScore=501;dartsLeft=3;turnDarts=[];playerTurn=true;gameOver=false;busy=false;
-    dartMarks=[];preTurnPScore=501;preTurnCScore=501;
-    document.getElementById('dt-pscore').textContent=501;
-    document.getElementById('dt-cscore').textContent=501;
-    document.getElementById('dt-turn').textContent='Your Turn — Click to throw';
-    document.getElementById('dt-msg').textContent='Click the board to throw. Last dart must be a double to finish.';
-    for(let i=0;i<3;i++){const s=document.getElementById('dt-slot'+i);s.textContent='—';s.className='dt-dart-slot';}
-    drawBoard();
-  };
-
-  preTurnPScore=pScore;
-  drawBoard();
-})();
 
 (function(){
 'use strict';
@@ -2358,20 +1466,20 @@ var PHOTOS=[
   'assets/photos/venus 5.jpg',
   'assets/photos/venus.jpg'
 ];
-var level=1,lives=3,pairs=0,secs=0,started=false,locked=false,first=null,second=null,ticker=null,l1used=[];
+var level=1,lives=6,pairs=0,secs=0,started=false,locked=false,first=null,second=null,ticker=null,l1used=[];
 var LVL_PAIRS={1:8,2:16};
 function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
 function pad(n){return n<10?'0'+n:n;}
 function tick(){secs++;document.getElementById('mv-time').textContent=Math.floor(secs/60)+':'+pad(secs%60);}
 function renderLives(){
   var el=document.getElementById('mv-lives'),s='';
-  for(var i=0;i<3;i++){s+='<span class="'+(i<lives?'life-on':'life-off')+'">✦</span>';}
+  for(var i=0;i<6;i++){s+='<span class="'+(i<lives?'life-on':'life-off')+'">✦</span>';}
   el.innerHTML=s;
 }
 function updatePairs(){document.getElementById('mv-pairs').textContent=pairs+' / '+LVL_PAIRS[level];}
 function newGame(){
   clearInterval(ticker);
-  level=1;lives=3;pairs=0;secs=0;started=false;locked=false;first=null;second=null;l1used=[];
+  level=1;lives=6;pairs=0;secs=0;started=false;locked=false;first=null;second=null;l1used=[];
   document.getElementById('mv-level').textContent='Level I';
   document.getElementById('mv-time').textContent='0:00';
   document.getElementById('mv-win-overlay').classList.remove('show');
@@ -2459,54 +1567,165 @@ newGame();
 })();
 
 (function(){
-var OCARDS=[
-  {arcana:'I · The Jester',name:'The Jester',glyph:'\u03A8',reading:'What is given freely multiplies. What is hoarded rots. The Jester sees your open hands and grins — this is the correct posture.'},
-  {arcana:'II · Origin',name:'The Prickly Being',glyph:'\u2736',reading:'A small divine presence has left its marks on your chest. Do not wash them. They are proof of something most will never receive.'},
-  {arcana:'III · Motion',name:'The Parade',glyph:'\u21AF',reading:'Movement is the ritual. The direction matters less than the act of beginning. Set your feet in motion — the path reveals itself under moving feet.'},
-  {arcana:'IV · Season',name:'The New \u00C6on',glyph:'\u00C6',reading:'The old season does not argue with the new one. It simply yields. Something in you is ready to yield. Let it.'},
-  {arcana:'V · Signal',name:'The Metropolis',glyph:'\u2318',reading:'The city speaks to those who have learned its dialect. What sounds like noise to others is transmission to you. Listen deeper.'},
-  {arcana:'VI · Whole',name:'The 600',glyph:'\u229B',reading:'The number is not large — it is complete. One contains the whole. You already hold everything required for this moment.'},
-  {arcana:'VII · Freedom',name:'The Circus',glyph:'\u03A9',reading:'Your cage was assembled from your own hesitation. The door was never locked. You simply forgot to check.'},
-  {arcana:'VIII · Sleep',name:'The Dream',glyph:'\u224B',reading:'What visited you while you slept was not imaginary. The frenzied realm of dreams is where the real work is done.'},
-  {arcana:'IX · Depth',name:'The Swamp',glyph:'\u223F',reading:'From the murk rise the most vivid creatures. The clarity you seek is not found in clean water — it is found in depth.'},
-  {arcana:'X · Wheel',name:'The Solstice',glyph:'\u273A',reading:'The calendar is not neutral. Whoever controls the seasons controls the energy. Reclaim your place on the wheel.'},
-  {arcana:'XI · Recognition',name:'The Chosen Few',glyph:'\u2042',reading:'To be chosen is not to be selected. It is to have always been. You were not called — you were recognized.'},
-  {arcana:'XII · Threshold',name:'The Portal',glyph:'\u2295',reading:'A door appears only to those already standing before it. You would not sense the threshold if you were not meant to cross it.'},
-  {arcana:'XIII · Time',name:'The Rhythm',glyph:'\u2341',reading:'Every soul moves in time whether it hears the music or not. The question is not whether you are dancing — it is whether you know it.'},
-  {arcana:'XIV · Light',name:'The Gold',glyph:'\u25CA',reading:'Not all that shines asks to be spent. Some things are kept luminous simply by being witnessed. Bear witness today.'},
-  {arcana:'XV · Mark',name:'The Claws',glyph:'\u2A5F',reading:'The small marks on your chest are not wounds — they are signatures. Something vast has signed its name into your skin.'},
-  {arcana:'XVI · Unseen',name:'The Veil',glyph:'\u2240',reading:'What you cannot see is watching with tremendous interest. This is not threat. This is the most affectionate form of attention there is.'},
-  {arcana:'XVII · Rite',name:'The Pagan',glyph:'\u2297',reading:'No institution owns your ceremony. No government holds the patent on your reverence. The rite you build yourself is the only holy one.'},
-  {arcana:'XVIII · Memory',name:'The Blood',glyph:'\u2307',reading:'The wound remembers what the mind chooses to forget. What pulses in you is older than your name and wiser than your fear.'},
-  {arcana:'XIX · Mirror',name:'The Fat Head',glyph:'\u2299',reading:'The jesting being grins when you call it deity. But you are right to call it so. Feed it no further flattery — it has quite enough already.'},
-  {arcana:'XX · Witness',name:'The Children',glyph:'\u2055',reading:'Core 6. Chosen few. Born from the dew of a swampy imagination. They do not ask to be understood — only witnessed. Are you watching?'},
-  {arcana:'XXI · Fire',name:'The Circus Spits',glyph:'\u2051',reading:'Free, free, FREE! Marvelous — miraculous — meticulous creations beyond the limits of those fussy gods. Today you are one of them. Create without a single shred of doubt.'}
+'use strict';
+var SIGIL_CARDS=[
+  {name:'THE WANDERER',msg:'The path reveals itself only to those already walking.'},
+  {name:'THE MIRROR',msg:'What you seek in others lives already within you.'},
+  {name:'THE SIGNAL',msg:'Something is trying to reach you. Quiet yourself and listen.'},
+  {name:'THE COLLAPSE',msg:'What falls was never truly standing. Let it go.'},
+  {name:'THE BLOOM',msg:'This is not a beginning. This is the harvest arriving.'},
+  {name:'THE VEIL',msg:'Not everything hidden is lost. Some things hide to survive.'},
+  {name:'THE CURRENT',msg:'Stop fighting the river. You were born to float this way.'},
+  {name:'THE WOUND',msg:'The place that hurts most is where the light gets in.'},
+  {name:'THE ARCHITECT',msg:'You have been given the blueprint. Trust your own hands.'},
+  {name:'THE ECLIPSE',msg:'Darkness is not the end. It is the pause before radiance.'},
+  {name:'THE THREAD',msg:'Follow the small thing. It leads to everything.'},
+  {name:'THE STORM',msg:'You are not in danger. You are being rearranged.'},
+  {name:'THE ORACLE',msg:'The answer has already been spoken. You just weren\'t ready.'},
+  {name:'THE FEAST',msg:'Abundance is present. You have only forgotten how to receive.'},
+  {name:'THE GATE',msg:'Something is ending. Walk through anyway.'},
+  {name:'THE WITNESS',msg:'Be still. Observe without judgment. The truth will surface.'},
+  {name:'THE EMBER',msg:'What you think is ash still holds fire. Fan it.'},
+  {name:'THE TIDE',msg:'This feeling will pass. So will the next good one. Stay.'},
+  {name:'THE CIPHER',msg:'Everything around you is a message. Start decoding.'},
+  {name:'THE ROOT',msg:'Before you reach upward, remember what holds you down.'},
+  {name:'THE DREAM',msg:'Do not dismiss what comes to you in the dark.'},
+  {name:'THE RETURN',msg:'You have been here before. This time, you are ready.'}
 ];
-var odeck=[],odrawn=0,ototal=OCARDS.length,obusy=false;
-function oinitDeck(){odeck=OCARDS.slice().sort(function(){return Math.random()-0.5;});odrawn=0;oupdCount();}
-function oupdCount(){var el=document.getElementById('drawn-count');if(odrawn===0)el.innerHTML='&nbsp;';else if(odrawn===ototal)el.textContent='All '+ototal+' cards have spoken';else el.textContent=odrawn+' of '+ototal+' cards drawn';}
-function ofillCard(card){document.getElementById('c-arcana').textContent=card.arcana;document.getElementById('c-name').textContent=card.name;document.getElementById('c-glyph').textContent=card.glyph;document.getElementById('c-reading').textContent=card.reading;}
-var odrawBtn=document.getElementById('draw-btn');
-var oresetBtn=document.getElementById('reset-btn');
-var ocard=document.getElementById('oracle-card');
-odrawBtn.addEventListener('click',function(){
-  if(obusy||!odeck.length)return;
-  obusy=true;odrawBtn.disabled=true;
-  var cardData=odeck.pop();odrawn++;oupdCount();
-  var isRevealed=ocard.classList.contains('revealed');
-  if(isRevealed){
+
+var LS_KEY='dailySigilLastDraw';
+var LS_IDX='dailySigilCardIdx';
+var _sigilTimerInt=null;
+
+function _sigilGetStored(){
+  try{
+    var ts=localStorage.getItem(LS_KEY);
+    var idx=localStorage.getItem(LS_IDX);
+    if(ts&&idx!==null){return{ts:parseInt(ts,10),idx:parseInt(idx,10)};}
+  }catch(e){}
+  return null;
+}
+
+function _sigilStore(ts,idx){
+  try{localStorage.setItem(LS_KEY,String(ts));localStorage.setItem(LS_IDX,String(idx));}catch(e){}
+}
+
+function _sigilCountdown(targetTs){
+  var timerEl=document.getElementById('sigil-timer');
+  var cdEl=document.getElementById('sigil-countdown');
+  function tick(){
+    var now=Date.now();
+    var rem=targetTs-now;
+    if(rem<=0){
+      clearInterval(_sigilTimerInt);
+      cdEl.style.display='none';
+      document.getElementById('draw-btn').style.display='inline-block';
+      document.getElementById('drawn-count').innerHTML='&nbsp;';
+      return;
+    }
+    var h=Math.floor(rem/3600000);
+    var m=Math.floor((rem%3600000)/60000);
+    var s=Math.floor((rem%60000)/1000);
+    function pad(n){return n<10?'0'+n:n;}
+    timerEl.textContent=pad(h)+':'+pad(m)+':'+pad(s);
+  }
+  tick();
+  _sigilTimerInt=setInterval(tick,1000);
+}
+
+function _sigilRevealCard(cardData,animate){
+  var ocard=document.getElementById('oracle-card');
+  document.getElementById('c-arcana').textContent='The Daily Sigil';
+  document.getElementById('c-name').textContent=cardData.name;
+  document.getElementById('c-glyph').textContent='✦';
+  document.getElementById('c-reading').textContent=cardData.msg;
+  if(animate){
     ocard.classList.remove('revealed');
-    setTimeout(function(){ofillCard(cardData);setTimeout(function(){ocard.classList.add('revealed');obusy=false;if(!odeck.length){oresetBtn.classList.add('show');}else{odrawBtn.disabled=false;}},80);},300);
+    setTimeout(function(){ocard.classList.add('revealed');},80);
   } else {
-    ofillCard(cardData);
-    setTimeout(function(){ocard.classList.add('revealed');obusy=false;if(!odeck.length){oresetBtn.classList.add('show');}else{odrawBtn.disabled=false;}},60);
+    ocard.classList.add('revealed');
+  }
+}
+
+function _sigilShowLocked(cardData,nextTs){
+  var cdEl=document.getElementById('sigil-countdown');
+  var drawBtn=document.getElementById('draw-btn');
+  var shareBtn=document.getElementById('sigil-share-btn');
+  cdEl.style.display='block';
+  drawBtn.style.display='none';
+  shareBtn.style.display='inline-block';
+  _sigilRevealCard(cardData,false);
+  _sigilCountdown(nextTs);
+}
+
+function _sigilInit(){
+  var stored=_sigilGetStored();
+  var drawBtn=document.getElementById('draw-btn');
+  var shareBtn=document.getElementById('sigil-share-btn');
+  var cdEl=document.getElementById('sigil-countdown');
+  if(stored){
+    var elapsed=Date.now()-stored.ts;
+    if(elapsed<86400000){
+      // Still within 24h — show the drawn card and countdown
+      var nextTs=stored.ts+86400000;
+      var cardData=SIGIL_CARDS[stored.idx%SIGIL_CARDS.length];
+      _sigilShowLocked(cardData,nextTs);
+      return;
+    }
+  }
+  // Fresh or expired — show draw button
+  drawBtn.style.display='inline-block';
+  shareBtn.style.display='none';
+  cdEl.style.display='none';
+  document.getElementById('drawn-count').innerHTML='&nbsp;';
+}
+
+document.getElementById('draw-btn').addEventListener('click',function(){
+  var drawBtn=document.getElementById('draw-btn');
+  var shareBtn=document.getElementById('sigil-share-btn');
+  var cdEl=document.getElementById('sigil-countdown');
+  var ocard=document.getElementById('oracle-card');
+  drawBtn.disabled=true;
+  var idx=Math.floor(Math.random()*SIGIL_CARDS.length);
+  var cardData=SIGIL_CARDS[idx];
+  var now=Date.now();
+  _sigilStore(now,idx);
+  ocard.classList.remove('revealed');
+  setTimeout(function(){
+    _sigilRevealCard(cardData,true);
+    setTimeout(function(){
+      drawBtn.style.display='none';
+      shareBtn.style.display='inline-block';
+      cdEl.style.display='block';
+      _sigilCountdown(now+86400000);
+    },700);
+  },60);
+});
+
+document.getElementById('sigil-share-btn').addEventListener('click',function(){
+  var stored=_sigilGetStored();
+  if(!stored)return;
+  var cardData=SIGIL_CARDS[stored.idx%SIGIL_CARDS.length];
+  var text='THE DAILY SIGIL · '+cardData.name+': '+cardData.msg;
+  var btn=document.getElementById('sigil-share-btn');
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(function(){
+      btn.textContent='Copied ✦';
+      setTimeout(function(){btn.textContent='Share ✦';},2000);
+    }).catch(function(){});
+  } else {
+    try{
+      var ta=document.createElement('textarea');
+      ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent='Copied ✦';
+      setTimeout(function(){btn.textContent='Share ✦';},2000);
+    }catch(e){}
   }
 });
-oresetBtn.addEventListener('click',function(){
-  ocard.classList.remove('revealed');odrawBtn.disabled=false;oresetBtn.classList.remove('show');
-  setTimeout(function(){document.getElementById('c-arcana').innerHTML='&nbsp;';document.getElementById('c-name').innerHTML='&nbsp;';document.getElementById('c-glyph').innerHTML='&nbsp;';document.getElementById('c-reading').innerHTML='&nbsp;';oinitDeck();},300);
-});
-oinitDeck();
+
+_sigilInit();
 })();
 
 </script>
