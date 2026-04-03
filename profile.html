@@ -23,7 +23,7 @@ body::before{
   content:'';
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.82);
+  background:radial-gradient(ellipse at 50% 35%,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.88) 100%);
   pointer-events:none;
   z-index:0;
 }
@@ -786,6 +786,117 @@ body::before{
   .natal-chart, #natal-chart-svg, svg.natal { width: 100% !important; max-width: 340px !important; margin: 0 auto !important; display: block !important; }
   /* Save / calculate buttons */
   .save-btn, .calc-btn, button[type="submit"] { width: 100% !important; min-height: 52px !important; }
+  /* Profile name: prevent overflow on small screens */
+  .profile-name { font-size: clamp(1.3rem,7vw,2.2rem) !important; letter-spacing: 0.22em !important; }
+  .profile-subtitle { letter-spacing: 0.22em !important; }
+  /* Dossier grid: single column */
+  .dossier-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+  /* Username wrap center */
+  .username-wrap { justify-content: center !important; }
+  /* Natal form grid: single column */
+  .natal-form-grid { grid-template-columns: 1fr !important; }
+  /* Circ buttons: smaller on mobile */
+  .circ-actions { gap: 16px !important; }
+  .circ-btn svg { width: 72px !important; height: 72px !important; }
+}
+
+/* ── Avatar upload overlay ── */
+.avatar-upload-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.avatar-upload-wrap .avatar-upload-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0,0,0,0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.25s;
+  z-index: 2;
+}
+.avatar-upload-wrap:hover .avatar-upload-overlay,
+.avatar-upload-wrap:focus-within .avatar-upload-overlay {
+  background: rgba(0,0,0,0.55);
+}
+.avatar-upload-icon {
+  font-size: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+.avatar-upload-wrap:hover .avatar-upload-icon,
+.avatar-upload-wrap:focus-within .avatar-upload-icon {
+  opacity: 1;
+}
+.avatar-upload-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+}
+.avatar-upload-spinner {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(201,168,76,0.3);
+  border-top-color: #c9a84c;
+  animation: avSpin 0.8s linear infinite;
+  display: none;
+  z-index: 4;
+}
+@keyframes avSpin { to { transform: rotate(360deg); } }
+
+/* ── Mobile section tabs ── */
+.mob-section-tabs {
+  display: none;
+}
+@media (max-width: 600px) {
+  .mob-section-tabs {
+    display: flex;
+    position: sticky;
+    top: 52px;
+    z-index: 100;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0;
+    padding: 0 4px;
+  }
+  .mob-section-tabs::-webkit-scrollbar { display: none; }
+  .mob-tab-btn {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: rgba(201,168,76,0.45);
+    font-family: 'Luminari', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 10px 12px 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+    min-height: 40px;
+  }
+  .mob-tab-btn.active, .mob-tab-btn:hover {
+    color: #c9a84c;
+    border-bottom-color: #c9a84c;
+  }
+  /* Section visibility on mobile: show all by default */
+  .profile-section[data-section] { scroll-margin-top: 100px; }
 }
 </style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
@@ -814,18 +925,35 @@ body::before{
 
 <div id="page-content">
 
+  <!-- Mobile section tabs -->
+  <nav class="mob-section-tabs" id="mob-section-tabs" aria-label="Profile sections">
+    <button class="mob-tab-btn active" data-target="sec-dossier">Dossier</button>
+    <button class="mob-tab-btn" data-target="sec-chart">Chart</button>
+    <button class="mob-tab-btn" data-target="sec-transmissions">Saved</button>
+    <button class="mob-tab-btn" data-target="sec-blog">Blog</button>
+    <button class="mob-tab-btn" data-target="sec-account">Account</button>
+  </nav>
+
   <!-- Hero -->
   <div class="profile-hero profile-section">
     <div class="avatar-ring-wrap">
       <div class="avatar-ring-outer"></div>
       <div class="avatar-ring"></div>
-      <img class="avatar-img" src="assets/homepage/logo png.png" alt="Jestamang Emblem">
+      <div class="avatar-upload-wrap" id="avatar-upload-wrap" title="Upload profile photo">
+        <img class="avatar-img" id="avatar-img" src="assets/homepage/logo png.png" alt="Profile Photo">
+        <div class="avatar-upload-overlay">
+          <span class="avatar-upload-icon">&#128247;</span>
+        </div>
+        <input class="avatar-upload-input" id="avatar-upload-input" type="file" accept="image/*" aria-label="Upload profile photo">
+        <div class="avatar-upload-spinner" id="avatar-spinner"></div>
+      </div>
     </div>
-    <div class="username-wrap">
+    <div class="username-wrap" id="username-wrap">
       <h1 class="profile-name" id="display-name">&#8212;</h1>
-      <button class="username-edit-btn" id="username-edit-btn" title="Change username">&#9998;</button>
+      <button class="username-edit-btn" id="username-edit-btn" title="Change username" aria-label="Change username">&#9998;</button>
     </div>
     <div id="username-edit-form" style="display:none;">
+      <label for="username-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">Username</label>
       <input class="username-input" id="username-input" type="text" maxlength="30" placeholder="Username" autocomplete="off">
       <button class="btn-gold" id="username-save-btn">Save</button>
       <button class="btn-ghost" id="username-cancel-btn">Cancel</button>
@@ -836,7 +964,7 @@ body::before{
   </div>
 
   <!-- Natal Dossier -->
-  <div class="dark-card profile-section">
+  <div class="dark-card profile-section" id="sec-dossier" data-section="dossier">
     <div class="dossier-header">
       <div class="card-title-lg">Natal Dossier</div>
       <button class="btn-ghost" id="edit-dossier-btn">Edit Dossier</button>
@@ -868,19 +996,19 @@ body::before{
     <div id="dossier-edit" style="display:none;">
       <div class="dossier-grid">
         <div class="dossier-field">
-          <span class="dossier-field-label">Name</span>
+          <label class="dossier-field-label" for="f-username">Name</label>
           <input class="form-input" type="text" id="f-username" placeholder="Your name">
         </div>
         <div class="dossier-field">
-          <span class="dossier-field-label">Date of Birth</span>
+          <label class="dossier-field-label" for="f-dob">Date of Birth</label>
           <input class="form-input" type="date" id="f-dob">
         </div>
         <div class="dossier-field">
-          <span class="dossier-field-label">Time of Birth</span>
+          <label class="dossier-field-label" for="f-tob">Time of Birth</label>
           <input class="form-input" type="time" id="f-tob">
         </div>
         <div class="dossier-field">
-          <span class="dossier-field-label">Place of Birth</span>
+          <label class="dossier-field-label" for="f-pob">Place of Birth</label>
           <input class="form-input" type="text" id="f-pob" placeholder="City, Country">
         </div>
       </div>
@@ -895,7 +1023,7 @@ body::before{
   <!-- ════════════════════════════════════════
        NATAL CHART CALCULATOR
   ════════════════════════════════════════ -->
-  <div class="dark-card profile-section" id="natal-chart-card">
+  <div class="dark-card profile-section" id="sec-chart" data-section="chart">
     <div class="card-title-lg" style="margin-bottom:6px;">Celestial Chart</div>
     <div style="font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.14em;color:rgba(255,255,255,0.3);font-style:italic;margin-bottom:20px;">Your natal chart, calculated from the stars</div>
     <div class="gold-rule-sm" style="margin-top:0;"></div>
@@ -1018,7 +1146,7 @@ body::before{
   </div>
 
   <!-- Saved Favorites -->
-  <div class="dark-card profile-section">
+  <div class="dark-card profile-section" id="sec-transmissions" data-section="transmissions">
     <div class="card-title-lg" style="margin-bottom:4px;">Saved Transmissions</div>
     <div class="gold-rule-sm"></div>
     <div id="favorites-list">
@@ -1027,11 +1155,13 @@ body::before{
   </div>
 
   <!-- Post to Blog -->
-  <div class="dark-card profile-section">
+  <div class="dark-card profile-section" id="sec-blog" data-section="blog">
     <div class="card-title-lg" style="margin-bottom:4px;">Post to Blog</div>
     <div class="gold-rule-sm"></div>
     <div style="margin-top:16px;">
+      <label for="blog-title" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">Post title</label>
       <input class="form-input" type="text" id="blog-title" placeholder="Title" maxlength="120" style="margin-bottom:12px;">
+      <label for="blog-body" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">Post body</label>
       <textarea class="form-input" id="blog-body" placeholder="Write your transmission..." maxlength="5000" rows="6" style="resize:vertical;height:auto;line-height:1.7;"></textarea>
       <div style="display:flex;align-items:center;gap:12px;margin-top:12px;">
         <button class="btn-gold" id="blog-post-btn">Transmit</button>
@@ -1041,7 +1171,7 @@ body::before{
   </div>
 
   <!-- Account Actions -->
-  <div class="dark-card profile-section" style="text-align:center;">
+  <div class="dark-card profile-section" id="sec-account" data-section="account" style="text-align:center;">
     <div class="card-title" style="margin-bottom:28px;">Account</div>
     <div class="circ-actions">
 
@@ -1092,6 +1222,7 @@ body::before{
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 <script src="assets/js/firebase-config.js"></script>
 <script src="assets/js/jesta-auth.js"></script>
 
@@ -1141,28 +1272,59 @@ const NC = (function(){
     return mod360(apparent);
   }
 
-  // Moon longitude (Meeus Ch. 47 simplified)
+  // Moon longitude (Meeus Ch. 47 — extended series, ~0.1° accuracy)
   function moonLongitude(jd){
     const T = calcT(jd);
-    const L1 = mod360(218.3164477 + 481267.88123421*T);
-    const D  = mod360(297.8501921 + 445267.1114034*T);
-    const M  = mod360(357.5291092 + 35999.0502909*T);
-    const Mp = mod360(134.9633964 + 477198.8675055*T);
-    const F  = mod360(93.2720950  + 483202.0175233*T);
+    const L1 = mod360(218.3164477 + 481267.88123421*T - 0.0015786*T*T + T*T*T/538841 - T*T*T*T/65194000);
+    const D  = mod360(297.8501921 + 445267.1114034*T - 0.0018819*T*T + T*T*T/545868 - T*T*T*T/113065000);
+    const M  = mod360(357.5291092 + 35999.0502909*T  - 0.0001536*T*T + T*T*T/24490000);
+    const Mp = mod360(134.9633964 + 477198.8675055*T + 0.0087414*T*T + T*T*T/69699   - T*T*T*T/14712000);
+    const F  = mod360(93.2720950  + 483202.0175233*T - 0.0036539*T*T - T*T*T/3526000 + T*T*T*T/863310000);
+    const E  = 1 - 0.002516*T - 0.0000074*T*T; // eccentricity correction
+    const E2 = E*E;
+    const r = DEG; // alias
     const lon = L1
-      + 6.288774*Math.sin(Mp*DEG)
-      + 1.274027*Math.sin((2*D - Mp)*DEG)
-      + 0.658314*Math.sin(2*D*DEG)
-      + 0.213618*Math.sin(2*Mp*DEG)
-      - 0.185116*Math.sin(M*DEG)
-      - 0.114332*Math.sin(2*F*DEG)
-      + 0.058793*Math.sin((2*D - 2*Mp)*DEG)
-      + 0.057066*Math.sin((2*D - M - Mp)*DEG)
-      + 0.053322*Math.sin((2*D + Mp)*DEG)
-      + 0.045758*Math.sin((2*D - M)*DEG)
-      - 0.040923*Math.sin((M - Mp)*DEG)
-      - 0.034720*Math.sin(D*DEG)
-      - 0.030383*Math.sin((M + Mp)*DEG);
+      + 6.288774*Math.sin(Mp*r)
+      + 1.274027*Math.sin((2*D - Mp)*r)
+      + 0.658314*Math.sin(2*D*r)
+      + 0.213618*Math.sin(2*Mp*r)
+      - 0.185116*E*Math.sin(M*r)
+      - 0.114332*Math.sin(2*F*r)
+      + 0.058793*Math.sin((2*D - 2*Mp)*r)
+      + 0.057066*E*Math.sin((2*D - M - Mp)*r)
+      + 0.053322*Math.sin((2*D + Mp)*r)
+      + 0.045758*E*Math.sin((2*D - M)*r)
+      - 0.040923*E*Math.sin((M - Mp)*r)
+      - 0.034720*Math.sin(D*r)
+      - 0.030383*E*Math.sin((M + Mp)*r)
+      + 0.015327*Math.sin((2*D - 2*F)*r)
+      - 0.012528*Math.sin((Mp + 2*F)*r)
+      + 0.010980*Math.sin((Mp - 2*F)*r)
+      + 0.010675*Math.sin((4*D - Mp)*r)
+      + 0.010034*Math.sin(3*Mp*r)
+      + 0.008548*Math.sin((4*D - 2*Mp)*r)
+      - 0.007888*E*Math.sin((2*D + M - Mp)*r)
+      - 0.006766*E*Math.sin((2*D + M)*r)
+      - 0.005163*Math.sin((D - Mp)*r)
+      + 0.004987*E*Math.sin((D + M)*r)
+      + 0.004036*E*Math.sin((2*D - M + Mp)*r)
+      + 0.003994*Math.sin((2*D + 2*Mp)*r)
+      + 0.003861*Math.sin(4*D*r)
+      + 0.003665*Math.sin((2*D - 3*Mp)*r)
+      - 0.002689*E*Math.sin((M - 2*Mp)*r)
+      - 0.002602*Math.sin((2*D - Mp + 2*F)*r)
+      + 0.002390*E2*Math.sin((2*D - 2*M)*r)
+      - 0.002348*Math.sin((D + Mp)*r)
+      + 0.002236*E2*Math.sin(2*(D - M)*r)
+      - 0.002120*E*Math.sin((M + 2*Mp)*r)
+      - 0.002069*E2*Math.sin(2*M*r)
+      + 0.002048*E2*Math.sin((2*D - 2*M - Mp)*r)
+      - 0.001773*Math.sin((2*D + Mp - 2*F)*r)
+      + 0.001215*E*Math.sin((4*D - M - Mp)*r)
+      - 0.001110*Math.sin((2*Mp + 2*F)*r)
+      - 0.000892*Math.sin((3*D - Mp)*r)
+      - 0.000811*E*Math.sin((M + Mp + 2*D)*r)
+      + 0.000761*E*Math.sin((4*D - M - 2*Mp)*r);
     return mod360(lon);
   }
 
@@ -1185,17 +1347,39 @@ const NC = (function(){
     const M = mod360(el.M0 + el.Mr * T / 100);
     const Mrad = M * DEG;
     const e = el.e;
+    // Equation of centre (up to 3rd order)
     const C = (2*e - e*e*e/4)*Math.sin(Mrad)
             + 1.25*e*e*Math.sin(2*Mrad)
             + (13/12)*e*e*e*Math.sin(3*Mrad);
-    return mod360(L + C * RAD);
+    let lon = mod360(L + C * RAD);
+    // Jupiter–Saturn mutual perturbation (Meeus, significant terms)
+    if(name === 'Jupiter' || name === 'Saturn'){
+      const Mj = mod360(PLANET_ELEMENTS.Jupiter.M0 + PLANET_ELEMENTS.Jupiter.Mr * T / 100) * DEG;
+      const Ms = mod360(PLANET_ELEMENTS.Saturn.M0  + PLANET_ELEMENTS.Saturn.Mr  * T / 100) * DEG;
+      if(name === 'Jupiter'){
+        lon += (0.332*Math.sin(2*Mj - 5*Ms - 67.6*DEG)
+               + 0.056*Math.sin(2*Mj - 2*Ms + 21*DEG)
+               + 0.042*Math.sin(3*Mj - 5*Ms + 100*DEG)
+               - 0.036*Math.sin(Mj - 2*Ms)
+               + 0.022*Math.cos(Mj - Ms)
+               + 0.023*Math.sin(2*Mj - 3*Ms + 52*DEG)
+               - 0.016*Math.sin(Mj - 5*Ms - 69*DEG));
+      } else {
+        lon += (0.812*Math.sin(2*Mj - 5*Ms - 67.6*DEG)
+               - 0.229*Math.cos(2*Mj - 4*Ms - 2*DEG)
+               + 0.119*Math.sin(Mj - 2*Ms - 3*DEG)
+               + 0.046*Math.sin(2*Mj - 6*Ms - 69*DEG)
+               + 0.014*Math.sin(Mj - 3*Ms + 32*DEG));
+      }
+    }
+    return mod360(lon);
   }
 
-  // Lilith (Black Moon Lilith — mean apogee)
+  // Lilith (Black Moon Lilith — mean apogee, Meeus)
   function lilithLongitude(jd){
     const T = calcT(jd);
-    return mod360(83.3532430 + 40.9023*T*36525/36525 + 0.111*T*T);
-    // More accurate: mean apogee formula
+    // Mean apogee longitude (degrees)
+    return mod360(83.3532465 + 4069.0137287*T - 0.0103200*T*T - T*T*T/80053 + T*T*T*T/18999000);
   }
 
   // North Node (mean)
@@ -1237,13 +1421,91 @@ const NC = (function(){
     return mod360(mc);
   }
 
-  // Equal house cusps
-  function calcHouseCusps(asc){
-    const cusps = [];
-    for(let i = 0; i < 12; i++){
-      cusps.push(mod360(asc + i * 30));
+  // Placidus house cusps (standard system used by cafeastrology.com)
+  function calcHouseCusps(asc, jd, lat, lng){
+    // If lat is too extreme (>66°), Placidus is undefined — fall back to equal
+    if(Math.abs(lat) >= 66){
+      const cusps = [];
+      for(let i = 0; i < 12; i++) cusps.push(mod360(asc + i * 30));
+      return cusps;
     }
-    return cusps;
+    const eps = obliquity(jd) * DEG;
+    const latR = lat * DEG;
+    const RAMC = localSiderealTime(jd, lng) * DEG; // RAMC in radians
+    const RAmcDeg = localSiderealTime(jd, lng);    // degrees
+
+    // MC cusp (10th house)
+    const mc = calcMC(jd, lng);
+    // ASC cusp (1st house) already computed
+
+    // Helper: given RAMC of a cusp, find its ecliptic longitude (Placidus semi-arc)
+    // Uses the standard iterative ecliptic longitude from RAMC + obliquity + lat
+    function placCusp(ramc_deg, frac){
+      // frac = 1/3 or 2/3 of semi-arc
+      let lon = mod360(ramc_deg + 90); // starting estimate
+      for(let iter = 0; iter < 20; iter++){
+        const lonR = lon * DEG;
+        const dec  = Math.asin(Math.sin(eps) * Math.sin(lonR));
+        const ad   = Math.asin(Math.tan(latR) * Math.tan(dec)); // ascensional difference
+        const raRise = lon * DEG - ad; // don't need exact RA, iterate
+        // Placidus: the cusp's RA satisfies: ramc_diff = semi_arc * frac
+        // semi_arc diurnal = 90 + ad (in degrees from dec)
+        // For upper cusps (11,12): RAMC_cusp = RAMC + 30*n, frac=1/3
+        const adDeg  = ad * RAD;
+        const saD    = 90 + adDeg; // diurnal semi-arc
+        const saN    = 90 - adDeg; // nocturnal semi-arc
+        // Cusp RA: for house 11 (frac=1/3 of diurnal), 12 (frac=2/3 of diurnal)
+        //           for house 2 (frac=1/3 of nocturnal+180), 3 (frac=2/3)
+        const targetRA = mod360(frac >= 0 ? RAmcDeg + frac * saD : RAmcDeg + 180 - frac * saN);
+        // Convert RA to ecliptic longitude
+        const ra = targetRA * DEG;
+        const newLon = Math.atan2(Math.sin(ra) * Math.cos(eps) - Math.tan(dec) * Math.sin(eps), Math.cos(ra)) * RAD;
+        const newLonN = mod360(newLon);
+        if(Math.abs(newLonN - lon) < 0.0001) break;
+        lon = newLonN;
+      }
+      return mod360(lon);
+    }
+
+    // Compute the 12 cusps
+    const saD = function(decDeg){ return 90 + Math.asin(Math.tan(latR)*Math.tan(decDeg*DEG))*RAD; };
+    const saN = function(decDeg){ return 90 - Math.asin(Math.tan(latR)*Math.tan(decDeg*DEG))*RAD; };
+
+    // Simple robust Placidus iteration
+    function placitusCusp(houseNum){
+      // House 11 = MC + 1/3 diurnal arc, 12 = MC + 2/3, 2 = IC + 1/3 nocturnal, 3 = IC + 2/3
+      const isUpper = (houseNum === 11 || houseNum === 12);
+      const frac = (houseNum === 11 || houseNum === 2) ? 1/3 : 2/3;
+      let lon = mod360(mc + (isUpper ? frac * 60 : 180 + frac * 60));
+      for(let iter = 0; iter < 30; iter++){
+        const sinDec = Math.sin(eps) * Math.sin(lon * DEG);
+        const dec = Math.asin(Math.max(-1, Math.min(1, sinDec)));
+        const tanTanArg = Math.tan(latR) * Math.tan(dec);
+        if(Math.abs(tanTanArg) > 1) break; // polar case
+        const adRad = Math.asin(Math.max(-1, Math.min(1, tanTanArg)));
+        const adDeg = adRad * RAD;
+        const semiArc = isUpper ? (90 + adDeg) : (90 - adDeg);
+        const targetRA = mod360(isUpper ? RAmcDeg + frac * semiArc : RAmcDeg + 180 + frac * semiArc);
+        const ra = targetRA * DEG;
+        const newLon = mod360(Math.atan2(
+          Math.sin(ra)*Math.cos(eps) + Math.tan(dec)*Math.sin(eps),
+          Math.cos(ra)
+        ) * RAD);
+        if(Math.abs(newLon - lon) < 0.001){ lon = newLon; break; }
+        lon = newLon;
+      }
+      return mod360(lon);
+    }
+
+    const h11 = placitusCusp(11);
+    const h12 = placitusCusp(12);
+    const ic  = mod360(mc + 180);
+    const h2  = placitusCusp(2);
+    const h3  = placitusCusp(3);
+
+    return [asc, h2, h3, ic, mod360(ic+30), mod360(ic+60),
+            mod360(asc+180), mod360(h2+180), mod360(h3+180),
+            mc, h11, h12];
   }
 
   // Assign planet to house
@@ -1326,22 +1588,26 @@ const NC = (function(){
   // ─────────────────────────────────────────────
   // MAIN CALCULATE FUNCTION
   // ─────────────────────────────────────────────
-  function calculate(dateStr, timeStr, lat, lng){
+  // utcOffsetMinutes: pre-computed UTC offset (positive = east of UTC)
+  //   If null/undefined, falls back to lng/15 approximation
+  function calculate(dateStr, timeStr, lat, lng, utcOffsetMinutes){
     // Parse date/time into UTC Julian Date
-    // dateStr: YYYY-MM-DD, timeStr: HH:MM (local time), we apply tzOffset
     const [yr, mo, dy] = dateStr.split('-').map(Number);
     let utcHour = 12, utcMin = 0;
 
     if(timeStr && timeStr.length >= 4){
       const [hh, mm] = timeStr.split(':').map(Number);
-      // Approximate timezone from longitude (rough: offset = lng/15)
-      const tzOffsetHours = lng / 15;
-      let localH = hh - tzOffsetHours;
-      utcHour = Math.floor(localH);
-      utcMin  = Math.round((localH - utcHour) * 60) + mm;
-      // Normalise
-      if(utcMin >= 60){ utcHour++; utcMin -= 60; }
-      if(utcMin < 0)  { utcHour--; utcMin += 60; }
+      let offsetMins;
+      if(utcOffsetMinutes !== null && utcOffsetMinutes !== undefined){
+        offsetMins = utcOffsetMinutes;
+      } else {
+        offsetMins = Math.round(lng / 15 * 60);
+      }
+      // UTC = local - offset
+      const totalLocalMins = hh * 60 + mm;
+      const totalUTCMins   = totalLocalMins - offsetMins;
+      utcHour = Math.floor(((totalUTCMins % 1440) + 1440) % 1440 / 60);
+      utcMin  = ((totalUTCMins % 60) + 60) % 60;
     }
 
     const jd = toJulianDate(yr, mo, dy, utcHour, utcMin, 0);
@@ -1376,7 +1642,7 @@ const NC = (function(){
       const mcLon  = calcMC(jd, lng);
       ascData = lonToSign(ascLon);
       mcData  = lonToSign(mcLon);
-      houseCusps = calcHouseCusps(ascLon);
+      houseCusps = calcHouseCusps(ascLon, jd, lat, lng);
 
       // Assign houses to planets
       for(const name of Object.keys(planets)){
@@ -1764,6 +2030,10 @@ const NC = (function(){
         dossierData = data;
         renderViewMode(data, user);
         loadFavorites(user.uid);
+        // Load saved avatar
+        if(data.avatarUrl){
+          document.getElementById('avatar-img').src = data.avatarUrl;
+        }
 
         // Check for saved natal chart
         db.collection('users').doc(user.uid).collection('natalChart').doc('chart').get()
@@ -1944,7 +2214,7 @@ const NC = (function(){
                 (d.album  ? ' &nbsp;&middot;&nbsp; ' + escHtml(d.album) : '') +
               '</div>' +
             '</div>' +
-            '<button class="fav-remove" data-id="' + doc.id + '" title="Remove">&#10022;</button>';
+            '<button class="fav-remove" data-id="' + doc.id + '" title="Remove" aria-label="Remove transmission">&#10022;</button>';
           listEl.appendChild(item);
         });
         listEl.querySelectorAll('.fav-remove').forEach(function(btn){
@@ -1958,7 +2228,7 @@ const NC = (function(){
       })
       .catch(function(e){
         console.error('Favorites load error:', e);
-        listEl.innerHTML = '<div class="empty-state">Unable to load transmissions at this time.</div>';
+        listEl.innerHTML = '<div class="empty-state">N/A</div>';
       });
   }
 
@@ -2022,20 +2292,37 @@ const NC = (function(){
 
   document.getElementById('natal-share-btn').addEventListener('click', function(){
     if(!currentUser) return;
-    var shareUrl = window.location.origin + '/dossier.html?user=' + currentUser.uid;
-    if(navigator.clipboard){
-      navigator.clipboard.writeText(shareUrl).then(function(){
-        showCopied();
-      }).catch(function(){
-        fallbackCopy(shareUrl);
-      });
+    var shareUrl = window.location.origin + '/profile.html';
+    var userName = (dossierData && dossierData.username) ||
+                   (currentUser.displayName || currentUser.email.split('@')[0]);
+    var sunSign = (dossierData && dossierData.sunSign) || '';
+    var moonSign = (dossierData && dossierData.moonSign) || '';
+    var rising = (dossierData && dossierData.risingSign) || '';
+    var chartText = [sunSign && ('☀ ' + sunSign), moonSign && ('☽ ' + moonSign), rising && ('↑ ' + rising)]
+      .filter(Boolean).join('  ');
+    var shareData = {
+      title: userName.toUpperCase() + ' — Celestial Dossier',
+      text: (chartText ? chartText + '\n\n' : '') + 'My celestial chart on Jestamang ✦',
+      url: shareUrl
+    };
+    if(navigator.share && navigator.canShare && navigator.canShare(shareData)){
+      navigator.share(shareData).catch(function(){});
+    } else if(navigator.share){
+      navigator.share({ title: shareData.title, url: shareUrl }).catch(function(){});
     } else {
-      fallbackCopy(shareUrl);
+      // Fallback: clipboard
+      var copyText = shareData.text + '\n' + shareUrl;
+      if(navigator.clipboard){
+        navigator.clipboard.writeText(copyText).then(showCopied).catch(function(){ fallbackCopy(copyText); });
+      } else {
+        fallbackCopy(copyText);
+      }
     }
   });
 
   function showCopied(){
     var msg = document.getElementById('natal-copied-msg');
+    msg.textContent = 'Dossier shared \u2756';
     msg.classList.add('show');
     setTimeout(function(){ msg.classList.remove('show'); }, 2500);
   }
@@ -2112,113 +2399,119 @@ const NC = (function(){
       var lat = parseFloat(data[0].lat);
       var lng = parseFloat(data[0].lon);
 
-      // Warn about no time
-      if(!tobVal){
-        // Still proceed without time
-      }
+      // Fetch accurate timezone offset for birth location + date
+      function doCalculate(utcOffsetMins){
+        var result;
+        try {
+          result = NC.calculate(dobVal, tobVal, lat, lng, utcOffsetMins);
+        } catch(e){
+          console.error('Calculation error:', e);
+          hideLoading();
+          document.getElementById('natal-form-area').style.display = 'block';
+          setError('The celestial machinery has faltered. Please try again.');
+          return;
+        }
 
-      var result;
-      try {
-        result = NC.calculate(dobVal, tobVal, lat, lng);
-      } catch(e){
-        console.error('Calculation error:', e);
         hideLoading();
-        document.getElementById('natal-form-area').style.display = 'block';
-        setError('The celestial machinery has faltered. Please try again.');
-        return;
-      }
 
-      hideLoading();
+        // If no time: hide houses
+        if(!tobVal){
+          document.getElementById('nr-houses-section').style.display = 'none';
+        }
 
-      // If no time: show note
-      if(!tobVal){
-        document.getElementById('nr-houses-section').style.display = 'none';
-        // Could show note about no birth time — handled in renderDossier via hasTime flag
-      }
+        var userName = (dossierData && dossierData.username) ||
+                       (currentUser && (currentUser.displayName || currentUser.email.split('@')[0])) ||
+                       'Member';
 
-      var userName = (dossierData && dossierData.username) ||
-                     (currentUser && (currentUser.displayName || currentUser.email.split('@')[0])) ||
-                     'Member';
+        NC.renderDossier(result, userName, {
+          nameEl:          document.getElementById('nr-name'),
+          sunSubEl:        document.getElementById('nr-sun-sub'),
+          wheelEl:         document.getElementById('nr-wheel'),
+          planetsEl:       document.getElementById('nr-planets-tbody'),
+          housesSectionEl: document.getElementById('nr-houses-section'),
+          housesGridEl:    document.getElementById('nr-houses-grid'),
+          elementsEl:      document.getElementById('nr-elements'),
+          modesEl:         document.getElementById('nr-modes'),
+          aspectsEl:       document.getElementById('nr-aspects'),
+        });
 
-      // Render
-      NC.renderDossier(result, userName, {
-        nameEl:        document.getElementById('nr-name'),
-        sunSubEl:      document.getElementById('nr-sun-sub'),
-        wheelEl:       document.getElementById('nr-wheel'),
-        planetsEl:     document.getElementById('nr-planets-tbody'),
-        housesSectionEl: document.getElementById('nr-houses-section'),
-        housesGridEl:  document.getElementById('nr-houses-grid'),
-        elementsEl:    document.getElementById('nr-elements'),
-        modesEl:       document.getElementById('nr-modes'),
-        aspectsEl:     document.getElementById('nr-aspects'),
-      });
+        document.getElementById('natal-result').style.display = 'block';
+        document.getElementById('natal-form-area').style.display = 'none';
 
-      document.getElementById('natal-result').style.display = 'block';
-      document.getElementById('natal-form-area').style.display = 'none';
-
-      // Save to Firestore
-      var chartSaveData = {
-        birthDate:  dobVal,
-        birthTime:  tobVal,
-        birthPlace: pobVal,
-        lat: lat,
-        lng: lng,
-        planets: {},
-        hasTime: result.hasTime,
-        elements: result.elements,
-        modes: result.modes,
-        aspects: result.aspects.slice(0, 20),
-        calculatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      };
-
-      // Serialize planets
-      for(var pn in result.planets){
-        chartSaveData.planets[pn] = {
-          sign: result.planets[pn].sign,
-          glyph: result.planets[pn].glyph,
-          deg: result.planets[pn].deg,
-          min: result.planets[pn].min,
-          totalDeg: result.planets[pn].totalDeg,
-          house: result.planets[pn].house || null,
+        // Save to Firestore
+        var chartSaveData = {
+          birthDate:  dobVal,
+          birthTime:  tobVal,
+          birthPlace: pobVal,
+          lat: lat,
+          lng: lng,
+          planets: {},
+          hasTime: result.hasTime,
+          elements: result.elements,
+          modes: result.modes,
+          aspects: result.aspects.slice(0, 20),
+          calculatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
-      }
-      if(result.ascData){
-        chartSaveData.ascendant = {
-          sign: result.ascData.sign, glyph: result.ascData.glyph,
-          deg: result.ascData.deg, min: result.ascData.min,
-          totalDeg: result.ascData.totalDeg
-        };
-      }
-      if(result.mcData){
-        chartSaveData.mc = {
-          sign: result.mcData.sign, glyph: result.mcData.glyph,
-          deg: result.mcData.deg, min: result.mcData.min,
-          totalDeg: result.mcData.totalDeg
-        };
-      }
-      if(result.houseCusps){
-        chartSaveData.houseCusps = result.houseCusps;
+        for(var pn in result.planets){
+          chartSaveData.planets[pn] = {
+            sign: result.planets[pn].sign, glyph: result.planets[pn].glyph,
+            deg: result.planets[pn].deg, min: result.planets[pn].min,
+            totalDeg: result.planets[pn].totalDeg, house: result.planets[pn].house || null,
+          };
+        }
+        if(result.ascData){ chartSaveData.ascendant = { sign:result.ascData.sign,glyph:result.ascData.glyph,deg:result.ascData.deg,min:result.ascData.min,totalDeg:result.ascData.totalDeg }; }
+        if(result.mcData){  chartSaveData.mc        = { sign:result.mcData.sign, glyph:result.mcData.glyph, deg:result.mcData.deg, min:result.mcData.min, totalDeg:result.mcData.totalDeg }; }
+        if(result.houseCusps){ chartSaveData.houseCusps = result.houseCusps; }
+        db.collection('users').doc(currentUser.uid).collection('natalChart').doc('chart')
+          .set(chartSaveData)
+          .then(function(){ savedNatalChart = chartSaveData; })
+          .catch(function(e){ console.error('Error saving natal chart:', e); });
+
+        // Update user doc with sun/moon/rising
+        var autoUpdate = {};
+        if(result.planets['Sun'])   autoUpdate.sunSign   = result.planets['Sun'].glyph   + ' ' + result.planets['Sun'].sign;
+        if(result.planets['Moon'])  autoUpdate.moonSign  = result.planets['Moon'].glyph  + ' ' + result.planets['Moon'].sign;
+        if(result.ascData)          autoUpdate.risingSign = result.ascData.glyph + ' ' + result.ascData.sign;
+        if(Object.keys(autoUpdate).length > 0 && currentUser){
+          db.collection('users').doc(currentUser.uid).set(autoUpdate, {merge:true}).catch(function(){});
+        }
       }
 
-      db.collection('users').doc(currentUser.uid).collection('natalChart').doc('chart')
-        .set(chartSaveData)
-        .then(function(){ savedNatalChart = chartSaveData; console.log('Natal chart saved.'); })
-        .catch(function(e){ console.error('Error saving natal chart:', e); });
+      if(tobVal){
+        // Get IANA timezone name, then compute precise UTC offset for birth date
+        fetch('https://timeapi.io/api/TimeZone/coordinate?latitude=' + lat + '&longitude=' + lng)
+          .then(function(r){ return r.json(); })
+          .then(function(tzData){
+            var tzName = tzData && tzData.timeZone;
+            var offsetMins = null;
+            if(tzName){
+              try {
+                // Compute UTC offset at the birth date using Intl API
+                var dobParts = dobVal.split('-').map(Number);
+                var yr=dobParts[0], mo=dobParts[1], dy=dobParts[2];
+                var tobParts = tobVal.split(':').map(Number);
+                var hh=tobParts[0], mm=tobParts[1];
+                // Treat local time as UTC temporarily to query Intl
+                var probe = new Date(Date.UTC(yr, mo-1, dy, hh, mm, 0));
+                var fmt = new Intl.DateTimeFormat('en-US', {
+                  timeZone: tzName,
+                  year:'numeric',month:'numeric',day:'numeric',
+                  hour:'numeric',minute:'numeric',second:'numeric',hour12:false
+                });
+                var parts = {};
+                fmt.formatToParts(probe).forEach(function(p){ parts[p.type] = parseInt(p.value)||0; });
+                var tzH = parts.hour === 24 ? 0 : parts.hour;
+                var displayedMs = Date.UTC(parts.year, parts.month-1, parts.day, tzH, parts.minute, parts.second);
+                offsetMins = Math.round((displayedMs - probe.getTime()) / 60000);
+              } catch(e){ console.warn('Intl offset calc failed:', e); }
+            }
+            doCalculate(offsetMins);
+          })
+          .catch(function(){ doCalculate(null); }); // fallback to lng/15
+      } else {
+        doCalculate(null);
+      }
 
-      // Also update user doc with sun/moon/rising
-      var autoUpdate = {};
-      if(result.planets['Sun']){
-        autoUpdate.sunSign = result.planets['Sun'].glyph + ' ' + result.planets['Sun'].sign;
-      }
-      if(result.planets['Moon']){
-        autoUpdate.moonSign = result.planets['Moon'].glyph + ' ' + result.planets['Moon'].sign;
-      }
-      if(result.ascData){
-        autoUpdate.risingSign = result.ascData.glyph + ' ' + result.ascData.sign;
-      }
-      if(Object.keys(autoUpdate).length > 0 && currentUser){
-        db.collection('users').doc(currentUser.uid).set(autoUpdate, {merge:true}).catch(function(){});
-      }
     })
     .catch(function(e){
       console.error('Geocoding error:', e);
@@ -2268,6 +2561,53 @@ const NC = (function(){
   function escHtml(s){
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
+
+  // ── Profile picture upload ──
+  document.getElementById('avatar-upload-input').addEventListener('change', function(e){
+    var file = e.target.files && e.target.files[0];
+    if(!file || !currentUser) return;
+    if(file.size > 5 * 1024 * 1024){
+      alert('Image must be under 5MB.');
+      return;
+    }
+    var spinner = document.getElementById('avatar-spinner');
+    spinner.style.display = 'block';
+    var storage = firebase.storage();
+    var ref = storage.ref('avatars/' + currentUser.uid + '/avatar.jpg');
+    var uploadTask = ref.put(file);
+    uploadTask.on('state_changed',
+      null,
+      function(err){
+        console.error('Avatar upload error:', err);
+        spinner.style.display = 'none';
+        alert('Upload failed. Please try again.');
+      },
+      function(){
+        uploadTask.snapshot.ref.getDownloadURL().then(function(url){
+          spinner.style.display = 'none';
+          document.getElementById('avatar-img').src = url;
+          db.collection('users').doc(currentUser.uid).set({ avatarUrl: url }, { merge: true })
+            .catch(function(e){ console.error('Avatar URL save error:', e); });
+        });
+      }
+    );
+  });
+
+  // ── Mobile section tabs ──
+  (function(){
+    var tabs = document.querySelectorAll('.mob-tab-btn');
+    tabs.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        tabs.forEach(function(t){ t.classList.remove('active'); });
+        btn.classList.add('active');
+        var targetId = btn.getAttribute('data-target');
+        var target = document.getElementById(targetId);
+        if(target){
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  })();
 })();
 </script>
 </body>
