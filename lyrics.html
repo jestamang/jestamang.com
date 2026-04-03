@@ -20,6 +20,10 @@
 @media (max-width: 768px) {
   .lyrics-body, .lyric-text { font-size: 0.9rem !important; line-height: 1.8 !important; padding: 16px !important; }
   .page-wrap { padding: 80px 16px 60px; }
+  /* Fix background cutting out on scroll */
+  #jt-bg { position: fixed !important; }
+  /* Fix sticky back bar covering first song: push song list down */
+  .lyr-panel.visible { padding-top: 50px; }
 }
 </style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>

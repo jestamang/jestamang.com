@@ -18,7 +18,12 @@
 }
 /* jt-mobile-shows */
 @media (max-width: 768px) {
-  .show-card { width: 100%; padding: 16px; }
+  /* Fix background cutting out on scroll */
+  #jt-bg { position: fixed !important; }
+  /* Fix card text overlap: unstick absolute elements so they stack vertically */
+  .show-card { width: 100%; padding: 16px; box-sizing: border-box; }
+  .show-numeral { position: static; display: block; margin-bottom: 4px; }
+  .show-status { position: static; display: block; margin-bottom: 8px; }
   .show-grid { grid-template-columns: 1fr; }
   .show-date, .show-city { font-size: 0.85rem; }
   .show-venue { font-size: clamp(1.1rem, 4vw, 1.4rem); }
