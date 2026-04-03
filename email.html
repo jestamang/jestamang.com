@@ -8,7 +8,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* ── PAGE SHELL ── */
 .pb-page{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:64px 24px 80px}
 .pb-header{text-align:center;margin-bottom:48px}
-.pb-header h1{font-family:'Luminari',serif;font-size:clamp(2rem,7vw,3.2rem);letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 30px rgba(201,168,76,0.4);margin-bottom:10px}
+.pb-header h1{font-family:'Luminari',serif;font-size:clamp(2.2rem,5.5vw,3.6rem);letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 30px rgba(201,168,76,0.4);margin-bottom:10px}
 .pb-header p{font-family:'Luminari',serif;font-size:0.95rem;letter-spacing:0.12em;color:rgba(255,255,255,0.5);font-style:italic}
 
 /* ── SECTION LABELS ── */
@@ -102,9 +102,10 @@ input::placeholder,textarea::placeholder{color:rgba(255,255,255,0.25)}
 }
 /* jt-mobile-email */
 @media (max-width: 768px) {
+  .pb-header h1 { font-size: clamp(1.7rem, 7vw, 2.4rem); }
   input[type="text"], input[type="email"], textarea { font-size: 16px !important; width: 100%; }
   .submit-btn { width: 100%; padding: 16px; min-height: 52px; align-self: stretch; }
-  .pb-page { padding: 64px 14px 60px; }
+  .pb-page { padding: 70px 14px 60px; }
 }
 </style>
 
