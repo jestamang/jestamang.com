@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jestamang.com/sitemap.xml
