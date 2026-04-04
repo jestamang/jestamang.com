@@ -4,324 +4,1008 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Inner Circle — Jestamang</title>
-<meta property="og:site_name" content="Jestamang">
-<link rel="canonical" href="https://jestamang.com/members.html">
-<meta name="robots" content="index, follow">
-<style>
-@font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:'Luminari',serif;
-  background-image: #000;
-  background-size:cover;
-  background-position:center;
-  background-repeat:no-repeat;
-  background-attachment:fixed;
-  min-height:100vh;
-  position:relative;
-  color:white;
-  padding-top:52px!important;
-}
-body::before{
-  content:'';
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.82);
-  pointer-events:none;
-  z-index:0;
-}
-#page-content{
-  display:none;
-  position:relative;
-  z-index:1;
-  max-width:860px;
-  margin:0 auto;
-  padding:60px 32px 80px;
-}
-@media(max-width:600px){#page-content{padding:40px 18px 60px;}}
-
-/* Page header */
-.page-hero{text-align:center;margin-bottom:50px;}
-.hero-title{
-  font-family:'Luminari',serif;
-  font-size:clamp(2.2rem,5.5vw,3.6rem);
-  letter-spacing:0.5em;
-  text-transform:uppercase;
-  color:#c9a84c;
-  text-shadow:0 0 40px rgba(201,168,76,0.35),0 0 80px rgba(201,168,76,0.12);
-  margin-bottom:18px;
-  line-height:1.2;
-}
-.hero-ornament{
-  font-size:1rem;
-  color:#c9a84c;
-  letter-spacing:0.6em;
-  opacity:0.65;
-  margin-bottom:22px;
-}
-.hero-welcome{
-  font-family:'Luminari',serif;
-  font-style:italic;
-  font-size:0.9rem;
-  color:rgba(201,168,76,0.75);
-  letter-spacing:0.08em;
-}
-.gold-rule{
-  width:100%;
-  height:1px;
-  background:linear-gradient(to right,transparent,rgba(201,168,76,0.4),transparent);
-  margin:40px 0;
-}
-.gold-rule-sm{
-  width:100%;
-  height:1px;
-  background:linear-gradient(to right,transparent,rgba(201,168,76,0.2),transparent);
-  margin:20px 0;
-}
-
-/* Section headers */
-.section-title{
-  font-family:'Luminari',serif;
-  font-size:clamp(1rem,2.5vw,1.4rem);
-  letter-spacing:0.3em;
-  text-transform:uppercase;
-  color:#c9a84c;
-  margin-bottom:6px;
-  text-shadow:0 0 18px rgba(201,168,76,0.15);
-}
-
-/* Post cards */
-.post-card{
-  background:rgba(10,8,5,0.95);
-  border:1px solid rgba(201,168,76,0.25);
-  padding:36px 32px;
-  margin-bottom:24px;
-}
-@media(max-width:600px){.post-card{padding:26px 20px;}}
-.post-eyebrow{
-  font-family:'Luminari',serif;
-  font-size:0.75rem;
-  letter-spacing:0.3em;
-  text-transform:uppercase;
-  color:rgba(201,168,76,0.5);
-  margin-bottom:12px;
-}
-.post-title{
-  font-family:'Luminari',serif;
-  font-size:clamp(1.1rem,2.8vw,1.55rem);
-  letter-spacing:0.18em;
-  color:#c9a84c;
-  margin-bottom:8px;
-  line-height:1.3;
-}
-.post-subtitle{
-  font-family:'Luminari',serif;
-  font-style:italic;
-  font-size:0.82rem;
-  color:rgba(240,230,210,0.95);
-  letter-spacing:0.06em;
-  margin-bottom:20px;
-  text-shadow:0 0 20px rgba(0,0,0,0.9),0 2px 4px rgba(0,0,0,1),0 0 40px rgba(0,0,0,0.8);
-}
-.post-body{
-  font-family:'Luminari',serif;
-  font-size:0.88rem;
-  color:rgba(255,255,255,0.65);
-  line-height:1.85;
-  letter-spacing:0.03em;
-}
-
-/* Announcement card */
-.announce-card{
-  background:rgba(10,8,5,0.95);
-  border:1px solid rgba(201,168,76,0.25);
-  padding:30px 28px;
-  margin-top:16px;
-}
-.announce-text{
-  font-family:'Luminari',serif;
-  font-style:italic;
-  font-size:0.88rem;
-  color:rgba(255,255,255,0.55);
-  line-height:1.85;
-  letter-spacing:0.03em;
-}
-
-/* Sealed section */
-.sealed-card{
-  background:rgba(10,8,5,0.95);
-  border:1px solid rgba(201,168,76,0.18);
-  border-image:repeating-linear-gradient(
-    45deg,
-    rgba(201,168,76,0.18),
-    rgba(201,168,76,0.18) 4px,
-    transparent 4px,
-    transparent 12px
-  ) 1;
-  padding:40px 32px;
-  text-align:center;
-  margin-top:16px;
-  position:relative;
-}
-.sealed-card::before{
-  content:'';
-  position:absolute;
-  inset:6px;
-  border:1px solid rgba(201,168,76,0.1);
-  pointer-events:none;
-}
-.sealed-ornament{
-  font-size:1.2rem;
-  color:rgba(201,168,76,0.4);
-  letter-spacing:0.5em;
-  margin-bottom:20px;
-}
-.sealed-text{
-  font-family:'Luminari',serif;
-  font-style:italic;
-  font-size:0.88rem;
-  color:rgba(255,255,255,0.45);
-  line-height:1.9;
-  letter-spacing:0.04em;
-  max-width:540px;
-  margin:0 auto;
-}
-/* jt-mobile-global-base */
-@media (max-width: 768px) {
-  /* Prevent iOS input zoom */
-  input, textarea, select { font-size: 16px !important; }
-  /* Overflow lock */
-  body { overflow-x: hidden; }
-  /* background-attachment fix for iOS */
-  body, .bg-wrap { background-attachment: scroll !important; }
-  /* All containers box-sizing */
-  * { box-sizing: border-box; }
-  /* Video bg: use absolute not fixed on mobile */
-  #jt-bg { position: absolute !important; }
-  /* Minimum touch targets */
-  button, a, [role="button"] { min-height: 44px; }
-  /* Hide home-btn on mobile */
-  .home-btn { display: none !important; }
-}
-/* jt-mobile-members */
-@media (max-width: 768px) {
-  .hero-title { font-size: clamp(1.7rem, 7vw, 2.4rem); }
-  .page-wrap, #page-content { padding: 70px 16px 60px !important; }
-  .member-grid, .members-grid { grid-template-columns: 1fr !important; }
-  .member-card { width: 100% !important; padding: 20px 16px !important; }
-}
-/* jt-text-treatments */
-h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased}
-.post-title{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased}
-.post-subtitle{text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 4px rgba(0,0,0,1),0 0 40px rgba(0,0,0,0.9),1px 1px 3px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased}
-</style>
-  <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
-  <link rel="dns-prefetch" href="https://www.gstatic.com">
-  <link rel="dns-prefetch" href="https://apis.google.com">
-  <link rel="dns-prefetch" href="https://firestore.googleapis.com">
-<link rel="icon" type="image/png" href="assets/homepage/logo%20png.png">
-<link rel="apple-touch-icon" href="assets/homepage/logo%20png.png">
 <meta name="description" content="The Jestamang Inner Circle — exclusive member content and community features for the Jestagang.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jestamang.com/members.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jestamang">
 <meta property="og:title" content="Inner Circle — Jestamang">
 <meta property="og:description" content="The Jestamang Inner Circle — exclusive member content and community features for the Jestagang.">
 <meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
-<meta property="og:type" content="website">
 <meta property="og:url" content="https://jestamang.com/members.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Inner Circle — Jestamang">
 <meta name="twitter:description" content="The Jestamang Inner Circle — exclusive member content and community features for the Jestagang.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
+<link rel="icon" type="image/png" href="assets/homepage/logo%20png.png">
+<link rel="apple-touch-icon" href="assets/homepage/logo%20png.png">
+<link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
+<link rel="dns-prefetch" href="https://www.gstatic.com">
+<link rel="dns-prefetch" href="https://apis.google.com">
+<link rel="dns-prefetch" href="https://firestore.googleapis.com">
+<style>
+@font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Luminari',serif;
+  background:#000;
+  min-height:100vh;
+  color:#f0e6d3;
+  padding-top:52px;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(120,0,222,0.06) 0%,rgba(0,0,0,0.88) 60%,rgba(0,0,0,0.96) 100%);
+  z-index:0;
+  pointer-events:none;
+}
+
+/* ── STAR CANVAS ── */
+#star-canvas{
+  position:fixed;inset:0;z-index:0;
+  pointer-events:none;opacity:0.55;
+}
+
+/* ── PAGE SHELL ── */
+#page-content{
+  display:none;
+  position:relative;
+  z-index:1;
+  max-width:960px;
+  margin:0 auto;
+  padding:52px 36px 100px;
+}
+
+/* ── HERO ── */
+.ic-hero{
+  text-align:center;
+  padding:64px 24px 56px;
+  position:relative;
+  margin-bottom:8px;
+}
+.ic-hero::before{
+  content:'';
+  position:absolute;
+  top:0;left:50%;transform:translateX(-50%);
+  width:1px;height:60px;
+  background:linear-gradient(to bottom,transparent,rgba(201,168,76,0.5));
+}
+.ic-eyebrow{
+  font-size:0.72rem;
+  letter-spacing:0.55em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.45);
+  margin-bottom:26px;
+}
+.ic-title{
+  font-size:clamp(2rem,6vw,3.8rem);
+  letter-spacing:0.35em;
+  text-transform:uppercase;
+  color:#c9a84c;
+  text-shadow:0 0 60px rgba(201,168,76,0.45),0 0 120px rgba(201,168,76,0.15),0 2px 20px rgba(0,0,0,1);
+  line-height:1.15;
+  margin-bottom:24px;
+}
+.ic-recognize{
+  font-style:italic;
+  font-size:clamp(0.9rem,2.5vw,1.15rem);
+  color:rgba(240,230,210,0.9);
+  letter-spacing:0.08em;
+  line-height:1.6;
+  margin-bottom:10px;
+  text-shadow:0 0 30px rgba(0,0,0,1),0 2px 8px rgba(0,0,0,1);
+}
+.ic-since{
+  font-size:0.72rem;
+  letter-spacing:0.38em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.45);
+  margin-bottom:28px;
+}
+.ic-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  background:rgba(201,168,76,0.07);
+  border:1px solid rgba(201,168,76,0.3);
+  padding:7px 20px;
+  font-size:0.68rem;
+  letter-spacing:0.42em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.75);
+}
+.ic-badge::before,.ic-badge::after{content:'✦';font-size:0.55rem;color:rgba(201,168,76,0.4)}
+
+/* ── SECTION DIVIDER ── */
+.gold-rule{
+  display:flex;align-items:center;gap:16px;
+  margin:48px 0 44px;
+}
+.gold-rule::before,.gold-rule::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,0.35),transparent);
+}
+.gold-rule-glyph{
+  font-size:0.85rem;color:rgba(201,168,76,0.5);
+  letter-spacing:0.2em;
+  flex-shrink:0;
+}
+.gold-rule-sm{
+  width:100%;height:1px;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,0.2),transparent);
+  margin:12px 0 28px;
+}
+
+/* ── SECTION HEADER ── */
+.section-header{margin-bottom:32px;}
+.section-eyebrow{
+  font-size:0.68rem;
+  letter-spacing:0.55em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.4);
+  margin-bottom:8px;
+}
+.section-title{
+  font-size:clamp(1.1rem,3vw,1.6rem);
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:#c9a84c;
+  text-shadow:0 0 20px rgba(201,168,76,0.2);
+  line-height:1.2;
+}
+.section-sub{
+  font-style:italic;
+  font-size:0.8rem;
+  color:rgba(240,230,210,0.45);
+  letter-spacing:0.06em;
+  margin-top:6px;
+}
+
+/* ── TRANSMISSION CARDS ── */
+.tx-card{
+  position:relative;
+  background:rgba(5,3,12,0.97);
+  border:1px solid rgba(201,168,76,0.2);
+  padding:40px 40px 36px;
+  margin-bottom:20px;
+  overflow:hidden;
+  transition:border-color 0.4s ease,box-shadow 0.4s ease;
+}
+.tx-card::before{
+  content:'';
+  position:absolute;
+  top:0;left:10%;right:10%;
+  height:1px;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,0.45),transparent);
+}
+.tx-card::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse at 20% 0%,rgba(120,0,222,0.06) 0%,transparent 60%);
+  pointer-events:none;
+}
+.tx-card:hover{
+  border-color:rgba(201,168,76,0.42);
+  box-shadow:0 0 40px rgba(0,0,0,0.8),0 0 20px rgba(201,168,76,0.06),inset 0 0 60px rgba(0,0,0,0.4);
+}
+
+/* CLASSIFIED stamp */
+.classified-stamp{
+  position:absolute;
+  top:24px;right:-6px;
+  background:rgba(251,56,56,0.06);
+  border:2px solid rgba(251,56,56,0.65);
+  color:rgba(251,56,56,0.8);
+  font-family:'Luminari',serif;
+  font-size:0.62rem;
+  letter-spacing:0.45em;
+  padding:5px 18px;
+  transform:rotate(8deg);
+  text-transform:uppercase;
+  pointer-events:none;
+  box-shadow:0 0 14px rgba(251,56,56,0.25),inset 0 0 8px rgba(251,56,56,0.05);
+  z-index:2;
+}
+
+.tx-tag{
+  font-size:0.68rem;
+  letter-spacing:0.35em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.4);
+  margin-bottom:14px;
+  position:relative;
+  z-index:1;
+}
+.tx-title{
+  font-size:clamp(1.1rem,2.8vw,1.5rem);
+  letter-spacing:0.1em;
+  color:#c9a84c;
+  margin-bottom:6px;
+  line-height:1.3;
+  text-shadow:0 0 20px rgba(201,168,76,0.25),0 2px 12px rgba(0,0,0,1);
+  position:relative;
+  z-index:1;
+}
+.tx-subtitle{
+  font-style:italic;
+  font-size:0.82rem;
+  color:rgba(240,230,210,0.55);
+  letter-spacing:0.06em;
+  margin-bottom:22px;
+  position:relative;
+  z-index:1;
+  text-shadow:0 0 20px rgba(0,0,0,1),0 2px 4px rgba(0,0,0,1);
+}
+.tx-body{
+  font-size:0.88rem;
+  line-height:1.95;
+  color:rgba(232,220,200,0.72);
+  letter-spacing:0.03em;
+  position:relative;
+  z-index:1;
+  font-style:italic;
+}
+.tx-rule{
+  width:60px;height:1px;
+  background:linear-gradient(to right,rgba(201,168,76,0.5),transparent);
+  margin-bottom:22px;
+  position:relative;z-index:1;
+}
+.tx-closing{
+  margin-top:22px;
+  font-size:0.68rem;
+  letter-spacing:0.35em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.25);
+  position:relative;z-index:1;
+}
+
+/* ── HIDDEN CATALOG ── */
+.catalog-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.catalog-card{
+  background:rgba(5,3,12,0.97);
+  border:1px solid rgba(201,168,76,0.15);
+  overflow:hidden;
+  position:relative;
+  transition:border-color 0.3s ease;
+}
+.catalog-card:hover{border-color:rgba(201,168,76,0.3);}
+
+.catalog-art{
+  width:100%;
+  aspect-ratio:1;
+  position:relative;
+  overflow:hidden;
+}
+.catalog-art-inner{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.catalog-blur-1{background:radial-gradient(ellipse at 30% 40%,rgba(120,0,222,0.6) 0%,rgba(2,20,40,0.9) 50%,rgba(0,0,0,1) 100%);filter:blur(18px) brightness(0.4);width:100%;height:100%;}
+.catalog-blur-2{background:radial-gradient(ellipse at 70% 30%,rgba(251,56,56,0.5) 0%,rgba(30,10,5,0.9) 50%,rgba(0,0,0,1) 100%);filter:blur(18px) brightness(0.4);width:100%;height:100%;}
+.catalog-blur-3{background:radial-gradient(ellipse at 50% 60%,rgba(2,225,39,0.4) 0%,rgba(5,20,10,0.9) 50%,rgba(0,0,0,1) 100%);filter:blur(18px) brightness(0.4);width:100%;height:100%;}
+
+.catalog-overlay{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:12px;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(2px);
+}
+.catalog-lock{
+  font-size:1.6rem;
+  color:rgba(201,168,76,0.5);
+  line-height:1;
+}
+.catalog-pending{
+  font-size:0.62rem;
+  letter-spacing:0.38em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.5);
+  text-align:center;
+  padding:0 8px;
+}
+
+.catalog-info{
+  padding:14px 16px 18px;
+  border-top:1px solid rgba(201,168,76,0.1);
+}
+.catalog-info-title{
+  font-size:0.72rem;
+  letter-spacing:0.12em;
+  color:rgba(201,168,76,0.45);
+  text-transform:uppercase;
+  margin-bottom:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.catalog-info-meta{
+  font-size:0.62rem;
+  letter-spacing:0.22em;
+  color:rgba(255,255,255,0.22);
+  text-transform:uppercase;
+}
+
+/* ── PORTAL CARDS ── */
+.portal-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.portal-card{
+  background:rgba(5,3,12,0.97);
+  border:1px solid rgba(201,168,76,0.22);
+  padding:36px 24px 32px;
+  text-decoration:none;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:14px;
+  position:relative;
+  overflow:hidden;
+  transition:border-color 0.35s ease,box-shadow 0.35s ease,transform 0.35s ease;
+}
+.portal-card::before{
+  content:'';
+  position:absolute;
+  top:0;left:10%;right:10%;
+  height:1px;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,0.5),transparent);
+}
+.portal-card::after{
+  content:'';
+  position:absolute;
+  inset:6px;
+  border:1px solid rgba(201,168,76,0.07);
+  pointer-events:none;
+}
+.portal-card:hover{
+  border-color:rgba(201,168,76,0.6);
+  box-shadow:0 0 40px rgba(0,0,0,0.9),0 0 24px rgba(201,168,76,0.1),inset 0 0 40px rgba(201,168,76,0.03);
+  transform:translateY(-3px);
+}
+.portal-glyph{
+  font-size:2.2rem;
+  color:rgba(201,168,76,0.6);
+  line-height:1;
+  transition:color 0.35s ease,text-shadow 0.35s ease;
+}
+.portal-card:hover .portal-glyph{
+  color:#c9a84c;
+  text-shadow:0 0 20px rgba(201,168,76,0.6);
+}
+.portal-name{
+  font-size:0.82rem;
+  letter-spacing:0.32em;
+  text-transform:uppercase;
+  color:#c9a84c;
+  line-height:1.3;
+}
+.portal-desc{
+  font-size:0.72rem;
+  font-style:italic;
+  color:rgba(240,230,210,0.45);
+  letter-spacing:0.04em;
+  line-height:1.6;
+  flex:1;
+}
+.portal-enter{
+  font-size:0.65rem;
+  letter-spacing:0.4em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.45);
+  border:1px solid rgba(201,168,76,0.2);
+  padding:6px 20px;
+  transition:color 0.25s ease,border-color 0.25s ease,background 0.25s ease;
+  margin-top:4px;
+}
+.portal-card:hover .portal-enter{
+  color:#000;
+  background:#c9a84c;
+  border-color:#c9a84c;
+}
+
+/* ── CHAT ── */
+.chat-wrap{
+  background:rgba(3,2,8,0.98);
+  border:1px solid rgba(201,168,76,0.2);
+  overflow:hidden;
+  position:relative;
+}
+.chat-wrap::before{
+  content:'';
+  position:absolute;
+  top:0;left:10%;right:10%;
+  height:1px;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,0.4),transparent);
+}
+#chat-messages{
+  height:380px;
+  overflow-y:auto;
+  padding:20px 24px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  scroll-behavior:smooth;
+}
+#chat-messages::-webkit-scrollbar{width:4px;}
+#chat-messages::-webkit-scrollbar-track{background:transparent;}
+#chat-messages::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.3);border-radius:2px;}
+#chat-messages::-webkit-scrollbar-thumb:hover{background:rgba(201,168,76,0.55);}
+
+.chat-msg{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  animation:msgIn 0.25s ease forwards;
+}
+.chat-msg--me{flex-direction:row-reverse;}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.chat-avatar{
+  width:30px;height:30px;
+  border-radius:50%;
+  background:rgba(201,168,76,0.12);
+  border:1px solid rgba(201,168,76,0.35);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.72rem;letter-spacing:0;
+  color:#c9a84c;
+  flex-shrink:0;
+  font-family:'Luminari',serif;
+}
+.chat-msg--me .chat-avatar{
+  background:rgba(120,0,222,0.12);
+  border-color:rgba(120,0,222,0.4);
+  color:#b060ff;
+}
+
+.chat-bubble{
+  max-width:72%;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.chat-meta{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+}
+.chat-msg--me .chat-meta{flex-direction:row-reverse;}
+.chat-name{
+  font-size:0.68rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.55);
+}
+.chat-msg--me .chat-name{color:rgba(160,100,255,0.65);}
+.chat-time{
+  font-family:sans-serif;
+  font-size:0.6rem;
+  color:rgba(255,255,255,0.2);
+}
+.chat-text{
+  background:rgba(20,16,30,0.9);
+  border:1px solid rgba(201,168,76,0.1);
+  padding:9px 14px;
+  font-family:sans-serif;
+  font-size:0.8rem;
+  line-height:1.55;
+  color:rgba(240,230,210,0.78);
+  word-break:break-word;
+}
+.chat-msg--me .chat-text{
+  background:rgba(30,15,50,0.9);
+  border-color:rgba(120,0,222,0.15);
+  color:rgba(240,230,210,0.85);
+}
+
+.chat-empty{
+  text-align:center;
+  padding:60px 24px;
+  font-style:italic;
+  font-size:0.78rem;
+  color:rgba(255,255,255,0.2);
+  letter-spacing:0.08em;
+}
+
+.chat-input-row{
+  display:flex;
+  align-items:center;
+  gap:0;
+  border-top:1px solid rgba(201,168,76,0.15);
+  padding:0;
+}
+#chat-input{
+  flex:1;
+  background:rgba(5,3,12,0.98);
+  border:none;
+  border-right:1px solid rgba(201,168,76,0.15);
+  color:#f0e6d3;
+  font-family:'Luminari',serif;
+  font-size:0.85rem;
+  letter-spacing:0.04em;
+  padding:16px 20px;
+  outline:none;
+  resize:none;
+  line-height:1.4;
+}
+#chat-input::placeholder{color:rgba(255,255,255,0.2);font-style:italic;}
+#chat-send{
+  background:none;
+  border:none;
+  color:rgba(201,168,76,0.55);
+  font-family:'Luminari',serif;
+  font-size:0.68rem;
+  letter-spacing:0.35em;
+  text-transform:uppercase;
+  padding:16px 22px;
+  cursor:pointer;
+  transition:color 0.2s ease,background 0.2s ease;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+#chat-send:hover{color:#c9a84c;background:rgba(201,168,76,0.05);}
+.chat-status{
+  font-size:0.62rem;
+  letter-spacing:0.3em;
+  color:rgba(201,168,76,0.25);
+  text-align:right;
+  padding:6px 16px 10px;
+  text-transform:uppercase;
+}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  input,textarea,select{font-size:16px!important;}
+  body{overflow-x:hidden;}
+  body,bg-wrap{background-attachment:scroll!important;}
+  *{box-sizing:border-box;}
+  #jt-bg{position:absolute!important;}
+  button,a,[role="button"]{min-height:44px;}
+  .home-btn{display:none!important;}
+
+  #page-content{padding:40px 16px 80px;}
+  .ic-hero{padding:44px 16px 40px;}
+  .ic-title{letter-spacing:0.2em;}
+  .catalog-grid{grid-template-columns:1fr 1fr;gap:12px;}
+  .portal-grid{grid-template-columns:1fr;gap:12px;}
+  .portal-card{padding:28px 20px 24px;flex-direction:row;text-align:left;gap:16px;align-items:center;}
+  .portal-card::after{display:none;}
+  .portal-glyph{font-size:1.8rem;flex-shrink:0;}
+  .portal-info{flex:1;}
+  .portal-enter{display:none;}
+  .tx-card{padding:28px 20px 24px;}
+  .classified-stamp{font-size:0.55rem;padding:4px 12px;}
+  #chat-messages{height:300px;padding:14px 16px;}
+  .chat-bubble{max-width:85%;}
+  #chat-input{padding:14px 16px;}
+  #chat-send{padding:14px 16px;}
+}
+
+/* ── TEXT TREATMENTS ── */
+h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased}
+.tx-title{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased}
+.tx-subtitle,.ic-recognize{text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 4px rgba(0,0,0,1),0 0 40px rgba(0,0,0,0.9),1px 1px 3px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased}
+</style>
 </head>
 <body>
 <img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72" loading="eager" width="1288" height="2564">
+<canvas id="star-canvas"></canvas>
 
 <style>#jtnav{position:fixed;top:0;left:0;right:0;height:52px;z-index:9999;display:flex;align-items:center;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid rgba(201,168,76,0.3)}#jtnav-logo{display:flex;align-items:center;margin-left:16px;flex-shrink:0;text-decoration:none}#jtnav-logo img{height:32px;width:auto;display:block}#jtnav-links{display:flex;align-items:center;gap:0;flex:1;justify-content:space-evenly;flex-wrap:nowrap}.jtnav-link{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.8);text-decoration:none;padding:0 8px;white-space:nowrap;transition:color 0.2s ease;line-height:52px}.jtnav-link:hover{color:#c9a84c}.jtnav-link.jtnav-active{color:#c9a84c}.jtnav-dot{color:rgba(255,255,255,0.3);font-size:0.6rem;padding:0 2px;line-height:52px;user-select:none}#jtnav-divider{width:1px;height:20px;background:rgba(201,168,76,0.3);margin:0 10px;flex-shrink:0}#jtnav-platforms{display:flex;align-items:center;margin-right:16px;flex-shrink:0;gap:0}#jtnav-platforms .jtnav-link{display:flex;align-items:center;padding:0 7px;line-height:52px}#jtnav-platforms .jtnav-link svg{display:block;opacity:0.8;transition:opacity 0.2s,color 0.2s}#jtnav-platforms .jtnav-link:hover svg,#jtnav-platforms .jtnav-link.jtnav-active svg{opacity:1}#jtnav-mobile-toggle{display:none;align-items:center;justify-content:center;margin-right:16px;cursor:pointer;background:none;border:none;padding:0;flex-shrink:0}#jtnav-mobile-toggle img{height:32px;width:auto;display:block}#jtnav-mobile-overlay{display:none;position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,0.96);overflow-y:auto;overflow-x:hidden;opacity:0;transition:opacity 0.3s ease;-webkit-overflow-scrolling:touch}#jtnav-mobile-overlay.jtnav-mob-open{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;padding:70px 16px 24px;align-content:start;opacity:1}#jtnav-mob-bg{position:absolute;inset:0;opacity:0.08;pointer-events:none}#jtnav-mob-close{position:fixed;top:14px;right:16px;background:none;border:none;color:#c9a84c;font-size:1.5rem;cursor:pointer;line-height:1;font-family:sans-serif;z-index:1200;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}#jtnav-mob-close:hover{color:#c9a84c}.jtnav-mob-link{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,230,210,0.8);text-decoration:none;padding:12px 8px;position:relative;z-index:1;transition:color 0.2s ease,border-color 0.2s ease;font-weight:normal;text-align:center;border:1px solid rgba(201,168,76,0.2);border-radius:4px;display:flex;align-items:center;justify-content:center;min-height:44px;box-sizing:border-box}.jtnav-mob-link:hover,.jtnav-mob-link.jtnav-active{color:#c9a84c;border-color:rgba(201,168,76,0.6)}.jtnav-mob-divider{width:100%;height:1px;background:rgba(201,168,76,0.3);margin:4px 0;position:relative;z-index:1;grid-column:1/-1}.jtnav-mob-divider::after{content:'\2726';display:block;text-align:center;color:rgba(201,168,76,0.4);font-size:0.7rem;margin:4px 0}@media (max-width:767px){#jtnav-links,#jtnav-divider,#jtnav-platforms{display:none}#jtnav-mobile-toggle{display:flex;position:static;margin-left:16px}#jtnav-mob-login{display:flex!important;align-items:center;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;padding:0 14px;white-space:nowrap;line-height:52px;margin-left:auto}#jtnav-mob-login:hover{color:#c9a84c}#jtnav{position:fixed;width:100%;-webkit-transform:translateZ(0);transform:translateZ(0);will-change:transform}#jtnav-logo{position:absolute;left:50%;transform:translateX(-50%);margin:0}.home-btn{display:none!important}}}body{padding-top:52px!important}#jtnav.jtnav-scrolled{background:rgba(0,0,0,0.95)!important;border-bottom:1px solid rgba(201,168,76,0.5)!important}</style>
 <div id="jtnav"> <a id="jtnav-logo" href="index.html"> <img src="assets/homepage/logo png.png" alt="Jestamang" loading="eager"> </a> <div id="jtnav-links"> <a class="jtnav-link" href="entities.html" data-page="entities.html">Entities</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="albums.html" data-page="albums.html">Albums</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="lyrics.html" data-page="lyrics.html">Lyrics</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="merch.html" data-page="merch.html">Merch</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="photos.html" data-page="photos.html">Photos</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="videos.html" data-page="videos.html">Videos</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="shows.html" data-page="shows.html">Shows</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="blog.html" data-page="blog.html">Blog</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="comix.html" data-page="comix.html">Comix</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="games.html" data-page="games.html">Games</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="email.html" data-page="email.html">Email</a> </div> <div id="jtnav-divider"></div> <div id="jtnav-platforms"> <a class="jtnav-link" href="https://www.instagram.com/jestamang" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://www.youtube.com/@jestamang" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://music.apple.com/us/artist/jestamang/1665724106" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg></a> </div> <div id="jtnav-auth"></div> <button id="jtnav-mobile-toggle" aria-label="Open navigation"><span style="font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.2em;color:rgba(255,255,255,0.85);">MENU</span></button> <a id="jtnav-mob-login" href="login.html">Log In</a> </div> <div id="jtnav-mobile-overlay"> <div id="jtnav-mob-bg"></div> <button id="jtnav-mob-close" aria-label="Close navigation">✦</button> <a class="jtnav-mob-link" href="index.html" data-page="index.html">Home</a> <a class="jtnav-mob-link" href="entities.html" data-page="entities.html">Entities</a> <a class="jtnav-mob-link" href="albums.html" data-page="albums.html">Albums</a> <a class="jtnav-mob-link" href="lyrics.html" data-page="lyrics.html">Lyrics</a> <a class="jtnav-mob-link" href="merch.html" data-page="merch.html">Merch</a> <a class="jtnav-mob-link" href="photos.html" data-page="photos.html">Photos</a> <a class="jtnav-mob-link" href="videos.html" data-page="videos.html">Videos</a> <a class="jtnav-mob-link" href="shows.html" data-page="shows.html">Shows</a> <a class="jtnav-mob-link" href="blog.html" data-page="blog.html">Blog</a> <a class="jtnav-mob-link" href="comix.html" data-page="comix.html">Comix</a> <a class="jtnav-mob-link" href="games.html" data-page="games.html">Games</a> <a class="jtnav-mob-link" href="email.html" data-page="email.html">Email</a> <div class="jtnav-mob-divider"></div> <a class="jtnav-mob-link" href="https://www.instagram.com/jestamang" target="_blank" rel="noopener noreferrer">Instagram</a> <a class="jtnav-mob-link" href="https://www.youtube.com/@jestamang" target="_blank" rel="noopener noreferrer">YouTube</a> <a class="jtnav-mob-link" href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" target="_blank" rel="noopener noreferrer">Spotify</a> <a class="jtnav-mob-link" href="https://music.apple.com/us/artist/jestamang/1665724106" target="_blank" rel="noopener noreferrer">Apple Music</a> </div>
-<script>(function(){var page=window.location.pathname.split('/').pop()||'index.html';document.querySelectorAll('.jtnav-link, .jtnav-mob-link').forEach(function(el){if(el.getAttribute('data-page')===page){el.classList.add('jtnav-active');}});var toggle=document.getElementById('jtnav-mobile-toggle');var overlay=document.getElementById('jtnav-mobile-overlay');var closeBtn=document.getElementById('jtnav-mob-close');function openMenu(){document.body.style.overflow='hidden';overlay.classList.add('jtnav-mob-open');}function closeMenu(){overlay.classList.remove('jtnav-mob-open');document.body.style.overflow='';}if(toggle&&overlay){toggle.addEventListener('click',openMenu);closeBtn.addEventListener('click',closeMenu);overlay.addEventListener('click',function(e){if(e.target===overlay)closeMenu();});overlay.querySelectorAll('.jtnav-mob-link').forEach(function(link){link.addEventListener('click',closeMenu);});document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMenu();});}})();</script><script>(function(){var nav=document.getElementById('jtnav');if(nav){window.addEventListener('scroll',function(){if(window.scrollY>50){nav.classList.add('jtnav-scrolled');}else{nav.classList.remove('jtnav-scrolled');}},{passive:true});}})();</script>
+<script>(function(){var page=window.location.pathname.split('/').pop()||'index.html';document.querySelectorAll('.jtnav-link, .jtnav-mob-link').forEach(function(el){if(el.getAttribute('data-page')===page){el.classList.add('jtnav-active');}});var toggle=document.getElementById('jtnav-mobile-toggle');var overlay=document.getElementById('jtnav-mobile-overlay');var closeBtn=document.getElementById('jtnav-mob-close');function openMenu(){document.body.style.overflow='hidden';overlay.classList.add('jtnav-mob-open');}function closeMenu(){overlay.classList.remove('jtnav-mob-open');document.body.style.overflow='';}if(toggle&&overlay){toggle.addEventListener('click',openMenu);closeBtn.addEventListener('click',closeMenu);overlay.addEventListener('click',function(e){if(e.target===overlay)closeMenu();});overlay.querySelectorAll('.jtnav-mob-link').forEach(function(link){link.addEventListener('click',closeMenu);});document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMenu();});}})();</script>
+<script>(function(){var nav=document.getElementById('jtnav');if(nav){window.addEventListener('scroll',function(){if(window.scrollY>50){nav.classList.add('jtnav-scrolled');}else{nav.classList.remove('jtnav-scrolled');}},{passive:true});}})();</script>
 
+<!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
 <div id="page-content">
 
-  <!-- Hero Header -->
-  <div class="page-hero">
-    <h1 class="hero-title">For the Inner Circle Only</h1>
-    <div class="hero-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
-    <p class="hero-welcome" id="welcome-msg">Welcome. You are recognized.</p>
+  <!-- ── HERO ─────────────────────────────────────────── -->
+  <div class="ic-hero">
+    <div class="ic-eyebrow">✦ &nbsp; Inner Circle Access Granted &nbsp; ✦</div>
+    <h1 class="ic-title">Welcome to the<br>Inner Circle</h1>
+    <p class="ic-recognize" id="hero-name">The universe recognizes you.</p>
+    <p class="ic-since" id="member-since">Initiated: —</p>
+    <div class="ic-badge">Access Level &nbsp;·&nbsp; Inner Circle</div>
   </div>
 
-  <div class="gold-rule"></div>
+  <div class="gold-rule"><span class="gold-rule-glyph">◈ &nbsp; ◈ &nbsp; ◈</span></div>
 
-  <!-- Exclusive Transmissions -->
-  <div class="section-title">Inner Transmissions</div>
+  <!-- ── SECTION 1: TRANSMISSIONS ──────────────────────── -->
+  <div class="section-header">
+    <div class="section-eyebrow">◈ Classified Transmissions · Eyes Only</div>
+    <h2 class="section-title">Inner Circle Transmissions</h2>
+    <p class="section-sub">These writings have not been shared with the outer world. They exist only here.</p>
+  </div>
   <div class="gold-rule-sm"></div>
 
-  <div class="post-card">
-    <div class="post-eyebrow">Exclusive &nbsp;·&nbsp; Inner Circle</div>
-    <h2 class="post-title">The Summer Solstice Ritual — Behind the Parade</h2>
-    <p class="post-subtitle">What the cameras did not capture.</p>
-    <p class="post-body">This transmission is sealed for inner circle members only. As the mythology expands, exclusive writings, recordings, and visions will appear here first — before they reach the outer world. You are in the right place. Stay close.</p>
+  <!-- Post 1 -->
+  <div class="tx-card">
+    <div class="classified-stamp">Classified</div>
+    <div class="tx-tag">Cosmic Lore &nbsp;·&nbsp; January 18, 2026</div>
+    <h2 class="tx-title">The Architecture of the Drift</h2>
+    <p class="tx-subtitle">There is a space between the sounds. We have been mapping it since before the first album.</p>
+    <div class="tx-rule"></div>
+    <p class="tx-body">
+      The Drift is not a metaphor. It is a location — a pressure zone that exists in the silence between frequencies, the negative space your ear fills in when the music pauses. Every Jestamang entity has a home coordinate within the Drift, a specific resonance that belongs only to them. Ace of Chase lives at the edge where jazz dissolves into static. Cricket Om exists deeper in, where the air tastes like copper and the light is the color of old film.
+      <br><br>
+      When we record, we are not composing. We are translating. The instruments are not tools so much as receivers — antennae calibrated to specific sectors of the Drift. A song that sounds improvised to you was in many cases received, whole, from somewhere the microphone cannot reach. We simply held very still and listened until it arrived.
+      <br><br>
+      The Quarter Days project was our first systematic attempt to map the Drift by season. Each album corresponds to a tidal shift — a change in the Drift's atmospheric conditions as the year turns. Winter Drift is dense, almost solid, full of weight. Summer Drift is thin and fast, almost dangerous to enter without grounding. We almost lost someone in the summer recording sessions. We will not say more than that here.
+    </p>
+    <div class="tx-closing">Transmission ends. &nbsp;✦</div>
   </div>
 
-  <div class="post-card">
-    <div class="post-eyebrow">Origins &nbsp;·&nbsp; Inner Circle</div>
-    <h2 class="post-title">Quarter Days: The Origins</h2>
-    <p class="post-subtitle">Before the recordings, there were the seasons.</p>
-    <p class="post-body">The Quarter Days project began not in a studio but in a swamp. This is the account of how four seasons became four bodies of work, told only to those who have entered the circle.</p>
+  <!-- Post 2 -->
+  <div class="tx-card">
+    <div class="classified-stamp">Classified</div>
+    <div class="tx-tag">Hidden History &nbsp;·&nbsp; October 31, 2025</div>
+    <h2 class="tx-title">Why the Quarter Days Were Written in Blood and Mud</h2>
+    <p class="tx-subtitle">The true origin of the four-season mythology. Never before shared with the public.</p>
+    <div class="tx-rule"></div>
+    <p class="tx-body">
+      The Quarter Days project began as an act of desperation, not artistry. In the winter preceding the first release, Jestamang found itself stranded between identities — the old mythology felt exhausted, the new one had not yet arrived. The collective went silent for ninety-one days. Exactly one season. No recordings. No transmissions. Nothing.
+      <br><br>
+      On the ninety-second day, Jestamang woke up in a field. This is not a figure of speech. There was mud on the boots, dew on the coat, and an entire album sketched on the back of a paper bag that was dated three days prior. No one knows how the bag got there. No one knows who drew the track listing. The handwriting does not match any member of the collective, past or present.
+      <br><br>
+      This became the method. Each Quarter Day album was begun by disappearing — physically, digitally, spiritually — for one full season. Then returning with whatever arrived during the absence. The critics called it discipline. The outer world called it mystique. The inner circle now knows: it was never a choice. The Drift summons. We simply stopped pretending we could resist it.
+    </p>
+    <div class="tx-closing">Transmission ends. &nbsp;✦</div>
   </div>
 
-  <div class="gold-rule"></div>
+  <!-- Post 3 -->
+  <div class="tx-card">
+    <div class="classified-stamp">Classified</div>
+    <div class="tx-tag">Entity Files &nbsp;·&nbsp; March 3, 2026</div>
+    <h2 class="tx-title">The Thirteen Names of Jestamang</h2>
+    <p class="tx-subtitle">Each alias carries a frequency. Each frequency holds an entire world.</p>
+    <div class="tx-rule"></div>
+    <p class="tx-body">
+      Jestamang is not one name but thirteen. The outer world knows only the one that appears on the albums — the name that the entities rally behind when it is time to surface. But there are twelve others, held in reserve, used only within the collective, each one a tuning fork for a different emotional frequency.
+      <br><br>
+      We will share only three of them here, and only because they have already been uttered in songs that have been released, though no one has yet noticed. The first is Vauthren — the name used when the music demands grief without resolution, a minor key that has no exit. The second is Solace Meridian — the frequency of homecoming, of something lost returning altered. The third name we will not write but you have already heard it: it is the sound on the hidden track of the NONS album, the three seconds of breath before the final note. Listen again. Say it aloud. Nothing happens. But the Drift hears you.
+      <br><br>
+      The remaining ten names will be revealed one per season. If you are reading this you are already in the correct position to receive them. The Inner Circle exists precisely for this disclosure. Watch this space. The mythology is not over. It has not yet properly begun.
+    </p>
+    <div class="tx-closing">Transmission ends. &nbsp;✦</div>
+  </div>
 
-  <!-- Early Access Announcements -->
-  <div class="section-title">Early Access Announcements</div>
+  <div class="gold-rule"><span class="gold-rule-glyph">◈ &nbsp; ◈ &nbsp; ◈</span></div>
+
+  <!-- ── SECTION 2: HIDDEN CATALOG ─────────────────────── -->
+  <div class="section-header">
+    <div class="section-eyebrow">◈ Classified · Unreleased Transmissions</div>
+    <h2 class="section-title">The Hidden Catalog</h2>
+    <p class="section-sub">Signals intercepted. Pending release to the inner circle first.</p>
+  </div>
   <div class="gold-rule-sm"></div>
-  <div class="announce-card">
-    <p class="announce-text">The next transmission approaches. Inner circle members will receive notice here before the public announcement. The mythology is still unfolding.</p>
+
+  <div class="catalog-grid">
+
+    <div class="catalog-card">
+      <div class="catalog-art">
+        <div class="catalog-art-inner">
+          <div class="catalog-blur-1"></div>
+          <div class="catalog-overlay">
+            <div class="catalog-lock">🔒</div>
+            <div class="catalog-pending">Transmission<br>Pending...</div>
+          </div>
+        </div>
+      </div>
+      <div class="catalog-info">
+        <div class="catalog-info-title">████████████ Vol. IV</div>
+        <div class="catalog-info-meta">ETA · Unknown &nbsp;·&nbsp; IC Exclusive</div>
+      </div>
+    </div>
+
+    <div class="catalog-card">
+      <div class="catalog-art">
+        <div class="catalog-art-inner">
+          <div class="catalog-blur-2"></div>
+          <div class="catalog-overlay">
+            <div class="catalog-lock">🔒</div>
+            <div class="catalog-pending">Transmission<br>Pending...</div>
+          </div>
+        </div>
+      </div>
+      <div class="catalog-info">
+        <div class="catalog-info-title">████ — Drift Sessions</div>
+        <div class="catalog-info-meta">ETA · Unknown &nbsp;·&nbsp; IC Exclusive</div>
+      </div>
+    </div>
+
+    <div class="catalog-card">
+      <div class="catalog-art">
+        <div class="catalog-art-inner">
+          <div class="catalog-blur-3"></div>
+          <div class="catalog-overlay">
+            <div class="catalog-lock">🔒</div>
+            <div class="catalog-pending">Transmission<br>Pending...</div>
+          </div>
+        </div>
+      </div>
+      <div class="catalog-info">
+        <div class="catalog-info-title">The ██████ Protocol</div>
+        <div class="catalog-info-meta">ETA · Unknown &nbsp;·&nbsp; IC Exclusive</div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="gold-rule"></div>
+  <div class="gold-rule"><span class="gold-rule-glyph">◈ &nbsp; ◈ &nbsp; ◈</span></div>
 
-  <!-- Sealed For Now -->
-  <div class="section-title">Sealed for Now</div>
+  <!-- ── SECTION 3: MEMBER PORTALS ─────────────────────── -->
+  <div class="section-header">
+    <div class="section-eyebrow">◈ Inner Circle Access</div>
+    <h2 class="section-title">Member Portals</h2>
+    <p class="section-sub">Doorways that open only for those who have been recognized.</p>
+  </div>
   <div class="gold-rule-sm"></div>
-  <div class="sealed-card">
-    <div class="sealed-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
-    <p class="sealed-text">Further exclusive content — recordings, behind the scenes transmissions, and unreleased material — is being prepared for the inner circle. Return often. The mythology reveals itself slowly.</p>
+
+  <div class="portal-grid">
+
+    <a href="profile.html" class="portal-card">
+      <div class="portal-glyph">◈</div>
+      <div class="portal-info">
+        <div class="portal-name">Your Dossier</div>
+        <div class="portal-desc">Access your complete cosmic identity file. View your profile, member rank, and everything the universe holds on record about you.</div>
+      </div>
+      <div class="portal-enter">Enter &nbsp;›</div>
+    </a>
+
+    <a href="games.html" class="portal-card">
+      <div class="portal-glyph">✦</div>
+      <div class="portal-info">
+        <div class="portal-name">Hall of Fame</div>
+        <div class="portal-desc">The leaderboard of those who have played the longest. Your score lives in the Arcade. The hierarchy is being assembled.</div>
+      </div>
+      <div class="portal-enter">Enter &nbsp;›</div>
+    </a>
+
+    <a href="game-oracle.html" class="portal-card">
+      <div class="portal-glyph">⬡</div>
+      <div class="portal-info">
+        <div class="portal-name">The Daily Sigil</div>
+        <div class="portal-desc">Consult the Jestamang Oracle. Each day it speaks once. Each reading is unique. Do not ask what you are not prepared to hear.</div>
+      </div>
+      <div class="portal-enter">Enter &nbsp;›</div>
+    </a>
+
   </div>
 
-</div><!-- end #page-content -->
+  <div class="gold-rule"><span class="gold-rule-glyph">◈ &nbsp; ◈ &nbsp; ◈</span></div>
 
+  <!-- ── SECTION 4: CHAT ────────────────────────────────── -->
+  <div class="section-header">
+    <div class="section-eyebrow">◈ Live Transmissions · Inner Circle Only</div>
+    <h2 class="section-title">Inner Circle Chat</h2>
+    <p class="section-sub">A live signal shared only among those who have entered. Speak freely.</p>
+  </div>
+  <div class="gold-rule-sm"></div>
+
+  <div class="chat-wrap">
+    <div id="chat-messages">
+      <div class="chat-empty" id="chat-empty">No transmissions yet. Be the first to speak.</div>
+    </div>
+    <div class="chat-input-row">
+      <textarea id="chat-input" rows="1" placeholder="Send a transmission to the inner circle..." maxlength="500"></textarea>
+      <button id="chat-send">Send ✦</button>
+    </div>
+    <div class="chat-status" id="chat-status">Inner Circle · Encrypted · Members Only</div>
+  </div>
+
+</div><!-- /#page-content -->
+
+<!-- ── FIREBASE ─────────────────────────────────────────── -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="assets/js/firebase-config.js"></script>
 <script src="assets/js/jesta-auth.js"></script>
+
 <script>
 (function(){
-  firebase.auth().onAuthStateChanged(function(user){
-    if(!user){ window.location.href = 'login.html'; return; }
 
-    // Show page
+  /* ── STAR CANVAS ── */
+  (function(){
+    var canvas = document.getElementById('star-canvas');
+    var ctx = canvas.getContext('2d');
+    var stars = [];
+    function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+    resize();
+    window.addEventListener('resize', resize, {passive:true});
+    for(var i=0;i<160;i++){
+      stars.push({
+        x:Math.random()*window.innerWidth,
+        y:Math.random()*window.innerHeight,
+        r:Math.random()*1.1+0.2,
+        a:Math.random(),
+        s:Math.random()*0.004+0.001,
+        d:Math.random()<0.5?1:-1
+      });
+    }
+    function tick(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      stars.forEach(function(s){
+        s.a += s.s * s.d;
+        if(s.a>1){s.a=1;s.d=-1;}
+        if(s.a<0){s.a=0;s.d=1;}
+        ctx.beginPath();
+        ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        ctx.fillStyle='rgba(201,168,76,'+s.a.toFixed(3)+')';
+        ctx.fill();
+      });
+      requestAnimationFrame(tick);
+    }
+    tick();
+  })();
+
+  /* ── AUTH & PAGE LOGIC ── */
+  var currentUser = null;
+  var currentName = 'Member';
+  var unsubChat   = null;
+  var db          = null;
+
+  firebase.auth().onAuthStateChanged(function(user){
+    if(!user){ window.location.href='login.html'; return; }
+    currentUser = user;
+    db = firebase.firestore();
+
     document.getElementById('page-content').style.display = 'block';
 
-    // Personalize welcome message
-    var db = firebase.firestore();
-    var name = user.displayName || user.email.split('@')[0];
+    /* Member since */
+    var since = new Date(user.metadata.creationTime);
+    var months = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December'];
+    var sinceStr = months[since.getMonth()]+' '+since.getDate()+', '+since.getFullYear();
+    document.getElementById('member-since').textContent = 'Initiated: '+sinceStr;
 
-    // Try to get username from Firestore for a more personal greeting
+    /* Personalized greeting */
+    var fallback = user.displayName || user.email.split('@')[0];
     db.collection('users').doc(user.uid).get()
       .then(function(doc){
-        if(doc.exists && doc.data().username){
-          name = doc.data().username;
-        }
-        document.getElementById('welcome-msg').textContent =
-          'Welcome, ' + name + '. You are recognized.';
+        if(doc.exists && doc.data().username) fallback = doc.data().username;
+        currentName = fallback;
+        document.getElementById('hero-name').textContent =
+          'The universe recognizes you, '+fallback+'.';
+        initChat();
       })
-      .catch(function(e){
-        console.error('Welcome name error:', e);
-        document.getElementById('welcome-msg').textContent =
-          'Welcome, ' + name + '. You are recognized.';
+      .catch(function(){
+        currentName = fallback;
+        document.getElementById('hero-name').textContent =
+          'The universe recognizes you, '+fallback+'.';
+        initChat();
       });
   });
+
+  /* ── CHAT ── */
+  function initChat(){
+    var messagesEl = document.getElementById('chat-messages');
+    var input      = document.getElementById('chat-input');
+    var sendBtn    = document.getElementById('chat-send');
+    var statusEl   = document.getElementById('chat-status');
+
+    /* Real-time listener ordered ascending, last 50 */
+    unsubChat = db.collection('innerCircleChat')
+      .orderBy('ts','asc')
+      .limitToLast(50)
+      .onSnapshot(function(snap){
+        renderMessages(snap, messagesEl);
+      }, function(err){
+        console.error('Chat error:', err);
+        statusEl.textContent = 'Signal disrupted. Reconnecting...';
+      });
+
+    /* Send */
+    function doSend(){
+      var text = input.value.trim();
+      if(!text || !currentUser) return;
+      input.value = '';
+      autoResize();
+      db.collection('innerCircleChat').add({
+        uid:  currentUser.uid,
+        name: currentName,
+        text: text,
+        ts:   firebase.firestore.FieldValue.serverTimestamp()
+      }).then(function(){
+        /* Trim to 50 */
+        db.collection('innerCircleChat')
+          .orderBy('ts','asc')
+          .get()
+          .then(function(snap){
+            if(snap.size > 50){
+              var batch = db.batch();
+              snap.docs.slice(0, snap.size-50).forEach(function(d){ batch.delete(d.ref); });
+              batch.commit();
+            }
+          });
+      });
+    }
+
+    sendBtn.addEventListener('click', doSend);
+    input.addEventListener('keydown', function(e){
+      if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); doSend(); }
+    });
+
+    /* Auto-resize textarea */
+    function autoResize(){
+      input.style.height='auto';
+      input.style.height=Math.min(input.scrollHeight,120)+'px';
+    }
+    input.addEventListener('input', autoResize);
+  }
+
+  function renderMessages(snap, container){
+    var atBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 24;
+    var emptyEl  = document.getElementById('chat-empty');
+
+    if(snap.empty){
+      if(emptyEl) emptyEl.style.display='block';
+      /* Remove existing messages */
+      Array.from(container.querySelectorAll('.chat-msg')).forEach(function(el){el.remove();});
+      return;
+    }
+    if(emptyEl) emptyEl.style.display='none';
+
+    /* Diff by docId to avoid full re-render */
+    var existingIds = new Set();
+    container.querySelectorAll('.chat-msg[data-id]').forEach(function(el){
+      existingIds.add(el.getAttribute('data-id'));
+    });
+
+    snap.forEach(function(doc){
+      if(existingIds.has(doc.id)) return; /* already rendered */
+      var d   = doc.data();
+      var isMe= currentUser && d.uid === currentUser.uid;
+      var ts  = d.ts ? new Date(d.ts.toMillis()) : new Date();
+      var timeStr = ts.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      var initial = (d.name||'?').charAt(0).toUpperCase();
+
+      var wrap = document.createElement('div');
+      wrap.className  = 'chat-msg'+(isMe?' chat-msg--me':'');
+      wrap.setAttribute('data-id', doc.id);
+      wrap.innerHTML  =
+        '<div class="chat-avatar">'+initial+'</div>'+
+        '<div class="chat-bubble">'+
+          '<div class="chat-meta">'+
+            '<span class="chat-name">'+esc(d.name||'Unknown')+'</span>'+
+            '<span class="chat-time">'+timeStr+'</span>'+
+          '</div>'+
+          '<div class="chat-text">'+esc(d.text||'')+'</div>'+
+        '</div>';
+      container.appendChild(wrap);
+    });
+
+    /* Remove deleted docs */
+    var liveIds = new Set(snap.docs.map(function(d){return d.id;}));
+    container.querySelectorAll('.chat-msg[data-id]').forEach(function(el){
+      if(!liveIds.has(el.getAttribute('data-id'))) el.remove();
+    });
+
+    if(atBottom) container.scrollTop = container.scrollHeight;
+  }
+
+  function esc(s){
+    return String(s)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/\n/g,'<br>');
+  }
+
 })();
 </script>
+
 </body>
 </html>
