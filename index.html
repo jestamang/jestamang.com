@@ -30,18 +30,30 @@
 .hp-scroll-hint span{font-size:1.1rem;line-height:1}
 @keyframes hpBounce{0%,100%{transform:translateX(-50%) translateY(0)}55%{transform:translateX(-50%) translateY(9px)}}
 #hp-preview{position:relative;z-index:2}
-.hp-section{padding:48px 48px;border-top:1px solid rgba(201,168,76,0.1);position:relative;opacity:0;transform:translateY(48px);transition:opacity 0.85s ease,transform 0.85s ease}
-.hp-section.revealed{opacity:1;transform:translateY(0)}.hp-section::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.58);z-index:0;pointer-events:none}
-.hp-inner{display:flex;align-items:center;gap:64px;max-width:1280px;margin:0 auto;position:relative;z-index:1}
+@keyframes jestaReveal{0%{opacity:0;filter:blur(8px);transform:scaleX(1.06)}100%{opacity:1;filter:blur(0);transform:scaleX(1)}}
+@keyframes jestaImageReveal{0%{opacity:0;transform:scale(1.05);filter:saturate(0) blur(4px)}100%{opacity:1;transform:scale(1);filter:saturate(1) blur(0)}}
+.hp-divider{width:100%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.3),transparent)}
+.hp-section{position:relative;width:100%}
+.hp-section--green{background:rgba(15,45,20,0.85)}
+.hp-section--purple{background:rgba(35,10,55,0.85)}
+.hp-section--red{background:rgba(55,8,12,0.85)}
+.hp-inner{display:flex;align-items:center;gap:80px;max-width:1200px;margin:0 auto;padding:60px 40px;position:relative;z-index:1}
 .hp-section:nth-child(even) .hp-inner{flex-direction:row-reverse}
-.hp-text{flex:0 0 260px}
+.hp-text{flex:0 0 360px}
 .hp-visual{flex:1;min-width:0}
-.hp-eyebrow{font-size:0.58rem;letter-spacing:0.5em;text-transform:uppercase;color:rgba(201,168,76,0.5);margin-bottom:14px;display:block}
-.hp-title{font-size:clamp(1.8rem,3.5vw,2.8rem);color:#c9a84c;text-shadow:0 0 40px rgba(201,168,76,0.2);margin-bottom:12px;line-height:1.1}
-.hp-desc{font-size:0.8rem;letter-spacing:0.06em;color:rgba(255,255,255,0.42);line-height:1.85;margin-bottom:28px}
-.hp-cta{display:inline-block;font-family:'Luminari',serif;font-size:0.67rem;letter-spacing:0.3em;text-transform:uppercase;color:#000;background:#c9a84c;text-decoration:none;padding:12px 28px;transition:background 0.25s,transform 0.2s,box-shadow 0.25s}
-.hp-cta:hover{background:#e0bb60;transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,0.3)}
-.hp-rule{width:36px;height:1px;background:rgba(201,168,76,0.3);margin:16px 0 24px}
+.hp-text>*{opacity:0}.hp-visual{opacity:0}
+.hp-section.jesta-revealed .hp-text>*:nth-child(1){animation:jestaReveal 0.8s ease-out 0s forwards}
+.hp-section.jesta-revealed .hp-text>*:nth-child(2){animation:jestaReveal 0.8s ease-out 0.15s forwards}
+.hp-section.jesta-revealed .hp-text>*:nth-child(3){animation:jestaReveal 0.8s ease-out 0.3s forwards}
+.hp-section.jesta-revealed .hp-text>*:nth-child(4){animation:jestaReveal 0.8s ease-out 0.45s forwards}
+.hp-section.jesta-revealed .hp-text>*:nth-child(5){animation:jestaReveal 0.8s ease-out 0.6s forwards}
+.hp-section.jesta-revealed .hp-visual{animation:jestaImageReveal 1s ease-out 0.15s forwards}
+.hp-eyebrow{font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.6);margin-bottom:14px;display:block;font-variant:small-caps}
+.hp-title{font-size:clamp(2.5rem,5vw,4rem);color:#c9a84c;text-shadow:0 0 40px rgba(201,168,76,0.25),0 2px 20px rgba(0,0,0,0.9);margin-bottom:16px;line-height:1.1}
+.hp-desc{font-size:1rem;font-style:italic;color:rgba(240,230,210,0.82);line-height:1.9;margin-bottom:32px;max-width:380px}
+.hp-cta{display:inline-block;font-family:'Luminari',serif;font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;color:#c9a84c;background:rgba(0,0,0,0.6);border:1px solid rgba(201,168,76,0.5);border-radius:2px;text-decoration:none;padding:12px 32px;transition:background 0.3s,color 0.3s,border-color 0.3s,box-shadow 0.3s}
+.hp-cta:hover{background:#c9a84c;color:#000;border-color:#c9a84c;box-shadow:0 0 24px rgba(201,168,76,0.35)}
+.hp-rule{width:36px;height:1px;background:rgba(201,168,76,0.4);margin:16px 0 28px}
 .hp-strip{display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:none}
 .hp-strip::-webkit-scrollbar{display:none}
 .hp-strip img{height:175px;width:auto;object-fit:cover;border:1px solid rgba(201,168,76,0.12);flex-shrink:0;filter:brightness(0.82);transition:filter 0.3s,transform 0.3s}
@@ -84,9 +96,10 @@
 .hp-photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
 .hp-photo-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center top;display:block;border:1px solid rgba(201,168,76,0.08);filter:brightness(0.78);transition:filter 0.3s,transform 0.3s}
 .hp-photo-grid img:hover{filter:brightness(1);transform:scale(1.02)}
-#hp-preview footer{border-top:1px solid rgba(201,168,76,0.1)}
-@media(max-width:900px){.hp-section{padding:44px 36px}}
-@media(max-width:768px){#hp-hero{height:auto;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}.hp-scroll-hint{display:none}#hp-preview{padding:0}.hp-section{padding:36px 18px}.hp-inner{flex-direction:column!important;gap:22px}.hp-text{flex:none;width:100%}.hp-visual{width:100%}.hp-strip img{height:110px}.hp-album-card{width:100px}.hp-album-card img{width:100px;height:100px}.hp-comix-strip{width:100%}.hp-comix-strip img{width:90px;height:128px}.hp-photo-grid{grid-template-columns:repeat(3,1fr)}.hp-merch-item{width:100px}.hp-merch-item img{width:100px;height:100px}.hp-entity-grid{grid-template-columns:repeat(4,1fr);gap:12px 8px}.hp-entity-img{width:64px;height:64px}.hp-entity-name{font-size:0.4rem}.hp-cta{display:block;text-align:center;padding:14px 20px;min-height:44px}}
+.hp-footer{background:linear-gradient(to bottom,rgba(35,10,55,0.85),rgba(0,0,0,0.96));text-align:center;padding:32px 0 44px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.55);position:relative;z-index:10}
+.hp-footer a{color:rgba(201,168,76,0.55);text-decoration:none;transition:color 0.2s}.hp-footer a:hover{color:#c9a84c}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4)}
+@media(max-width:900px){.hp-inner{padding:48px 28px;gap:48px}}
+@media(max-width:768px){#hp-hero{height:auto;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}.hp-scroll-hint{display:none}#hp-preview{padding:0}.hp-inner{flex-direction:column!important;gap:24px;padding:36px 16px}.hp-text{flex:none;width:100%}.hp-title{font-size:clamp(1.8rem,6vw,2.5rem)}.hp-visual{width:100%}.hp-text>*{opacity:0}.hp-section.jesta-revealed .hp-text>*:nth-child(1){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(2){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(3){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(4){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(5){animation-duration:0.5s}.hp-section.jesta-revealed .hp-visual{animation-duration:0.5s}.hp-strip img{height:110px}.hp-album-card{width:100px}.hp-album-card img{width:100px;height:100px}.hp-comix-strip{width:100%}.hp-comix-strip img{width:90px;height:128px}.hp-photo-grid{grid-template-columns:repeat(3,1fr)}.hp-merch-item{width:100px}.hp-merch-item img{width:100px;height:100px}.hp-entity-grid{grid-template-columns:repeat(4,1fr);gap:12px 8px}.hp-entity-img{width:64px;height:64px}.hp-entity-name{font-size:0.4rem}.hp-cta{display:block;text-align:center;padding:14px 20px;min-height:44px}}
 </style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
@@ -113,7 +126,7 @@
 <section id="hp-preview">
 
   <!-- ENTITIES -->
-  <div class="hp-section">
+  <div class="hp-section hp-section--green">
     <div class="hp-inner">
       <div class="hp-text">
         <span class="hp-eyebrow">The Universe</span>
@@ -137,8 +150,10 @@
     </div>
   </div>
 
+  <div class="hp-divider"></div>
+
   <!-- ALBUMS -->
-  <div class="hp-section">
+  <div class="hp-section hp-section--purple">
     <div class="hp-inner">
       <div class="hp-text">
         <span class="hp-eyebrow">The Catalog</span>
@@ -186,8 +201,10 @@
     </div>
   </div>
 
+  <div class="hp-divider"></div>
+
   <!-- LYRICS -->
-  <div class="hp-section">
+  <div class="hp-section hp-section--red">
     <div class="hp-inner">
       <div class="hp-text">
         <span class="hp-eyebrow">The Words</span>
@@ -211,8 +228,10 @@
     </div>
   </div>
 
+  <div class="hp-divider"></div>
+
   <!-- COMIX -->
-  <div class="hp-section">
+  <div class="hp-section hp-section--green">
     <div class="hp-inner">
       <div class="hp-text">
         <span class="hp-eyebrow">Sequential Art</span>
@@ -234,8 +253,10 @@
     </div>
   </div>
 
+  <div class="hp-divider"></div>
+
   <!-- GAMES -->
-  <div class="hp-section">
+  <div class="hp-section hp-section--purple">
     <div class="hp-inner">
       <div class="hp-text">
         <span class="hp-eyebrow">The Arcade</span>
@@ -257,8 +278,10 @@
     </div>
   </div>
 
+  <div class="hp-divider"></div>
+
   <!-- MERCH -->
-  <div class="hp-section">
+  <div class="hp-section hp-section--red">
     <div class="hp-inner">
       <div class="hp-text">
         <span class="hp-eyebrow">The Offerings</span>
@@ -299,8 +322,10 @@
     </div>
   </div>
 
+  <div class="hp-divider"></div>
+
   <!-- BLOG -->
-  <div class="hp-section">
+  <div class="hp-section hp-section--green">
     <div class="hp-inner">
       <div class="hp-text">
         <span class="hp-eyebrow">Dispatches</span>
@@ -319,8 +344,10 @@
     </div>
   </div>
 
+  <div class="hp-divider"></div>
+
   <!-- PHOTOS -->
-  <div class="hp-section">
+  <div class="hp-section hp-section--purple">
     <div class="hp-inner">
       <div class="hp-text">
         <span class="hp-eyebrow">The Archive</span>
@@ -375,32 +402,32 @@
 </div>
 <script>if(!localStorage.getItem('cookieAccepted'))document.getElementById('cookie-notice').style.display='flex';</script>
 
-<footer style="
-  width: 100%;
-  text-align: center;
-  padding: 20px 0 30px 0;
-  font-family: Luminari, serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  color: rgba(201,168,76,0.9);
-  position: relative;
-  z-index: 10;
-  clear: both;
-">
-  <a href="privacy.html" style="color: rgba(201,168,76,0.9); text-decoration: none;">Privacy Policy</a>
-  <span style="margin: 0 8px; color: rgba(201,168,76,0.9)">✦</span>
+<footer class="hp-footer">
+  <a href="privacy.html">Privacy Policy</a>
+  <span class="hp-footer-mark">✦</span>
   ©2026 Jestamang
-  <span style="margin: 0 8px; color: rgba(201,168,76,0.9)">✦</span>
-  <a href="refund.html" style="color: rgba(201,168,76,0.9); text-decoration: none;">Refund Policy</a>
+  <span class="hp-footer-mark">✦</span>
+  <a href="refund.html">Refund Policy</a>
 </footer>
 </section><!-- /#hp-preview -->
 <script>
 (function(){
   var secs=document.querySelectorAll('.hp-section');
-  if(!secs.length||!window.IntersectionObserver){secs.forEach(function(s){s.classList.add('revealed');});return;}
+  if(!secs.length||!window.IntersectionObserver){
+    secs.forEach(function(s){
+      s.classList.add('jesta-revealed');
+      s.querySelectorAll('.hp-text>*,.hp-visual').forEach(function(el){el.style.opacity='1';});
+    });
+    return;
+  }
   var io=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('revealed');io.unobserve(e.target);}});
-  },{threshold:0.1});
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('jesta-revealed');
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:0.12});
   secs.forEach(function(s){io.observe(s);});
 })();
 </script>
