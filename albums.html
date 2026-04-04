@@ -4,6 +4,13 @@
 .fav-btn:hover{color:rgba(201,168,76,0.7);transform:scale(1.2)}
 .fav-btn.saved{color:#c9a84c}
 .fav-btn[title]:hover::after{content:attr(title);position:absolute;font-size:0.75rem;color:rgba(201,168,76,0.6);white-space:nowrap;left:0;bottom:110%;letter-spacing:0.1em}
+.dtrack-play{background:none;border:1px solid rgba(201,168,76,0.4);cursor:pointer;color:#c9a84c;font-size:0.72rem;padding:0;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:2px;transition:background 0.15s,color 0.15s,border-color 0.15s;line-height:1;font-family:sans-serif}
+.dtrack-play:hover{background:rgba(201,168,76,0.15);border-color:#c9a84c}
+.dtrack-play.playing{color:#1DB954;border-color:rgba(29,185,84,0.6);background:rgba(29,185,84,0.08)}
+.dtrack-embed-wrap{overflow:hidden;max-height:0;transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1)}
+.dtrack-embed-wrap.open{max-height:90px;border-top:1px solid rgba(201,168,76,0.2)}
+.dtrack-embed-wrap iframe{display:block;width:100%;border:none}
+@media(max-width:768px){.dtrack-play{width:44px;height:44px;font-size:1rem;border-radius:3px}}
 /* jt-mobile-global-base */
 @media (max-width: 768px) {
   /* Prevent iOS input zoom */
@@ -288,7 +295,7 @@ data-yt-urls='["https://www.youtube.com/watch?v=OcYaJHfSMtw&list=OLAK5uy_kQL36N2
 function toggleDrawer(card){if(_activeCard===card){var closing=_activeDrawer;_activeDrawer=null;_activeCard=null;closing.classList.add('closing');closing.classList.remove('open');closing.addEventListener('transitionend',function h(e){if(e.propertyName!=='opacity')return;closing.removeEventListener('transitionend',h);_removeDrawer(closing);});return;}
 if(_activeDrawer){_removeDrawer(_activeDrawer);_activeDrawer=null;_activeCard=null;}
 var tracks=JSON.parse(card.dataset.tracks.replace(/&quot;/g,'"'));var drawer=document.createElement('div');drawer.className='album-drawer';var artist=document.createElement('div');artist.className='drawer-artist';artist.textContent=card.dataset.artist;var title=document.createElement('div');title.className='drawer-album-title';title.textContent=card.dataset.album;var meta=document.createElement('div');meta.className='drawer-meta';meta.textContent=card.dataset.year+'  ·  '+card.dataset.genre;var rule=document.createElement('div');rule.className='drawer-rule';var ol=document.createElement('ol');ol.className='drawer-tracklist';if(tracks.length===0){ol.innerHTML='<li class="drawer-no-tracks">No tracklist available</li>';}else{var artistName=card.dataset.artist;tracks.forEach(function(t,i){var li=document.createElement('li');var num=document.createElement('span');num.className='dtrack-num';num.textContent=(i+1)+'.';var titleSpan=document.createElement('span');titleSpan.className='dtrack-title';titleSpan.textContent=t;var songEnc=encodeURIComponent(t);var songPlus=t.replace(/\s+/g,'+');var artistPlus=artistName.replace(/\s+/g,'+');var streamArtist=artistName==='The Perfect Trip'?'The Perfect Trip':'Jestamang';var streamEnc=encodeURIComponent(streamArtist);var streamPlus=streamArtist.replace(/\s+/g,'+');var bcSlugRaw=t.toLowerCase().replace(/[\u2018\u2019']/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');var bcHref=/^[a-z0-9-]+$/.test(bcSlugRaw)?'https://jestamang.bandcamp.com/track/'+bcSlugRaw:'https://jestamang.bandcamp.com';var links=document.createElement('span');links.className='dtrack-links';var platforms=[{cls:'bandcamp',label:'Bandcamp',href:bcHref,svg:'<svg viewBox="0 0 24 24"><path d="M0 18.75l7.437-13.5H24l-7.438 13.5z"/></svg>'},{cls:'youtube',label:'YouTube',href:(function(){var ytUrls=JSON.parse(card.getAttribute('data-yt-urls')||'[]');var idx=tracks.indexOf(t);return(ytUrls[idx]&&ytUrls[idx]!=='')?ytUrls[idx]:'https://www.youtube.com/results?search_query='+streamPlus+'+'+songPlus;})(),svg:'<svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>'},{cls:'spotify',label:'Spotify',href:'https://open.spotify.com/search/'+streamEnc+'%20'+songEnc,svg:'<svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>'},{cls:'apple',label:'Apple Music',href:'https://music.apple.com/us/search?term='+streamEnc+'%20'+songEnc,svg:'<svg viewBox="0 0 24 24"><path d="M23.994 6.124a9.23 9.23 0 0 0-.24-2.19c-.317-1.31-1.062-2.31-2.18-3.043a5.022 5.022 0 0 0-1.769-.73 7.967 7.967 0 0 0-1.304-.173H5.5a7.967 7.967 0 0 0-1.304.173 5.022 5.022 0 0 0-1.77.73C1.31 1.624.563 2.625.246 3.934A9.23 9.23 0 0 0 .006 6.124v11.75c0 .76.066 1.51.24 2.19.317 1.31 1.062 2.31 2.18 3.043a5.022 5.022 0 0 0 1.769.73 7.967 7.967 0 0 0 1.305.173h13.001a7.967 7.967 0 0 0 1.305-.173 5.022 5.022 0 0 0 1.769-.73c1.118-.734 1.863-1.734 2.18-3.043a9.23 9.23 0 0 0 .24-2.19V6.124zm-6.423 5.65c-.006.474-.286.903-.72 1.115l-6.5 3.383a1.247 1.247 0 0 1-1.22-.028 1.263 1.263 0 0 1-.63-1.09V9.01c0-.45.24-.867.634-1.09a1.247 1.247 0 0 1 1.22-.028l6.5 3.383c.435.21.714.64.716 1.499z"/></svg>'}];var activePlatforms=platforms;if(artistName==='Sounds Across the World'){activePlatforms=[{cls:'bandcamp',label:'Bandcamp',href:'https://bandcamp.com/search?q=Jestamang+Sounds+Across+the+World',svg:platforms[0].svg},{cls:'youtube',label:'YouTube',href:(function(){var ytUrls2=JSON.parse(card.getAttribute('data-yt-urls')||'[]');var idx2=tracks.indexOf(t);return(ytUrls2[idx2]&&ytUrls2[idx2]!=='')?ytUrls2[idx2]:'https://www.youtube.com/results?search_query=Jestamang+Sounds+Across+the+World+'+songPlus;})(),svg:platforms[1].svg}];}
-activePlatforms.forEach(function(p){var a=document.createElement('a');a.className='dtrack-btn '+p.cls;a.href=p.href;a.title=p.label;a.target='_blank';a.rel='noopener noreferrer';a.innerHTML=p.svg;links.appendChild(a);});var favBtn=document.createElement('button');favBtn.className='fav-btn';favBtn.dataset.song=t;favBtn.dataset.artist=artistName;favBtn.dataset.album=card.dataset.album||'';favBtn.textContent='✦';li.style.display='flex';li.style.alignItems='center';li.appendChild(num);li.appendChild(titleSpan);li.appendChild(favBtn);li.appendChild(links);ol.appendChild(li);});}
+activePlatforms.forEach(function(p){var a=document.createElement('a');a.className='dtrack-btn '+p.cls;a.href=p.href;a.title=p.label;a.target='_blank';a.rel='noopener noreferrer';a.innerHTML=p.svg;links.appendChild(a);});var playBtn=document.createElement('button');playBtn.className='dtrack-play';playBtn.title='Preview';playBtn.textContent='▶';(function(btn,idx,c){btn.addEventListener('click',function(e){e.stopPropagation();window._albumPlayTrack(btn,idx,c);});})(playBtn,i,card);li.style.display='flex';li.style.alignItems='center';li.appendChild(num);li.appendChild(titleSpan);li.appendChild(playBtn);li.appendChild(links);ol.appendChild(li);});}
 drawer.appendChild(artist);drawer.appendChild(title);drawer.appendChild(meta);
 var _prow=document.createElement('div');_prow.className='drawer-platform-row';
 var _ytUrls=JSON.parse(card.getAttribute('data-yt-urls')||'[]');
@@ -299,7 +306,63 @@ var _q=encodeURIComponent((card.dataset.album||'')+' '+(card.dataset.artist||'')
 var _plinks=[{cls:'bandcamp',href:card.getAttribute('data-album-bc')||'https://jestamang.bandcamp.com/album/'+_bcSlug,label:'Bandcamp',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 18.75l7.437-12.5H24l-7.438 12.5z"/></svg>'},{cls:'youtube',href:_ytHref,label:'YouTube',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>'},{cls:'spotify',href:card.getAttribute('data-album-sp')||'https://open.spotify.com/search/'+_q,label:'Spotify',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>'},{cls:'apple',href:card.getAttribute('data-album-am')||'https://music.apple.com/us/search?term='+_q,label:'Apple Music',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>'}];
 _plinks.forEach(function(pl){var _a=document.createElement('a');_a.className='dtrack-btn '+pl.cls;_a.href=pl.href;_a.target='_blank';_a.rel='noopener noreferrer';_a.title=pl.label;_a.innerHTML=pl.svg;_prow.appendChild(_a);});
 drawer.appendChild(_prow);drawer.appendChild(rule);drawer.appendChild(ol);var cardTop=card.getBoundingClientRect().top;var grid=card.parentNode;var siblings=Array.from(grid.children).filter(function(el){return el.classList.contains('album-card');});var lastInRow=card;for(var i=0;i<siblings.length;i++){var t=siblings[i].getBoundingClientRect().top;if(Math.abs(t-cardTop)<4){lastInRow=siblings[i];}}
-grid.insertBefore(drawer,lastInRow.nextSibling);requestAnimationFrame(function(){requestAnimationFrame(function(){drawer.classList.add('open');});});_activeDrawer=drawer;_activeCard=card;setTimeout(function(){drawer.scrollIntoView({behavior:'smooth',block:'nearest'});},120);}</script>
+grid.insertBefore(drawer,lastInRow.nextSibling);requestAnimationFrame(function(){requestAnimationFrame(function(){drawer.classList.add('open');});});_activeDrawer=drawer;_activeCard=card;setTimeout(function(){drawer.scrollIntoView({behavior:'smooth',block:'nearest'});},120);}
+// ── Inline track preview ──────────────────────────────────────────
+window._albumActiveEmbed=null;
+window._albumActiveBtn=null;
+window._albumPlayTrack=function(btn,idx,card){
+  // Close previous embed if any
+  if(window._albumActiveBtn&&window._albumActiveBtn!==btn){
+    window._albumActiveBtn.textContent='▶';
+    window._albumActiveBtn.classList.remove('playing');
+  }
+  if(window._albumActiveEmbed){
+    if(window._albumActiveBtn===btn){
+      // Toggle off
+      window._albumActiveEmbed.classList.remove('open');
+      window._albumActiveEmbed.innerHTML='';
+      window._albumActiveBtn.textContent='▶';
+      window._albumActiveBtn.classList.remove('playing');
+      window._albumActiveEmbed=null;
+      window._albumActiveBtn=null;
+      return;
+    }
+    window._albumActiveEmbed.classList.remove('open');
+    window._albumActiveEmbed.innerHTML='';
+    window._albumActiveEmbed=null;
+  }
+  // Find or get Spotify track ID
+  var spUrls=[];
+  try{spUrls=JSON.parse(card.getAttribute('data-sp-urls')||'[]');}catch(e){}
+  var spUrl=spUrls[idx]||'';
+  var spMatch=spUrl.match(/spotify\.com\/track\/([A-Za-z0-9]+)/);
+  var spId=spMatch?spMatch[1]:'';
+  if(spId){
+    // Inject Spotify embed after the li
+    var li=btn.closest('li');
+    var wrap=document.createElement('div');
+    wrap.className='dtrack-embed-wrap';
+    wrap.innerHTML='<iframe src="https://open.spotify.com/embed/track/'+spId+'?theme=0" height="80" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture" loading="lazy"></iframe>';
+    li.parentNode.insertBefore(wrap,li.nextSibling);
+    requestAnimationFrame(function(){requestAnimationFrame(function(){wrap.classList.add('open');});});
+    btn.textContent='■';
+    btn.classList.add('playing');
+    window._albumActiveEmbed=wrap;
+    window._albumActiveBtn=btn;
+    setTimeout(function(){wrap.scrollIntoView({behavior:'smooth',block:'nearest'});},200);
+  } else {
+    // Fallback: open YouTube in new tab
+    var ytUrls=[];
+    try{ytUrls=JSON.parse(card.getAttribute('data-yt-urls')||'[]');}catch(e){}
+    var ytUrl=ytUrls[idx]||'';
+    if(ytUrl){window.open(ytUrl,'_blank','noopener,noreferrer');}
+    else{
+      var t=card.dataset.tracks?JSON.parse(card.dataset.tracks.replace(/&quot;/g,'"'))[idx]||'':'';
+      var q=encodeURIComponent('Jestamang '+t);
+      window.open('https://www.youtube.com/results?search_query='+q,'_blank','noopener,noreferrer');
+    }
+  }
+};</script>
 
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
