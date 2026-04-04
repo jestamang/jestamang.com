@@ -25,12 +25,13 @@
 <link rel="apple-touch-icon" href="assets/homepage/logo%20png.png">
 <meta name="robots" content="noindex">
 <style>
-@font-face { font-family: 'Luminari'; src: url('assets/fonts/Luminari.ttf') format('truetype'); }
+@font-face { font-family: 'Luminari'; src: url('assets/fonts/Luminari.ttf') format('truetype'); font-display: swap; }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
+
 body {
   font-family: 'Luminari', serif;
-  background: #000;
+  background: #04020a;
   color: #fff;
   min-height: 100vh;
   display: flex;
@@ -39,55 +40,159 @@ body {
   position: relative;
   overflow: hidden;
 }
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(ellipse at 50% 35%,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.75) 100%);
-  z-index: 1;
-  pointer-events: none;
-}
-body::after {
-  content: '';
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 30vh;
-  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%);
-  z-index: 1;
-  pointer-events: none;
-}
-video#jt-bg {
+
+/* background image */
+#jt-bg {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
   object-fit: cover;
   z-index: -1;
   pointer-events: none;
+  opacity: 0.35;
 }
+
+/* dark vignette */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(4,2,10,0.3) 0%, rgba(4,2,10,0.88) 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* void canvas behind content */
+#void-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* pulsing void rings */
+.void-ring {
+  position: fixed;
+  top: 50%; left: 50%;
+  border-radius: 50%;
+  border: 1px solid rgba(201,168,76,0.1);
+  pointer-events: none;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  animation: ring-pulse 5s ease-in-out infinite;
+}
+.void-ring:nth-child(1) { width: 160px; height: 160px; animation-delay: 0s; }
+.void-ring:nth-child(2) { width: 320px; height: 320px; animation-delay: 1.4s; border-color: rgba(201,168,76,0.07); }
+.void-ring:nth-child(3) { width: 520px; height: 520px; animation-delay: 2.8s; border-color: rgba(201,168,76,0.04); }
+.void-ring:nth-child(4) { width: 740px; height: 740px; animation-delay: 4.2s; border-color: rgba(201,168,76,0.025); }
+
+@keyframes ring-pulse {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
+  25%  { opacity: 1; }
+  70%  { opacity: 0.5; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.08); }
+}
+
+/* page container */
 .container {
   position: relative;
-  z-index: 2;
+  z-index: 10;
   text-align: center;
   padding: 40px 24px;
   max-width: 600px;
 }
-.ornament {
-  font-size: 1.4rem;
-  color: rgba(201,168,76,0.5);
-  letter-spacing: 0.6em;
-  margin-bottom: 32px;
-  display: block;
+
+/* entrance animations */
+.fade-in {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: fade-up 0.9s ease forwards;
 }
+.fade-in:nth-child(1) { animation-delay: 0.1s; }
+.fade-in:nth-child(2) { animation-delay: 0.35s; }
+.fade-in:nth-child(3) { animation-delay: 0.55s; }
+.fade-in:nth-child(4) { animation-delay: 0.75s; }
+.fade-in:nth-child(5) { animation-delay: 0.95s; }
+.fade-in:nth-child(6) { animation-delay: 1.15s; }
+
+@keyframes fade-up {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ornament */
+.ornament {
+  font-size: 1.2rem;
+  color: rgba(201,168,76,0.4);
+  letter-spacing: 0.7em;
+  margin-bottom: 28px;
+  display: block;
+  animation: ornament-float 4s ease-in-out infinite alternate;
+}
+@keyframes ornament-float {
+  from { letter-spacing: 0.7em; opacity: 0.4; }
+  to   { letter-spacing: 0.9em; opacity: 0.65; }
+}
+
+/* 404 glitch */
 .error-code {
   font-size: clamp(5rem, 20vw, 10rem);
   letter-spacing: 0.15em;
-  color: rgba(201,168,76,0.15);
+  color: rgba(201,168,76,0.14);
   line-height: 1;
   margin-bottom: 8px;
-  text-shadow: 0 0 80px rgba(201,168,76,0.1);
+  position: relative;
+  display: inline-block;
+  animation: glitch-404 9s ease-in-out infinite;
 }
+
+@keyframes glitch-404 {
+  0%, 82%, 100% {
+    color: rgba(201,168,76,0.14);
+    text-shadow: 0 0 80px rgba(201,168,76,0.08);
+    transform: translate(0, 0);
+    clip-path: none;
+  }
+  /* glitch burst 1 */
+  84% {
+    color: rgba(201,168,76,0.22);
+    text-shadow:
+      -4px 0 0 rgba(251,56,56,0.7),
+       4px 0 0 rgba(120,0,222,0.7),
+       0 0 60px rgba(201,168,76,0.25);
+    transform: translate(-3px, 1px);
+  }
+  85% {
+    clip-path: polygon(0 0, 100% 0, 100% 38%, 0 38%);
+    color: rgba(201,168,76,0.3);
+    text-shadow: 5px 0 0 rgba(2,225,39,0.6), -5px 0 0 rgba(120,0,222,0.5);
+    transform: translate(4px, 0);
+  }
+  86% {
+    clip-path: polygon(0 42%, 100% 42%, 100% 100%, 0 100%);
+    text-shadow: -3px 0 0 rgba(251,56,56,0.5);
+    transform: translate(-2px, 2px);
+  }
+  87% {
+    clip-path: none;
+    color: rgba(201,168,76,0.14);
+    text-shadow: 0 0 80px rgba(201,168,76,0.08);
+    transform: translate(0, 0);
+  }
+  /* glitch burst 2 — smaller */
+  94% {
+    text-shadow:
+      3px 0 0 rgba(251,56,56,0.5),
+      -3px 0 0 rgba(120,0,222,0.5);
+    transform: translate(2px, -1px);
+    color: rgba(201,168,76,0.2);
+  }
+  95% {
+    text-shadow: 0 0 80px rgba(201,168,76,0.08);
+    transform: translate(0, 0);
+    color: rgba(201,168,76,0.14);
+  }
+}
+
 h1 {
   font-size: clamp(2.2rem, 5.5vw, 3.6rem);
   letter-spacing: 0.45em;
@@ -96,6 +201,7 @@ h1 {
   text-shadow: 0 0 40px rgba(201,168,76,0.4), 0 0 80px rgba(201,168,76,0.15);
   margin-bottom: 28px;
 }
+
 .rule {
   display: flex;
   align-items: center;
@@ -113,53 +219,171 @@ h1 {
   height: 1px;
   background: rgba(201,168,76,0.3);
 }
+
 .narrator {
   font-style: italic;
-  font-size: clamp(0.85rem, 2.5vw, 1.05rem);
-  color: rgba(255,255,255,0.55);
-  line-height: 1.8;
-  letter-spacing: 0.06em;
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
+  color: rgba(255,255,255,0.42);
+  line-height: 1.9;
+  letter-spacing: 0.07em;
   margin-bottom: 48px;
   padding: 0 12px;
 }
+
 .home-link {
   display: inline-block;
   font-family: 'Luminari', serif;
   font-size: 0.78rem;
   letter-spacing: 0.35em;
   text-transform: uppercase;
-  color: #000;
+  color: #08060a;
   background: #c9a84c;
   text-decoration: none;
-  padding: 14px 36px;
-  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+  padding: 15px 40px;
+  transition: background 0.25s, transform 0.2s, box-shadow 0.25s, letter-spacing 0.25s;
+  min-height: 44px;
 }
 .home-link:hover {
-  background: #e0bb60;
+  background: #debb5a;
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(201,168,76,0.35);
+  box-shadow: 0 8px 40px rgba(201,168,76,0.4);
+  letter-spacing: 0.44em;
 }
+
 @media (max-width: 768px) {
   body, .bg-wrap { background-attachment: scroll !important; }
-  #jt-bg { position: fixed !important; object-position: center top; }
+  #jt-bg { position: fixed !important; }
   h1 { font-size: clamp(1.7rem, 7vw, 2.4rem); }
-  .container { padding: 70px 24px 40px; }
+  .container { padding: 40px 20px; }
+  .void-ring:nth-child(3), .void-ring:nth-child(4) { display: none; }
 }
 </style>
 </head>
 <body>
-<img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72">
+
+<img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true">
+
+<canvas id="void-canvas"></canvas>
+
+<!-- pulsing rings centered on the void -->
+<div class="void-ring"></div>
+<div class="void-ring"></div>
+<div class="void-ring"></div>
+<div class="void-ring"></div>
 
 <div class="container">
-  <span class="ornament">✦ ✦ ✦</span>
-  <div class="error-code">404</div>
-  <h1>You Are Lost</h1>
-  <div class="rule">✦</div>
-  <p class="narrator">
+  <span class="ornament fade-in">✦ ✦ ✦</span>
+  <div class="error-code fade-in">404</div>
+  <h1 class="fade-in">You Are Lost</h1>
+  <div class="rule fade-in">✦</div>
+  <p class="narrator fade-in">
     This page does not exist in the Jestamang universe.<br>
+    Something pulled you off course.<br>
     Return to where you came from.
   </p>
-  <a href="index.html" class="home-link">Return Home</a>
+  <a href="index.html" class="home-link fade-in">Return Home</a>
 </div>
+
+<script>
+(function(){
+  var canvas = document.getElementById('void-canvas');
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  var W, H, cx, cy;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    cx = W * 0.5;
+    cy = H * 0.5;
+  }
+
+  function spawnParticle(scatter) {
+    var angle  = Math.random() * Math.PI * 2;
+    var minR   = 120;
+    var maxR   = Math.sqrt(cx * cx + cy * cy) + 60;
+    var radius = scatter
+      ? minR + Math.random() * (maxR - minR)  // scatter throughout field on init
+      : maxR * (0.6 + Math.random() * 0.5);   // spawn near outer edge
+
+    return {
+      x: cx + Math.cos(angle) * radius,
+      y: cy + Math.sin(angle) * radius,
+      size: Math.random() * 1.3 + 0.2,
+      alpha: Math.random() * 0.55 + 0.08,
+      dAlpha: (Math.random() - 0.5) * 0.007,
+      speed: Math.random() * 0.38 + 0.06,
+      orbitSign: Math.random() < 0.5 ? 1 : -1,
+      orbitStr: Math.random() * 0.018
+    };
+  }
+
+  function init() {
+    particles = [];
+    var n = Math.min(200, Math.floor(W * H / 4400));
+    for (var i = 0; i < n; i++) particles.push(spawnParticle(true));
+  }
+
+  function update(p) {
+    var dx   = cx - p.x;
+    var dy   = cy - p.y;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist < 18) {
+      // respawn at outer edge
+      var np = spawnParticle(false);
+      p.x = np.x; p.y = np.y;
+      p.speed = np.speed; p.orbitStr = np.orbitStr;
+      p.alpha = 0;
+      return;
+    }
+
+    // drift toward center
+    p.x += (dx / dist) * p.speed;
+    p.y += (dy / dist) * p.speed;
+
+    // slight orbit (perpendicular drift)
+    var px = -(dy / dist) * p.orbitSign;
+    var py =  (dx / dist) * p.orbitSign;
+    p.x += px * p.orbitStr * Math.min(dist, 200) * 0.012;
+    p.y += py * p.orbitStr * Math.min(dist, 200) * 0.012;
+
+    // breathe opacity — faster as it nears center
+    var proximity = Math.max(0, 1 - dist / 300);
+    p.alpha += p.dAlpha + proximity * 0.003;
+    if (p.alpha > 0.75 || p.alpha < 0.04) p.dAlpha *= -1;
+    p.alpha = Math.max(0.03, Math.min(0.8, p.alpha));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // central soft glow — the void
+    var grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, 90);
+    grd.addColorStop(0,   'rgba(4,2,10,0.55)');
+    grd.addColorStop(0.4, 'rgba(60,20,80,0.08)');
+    grd.addColorStop(1,   'rgba(0,0,0,0)');
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, W, H);
+
+    for (var i = 0; i < particles.length; i++) {
+      update(particles[i]);
+      var p = particles[i];
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(201,168,76,' + p.alpha.toFixed(3) + ')';
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  init();
+  draw();
+  window.addEventListener('resize', function(){ resize(); init(); }, { passive: true });
+})();
+</script>
 </body>
 </html>
