@@ -17,6 +17,7 @@ body{
   background-position:center;
   min-height:100vh;
   padding-top:52px;
+  overflow-x:hidden;
 }
 body::before{
   content:'';
@@ -147,8 +148,8 @@ body::before{
 }
 /* CARDS */
 .card{
-  width:68px;
-  height:100px;
+  width:60px;
+  height:84px;
   background:rgba(8,4,2,0.97);
   border:1px solid rgba(201,168,76,0.4);
   border-radius:5px;
@@ -397,19 +398,22 @@ canvas{
   .score-board { flex-wrap: wrap; gap: 4px 12px; font-size: 0.65rem; padding: 8px 0; }
   .score-board span { font-size: 0.85rem; }
 
-  /* Chip row — smaller chips, wrap */
-  .chip-row { gap: 4px; flex-wrap: wrap; }
-  .chip { width: 32px !important; height: 32px !important; font-size: 0.6rem !important; min-height: unset !important; }
+  /* Chip row — wrap, min touch target */
+  .chip-row { gap: 6px; flex-wrap: wrap; }
+  .chip { width: 44px !important; height: 44px !important; font-size: 0.7rem !important; min-height: unset !important; }
 
-  /* BJ — stack everything, no overflow */
+  /* BJ — 2-col grid actions, no overflow */
   #bj-area { max-width: 100%; overflow-x: hidden; }
   .bj-bet-row { flex-direction: column; gap: 3px; align-items: flex-start; font-size: 0.68rem; }
   .bj-bet-row b { font-size: 0.75rem; }
-  .bj-actions { flex-direction: column; gap: 5px; }
-  .bj-actions .gbtn { width: 100% !important; font-size: 0.7rem; margin-left: 0 !important; }
+  .bj-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .bj-actions .gbtn { width: 100% !important; font-size: 0.75rem; margin-left: 0 !important; }
 
-  /* Poker — single column, no overflow */
-  .pk-players { grid-template-columns: 1fr; gap: 6px; }
+  /* Memory grid — padding on mobile */
+  .mv-grid { gap: 4px; max-width: 100%; padding: 0 8px; }
+
+  /* Poker — 2 columns on mobile, no overflow */
+  .pk-players { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .pk-player { font-size: 0.68rem; padding: 7px; }
   .pk-community { gap: 3px; flex-wrap: wrap; min-height: 65px; overflow-x: hidden; }
   .pk-pot-row { font-size: 0.7rem; letter-spacing: 0.15em; }
@@ -438,8 +442,8 @@ canvas{
 .mv-lives{font-size:1.1rem;letter-spacing:0.2em}
 .mv-lives .life-on{color:#c9a84c}
 .mv-lives .life-off{color:rgba(255,255,255,0.12)}
-.mv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:700px;margin:0 auto 16px}
-.mv-card{aspect-ratio:3/4;cursor:pointer;perspective:900px;position:relative}
+.mv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:700px;margin:0 auto 16px}
+.mv-card{aspect-ratio:1;cursor:pointer;perspective:900px;position:relative}
 .mv-card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.4s cubic-bezier(0.4,0,0.2,1)}
 .mv-card.flipped .mv-card-inner,.mv-card.matched .mv-card-inner{transform:rotateY(180deg)}
 .mv-back,.mv-front{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;border:1px solid rgba(201,168,76,0.2)}
@@ -466,7 +470,7 @@ canvas{
 /* DAILY SIGIL */
 .oracle-wrap-inner{text-align:center}
 .drawn-count{font-size:0.58rem;letter-spacing:0.3em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:16px;min-height:1.2em}
-.card-stage{width:260px;height:380px;margin:0 auto 28px;perspective:1200px}
+.card-stage{width:260px;max-width:90%;height:380px;max-height:75vh;margin:0 auto 28px;perspective:1200px}
 .oracle-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1)}
 .oracle-card.revealed{transform:rotateY(180deg)}
 .card-face,.card-back-o{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 18px;overflow:hidden}
