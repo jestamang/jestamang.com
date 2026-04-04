@@ -27,6 +27,10 @@
 //       allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
 //       allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
 //     }
+//     match /leaderboards/{scoreId} {
+//       allow read: if true;
+//       allow write: if request.auth != null;
+//     }
 //   }
 // }
 // ════════════════════════════════════════════════════════════════
