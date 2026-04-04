@@ -348,9 +348,6 @@ canvas{
 .pk-pot-row{text-align:center;font-size:0.8rem;letter-spacing:0.25em;color:rgba(201,168,76,0.7);padding:8px 0}
 .pk-pot-row span{color:#c9a84c}
 .pk-actions{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0;justify-content:center}
-/* CORNHOLE SPECIFIC */
-.ch-scores{display:flex;justify-content:space-around;padding:12px 0;font-size:0.78rem;letter-spacing:0.2em;color:rgba(201,168,76,0.7)}
-.ch-scores .n{color:#c9a84c;font-size:1.4rem}
 /* RESPONSIVE */
 @media(max-width:600px){
   .pk-players{grid-template-columns:1fr}
@@ -376,55 +373,57 @@ canvas{
 }
 /* jt-mobile-arcade */
 @media (max-width: 768px) {
-  /* Hide secondary arcade nav (duplicate games tab below main nav) */
+  /* Hide secondary arcade nav */
   #arcade-nav { display: none !important; }
   .page-content { padding-top: 0; }
 
   /* Game sections */
-  .game-section { padding: 32px 12px; max-width: 100%; }
-  .game-area { padding: 14px 10px; overflow-x: hidden; }
-  .game-title { font-size: clamp(1.4rem, 5vw, 2rem); }
-  .game-lore { font-size: 0.75rem; margin-bottom: 20px; }
+  .game-section { padding: 28px 10px; max-width: 100%; }
+  .game-area { padding: 12px 8px; overflow-x: hidden; max-width: 100vw; box-sizing: border-box; }
+  .game-title { font-size: clamp(1.3rem, 5vw, 1.8rem); }
+  .game-lore { font-size: 0.72rem; margin-bottom: 16px; }
 
-  /* Cards — max 45px wide */
-  .card { width: 45px !important; height: 66px !important; padding: 3px !important; flex-shrink: 0; }
-  .card .ct, .card .cb { font-size: 0.55rem !important; }
-  .card .ct small, .card .cb small { font-size: 0.55rem !important; }
-  .card .cc { font-size: 1.1rem !important; }
-  .card.fd .card-back-pat { font-size: 0.8rem !important; }
+  /* Cards — max 40px wide */
+  .card { width: 40px !important; height: 58px !important; padding: 2px !important; flex-shrink: 0; }
+  .card .ct, .card .cb { font-size: 0.5rem !important; }
+  .card .ct small, .card .cb small { font-size: 0.5rem !important; }
+  .card .cc { font-size: 0.9rem !important; }
+  .card.fd .card-back-pat { font-size: 0.7rem !important; }
 
-  /* Hand areas */
-  .hand-area { min-height: 80px; gap: 4px; }
+  /* Hand areas — no overflow */
+  .hand-area { min-height: 70px; gap: 3px; overflow-x: hidden; max-width: 100%; flex-wrap: wrap; }
 
-  /* Chip row */
-  .chip-row { gap: 5px; flex-wrap: wrap; }
-  .chip { width: 36px !important; height: 36px !important; font-size: 0.65rem !important; min-height: unset; }
+  /* Score board — compact single line */
+  .score-board { flex-wrap: wrap; gap: 4px 12px; font-size: 0.65rem; padding: 8px 0; }
+  .score-board span { font-size: 0.85rem; }
 
-  /* BJ bet row — stack vertically */
-  .bj-bet-row { flex-direction: column; gap: 4px; align-items: flex-start; font-size: 0.72rem; }
-  .bj-bet-row b { font-size: 0.8rem; }
+  /* Chip row — smaller chips, wrap */
+  .chip-row { gap: 4px; flex-wrap: wrap; }
+  .chip { width: 32px !important; height: 32px !important; font-size: 0.6rem !important; min-height: unset !important; }
 
-  /* BJ action buttons — full width, stacked */
-  .bj-actions { flex-direction: column; gap: 6px; }
-  .bj-actions .gbtn { width: 100% !important; font-size: 0.72rem; }
+  /* BJ — stack everything, no overflow */
+  #bj-area { max-width: 100%; overflow-x: hidden; }
+  .bj-bet-row { flex-direction: column; gap: 3px; align-items: flex-start; font-size: 0.68rem; }
+  .bj-bet-row b { font-size: 0.75rem; }
+  .bj-actions { flex-direction: column; gap: 5px; }
+  .bj-actions .gbtn { width: 100% !important; font-size: 0.7rem; margin-left: 0 !important; }
 
-  /* Poker actions — full width, stacked */
-  .pk-actions { flex-direction: column; gap: 6px; justify-content: flex-start; }
-  .pk-actions .gbtn { width: 100% !important; margin-left: 0 !important; font-size: 0.72rem; }
+  /* Poker — single column, no overflow */
+  .pk-players { grid-template-columns: 1fr; gap: 6px; }
+  .pk-player { font-size: 0.68rem; padding: 7px; }
+  .pk-community { gap: 3px; flex-wrap: wrap; min-height: 65px; overflow-x: hidden; }
+  .pk-pot-row { font-size: 0.7rem; letter-spacing: 0.15em; }
+  .pk-actions { flex-direction: column; gap: 5px; justify-content: flex-start; }
+  .pk-actions .gbtn { width: 100% !important; margin-left: 0 !important; font-size: 0.7rem; }
 
-  /* Poker player grid — single column */
-  .pk-players { grid-template-columns: 1fr; }
-  .pk-player { font-size: 0.72rem; }
+  /* Leaderboard button on mobile */
+  .lb-btn { min-height: 44px !important; width: 100%; font-size: 0.65rem; }
 
-  /* General button sizing inside games */
-  .game-area .gbtn { font-size: 0.72rem; }
-
-  /* Messages */
-  .game-msg { font-size: 0.8rem; }
-  .total-display { font-size: 0.78rem; }
-
-  /* Canvas games */
-  canvas { max-width: 100% !important; height: auto !important; transform: scale(0.85); transform-origin: top center; }
+  /* General */
+  .game-area .gbtn { font-size: 0.7rem; }
+  .game-msg { font-size: 0.75rem; }
+  .total-display { font-size: 0.72rem; }
+  .hand-label { font-size: 0.65rem; }
 }
 </style>
 <style>#jtnav{position:fixed;top:0;left:0;right:0;height:52px;z-index:9999;display:flex;align-items:center;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid rgba(201,168,76,0.3)}#jtnav-logo{display:flex;align-items:center;margin-left:16px;flex-shrink:0;text-decoration:none}#jtnav-logo img{height:32px;width:auto;display:block}#jtnav-links{display:flex;align-items:center;gap:0;flex:1;justify-content:space-evenly;flex-wrap:nowrap}.jtnav-link{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.8);text-decoration:none;padding:0 8px;white-space:nowrap;transition:color 0.2s ease;line-height:52px}.jtnav-link:hover{color:#c9a84c}.jtnav-link.jtnav-active{color:#c9a84c}.jtnav-dot{color:rgba(255,255,255,0.3);font-size:0.6rem;padding:0 2px;line-height:52px;user-select:none}#jtnav-divider{width:1px;height:20px;background:rgba(201,168,76,0.3);margin:0 10px;flex-shrink:0}#jtnav-platforms{display:flex;align-items:center;margin-right:16px;flex-shrink:0;gap:0}#jtnav-platforms .jtnav-link{display:flex;align-items:center;padding:0 7px;line-height:52px}#jtnav-platforms .jtnav-link svg{display:block;opacity:0.8;transition:opacity 0.2s,color 0.2s}#jtnav-platforms .jtnav-link:hover svg,#jtnav-platforms .jtnav-link.jtnav-active svg{opacity:1}#jtnav-mobile-toggle{display:none;align-items:center;justify-content:center;margin-right:16px;cursor:pointer;background:none;border:none;padding:0;flex-shrink:0}#jtnav-mobile-toggle img{height:32px;width:auto;display:block}#jtnav-mobile-overlay{display:none;position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,0.96);overflow-y:auto;overflow-x:hidden;opacity:0;transition:opacity 0.3s ease;-webkit-overflow-scrolling:touch}#jtnav-mobile-overlay.jtnav-mob-open{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;padding:70px 16px 24px;align-content:start;opacity:1}#jtnav-mob-bg{position:absolute;inset:0;opacity:0.08;pointer-events:none}#jtnav-mob-close{position:fixed;top:14px;right:16px;background:none;border:none;color:#c9a84c;font-size:1.5rem;cursor:pointer;line-height:1;font-family:sans-serif;z-index:1200;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}#jtnav-mob-close:hover{color:#c9a84c}.jtnav-mob-link{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,230,210,0.8);text-decoration:none;padding:12px 8px;position:relative;z-index:1;transition:color 0.2s ease,border-color 0.2s ease;font-weight:normal;text-align:center;border:1px solid rgba(201,168,76,0.2);border-radius:4px;display:flex;align-items:center;justify-content:center;min-height:44px;box-sizing:border-box}.jtnav-mob-link:hover,.jtnav-mob-link.jtnav-active{color:#c9a84c;border-color:rgba(201,168,76,0.6)}.jtnav-mob-divider{width:100%;height:1px;background:rgba(201,168,76,0.3);margin:4px 0;position:relative;z-index:1;grid-column:1/-1}.jtnav-mob-divider::after{content:'\2726';display:block;text-align:center;color:rgba(201,168,76,0.4);font-size:0.7rem;margin:4px 0}@media (max-width:767px){#jtnav-links,#jtnav-divider,#jtnav-platforms{display:none}#jtnav-mobile-toggle{display:flex;position:static;margin-left:16px}#jtnav-mob-login{display:flex!important;align-items:center;font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;padding:0 14px;white-space:nowrap;line-height:52px;margin-left:auto}#jtnav-mob-login:hover{color:#c9a84c}#jtnav{position:fixed;width:100%;-webkit-transform:translateZ(0);transform:translateZ(0);will-change:transform}#jtnav-logo{position:absolute;left:50%;transform:translateX(-50%);margin:0}.home-btn{display:none!important}}</style>
@@ -485,6 +484,34 @@ canvas{
 .draw-btn{font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.4em;text-transform:uppercase;color:#000;background:#c9a84c;border:1px solid #c9a84c;padding:13px 52px;cursor:pointer;transition:background 0.2s,box-shadow 0.2s;min-height:44px}
 .draw-btn:hover{background:#e0bc5a;box-shadow:0 0 28px rgba(201,168,76,0.45)}
 .draw-btn:disabled{opacity:0.35;cursor:default;pointer-events:none}
+/* LEADERBOARD */
+.lb-modal-wrap{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:16px}
+.lb-modal-wrap.open{display:flex}
+.lb-box{background:#0a0604;border:1px solid rgba(201,168,76,0.7);max-width:460px;width:100%;max-height:80vh;overflow-y:auto;padding:28px 22px;position:relative;box-shadow:0 0 60px rgba(201,168,76,0.12)}
+.lb-close{position:absolute;top:10px;right:14px;background:none;border:none;color:rgba(201,168,76,0.7);font-size:1.1rem;cursor:pointer;font-family:sans-serif;line-height:1;padding:4px 8px;min-height:unset}
+.lb-close:hover{color:#c9a84c}
+.lb-head{font-size:0.62rem;letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;margin-bottom:22px;text-align:center}
+.lb-row{display:grid;grid-template-columns:36px 1fr 80px 54px;gap:4px;align-items:center;border-bottom:1px solid rgba(201,168,76,0.07);padding:7px 0;font-size:0.72rem}
+.lb-row.lb-head-row{font-size:0.52rem;letter-spacing:0.3em;color:rgba(201,168,76,0.4);text-transform:uppercase;border-bottom:1px solid rgba(201,168,76,0.18);padding-bottom:8px;margin-bottom:2px}
+.lb-rank{color:rgba(201,168,76,0.55);text-align:center}
+.lb-name{color:rgba(255,255,255,0.75);letter-spacing:0.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-score{color:#c9a84c;letter-spacing:0.1em;text-align:right}
+.lb-date{color:rgba(201,168,76,0.32);font-size:0.58rem;text-align:right}
+.lb-row:first-child .lb-name,.lb-row:first-child .lb-rank{color:#c9a84c}
+.lb-empty{text-align:center;color:rgba(201,168,76,0.35);font-size:0.72rem;letter-spacing:0.2em;padding:24px 0}
+.lb-loading{text-align:center;color:rgba(201,168,76,0.35);font-size:0.65rem;letter-spacing:0.22em;padding:24px 0;animation:lbpulse 1.4s ease-in-out infinite}
+@keyframes lbpulse{0%,100%{opacity:0.4}50%{opacity:1}}
+/* Name entry modal */
+.lb-name-wrap{display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,0.96);align-items:center;justify-content:center;padding:16px}
+.lb-name-wrap.open{display:flex}
+.lb-name-box{background:#0a0604;border:1px solid rgba(201,168,76,0.6);max-width:340px;width:100%;padding:26px 22px}
+.lb-name-prompt{font-size:0.58rem;letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;margin-bottom:18px;text-align:center;line-height:1.8}
+.lb-name-inp{width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:'Luminari',serif;font-size:0.9rem;padding:10px 14px;letter-spacing:0.1em;outline:none;margin-bottom:14px;box-sizing:border-box}
+.lb-name-inp:focus{border-color:rgba(201,168,76,0.8)}
+.lb-name-btns{display:flex;gap:10px}
+.lb-name-cancel{flex:1;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;border:1px solid rgba(201,168,76,0.25);padding:10px;cursor:pointer}
+.lb-name-confirm{flex:2;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:#000;background:#c9a84c;border:1px solid #c9a84c;padding:10px;cursor:pointer}
+.lb-name-confirm:hover{background:#e0be6a}
 </style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
@@ -492,15 +519,15 @@ canvas{
   <link rel="dns-prefetch" href="https://firestore.googleapis.com">
 <link rel="icon" type="image/png" href="assets/homepage/logo%20png.png">
 <link rel="apple-touch-icon" href="assets/homepage/logo%20png.png">
-<meta name="description" content="The Jestamang Arcade. Play blackjack, poker, cornhole, and more.">
+<meta name="description" content="The Jestamang Arcade. Play blackjack, poker, memory vault, and more.">
 <meta property="og:title" content="Arcade — Jestamang">
-<meta property="og:description" content="The Jestamang Arcade. Play blackjack, poker, cornhole, and more.">
+<meta property="og:description" content="The Jestamang Arcade. Play blackjack, poker, memory vault, and more.">
 <meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jestamang.com/arcade.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Arcade — Jestamang">
-<meta name="twitter:description" content="The Jestamang Arcade. Play blackjack, poker, cornhole, and more.">
+<meta name="twitter:description" content="The Jestamang Arcade. Play blackjack, poker, memory vault, and more.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 </head>
 <body>
@@ -513,7 +540,6 @@ canvas{
   <a class="anav-link" href="#oracle">The Daily Sigil</a>
   <a class="anav-link" href="#blackjack">21</a>
   <a class="anav-link" href="#poker">Hold Em</a>
-  <a class="anav-link" href="#cornhole">Cornhole</a>
 </div>
 
 <div class="page-content">
@@ -559,6 +585,9 @@ canvas{
           <li>Beat both levels to open the vault</li>
         </ul>
       </div>
+    </div>
+    <div style="text-align:center;margin-top:14px">
+      <button class="gbtn lb-btn" onclick="openLB('memory','Memory Vault',true)">Leaderboard ✦</button>
     </div>
   </section>
 
@@ -634,6 +663,9 @@ canvas{
         </ul>
       </div>
     </div>
+    <div style="text-align:center;margin-top:14px">
+      <button class="gbtn lb-btn" onclick="openLB('sigil','Daily Sigil',false)">Leaderboard ✦</button>
+    </div>
   </section>
 
 
@@ -684,6 +716,9 @@ canvas{
       <div class="instr-content">
         <ul class="instr-list"><li>Goal: beat the dealer without going over 21</li><li>Hit to draw a card · Stand to hold · Double to double your bet and draw one final card</li><li>Blackjack (Ace + 10-value card on the deal) pays 3:2</li><li>Dealer must hit on 16, stand on 17</li><li>Aces count as 1 or 11 — whichever keeps you in the game</li></ul>
       </div>
+    </div>
+    <div style="text-align:center;margin-top:14px">
+      <button class="gbtn lb-btn" onclick="openLB('21','21',false)">Leaderboard ✦</button>
     </div>
   </section>
 
@@ -748,41 +783,34 @@ canvas{
         <ul class="instr-list"><li>Each player receives 2 hole cards; 5 community cards are dealt in stages (Flop · Turn · River)</li><li>Bet, call, raise, or fold each round</li><li>Best 5-card hand from your 2 cards + the 5 community cards wins the pot</li><li>Hand ranks: Royal Flush › Str. Flush › Quads › Full House › Flush › Straight › Trips › Two Pair › Pair › High Card</li><li>You play against 3 AI opponents</li></ul>
       </div>
     </div>
-  </section>
-
-  <div class="g-div"><span>✦ ✦ ✦</span></div>
-
-  <!-- ═══════════════════════════════════════════════════
-       GAME 4: CORNHOLE
-  ═══════════════════════════════════════════════════ -->
-  <section id="cornhole" class="game-section">
-    <h2 class="game-title">Cornhole</h2>
-    <p class="game-lore">The bag finds its own path. Aim true, then surrender to the arc.</p>
-    <div class="game-area">
-      <div class="ch-scores">
-        <div>YOU <span class="n" id="ch-pscore">0</span></div>
-        <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);align-self:center">First to 21</div>
-        <div><span id="ch-cname">CPU</span> <span class="n" id="ch-cscore">0</span></div>
-      </div>
-      <canvas id="ch-canvas" width="560" height="320"></canvas>
-      <div class="game-msg" id="ch-msg">Hold mouse on canvas to charge, release to throw.</div>
-      <div style="text-align:center;margin-top:10px">
-        <button class="gbtn" id="ch-new">New Game</button>
-      </div>
-    </div>
-  
-    <div class="instr-box">
-      <button class="instr-toggle" onclick="_toggleInstr(this)">
-        How to Play <span class="instr-arrow">&#9662;</span>
-      </button>
-      <div class="instr-content">
-        <ul class="instr-list"><li>Click and hold the power meter to charge your throw, release to toss</li><li>Bag through the hole = 3 pts · Bag landing on the board = 1 pt</li><li>Cancellation scoring: only the net difference between each round's totals counts</li><li>First team to reach exactly 21 wins</li></ul>
-      </div>
+    <div style="text-align:center;margin-top:14px">
+      <button class="gbtn lb-btn" onclick="openLB('poker','Texas Hold Em',false)">Leaderboard ✦</button>
     </div>
   </section>
+
 
   <div style="height:60px"></div>
 </div><!-- end page-content -->
+
+<!-- LEADERBOARD MODAL -->
+<div class="lb-modal-wrap" id="lb-modal">
+  <div class="lb-box">
+    <button class="lb-close" onclick="closeLB()">✕</button>
+    <div class="lb-head" id="lb-title">Leaderboard</div>
+    <div id="lb-list"><div class="lb-loading">Loading scrolls...</div></div>
+  </div>
+</div>
+<!-- NAME ENTRY MODAL -->
+<div class="lb-name-wrap" id="lb-name-modal">
+  <div class="lb-name-box">
+    <div class="lb-name-prompt">Enter Your Name<br>For the Scrolls</div>
+    <input class="lb-name-inp" id="lb-name-inp" type="text" maxlength="20" placeholder="Your name" autocomplete="off">
+    <div class="lb-name-btns">
+      <button class="lb-name-cancel" id="lb-name-cancel">Cancel</button>
+      <button class="lb-name-confirm" id="lb-name-confirm">Inscribe ✦</button>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ════════════════════════════════════════════════════════════
@@ -944,7 +972,7 @@ function _pickCpuName(used){used=used||[];var pool=_CARTOON_NAMES.filter(functio
   document.getElementById('bj-dbl').onclick=dbl;
   document.querySelectorAll('.bj-chip').forEach(b=>b.onclick=()=>addBet(+b.dataset.v));
   document.getElementById('bj-clear').onclick=clearBet;
-  document.getElementById('bj-new').onclick=()=>{chips=500;bet=0;phase='bet';newDeck();pHand=[];dHand=[];msg('New game. Place your bet.');renderHands();};
+  document.getElementById('bj-new').onclick=()=>{var g=chips-500;if(g>0&&window.submitScore){window.submitScore('21',g,false,function(){chips=500;bet=0;phase='bet';newDeck();pHand=[];dHand=[];msg('New game · '+g+' chips earned. Place your bet.');renderHands();});}else{chips=500;bet=0;phase='bet';newDeck();pHand=[];dHand=[];msg('New game. Place your bet.');renderHands();}};
 })();
 
 /* Snake Eyes, Beer Pong, Craps, and Darts removed */
@@ -1171,247 +1199,8 @@ function _pickCpuName(used){used=used||[];var pool=_CARTOON_NAMES.filter(functio
   document.getElementById('pk-fold').onclick=()=>humanAct('fold');
   document.getElementById('pk-call').onclick=()=>humanAct('call');
   document.getElementById('pk-raise').onclick=()=>humanAct('raise');
-  document.getElementById('pk-new').onclick=()=>{initPlayers();newHand();};
+  document.getElementById('pk-new').onclick=()=>{var g=players[0]?players[0].chips-1000:0;if(g>0&&window.submitScore){window.submitScore('poker',g,false,function(){initPlayers();newHand();});}else{initPlayers();newHand();}};
 })();
-
-/* ════════════════════════════════════════════════════════════
-   GAME 4: CORNHOLE
-════════════════════════════════════════════════════════════ */
-(function chGame(){var CH_CPU=_pickCpuName();document.getElementById('ch-cname').textContent=CH_CPU;
-  const canvas=document.getElementById('ch-canvas');
-  const ctx=canvas.getContext('2d');
-  const W=canvas.width,H=canvas.height;
-
-  // Game state
-  let pScore=0,cScore=0,charging=false,power=0,chargeInterval=null;
-  let ball=null,animFrame=null,gameOver=false,playerTurn=true;
-  let landingMarks=[];
-
-  // Board dimensions (side view)
-  const THROW_X=60,THROW_Y=220;
-  // Board: trapezoid for perspective
-  const BOARD_X1=290,BOARD_Y1=175,BOARD_X2=530,BOARD_Y2=245;
-  const BOARD_W=BOARD_X2-BOARD_X1;
-  // Hole center
-  const HOLE_X=435,HOLE_Y=192,HOLE_RX=22,HOLE_RY=10;
-
-  function drawScene(){
-    ctx.clearRect(0,0,W,H);
-    // Background
-    ctx.fillStyle='rgba(6,3,1,0.95)';
-    ctx.fillRect(0,0,W,H);
-
-    // Ground line
-    ctx.strokeStyle='rgba(201,168,76,0.2)';
-    ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(0,H-50);ctx.lineTo(W,H-50);ctx.stroke();
-
-    // Board legs
-    ctx.fillStyle='rgba(80,50,20,0.8)';
-    ctx.fillRect(305,BOARD_Y2,10,H-50-BOARD_Y2);
-    ctx.fillRect(515,BOARD_Y2,10,H-50-BOARD_Y2);
-
-    // Board surface (trapezoid for perspective)
-    ctx.beginPath();
-    ctx.moveTo(BOARD_X1,BOARD_Y2);
-    ctx.lineTo(BOARD_X2,BOARD_Y2);
-    ctx.lineTo(BOARD_X2-10,BOARD_Y1);
-    ctx.lineTo(BOARD_X1+10,BOARD_Y1);
-    ctx.closePath();
-    ctx.fillStyle='rgba(130,90,40,0.85)';
-    ctx.fill();
-    ctx.strokeStyle='rgba(201,168,76,0.5)';
-    ctx.lineWidth=1.5;
-    ctx.stroke();
-
-    // Hole
-    ctx.beginPath();
-    ctx.ellipse(HOLE_X,HOLE_Y,HOLE_RX,HOLE_RY,0,0,Math.PI*2);
-    ctx.fillStyle='rgba(0,0,0,0.9)';
-    ctx.fill();
-    ctx.strokeStyle='rgba(201,168,76,0.6)';
-    ctx.lineWidth=1.5;
-    ctx.stroke();
-
-    // Thrower marker
-    ctx.beginPath();
-    ctx.arc(THROW_X,THROW_Y,8,0,Math.PI*2);
-    ctx.fillStyle=playerTurn?'rgba(201,168,76,0.7)':'rgba(120,80,200,0.7)';
-    ctx.fill();
-    ctx.strokeStyle='rgba(201,168,76,0.5)';ctx.lineWidth=1;ctx.stroke();
-
-    // Power meter
-    ctx.fillStyle='rgba(20,10,5,0.8)';
-    ctx.fillRect(15,120,16,120);
-    ctx.fillStyle='rgba(201,168,76,'+Math.min(1,power/100+0.1)+')';
-    const ph=power*1.2;
-    ctx.fillRect(15,240-ph,16,ph);
-    ctx.strokeStyle='rgba(201,168,76,0.4)';ctx.lineWidth=1;
-    ctx.strokeRect(15,120,16,120);
-    ctx.fillStyle='rgba(201,168,76,0.4)';
-    ctx.font='9px Luminari,serif';ctx.textAlign='center';
-    ctx.fillText('PWR',23,118);
-
-    // Landing marks
-    for(const m of landingMarks){
-      ctx.globalAlpha=m.alpha;
-      ctx.beginPath();
-      ctx.arc(m.x,m.y,m.r||6,0,Math.PI*2);
-      ctx.fillStyle=m.color||'rgba(201,168,76,0.7)';
-      ctx.fill();
-      ctx.globalAlpha=1;
-    }
-
-    // Ball in flight
-    if(ball){
-      ctx.beginPath();
-      ctx.arc(ball.x,ball.y,8,0,Math.PI*2);
-      ctx.fillStyle='rgba(201,168,76,0.9)';
-      ctx.fill();
-      ctx.strokeStyle='rgba(255,255,200,0.5)';ctx.lineWidth=1;ctx.stroke();
-    }
-
-    // Labels
-    ctx.fillStyle='rgba(201,168,76,0.4)';
-    ctx.font='10px Luminari,serif';ctx.textAlign='left';
-    ctx.fillText('YOU',42,H-30);
-    ctx.textAlign='right';
-    ctx.fillText('TARGET',W-10,H-30);
-  }
-
-  function getBoardYAt(bx){
-    // Linear interpolation of board top surface y between BOARD_X1+10 and BOARD_X2-10
-    const t=(bx-(BOARD_X1+10))/((BOARD_X2-10)-(BOARD_X1+10));
-    return BOARD_Y1+(BOARD_Y2-BOARD_Y1)*t;
-  }
-
-  function throwBall(startX,startY,pw,cpuMode,aimX,aimY){
-    if(ball)return;
-    const power01=pw/100;
-    const speed=180+power01*280; // pixels per second
-    const targetX=cpuMode?aimX:HOLE_X+(-30+Math.random()*60)*(1-power01*0.5);
-    const targetY=cpuMode?aimY:HOLE_Y;
-    const dx=targetX-startX,dy=targetY-startY;
-    const dist=Math.sqrt(dx*dx+dy*dy);
-    const steps=50;
-    let t=0;
-    ball={x:startX,y:startY};
-    const vx=dx/steps,vy=dy/steps;
-    const gravity=0.7;
-
-    function animate(){
-      if(!ball){return;}
-      t++;ball.x+=vx;
-      ball.y+=vy-gravity*(steps/2-t)*0.08;
-
-      // Check if landed on board area
-      if(ball.x>=BOARD_X1&&ball.x<=BOARD_X2){
-        const surfaceY=getBoardYAt(ball.x);
-        if(ball.y>=surfaceY-5){
-          // Landed
-          const lx=ball.x,ly=surfaceY-4;
-          ball=null;
-          resolveLanding(lx,ly,cpuMode);
-          return;
-        }
-      }
-      // Check if ball passed board
-      if(ball.x>BOARD_X2+20||t>steps+10){
-        const lx=Math.min(ball.x,W-10),ly=ball.y;
-        ball=null;
-        resolveLanding(lx,ly,cpuMode);
-        return;
-      }
-      animFrame=requestAnimationFrame(()=>{drawScene();animate();});
-    }
-    animate();
-  }
-
-  function resolveLanding(lx,ly,cpuMode){
-    const dx=lx-HOLE_X,dy=ly-HOLE_Y;
-    let pts=0,result='';
-    // Check hole (ellipse)
-    if((dx*dx)/(HOLE_RX*HOLE_RX)+(dy*dy)/(HOLE_RY*HOLE_RY)<=1.8){
-      pts=3;result='In the hole! +3';
-    } else if(lx>=BOARD_X1+5&&lx<=BOARD_X2-5&&ly>=BOARD_Y1-5&&ly<=BOARD_Y2+5){
-      pts=1;result='On the board! +1';
-    } else {
-      pts=0;result='Miss!';
-    }
-
-    landingMarks.push({x:lx,y:ly,alpha:1,color:cpuMode?'rgba(180,80,255,0.8)':'rgba(201,168,76,0.8)',r:7});
-
-    if(cpuMode){
-      cScore+=pts;document.getElementById('ch-cscore').textContent=cScore;
-      document.getElementById('ch-msg').textContent=CH_CPU+': '+result;
-    }else{
-      pScore+=pts;document.getElementById('ch-pscore').textContent=pScore;
-      document.getElementById('ch-msg').textContent='You: '+result;
-    }
-
-    // Fade marks
-    for(const m of landingMarks)m.alpha=Math.max(0,m.alpha-0.15);
-    landingMarks=landingMarks.filter(m=>m.alpha>0.05);
-    landingMarks.push({x:lx,y:ly,alpha:0.9,color:cpuMode?'rgba(180,80,255,0.8)':'rgba(201,168,76,0.8)',r:7});
-
-    drawScene();
-
-    // Check win (cancellation scoring display, first to 21)
-    if(pScore>=21||cScore>=21){
-      gameOver=true;
-      document.getElementById('ch-msg').textContent=pScore>=21?'You win!':CH_CPU+' wins!';
-      return;
-    }
-
-    if(!cpuMode){
-      playerTurn=false;drawScene();
-      setTimeout(cpuThrow,1500);
-    }else{
-      playerTurn=true;drawScene();
-    }
-  }
-
-  function cpuThrow(){
-    if(gameOver)return;
-    // Aim for hole with spread
-    const aimX=HOLE_X+(-35+Math.random()*70);
-    const aimY=HOLE_Y+(-8+Math.random()*16);
-    const pw=50+Math.random()*50;
-    throwBall(THROW_X,THROW_Y,pw,true,aimX,aimY);
-  }
-
-  // Mouse/touch controls
-  canvas.addEventListener('mousedown',e=>{
-    if(gameOver||!playerTurn||ball)return;
-    charging=true;power=0;
-    chargeInterval=setInterval(()=>{power=Math.min(100,power+2.5);drawScene();},50);
-  });
-
-  canvas.addEventListener('mouseup',e=>{
-    if(!charging)return;
-    clearInterval(chargeInterval);charging=false;
-    if(gameOver||!playerTurn||ball)return;
-    const pw=Math.max(10,power);
-    power=0;
-    throwBall(THROW_X,THROW_Y,pw,false,0,0);
-  });
-
-  canvas.addEventListener('touchstart',e=>{e.preventDefault();canvas.dispatchEvent(new MouseEvent('mousedown'));},{passive:false});
-  canvas.addEventListener('touchend',e=>{e.preventDefault();canvas.dispatchEvent(new MouseEvent('mouseup'));},{passive:false});
-
-  document.getElementById('ch-new').onclick=()=>{
-    pScore=0;cScore=0;charging=false;power=0;ball=null;gameOver=false;playerTurn=true;landingMarks=[];
-    document.getElementById('ch-pscore').textContent=0;
-    document.getElementById('ch-cscore').textContent=0;
-    document.getElementById('ch-msg').textContent='Hold mouse on canvas to charge, release to throw.';
-    drawScene();
-  };
-
-  drawScene();
-})();
-
-
-
 
 (function(){
 'use strict';
@@ -1548,6 +1337,7 @@ function showWin(){
   var m=Math.floor(secs/60),s=secs%60;
   document.getElementById('mv-win-stats').textContent='Time · '+m+':'+pad(s)+' · Lives remaining · '+lives;
   document.getElementById('mv-win-overlay').classList.add('show');
+  if(window.submitScore)window.submitScore('memory',secs,true);
 }
 function showLose(){
   clearInterval(ticker);
@@ -1686,6 +1476,18 @@ document.getElementById('draw-btn').addEventListener('click',function(){
   var cdEl=document.getElementById('sigil-countdown');
   var ocard=document.getElementById('oracle-card');
   drawBtn.disabled=true;
+  try{
+    var _td=(new Date()).toDateString();
+    var _ld=localStorage.getItem('sigilStreakDate');
+    var _sc=parseInt(localStorage.getItem('sigilStreakCount')||'0',10);
+    var _yd=new Date(Date.now()-86400000).toDateString();
+    if(_ld!==_td){
+      _sc=(_ld===_yd)?_sc+1:1;
+      localStorage.setItem('sigilStreakDate',_td);
+      localStorage.setItem('sigilStreakCount',String(_sc));
+      if(window.submitScore)window.submitScore('sigil',_sc,false);
+    }
+  }catch(e){}
   var idx=Math.floor(Math.random()*SIGIL_CARDS.length);
   var cardData=SIGIL_CARDS[idx];
   var now=Date.now();
@@ -1751,6 +1553,93 @@ function _toggleInstr(btn){
     panel.classList.remove('open');btn.classList.remove('open');
   }
 }
+</script>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   LEADERBOARD SYSTEM
+════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+function _san(n){return String(n).replace(/[^a-zA-Z0-9 '\-\.]/g,'').trim().slice(0,20)||'Anonymous';}
+function _esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function _secsToTime(s){var m=Math.floor(s/60),r=s%60;return m+':'+(r<10?'0':'')+r;}
+function _fmtDate(ts){
+  try{var d=ts&&ts.toDate?ts.toDate():new Date(ts);return(d.getMonth()+1)+'/'+d.getDate()+'/'+String(d.getFullYear()).slice(2);}
+  catch(e){return '—';}
+}
+function _getDb(){try{return window.firebase&&window.firebase.apps&&window.firebase.apps.length&&window.firebase.firestore();}catch(e){return null;}}
+
+window.openLB=function(game,title,lowerBetter){
+  var modal=document.getElementById('lb-modal');
+  var list=document.getElementById('lb-list');
+  document.getElementById('lb-title').textContent=title+' · Leaderboard';
+  list.innerHTML='<div class="lb-loading">Loading...</div>';
+  modal.classList.add('open');
+  var db=_getDb();
+  if(!db){list.innerHTML='<div class="lb-empty">The scrolls are unavailable.</div>';return;}
+  db.collection('leaderboards').where('game','==',game).limit(50).get()
+    .then(function(snap){
+      if(snap.empty){list.innerHTML='<div class="lb-empty">No entries yet. Be the first.</div>';return;}
+      var docs=snap.docs.map(function(d){return d.data();});
+      docs.sort(function(a,b){return lowerBetter?a.score-b.score:b.score-a.score;});
+      docs=docs.slice(0,10);
+      var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Score</span><span class="lb-date">Date</span></div>';
+      docs.forEach(function(d,i){
+        var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">✦</span>':(i+1);
+        var scoreDisp=lowerBetter?_secsToTime(d.score):d.score;
+        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+_esc(d.name)+'</span><span class="lb-score">'+scoreDisp+'</span><span class="lb-date">'+_fmtDate(d.timestamp)+'</span></div>';
+      });
+      list.innerHTML=html;
+    })
+    .catch(function(){list.innerHTML='<div class="lb-empty">Could not load scores.</div>';});
+};
+
+window.closeLB=function(){document.getElementById('lb-modal').classList.remove('open');};
+
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){window.closeLB();document.getElementById('lb-name-modal').classList.remove('open');}});
+document.getElementById('lb-modal').addEventListener('click',function(e){if(e.target===this)window.closeLB();});
+
+window.submitScore=function(game,score,lowerBetter,cb){
+  function doSave(name){
+    var db=_getDb();
+    if(!db){if(cb)cb();return;}
+    db.collection('leaderboards').add({
+      game:game,
+      name:_san(name),
+      score:score,
+      timestamp:window.firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function(){if(cb)cb();}).catch(function(){if(cb)cb();});
+  }
+  // Try auth first
+  try{
+    var auth=window.firebase&&window.firebase.auth&&window.firebase.auth();
+    if(auth&&auth.currentUser&&auth.currentUser.displayName){
+      doSave(auth.currentUser.displayName);return;
+    }
+  }catch(e){}
+  // Show name modal
+  var nm=document.getElementById('lb-name-modal');
+  var inp=document.getElementById('lb-name-inp');
+  nm.classList.add('open');
+  inp.value='';
+  setTimeout(function(){inp.focus();},100);
+  function doCancel(){nm.classList.remove('open');cleanup();if(cb)cb();}
+  function doConfirm(){
+    var n=inp.value.trim();
+    if(!n){inp.focus();return;}
+    nm.classList.remove('open');cleanup();doSave(n);
+  }
+  function cleanup(){
+    document.getElementById('lb-name-confirm').onclick=null;
+    document.getElementById('lb-name-cancel').onclick=null;
+    inp.onkeydown=null;
+  }
+  document.getElementById('lb-name-confirm').onclick=doConfirm;
+  document.getElementById('lb-name-cancel').onclick=doCancel;
+  inp.onkeydown=function(e){if(e.key==='Enter')doConfirm();if(e.key==='Escape')doCancel();};
+};
+})();
 </script>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
