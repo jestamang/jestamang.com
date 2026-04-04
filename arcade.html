@@ -1568,7 +1568,7 @@ function _fmtDate(ts){
   try{var d=ts&&ts.toDate?ts.toDate():new Date(ts);return(d.getMonth()+1)+'/'+d.getDate()+'/'+String(d.getFullYear()).slice(2);}
   catch(e){return '—';}
 }
-function _getDb(){try{return window.firebase&&window.firebase.apps&&window.firebase.apps.length&&window.firebase.firestore();}catch(e){return null;}}
+function _getDb(){try{return window.jestaDB||( window.firebase&&window.firebase.apps&&window.firebase.apps.length&&window.firebase.firestore())||null;}catch(e){return null;}}
 
 window.openLB=function(game,title,lowerBetter){
   var modal=document.getElementById('lb-modal');
@@ -1592,7 +1592,7 @@ window.openLB=function(game,title,lowerBetter){
       });
       list.innerHTML=html;
     })
-    .catch(function(){list.innerHTML='<div class="lb-empty">Could not load scores.</div>';});
+    .catch(function(err){console.error('[Leaderboard] Firestore read error:',err);list.innerHTML='<div class="lb-empty">Scores temporarily unavailable. Check Firestore rules for /leaderboards.</div>';});
 };
 
 window.closeLB=function(){document.getElementById('lb-modal').classList.remove('open');};
