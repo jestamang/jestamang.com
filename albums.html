@@ -351,12 +351,25 @@ window._albumPlayTrack=function(btn,idx,card){
     window._albumActiveBtn=btn;
     setTimeout(function(){wrap.scrollIntoView({behavior:'smooth',block:'nearest'});},200);
   } else {
-    // Fallback: open YouTube in new tab
+    // Fallback: inline YouTube embed (audio — only control bar visible at 80px)
     var ytUrls=[];
     try{ytUrls=JSON.parse(card.getAttribute('data-yt-urls')||'[]');}catch(e){}
     var ytUrl=ytUrls[idx]||'';
-    if(ytUrl){window.open(ytUrl,'_blank','noopener,noreferrer');}
-    else{
+    var ytMatch=ytUrl.match(/[?&]v=([^&]+)/);
+    var ytId=ytMatch?ytMatch[1]:'';
+    if(ytId){
+      var li=btn.closest('li');
+      var wrap=document.createElement('div');
+      wrap.className='dtrack-embed-wrap';
+      wrap.innerHTML='<iframe src="https://www.youtube.com/embed/'+ytId+'?autoplay=1&rel=0&modestbranding=1" height="80" allow="autoplay;clipboard-write;encrypted-media;picture-in-picture" loading="lazy"></iframe>';
+      li.parentNode.insertBefore(wrap,li.nextSibling);
+      requestAnimationFrame(function(){requestAnimationFrame(function(){wrap.classList.add('open');});});
+      btn.textContent='■';
+      btn.classList.add('playing');
+      window._albumActiveEmbed=wrap;
+      window._albumActiveBtn=btn;
+      setTimeout(function(){wrap.scrollIntoView({behavior:'smooth',block:'nearest'});},200);
+    } else {
       var t=card.dataset.tracks?JSON.parse(card.dataset.tracks.replace(/&quot;/g,'"'))[idx]||'':'';
       var q=encodeURIComponent('Jestamang '+t);
       window.open('https://www.youtube.com/results?search_query='+q,'_blank','noopener,noreferrer');
