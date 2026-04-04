@@ -19,6 +19,10 @@ body{font-family:'Luminari',serif;background-color:#06040a;color:#fff;min-height
 /* ── RULE ── */
 .tx-rule{width:100px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.45),transparent);margin:36px auto 44px}
 
+/* ── PANEL ── */
+.tx-panel{background:rgba(6,4,18,0.88);border:1px solid rgba(201,168,76,0.22);padding:52px 56px 56px;width:100%;max-width:560px;position:relative}
+.tx-panel::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.5),transparent)}
+
 /* ── FORM WRAP ── */
 .tx-form-wrap{width:100%;max-width:500px}
 
@@ -57,6 +61,7 @@ textarea.tx-input{resize:vertical;min-height:120px;line-height:1.65}
   button,a,[role="button"]{min-height:44px}
   .home-btn{display:none!important}
   .tx-page{padding:80px 20px 60px;justify-content:flex-start;padding-top:90px}
+  .tx-panel{padding:36px 24px 40px}
   .tx-btn{min-height:54px;letter-spacing:0.38em}
   .tx-title{letter-spacing:0.3em}
 }
@@ -90,46 +95,50 @@ textarea.tx-input{resize:vertical;min-height:120px;line-height:1.65}
 
 <div class="tx-page">
 
-  <div class="tx-header">
-    <h1 class="tx-title">Send a Transmission</h1>
-    <p class="tx-sub">A signal sent across the drift. We receive what the cosmos allows.</p>
-  </div>
+  <div class="tx-panel">
 
-  <div class="tx-rule"></div>
+    <div class="tx-header">
+      <h1 class="tx-title">Send a Transmission</h1>
+      <p class="tx-sub">A signal sent across the drift. We receive what the cosmos allows.</p>
+    </div>
 
-  <div class="tx-form-wrap" id="tx-form-wrap">
-    <form id="tx-form" autocomplete="off" novalidate>
+    <div class="tx-rule"></div>
 
-      <div class="tx-field">
-        <label class="tx-label" for="tx-name">Name</label>
-        <input class="tx-input" type="text" id="tx-name" name="from_name" autocomplete="name" required placeholder="Your name" />
-      </div>
+    <div class="tx-form-wrap" id="tx-form-wrap">
+      <form id="tx-form" autocomplete="off" novalidate>
 
-      <div class="tx-field">
-        <label class="tx-label" for="tx-email">Email</label>
-        <input class="tx-input" type="email" id="tx-email" name="email" autocomplete="email" required placeholder="your@signal.com" />
-      </div>
+        <div class="tx-field">
+          <label class="tx-label" for="tx-name">Name</label>
+          <input class="tx-input" type="text" id="tx-name" name="from_name" autocomplete="name" required placeholder="Your name" />
+        </div>
 
-      <div class="tx-field">
-        <label class="tx-label" for="tx-subject">Subject</label>
-        <input class="tx-input" type="text" id="tx-subject" name="subject" placeholder="Nature of transmission" />
-      </div>
+        <div class="tx-field">
+          <label class="tx-label" for="tx-email">Email</label>
+          <input class="tx-input" type="email" id="tx-email" name="email" autocomplete="email" required placeholder="your@signal.com" />
+        </div>
 
-      <div class="tx-field">
-        <label class="tx-label" for="tx-msg">Message</label>
-        <textarea class="tx-input" id="tx-msg" name="message" rows="5" required placeholder="Speak your transmission into the void..."></textarea>
-      </div>
+        <div class="tx-field">
+          <label class="tx-label" for="tx-subject">Subject</label>
+          <input class="tx-input" type="text" id="tx-subject" name="subject" placeholder="Nature of transmission" />
+        </div>
 
-      <button type="submit" class="tx-btn" id="tx-btn">Transmit</button>
-    </form>
+        <div class="tx-field">
+          <label class="tx-label" for="tx-msg">Message</label>
+          <textarea class="tx-input" id="tx-msg" name="message" rows="5" required placeholder="Speak your transmission into the void..."></textarea>
+        </div>
 
-    <div id="tx-error">The transmission could not be sent through.<br>Try again or reach us directly at <a href="mailto:thejestamang@gmail.com">thejestamang@gmail.com</a></div>
-  </div>
+        <button type="submit" class="tx-btn" id="tx-btn">Transmit</button>
+      </form>
 
-  <div id="tx-success">
-    <span class="tx-success-rune">✦</span>
-    <div class="tx-success-title">Your Transmission<br>Has Been Received</div>
-    <p class="tx-success-sub">It travels now through the in-between.<br>We will answer when the stars permit.</p>
+      <div id="tx-error">The transmission could not be sent through.<br>Try again or reach us directly at <a href="mailto:thejestamang@gmail.com">thejestamang@gmail.com</a></div>
+    </div>
+
+    <div id="tx-success">
+      <span class="tx-success-rune">✦</span>
+      <div class="tx-success-title">Your Transmission<br>Has Been Received</div>
+      <p class="tx-success-sub">It travels now through the in-between.<br>We will answer when the stars permit.</p>
+    </div>
+
   </div>
 
 </div>
