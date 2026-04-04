@@ -41,26 +41,6 @@ body {
   overflow: hidden;
 }
 
-/* background image */
-#jt-bg {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.35;
-}
-
-/* dark vignette */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(ellipse at 50% 50%, rgba(4,2,10,0.3) 0%, rgba(4,2,10,0.88) 100%);
-  z-index: 0;
-  pointer-events: none;
-}
 
 /* void canvas behind content */
 #void-canvas {
@@ -252,7 +232,7 @@ h1 {
 
 @media (max-width: 768px) {
   body, .bg-wrap { background-attachment: scroll !important; }
-  #jt-bg { position: fixed !important; }
+  #jt-bg { position: absolute !important; }
   h1 { font-size: clamp(1.7rem, 7vw, 2.4rem); }
   .container { padding: 40px 20px; }
   .void-ring:nth-child(3), .void-ring:nth-child(4) { display: none; }
@@ -264,7 +244,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 </head>
 <body>
 
-<img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true">
+<img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72">
 
 <canvas id="void-canvas"></canvas>
 
