@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jestamang</title>
+<meta name="description" content="Chord Conjurer — build chords from their sacred intervals. Learn the architecture of harmony. A cosmic music theory game from Jestamang.">
+<meta name="keywords" content="Jestamang, chord theory, music theory, piano, chord construction, harmony, music education, psychedelic">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jestamang.com/games/chord-conjurer.html">
+<meta property="og:site_name" content="Jestamang">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jestamang">
+<meta property="og:description" content="Chord Conjurer — build chords from their sacred intervals. Learn the architecture of harmony.">
+<meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
+<meta property="og:url" content="https://jestamang.com/games/chord-conjurer.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chord Conjurer — Jestamang Games">
+<meta name="twitter:description" content="Build chords from their sacred intervals. Learn the architecture of harmony.">
+<meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
+
+<style>
+@font-face{font-family:'Luminari';src:url('../assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#000}
+body{font-family:'Luminari',serif;background:#000;color:#fff;min-height:100vh;overflow-x:hidden;user-select:none;-webkit-user-select:none}
+
+.scr{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center}
+.scr.active{display:flex}
+
+.eyebrow{font-size:clamp(0.58rem,1.8vw,0.76rem);letter-spacing:0.65em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:18px}
+.big-title{font-size:clamp(2.5rem,10vw,6rem);letter-spacing:0.3em;color:#c9a84c;text-shadow:0 0 50px rgba(201,168,76,0.7),0 0 100px rgba(201,168,76,0.2);text-transform:uppercase;line-height:1.05;margin-bottom:16px}
+.sub{font-size:clamp(0.68rem,2vw,0.86rem);letter-spacing:0.3em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:44px;line-height:2.1}
+.btn{font-family:'Luminari',serif;font-size:clamp(0.78rem,2.5vw,0.93rem);letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:14px 46px;cursor:pointer;transition:all 0.3s;min-height:52px;margin:4px}
+.btn:hover,.btn:active{background:rgba(201,168,76,0.1);border-color:#c9a84c;box-shadow:0 0 24px rgba(201,168,76,0.2)}
+
+/* Game screen */
+#gs{justify-content:flex-start;padding:60px 16px 40px;gap:0}
+#cc-header{width:100%;max-width:640px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+#cc-level-lbl{font-size:clamp(0.65rem,1.8vw,0.78rem);letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase}
+#cc-score-lbl{font-size:clamp(0.62rem,1.6vw,0.72rem);letter-spacing:0.35em;color:rgba(201,168,76,0.45);text-transform:uppercase}
+#cc-mode-badge{font-size:0.55rem;letter-spacing:0.5em;text-transform:uppercase;color:rgba(4,2,10,0.9);background:#c9a84c;padding:3px 12px;margin-bottom:10px;display:inline-block}
+
+/* Chord display */
+#cc-chord-name{font-size:clamp(1.6rem,6vw,3rem);letter-spacing:0.3em;color:#c9a84c;text-shadow:0 0 30px rgba(201,168,76,0.5);text-transform:uppercase;margin-bottom:4px;min-height:1.3em}
+#cc-chord-sub{font-size:clamp(0.6rem,1.8vw,0.72rem);letter-spacing:0.35em;color:rgba(255,255,255,0.25);text-transform:uppercase;margin-bottom:12px;min-height:1.2em}
+#cc-instruct{font-size:clamp(0.58rem,1.6vw,0.68rem);letter-spacing:0.28em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:16px;min-height:1.1em}
+
+/* Piano */
+#piano-outer{width:100%;max-width:640px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 auto 12px}
+#piano-outer::-webkit-scrollbar{display:none}
+#piano{position:relative;display:flex;margin:0 auto}
+.wk{flex-shrink:0;background:rgba(18,12,4,0.96);border:1px solid rgba(201,168,76,0.25);cursor:pointer;position:relative;transition:background 0.1s,box-shadow 0.12s}
+.wk:hover{background:rgba(28,20,6,0.98)}
+.wk.k-sel{background:rgba(201,168,76,0.14);border-color:rgba(201,168,76,0.75);box-shadow:0 0 18px rgba(201,168,76,0.3) inset}
+.wk.k-correct{background:rgba(201,168,76,0.22);border-color:#c9a84c;box-shadow:0 0 26px rgba(201,168,76,0.5) inset}
+.wk.k-wrong{background:rgba(251,56,56,0.2);border-color:rgba(251,56,56,0.65)}
+.wk.k-missed{background:rgba(255,140,0,0.15);border-color:rgba(255,140,0,0.65)}
+.bk{position:absolute;top:0;background:rgba(5,3,1,0.99);border:1px solid rgba(201,168,76,0.18);z-index:2;cursor:pointer;transition:background 0.1s,box-shadow 0.12s}
+.bk:hover{background:rgba(15,10,3,0.99)}
+.bk.k-sel{background:rgba(201,168,76,0.28);border-color:rgba(201,168,76,0.75);box-shadow:0 0 14px rgba(201,168,76,0.4) inset}
+.bk.k-correct{background:rgba(201,168,76,0.38);border-color:#c9a84c;box-shadow:0 0 22px rgba(201,168,76,0.55) inset}
+.bk.k-wrong{background:rgba(251,56,56,0.25);border-color:rgba(251,56,56,0.7)}
+.bk.k-missed{background:rgba(255,140,0,0.2);border-color:rgba(255,140,0,0.65)}
+.k-lbl{position:absolute;bottom:5px;left:0;right:0;text-align:center;font-family:'Luminari',serif;pointer-events:none;color:rgba(201,168,76,0.22);text-transform:uppercase}
+.bk .k-lbl{color:rgba(201,168,76,0.18)}
+.piano-disabled .wk,.piano-disabled .bk{cursor:default;pointer-events:none}
+
+/* Selected notes */
+#cc-selected{font-size:clamp(0.6rem,1.6vw,0.7rem);letter-spacing:0.3em;color:rgba(201,168,76,0.45);text-transform:uppercase;margin-bottom:10px;min-height:1.2em;text-align:center;max-width:640px}
+
+/* Controls */
+#cc-controls{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:12px}
+#cc-clear-btn{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.5);background:none;border:1px solid rgba(201,168,76,0.25);padding:9px 20px;cursor:pointer;transition:all 0.2s;min-height:44px}
+#cc-clear-btn:hover{border-color:rgba(201,168,76,0.55);color:rgba(201,168,76,0.8)}
+#cc-submit-btn{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.35em;text-transform:uppercase;color:#000;background:#c9a84c;border:1px solid #c9a84c;padding:9px 28px;cursor:pointer;transition:background 0.2s;min-height:44px}
+#cc-submit-btn:hover{background:#deb95c}
+#cc-submit-btn:disabled{opacity:0.4;cursor:default;pointer-events:none}
+#cc-play-btn{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.7);background:none;border:1px solid rgba(201,168,76,0.35);padding:9px 18px;cursor:pointer;transition:all 0.2s;min-height:44px;display:none}
+#cc-play-btn:hover{border-color:#c9a84c;color:#c9a84c}
+
+/* Reverse mode options */
+#cc-options{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:500px;margin:16px auto}
+.cc-opt-btn{font-family:'Luminari',serif;font-size:clamp(0.65rem,1.8vw,0.78rem);letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,168,76,0.75);background:rgba(4,2,10,0.8);border:1px solid rgba(201,168,76,0.3);padding:14px 20px;cursor:pointer;transition:all 0.2s;min-height:52px;min-width:180px}
+.cc-opt-btn:hover{border-color:rgba(201,168,76,0.65);color:#c9a84c;background:rgba(201,168,76,0.08)}
+.cc-opt-btn.opt-correct{border-color:#c9a84c;background:rgba(201,168,76,0.18);color:#c9a84c}
+.cc-opt-btn.opt-wrong{border-color:rgba(251,56,56,0.6);background:rgba(251,56,56,0.12);color:rgba(251,56,56,0.85)}
+.cc-opt-btn:disabled{cursor:default;pointer-events:none}
+
+/* Theory tooltip */
+#cc-theory{max-width:540px;background:rgba(4,2,10,0.75);border:1px solid rgba(201,168,76,0.2);padding:14px 20px;margin:10px auto;display:none;text-align:left}
+#cc-theory-chord{font-size:0.75rem;letter-spacing:0.28em;color:#c9a84c;text-transform:uppercase;margin-bottom:6px}
+#cc-theory-intervals{font-size:0.6rem;letter-spacing:0.2em;color:rgba(201,168,76,0.5);text-transform:uppercase;margin-bottom:4px}
+#cc-theory-desc{font-size:0.62rem;letter-spacing:0.12em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:6px;line-height:1.7}
+#cc-theory-voice{font-size:0.62rem;letter-spacing:0.12em;color:rgba(201,168,76,0.28);text-transform:uppercase;font-style:italic;line-height:1.7}
+
+/* Progress + feedback */
+#cc-chord-progress{font-size:0.58rem;letter-spacing:0.3em;color:rgba(255,255,255,0.18);text-transform:uppercase;margin-bottom:8px}
+#cc-feedback{font-size:clamp(0.63rem,1.8vw,0.75rem);letter-spacing:0.35em;color:rgba(255,255,255,0.3);text-transform:uppercase;min-height:1.4em;text-align:center;margin-top:6px}
+
+/* End screen */
+.score-big{font-size:clamp(3rem,12vw,6rem);letter-spacing:0.3em;color:#c9a84c;text-shadow:0 0 40px rgba(201,168,76,0.7);margin-bottom:4px}
+.score-lbl{font-size:clamp(0.62rem,1.8vw,0.76rem);letter-spacing:0.5em;color:rgba(255,255,255,0.28);text-transform:uppercase;margin-bottom:8px}
+#os-result{font-size:clamp(0.63rem,1.8vw,0.75rem);letter-spacing:0.28em;color:rgba(255,255,255,0.2);text-transform:uppercase;margin-bottom:38px;line-height:2}
+
+#back{position:fixed;top:12px;left:14px;z-index:30;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.2s}
+#back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
+@media(max-width:480px){.btn{padding:12px 26px}#cc-theory{padding:10px 14px}}
+</style>
+<style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
+<style id="lb-styles">
+#lb-btn-hud{position:fixed;top:12px;right:62px;z-index:500;background:rgba(0,0,0,0.65);border:1px solid rgba(201,168,76,0.42);color:rgba(201,168,76,0.85);font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;padding:7px 12px;cursor:pointer;transition:background 0.2s,border-color 0.2s;display:none;min-height:36px;white-space:nowrap}
+#lb-btn-hud:hover{background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.7);color:#c9a84c}
+#lb-btn-over{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:11px 28px;cursor:pointer;transition:background 0.2s,border-color 0.2s;min-height:44px;display:none;margin-top:10px}
+#lb-btn-over:hover{background:rgba(201,168,76,0.1);border-color:#c9a84c}
+#lb-name-modal{display:none;position:fixed;inset:0;z-index:4000;background:rgba(4,2,10,0.96);align-items:center;justify-content:center}
+#lb-name-modal.lb-open{display:flex}
+#lb-name-card{background:rgba(4,2,10,0.99);border:1px solid rgba(201,168,76,0.55);padding:44px 40px;max-width:440px;width:90%;text-align:center;position:relative}
+#lb-name-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.65),transparent)}
+.lbnm-title{font-family:'Luminari',serif;font-size:1.1rem;letter-spacing:0.3em;color:#c9a84c;text-transform:uppercase;margin-bottom:8px}
+.lbnm-sub{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(240,230,210,0.42);text-transform:uppercase;margin-bottom:28px;line-height:1.7}
+#lb-name-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:'Luminari',serif;font-size:1rem;letter-spacing:0.15em;padding:10px 4px;outline:none;text-align:center;margin-bottom:24px;-webkit-appearance:none;caret-color:#c9a84c}
+#lb-name-input::placeholder{color:rgba(201,168,76,0.25)}
+#lb-name-submit{width:100%;background:#c9a84c;color:#000;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.42em;text-transform:uppercase;border:none;padding:15px 0;cursor:pointer;transition:background 0.2s;min-height:44px}
+#lb-name-submit:hover{background:#deb95c}
+#lb-name-skip{display:block;margin-top:16px;font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.2em;color:rgba(201,168,76,0.25);cursor:pointer;background:none;border:none;text-transform:uppercase;width:100%;transition:color 0.2s}
+#lb-name-skip:hover{color:rgba(201,168,76,0.55)}
+#lb-modal{display:none;position:fixed;inset:0;z-index:4000;background:rgba(4,2,10,0.96);align-items:center;justify-content:center}
+#lb-modal.lb-open{display:flex}
+#lb-modal-inner{background:rgba(4,2,10,0.99);border:1px solid rgba(201,168,76,0.55);padding:36px 32px;max-width:500px;width:95%;max-height:88vh;overflow-y:auto;position:relative}
+#lb-modal-inner::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.65),transparent)}
+#lb-modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(201,168,76,0.55);font-size:1.3rem;cursor:pointer;font-family:'Luminari',serif;min-width:36px;min-height:36px;line-height:1}
+#lb-modal-close:hover{color:#c9a84c}
+.lbm-header{text-align:center;margin-bottom:24px}
+.lbm-title{font-family:'Luminari',serif;font-size:1.2rem;letter-spacing:0.4em;color:#c9a84c;text-transform:uppercase;margin-bottom:5px}
+.lbm-game{font-family:'Luminari',serif;font-size:0.63rem;letter-spacing:0.45em;color:rgba(201,168,76,0.38);text-transform:uppercase}
+#lb-new-banner{font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.4em;text-transform:uppercase;color:#c9a84c;padding:10px;border:1px solid rgba(201,168,76,0.5);margin-bottom:20px;text-align:center;display:none;animation:lbFlash 0.9s ease-in-out infinite}
+@keyframes lbFlash{0%,100%{opacity:1;border-color:rgba(201,168,76,0.5)}50%{opacity:0.35;border-color:rgba(201,168,76,0.15)}}
+#lb-table{width:100%;border-collapse:collapse}
+#lb-table th{font-family:'Luminari',serif;font-size:0.57rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.38);padding:0 8px 12px;text-align:left;border-bottom:1px solid rgba(201,168,76,0.15)}
+#lb-table th:nth-child(3),#lb-table th:nth-child(4),#lb-table td:nth-child(3),#lb-table td:nth-child(4){text-align:right}
+#lb-table td{font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.05em;color:rgba(240,230,210,0.7);padding:10px 8px;border-bottom:1px solid rgba(201,168,76,0.07)}
+.lb-r1 td{color:#c9a84c}
+.lb-r23 td{color:rgba(201,168,76,0.78)}
+.lb-cur td{background:rgba(201,168,76,0.07);color:#c9a84c}
+.lb-loading-row td{text-align:center;padding:28px;font-family:'Luminari',serif;font-style:italic;color:rgba(201,168,76,0.32);letter-spacing:0.15em}
+@media(max-width:480px){#lb-name-card{padding:32px 22px}#lb-modal-inner{padding:28px 18px;max-height:92vh}}
+</style>
+<style id="jsearch-styles">
+.jsearch-float-btn{position:fixed;top:14px;right:14px;z-index:9000;background:rgba(0,0,0,0.55);border:1px solid rgba(201,168,76,0.35);color:rgba(201,168,76,0.75);cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s}
+.jsearch-float-btn:hover{border-color:rgba(201,168,76,0.75);color:#c9a84c}
+.jsearch-float-btn svg{pointer-events:none}
+#jsearch-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(4,2,10,0.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);flex-direction:column;align-items:center;padding-top:80px;overflow-y:auto}
+#jsearch-overlay.jsearch-open{display:flex}
+#jsearch-inner{width:100%;max-width:680px;padding:0 20px;position:relative}
+#jsearch-close-row{display:flex;justify-content:flex-end;margin-bottom:16px}
+#jsearch-close{background:none;border:none;color:rgba(201,168,76,0.6);font-size:1.5rem;cursor:pointer;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;transition:color 0.2s;font-family:'Luminari',serif;line-height:1}
+#jsearch-close:hover{color:#c9a84c}
+#jsearch-input{width:100%;background:rgba(0,0,0,0.7);border:1px solid rgba(201,168,76,0.65);color:#c9a84c;font-family:'Luminari',serif;font-size:0.95rem;letter-spacing:0.18em;padding:16px 20px;outline:none;text-transform:uppercase;caret-color:#c9a84c;-webkit-appearance:none;border-radius:0}
+#jsearch-input::placeholder{color:rgba(201,168,76,0.32);letter-spacing:0.12em}
+#jsearch-results{margin-top:10px}
+.jsearch-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid rgba(201,168,76,0.08);cursor:pointer;transition:background 0.15s;text-decoration:none;color:inherit}
+.jsearch-item:hover{background:rgba(201,168,76,0.07)}
+.jsearch-item-icon{font-size:0.85rem;flex-shrink:0;opacity:0.6;width:18px;text-align:center}
+.jsearch-item-name{font-family:'Luminari',serif;font-size:0.88rem;letter-spacing:0.1em;color:rgba(240,230,210,0.9);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jsearch-item-name mark{background:none;color:#c9a84c;font-style:normal}
+.jsearch-item-cat{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.5);flex-shrink:0;margin-left:8px}
+.jsearch-empty,.jsearch-hint{text-align:center;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.25);padding:32px 0}
+@media(max-width:767px){#jsearch-overlay{padding-top:60px}#jsearch-inner{padding:0 14px}}
+</style>
+<style id="jbtt-styles">
+#jbtt{position:fixed;bottom:24px;right:24px;z-index:998;width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.15);border:1px solid #c9a84c;color:#c9a84c;cursor:pointer;display:none;align-items:center;justify-content:center;font-family:'Luminari',serif;font-size:1.1rem;line-height:1;transition:background 0.2s,color 0.2s,box-shadow 0.2s,opacity 0.3s;opacity:0}
+#jbtt.jbtt-visible{display:flex;opacity:1}
+#jbtt:hover{background:rgba(201,168,76,0.85);color:#000;box-shadow:0 0 18px rgba(201,168,76,0.45)}
+@media(max-width:768px){#jbtt{bottom:80px;right:16px}}
+</style>
+<link rel="preload" as="font" type="font/ttf" href="../assets/fonts/Luminari.ttf" crossorigin>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#c9a84c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jestamang">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/png" href="../assets/homepage/logo%20png.png">
+<link rel="apple-touch-icon" href="../assets/homepage/logo%20png.png">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="../assets/js/firebase-config.js"></script>
+<script>(function(GID,GDISP,FLFLOAT){
+var _score=0,_docId=null;
+var MON=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+var RD=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV','XXV','XXVI','XXVII','XXVIII','XXIX','XXX','XXXI'];
+function toRom(y){var t=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];var r='';t.forEach(function(p){while(y>=p[0]){r+=p[1];y-=p[0];}});return r;}
+function fmtD(ts){var d=ts&&ts.toDate?ts.toDate():new Date();return MON[d.getMonth()].slice(0,3)+' · '+RD[d.getDate()-1]+' · '+toRom(d.getFullYear());}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function fmtS(s){return FLFLOAT?parseFloat(s).toFixed(1)+'s':parseInt(s).toLocaleString();}
+function san(n){return n.replace(/[^a-zA-Z0-9 _\-\.!]/g,'').trim().slice(0,20);}
+function openLB(cur){
+var m=document.getElementById('lb-modal'),tb=document.getElementById('lb-tbody'),bn=document.getElementById('lb-new-banner');
+if(!m||!window.jestaDB)return;
+if(bn)bn.style.display='none';
+tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr>';
+m.classList.add('lb-open');
+window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(10).get()
+.then(function(snap){
+var rows=[];snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp});});
+var isTop=cur>0&&(rows.length===0||cur>rows[0].score);
+if(isTop&&bn)bn.style.display='block';
+tb.innerHTML='';
+if(!rows.length){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">NO SCORES YET — BE THE FIRST</td></tr>';return;}
+rows.forEach(function(r,i){
+var tr=document.createElement('tr');
+var cls=i===0?'lb-r1':i<3?'lb-r23':'';
+if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
+tr.className=cls;
+var cr=i===0?'<span style="margin-right:5px">✦</span>':'';
+tr.innerHTML='<td>'+(i+1)+'</td><td>'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
+tb.appendChild(tr);
+});
+}).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">SIGNAL LOST</td></tr>';});
+}
+function saveScore(name,score){
+if(!score||score<=0||!window.jestaDB)return;
+var ps=FLFLOAT?parseFloat(score):parseInt(score);
+window.jestaDB.collection('leaderboards').add({game:GID,name:san(name)||'Unknown',score:ps,timestamp:firebase.firestore.FieldValue.serverTimestamp()})
+.then(function(ref){_docId=ref.id;}).catch(function(e){console.warn('lb:',e);});
+}
+window.lbOnGameOver=function(score){
+_score=score;_docId=null;
+if(!score||score<=0)return;
+var ob=document.getElementById('lb-btn-over');if(ob)ob.style.display='inline-block';
+if(!window.jestaAuth)return;
+var user=window.jestaAuth.currentUser;
+if(user&&user.displayName){saveScore(user.displayName,score);}
+else{window.jestaAuth.signInAnonymously().catch(function(){}).then(function(){
+var m=document.getElementById('lb-name-modal');if(!m){openLB(score);return;}
+m.classList.add('lb-open');var inp=document.getElementById('lb-name-input');if(inp){inp.value='';setTimeout(function(){inp.focus();},120);};
+});}
+};
+document.addEventListener('DOMContentLoaded',function(){
+var gd=document.getElementById('lb-game-display');if(gd)gd.textContent=GDISP;
+var nm=document.getElementById('lb-name-modal'),ni=document.getElementById('lb-name-input'),ns=document.getElementById('lb-name-submit'),nsk=document.getElementById('lb-name-skip');
+var lm=document.getElementById('lb-modal'),lc=document.getElementById('lb-modal-close');
+var hb=document.getElementById('lb-btn-hud'),ob=document.getElementById('lb-btn-over');
+var sb=document.getElementById('startBtn'),rb=document.getElementById('restartBtn');
+function doSubmit(){var n=ni?san(ni.value):'';if(!n){if(ni)ni.focus();return;}if(nm)nm.classList.remove('lb-open');saveScore(n,_score);openLB(_score);}
+if(ns)ns.addEventListener('click',doSubmit);
+if(ni)ni.addEventListener('keydown',function(e){if(e.key==='Enter')doSubmit();});
+if(nsk)nsk.addEventListener('click',function(){if(nm)nm.classList.remove('lb-open');openLB(0);});
+if(lc)lc.addEventListener('click',function(){if(lm)lm.classList.remove('lb-open');});
+if(lm)lm.addEventListener('click',function(e){if(e.target===lm)lm.classList.remove('lb-open');});
+if(hb)hb.addEventListener('click',function(){openLB(0);});
+if(ob)ob.addEventListener('click',function(){openLB(_score);});
+if(sb&&hb)sb.addEventListener('click',function(){hb.style.display='block';});
+if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_score=0;_docId=null;});
+});
+})('chordConjurer','CHORD CONJURER',false);</script>
+</head>
+<body>
+<a href="../games.html" id="back">← Games</a>
+<button id="lb-btn-hud">Scrolls</button>
+
+<!-- START SCREEN -->
+<div id="ss" class="scr active">
+  <div class="eyebrow">Jestamang Universe</div>
+  <div class="big-title">Chord<br>Conjurer</div>
+  <div class="sub">Build chords from their sacred intervals<br>Learn the architecture of harmony itself</div>
+  <button class="btn" id="startBtn">Begin the Conjuration</button>
+  <div style="font-size:0.58rem;letter-spacing:0.25em;color:rgba(255,255,255,0.12);text-transform:uppercase;margin-top:20px;line-height:2">5 levels · major · minor · 7ths · inversions · ear training</div>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="gs" class="scr">
+  <div id="cc-header">
+    <div id="cc-level-lbl">LEVEL 1</div>
+    <div id="cc-score-lbl">SCORE 0</div>
+  </div>
+  <div id="cc-mode-badge">BUILD</div>
+  <div id="cc-chord-name">C MAJOR</div>
+  <div id="cc-chord-sub">CLICK THE NOTES THAT FORM THIS CHORD</div>
+  <div id="cc-chord-progress"></div>
+  <div id="cc-instruct">CLICK THE CORRECT PIANO KEYS · THEN SUBMIT</div>
+  <!-- Reverse mode options -->
+  <div id="cc-options" style="display:none"></div>
+  <!-- Piano -->
+  <div id="piano-outer"><div id="piano"></div></div>
+  <div id="cc-selected">NO NOTES SELECTED</div>
+  <div id="cc-controls">
+    <button id="cc-play-btn">▶ PLAY CHORD</button>
+    <button id="cc-clear-btn">CLEAR</button>
+    <button id="cc-submit-btn">SUBMIT</button>
+  </div>
+  <div id="cc-theory">
+    <div id="cc-theory-chord"></div>
+    <div id="cc-theory-intervals"></div>
+    <div id="cc-theory-desc"></div>
+    <div id="cc-theory-voice"></div>
+  </div>
+  <div id="cc-feedback"></div>
+</div>
+
+<!-- END SCREEN -->
+<div id="os" class="scr">
+  <div class="eyebrow">The conjuration is complete</div>
+  <div class="score-big" id="finalScore">0</div>
+  <div class="score-lbl">correct notes</div>
+  <div id="os-result"></div>
+  <button class="btn" id="restartBtn">Conjure Again</button>
+  <button id="lb-btn-over">The Cosmic Scrolls</button>
+</div>
+
+<!-- LEADERBOARD MODALS -->
+<div id="lb-name-modal">
+<div id="lb-name-card">
+<p class="lbnm-title">MARK YOUR SCORE</p>
+<p class="lbnm-sub">ENTER YOUR NAME FOR<br>THE COSMIC SCROLLS</p>
+<input id="lb-name-input" type="text" maxlength="20" autocomplete="off" spellcheck="false" placeholder="YOUR NAME...">
+<button id="lb-name-submit">SEAL IT</button>
+<button id="lb-name-skip">ENTER WITHOUT SAVING</button>
+</div></div>
+<div id="lb-modal">
+<div id="lb-modal-inner">
+<button id="lb-modal-close">✦</button>
+<div id="lb-new-banner">✦ NEW HIGH SCORE ✦</div>
+<div class="lbm-header">
+  <p class="lbm-title">THE COSMIC SCROLLS</p>
+  <p class="lbm-game" id="lb-game-display"></p>
+</div>
+<table id="lb-table">
+<thead><tr><th>RANK</th><th>NAME</th><th>SCORE</th><th>DATE</th></tr></thead>
+<tbody id="lb-tbody"><tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr></tbody>
+</table>
+</div></div>
+
+<footer style="text-align:center;padding:24px 20px 32px;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.3);border-top:1px solid rgba(201,168,76,0.12);margin-top:40px">
+  <a href="../privacy.html" style="color:rgba(201,168,76,0.45);text-decoration:none">Privacy Policy</a>
+  <span style="margin:0 10px;opacity:0.4">·</span>
+  <span>© <span class="jcyr"></span> Jestamang</span>
+  <span style="margin:0 10px;opacity:0.4">·</span>
+  <a href="../terms.html" style="color:rgba(201,168,76,0.45);text-decoration:none">Terms of Service</a>
+</footer>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
+<script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+
+<button class="jsearch-float-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button>
+<div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
+<div id="jsearch-inner">
+<div id="jsearch-close-row"><button id="jsearch-close" aria-label="Close search">✦</button></div>
+<input id="jsearch-input" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="SEARCH THE JESTAMANG UNIVERSE...">
+<div id="jsearch-results"><div class="jsearch-hint">ENTER A NAME &nbsp;·&nbsp; PAGE &nbsp;·&nbsp; ALBUM &nbsp;·&nbsp; ENTITY</div></div>
+</div>
+</div>
+<button id="jbtt" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>(function(){var btn=document.getElementById('jbtt');if(!btn)return;window.addEventListener('scroll',function(){if(window.scrollY>300){btn.classList.add('jbtt-visible');}else{btn.classList.remove('jbtt-visible');}},{passive:true});})();</script>
+
+<script>(function(){
+var IDX=[
+{n:'Home',u:'/index.html',c:'Page',i:'⌂',t:'homepage start jestamang'},
+{n:'Games',u:'/games.html',c:'Page',i:'◉',t:'play interactive arcade'},
+{n:'Arcade',u:'/arcade.html',c:'Page',i:'◉',t:'games play interactive'},
+{n:'Pitch Oracle',u:'/games/pitch-oracle.html',c:'Game',i:'◈',t:'ear training note pitch oracle music'},
+{n:'Rhythm Architect',u:'/games/rhythm-architect.html',c:'Game',i:'◈',t:'rhythm beat pattern music game'},
+{n:'Chord Conjurer',u:'/games/chord-conjurer.html',c:'Game',i:'◈',t:'chord theory piano music game'},
+{n:'Cosmic Conductor',u:'/games/cosmic-conductor.html',c:'Game',i:'◈',t:'play interactive music game cosmic'},
+{n:'The Void',u:'/games/void.html',c:'Game',i:'◈',t:'play void darkness game'}
+];
+function jSearchOpen(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.add('jsearch-open');document.body.style.overflow='hidden';var inp=document.getElementById('jsearch-input');if(inp){inp.value='';inp.focus();jSearchRender('');}}}
+function jSearchClose(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.remove('jsearch-open');document.body.style.overflow='';}}
+function jHL(text,q){if(!q)return text.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});var safe=text.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);tokens.forEach(function(tok){var re=new RegExp('('+tok.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');safe=safe.replace(re,'<mark>$1</mark>');});return safe;}
+function jSearchRender(q){var box=document.getElementById('jsearch-results');if(!box)return;if(!q.trim()){box.innerHTML='<div class="jsearch-hint">ENTER A NAME &nbsp;\u00b7&nbsp; PAGE &nbsp;\u00b7&nbsp; ALBUM &nbsp;\u00b7&nbsp; ENTITY</div>';return;}var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);var scored=[];IDX.forEach(function(e){var nl=e.n.toLowerCase();var tl=(e.t||'').toLowerCase();var score=0;tokens.forEach(function(tok){if(nl===tok)score+=100;else if(nl.startsWith(tok))score+=50;else if(nl.indexOf(tok)!==-1)score+=30;if(tl.indexOf(tok)!==-1)score+=10;});if(score>0)scored.push({e:e,s:score});});scored.sort(function(a,b){return b.s-a.s;});scored=scored.slice(0,8);if(!scored.length){box.innerHTML='<div class="jsearch-empty">NO TRANSMISSIONS FOUND</div>';return;}var html='';scored.forEach(function(r){var e=r.e;html+='<a class="jsearch-item" href="'+e.u+'" onclick="jSearchClose()"><span class="jsearch-item-icon">'+e.i+'</span><span class="jsearch-item-name">'+jHL(e.n,q)+'</span><span class="jsearch-item-cat">'+e.c+'</span></a>';});box.innerHTML=html;}
+document.addEventListener('DOMContentLoaded',function(){var inp=document.getElementById('jsearch-input');var closeBtn=document.getElementById('jsearch-close');var overlay=document.getElementById('jsearch-overlay');if(inp)inp.addEventListener('input',function(){jSearchRender(this.value);});if(closeBtn)closeBtn.addEventListener('click',jSearchClose);if(overlay)overlay.addEventListener('click',function(e){if(e.target===overlay)jSearchClose();});document.addEventListener('keydown',function(e){if(e.key==='Escape')jSearchClose();if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();jSearchOpen();}});});
+})();</script>
+
+<!-- GAME LOGIC -->
+<script>
+(function(){
+var NOTES_ALL=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+var ROM_LVL=['I','II','III','IV','V'];
+
+var INTERVALS={
+  'MAJOR':[0,4,7],
+  'MINOR':[0,3,7],
+  'DOMINANT 7':[0,4,7,10],
+  'MAJOR 7':[0,4,7,11],
+  'MINOR 7':[0,3,7,10],
+  'DIMINISHED':[0,3,6],
+  'AUGMENTED':[0,4,8]
+};
+
+var THEORY_DATA={
+  'MAJOR':{inter:'0 · 4 · 7 semitones',desc:'Root · Major Third · Perfect Fifth',voice:'The major chord carries the light of open skies.'},
+  'MINOR':{inter:'0 · 3 · 7 semitones',desc:'Root · Minor Third · Perfect Fifth',voice:'The minor chord holds the shadow of things unsaid.'},
+  'DOMINANT 7':{inter:'0 · 4 · 7 · 10 semitones',desc:'Root · Major Third · Perfect Fifth · Minor Seventh',voice:'The dominant seventh creates tension — it yearns to resolve.'},
+  'MAJOR 7':{inter:'0 · 4 · 7 · 11 semitones',desc:'Root · Major Third · Perfect Fifth · Major Seventh',voice:'The major seventh floats above, luminous and suspended.'},
+  'MINOR 7':{inter:'0 · 3 · 7 · 10 semitones',desc:'Root · Minor Third · Perfect Fifth · Minor Seventh',voice:'The minor seventh is the sound of moonlit contemplation.'},
+  'DIMINISHED':{inter:'0 · 3 · 6 semitones',desc:'Root · Minor Third · Diminished Fifth',voice:'The diminished chord vibrates with unease — symmetry in tension.'},
+  'AUGMENTED':{inter:'0 · 4 · 8 semitones',desc:'Root · Major Third · Augmented Fifth',voice:'The augmented chord rises forever, never resolving to earth.'}
+};
+
+/* Level sequences: each entry is {root, type, inv(optional)} */
+var LEVELS=[
+  /* Level 1: major triads */
+  [{r:'C',t:'MAJOR'},{r:'G',t:'MAJOR'},{r:'F',t:'MAJOR'},{r:'D',t:'MAJOR'},{r:'A',t:'MAJOR'}],
+  /* Level 2: minor triads */
+  [{r:'A',t:'MINOR'},{r:'D',t:'MINOR'},{r:'E',t:'MINOR'},{r:'G',t:'MINOR'},{r:'C',t:'MINOR'}],
+  /* Level 3: 7th chords */
+  [{r:'C',t:'MAJOR 7'},{r:'G',t:'DOMINANT 7'},{r:'A',t:'MINOR 7'},{r:'F',t:'MAJOR 7'},{r:'D',t:'DOMINANT 7'}],
+  /* Level 4: first inversions */
+  [{r:'C',t:'MAJOR',inv:1},{r:'G',t:'MAJOR',inv:1},{r:'F',t:'MAJOR',inv:1},{r:'A',t:'MINOR',inv:1},{r:'D',t:'MINOR',inv:1}],
+  /* Level 5: reverse mode (hear it, name it) */
+  [{r:'C',t:'MAJOR',rev:1},{r:'A',t:'MINOR',rev:1},{r:'G',t:'DOMINANT 7',rev:1},{r:'D',t:'MINOR',rev:1},{r:'E',t:'MAJOR',rev:1}]
+];
+
+var LEVEL_LABELS=['MAJOR TRIADS','MINOR TRIADS','SEVENTH CHORDS','FIRST INVERSIONS','EAR TRAINING'];
+
+/* Piano layout */
+var WHITE_NOTES=['C3','D3','E3','F3','G3','A3','B3','C4','D4','E4','F4','G4','A4','B4','C5'];
+var BLACK_DEFS=[
+  {n:'C#3',p:0.65},{n:'D#3',p:1.65},{n:'F#3',p:3.65},{n:'G#3',p:4.65},{n:'A#3',p:5.65},
+  {n:'C#4',p:7.65},{n:'D#4',p:8.65},{n:'F#4',p:10.65},{n:'G#4',p:11.65},{n:'A#4',p:12.65}
+];
+
+/* Audio */
+var audioCtx=null;
+function getAudioCtx(){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended')audioCtx.resume();
+  return audioCtx;
+}
+function noteFreq(name){
+  var note=name.slice(0,-1),oct=parseInt(name.slice(-1));
+  var idx=NOTES_ALL.indexOf(note);
+  var midi=(oct+1)*12+idx;
+  return 440*Math.pow(2,(midi-69)/12);
+}
+function playNote(noteName,vol,delay){
+  vol=vol||0.32;delay=delay||0;
+  var c=getAudioCtx();
+  var freq=noteFreq(noteName);
+  var osc=c.createOscillator();
+  var osc2=c.createOscillator();
+  var g=c.createGain();
+  var now=c.currentTime+delay;
+  osc.type='triangle';osc.frequency.value=freq;
+  osc2.type='sine';osc2.frequency.value=freq*2;
+  g.gain.setValueAtTime(0.001,now);
+  g.gain.linearRampToValueAtTime(vol,now+0.018);
+  g.gain.setValueAtTime(vol,now+0.12);
+  g.gain.exponentialRampToValueAtTime(0.001,now+1.6);
+  osc.connect(g);osc2.connect(g);g.connect(c.destination);
+  osc.start(now);osc.stop(now+1.65);
+  osc2.start(now);osc2.stop(now+1.65);
+}
+function playChord(noteNames,delay){
+  delay=delay||0;
+  noteNames.forEach(function(n,i){playNote(n,0.28,delay+i*0.04);});
+}
+
+/* Compute chord keys (returns array of note name strings like 'C4','E4','G4') */
+function getChordKeys(root,type,inv){
+  var rIdx=NOTES_ALL.indexOf(root);
+  var ints=INTERVALS[type];
+  var rootMidi=60+rIdx; /* start in octave 4 */
+  if(rootMidi+ints[ints.length-1]>72)rootMidi-=12; /* drop to oct 3 if overflow */
+  var midiNotes=ints.map(function(st){return rootMidi+st;});
+  if(inv===1){
+    /* First inversion: move root (first note) up one octave */
+    midiNotes[0]+=12;
+    midiNotes.sort(function(a,b){return a-b;});
+    /* If any note > C5 (72), bring all down */
+    while(Math.max.apply(null,midiNotes)>72)midiNotes=midiNotes.map(function(m){return m-12;});
+    while(Math.min.apply(null,midiNotes)<48)midiNotes=midiNotes.map(function(m){return m+12;});
+  }
+  return midiNotes.map(function(m){
+    var oct=Math.floor(m/12)-1;
+    var noteIdx=m%12;
+    return NOTES_ALL[noteIdx]+oct;
+  });
+}
+
+/* Piano DOM */
+var keyEls={}; /* note name → element */
+function buildPiano(){
+  var outer=document.getElementById('piano-outer');
+  var piano=document.getElementById('piano');
+  piano.innerHTML='';
+  keyEls={};
+  var w=outer.clientWidth||560;
+  var wkw=Math.max(24,Math.min(40,Math.floor(w/15)));
+  var wkh=Math.round(wkw*4.0);
+  var bkw=Math.round(wkw*0.62);
+  var bkh=Math.round(wkh*0.62);
+  var lblSz=Math.max(0.36,Math.min(0.5,wkw/80))+'rem';
+  piano.style.cssText='position:relative;display:flex;width:'+(wkw*15)+'px;height:'+wkh+'px;';
+  WHITE_NOTES.forEach(function(note){
+    var el=document.createElement('div');
+    el.className='wk';
+    el.dataset.note=note;
+    el.style.cssText='width:'+wkw+'px;height:'+wkh+'px;border-right:1px solid rgba(201,168,76,0.2);border-left:1px solid rgba(201,168,76,0.2);border-bottom:1px solid rgba(201,168,76,0.25);flex-shrink:0;';
+    var lbl=document.createElement('div');
+    lbl.className='k-lbl';
+    lbl.style.fontSize=lblSz;
+    lbl.textContent=note.replace(/\d/,'');
+    el.appendChild(lbl);
+    el.addEventListener('click',function(){handleKeyClick(note,el);});
+    piano.appendChild(el);
+    keyEls[note]=el;
+  });
+  BLACK_DEFS.forEach(function(bd){
+    var el=document.createElement('div');
+    el.className='bk';
+    el.dataset.note=bd.n;
+    var left=Math.round(bd.p*wkw-bkw/2);
+    el.style.cssText='left:'+left+'px;width:'+bkw+'px;height:'+bkh+'px;';
+    var lbl=document.createElement('div');
+    lbl.className='k-lbl';
+    lbl.style.fontSize=Math.max(0.3,Math.min(0.42,wkw/90))+'rem';
+    lbl.textContent=bd.n.replace(/\d/,'');
+    el.appendChild(lbl);
+    el.addEventListener('click',function(){handleKeyClick(bd.n,el);});
+    piano.appendChild(el);
+    keyEls[bd.n]=el;
+  });
+}
+
+/* Game state */
+var lvlIdx=0,chordIdx=0,totalScore=0,selectedNotes=[],submitting=false,isReverse=false;
+var currentKeys=[];
+
+function show(id){
+  ['ss','gs','os'].forEach(function(s){document.getElementById(s).classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+}
+
+function updateScoreDisplay(){
+  document.getElementById('cc-score-lbl').textContent='SCORE '+totalScore;
+}
+
+function clearKeys(){
+  Object.values(keyEls).forEach(function(el){
+    el.className=el.className.indexOf('bk')!==-1?'bk':'wk';
+  });
+  selectedNotes=[];
+  document.getElementById('cc-selected').textContent='NO NOTES SELECTED';
+}
+
+function resetPianoState(){
+  Object.values(keyEls).forEach(function(el){
+    var isBlack=el.className.indexOf('bk')!==-1;
+    el.className=isBlack?'bk':'wk';
+  });
+}
+
+function handleKeyClick(note,el){
+  if(submitting||isReverse)return;
+  var piano=document.getElementById('piano');
+  if(piano.classList.contains('piano-disabled'))return;
+  var idx=selectedNotes.indexOf(note);
+  if(idx===-1){
+    selectedNotes.push(note);
+    el.classList.add('k-sel');
+    playNote(note,0.22);
+  } else {
+    selectedNotes.splice(idx,1);
+    el.classList.remove('k-sel');
+  }
+  updateSelectedDisplay();
+}
+
+function updateSelectedDisplay(){
+  var el=document.getElementById('cc-selected');
+  if(!selectedNotes.length){el.textContent='NO NOTES SELECTED';return;}
+  el.textContent=selectedNotes.slice().sort(function(a,b){
+    var ai=WHITE_NOTES.indexOf(a);if(ai===-1)ai=999;
+    var bi=WHITE_NOTES.indexOf(b);if(bi===-1)bi=999;
+    return ai-bi;
+  }).map(function(n){return n.replace(/\d/,'');}).join(' · ');
+}
+
+function showTheory(root,type,keys){
+  var td=THEORY_DATA[type];
+  if(!td)return;
+  var tEl=document.getElementById('cc-theory');
+  document.getElementById('cc-theory-chord').textContent=root+' '+type+' = '+keys.map(function(k){return k.replace(/\d/,'');}).join(' · ');
+  document.getElementById('cc-theory-intervals').textContent=td.inter;
+  document.getElementById('cc-theory-desc').textContent=td.desc;
+  document.getElementById('cc-theory-voice').textContent=td.voice;
+  tEl.style.display='block';
+}
+
+function hideTheory(){
+  document.getElementById('cc-theory').style.display='none';
+}
+
+function loadChord(){
+  if(chordIdx>=LEVELS[lvlIdx].length){
+    lvlIdx++;
+    if(lvlIdx>=LEVELS.length){endGame();return;}
+    chordIdx=0;
+  }
+  var ex=LEVELS[lvlIdx][chordIdx];
+  submitting=false;
+  isReverse=!!ex.rev;
+  clearKeys();
+  resetPianoState();
+  hideTheory();
+  currentKeys=getChordKeys(ex.r,ex.t,ex.inv);
+  window.scrollTo(0,0);
+
+  document.getElementById('cc-level-lbl').textContent='LEVEL '+ROM_LVL[lvlIdx]+' — '+LEVEL_LABELS[lvlIdx];
+  document.getElementById('cc-chord-progress').textContent='CHORD '+(chordIdx+1)+' OF '+LEVELS[lvlIdx].length;
+  document.getElementById('cc-mode-badge').textContent=isReverse?'EAR TRAINING':ex.inv?'BUILD — INVERSION':'BUILD';
+
+  var piano=document.getElementById('piano');
+  var opts=document.getElementById('cc-options');
+  var controls=document.getElementById('cc-controls');
+  var pianoOuter=document.getElementById('piano-outer');
+
+  if(isReverse){
+    /* Reverse mode: show 4 chord name buttons, play chord, player guesses */
+    document.getElementById('cc-chord-name').textContent='IDENTIFY THE CHORD';
+    document.getElementById('cc-chord-sub').textContent='LISTEN · THEN SELECT THE CORRECT CHORD NAME';
+    document.getElementById('cc-instruct').textContent='';
+    pianoOuter.style.display='none';
+    document.getElementById('cc-selected').style.display='none';
+    controls.style.display='none';
+    opts.style.display='flex';
+    opts.innerHTML='';
+    /* Generate 4 options: correct + 3 distractors */
+    var correct=ex.r+' '+ex.t;
+    var allCombos=[];
+    ['C','D','E','F','G','A'].forEach(function(r){
+      ['MAJOR','MINOR','DOMINANT 7','MINOR 7'].forEach(function(ty){
+        allCombos.push(r+' '+ty);
+      });
+    });
+    var wrongs=allCombos.filter(function(c){return c!==correct;});
+    wrongs=wrongs.sort(function(){return Math.random()-0.5;}).slice(0,3);
+    var options=[correct].concat(wrongs).sort(function(){return Math.random()-0.5;});
+    options.forEach(function(opt){
+      var btn=document.createElement('button');
+      btn.className='cc-opt-btn';
+      btn.textContent=opt;
+      btn.addEventListener('click',function(){handleReverseAnswer(opt,correct,ex);});
+      opts.appendChild(btn);
+    });
+    /* Play chord after 0.8s */
+    setTimeout(function(){playChord(currentKeys);},800);
+    document.getElementById('cc-play-btn').style.display='none';
+    document.getElementById('cc-play-btn').onclick=function(){playChord(currentKeys);};
+  } else {
+    /* Build mode */
+    document.getElementById('cc-chord-name').textContent=ex.r+' '+ex.t+(ex.inv?' (1ST INVERSION)':'');
+    document.getElementById('cc-chord-sub').textContent='CLICK THE NOTES THAT FORM THIS CHORD';
+    document.getElementById('cc-instruct').textContent=ex.inv?'THE THIRD IS IN THE BASS — BUILD UPWARD':'CLICK THE CORRECT PIANO KEYS · THEN SUBMIT';
+    pianoOuter.style.display='';
+    document.getElementById('cc-selected').style.display='';
+    controls.style.display='flex';
+    opts.style.display='none';
+    piano.classList.remove('piano-disabled');
+    document.getElementById('cc-submit-btn').disabled=false;
+    document.getElementById('cc-play-btn').style.display='inline-block';
+    document.getElementById('cc-play-btn').onclick=function(){playChord(currentKeys);};
+    document.getElementById('cc-feedback').textContent='';
+  }
+}
+
+function handleReverseAnswer(chosen,correct,ex){
+  var opts=document.querySelectorAll('.cc-opt-btn');
+  opts.forEach(function(btn){
+    btn.disabled=true;
+    if(btn.textContent===correct)btn.classList.add('opt-correct');
+    else if(btn.textContent===chosen&&chosen!==correct)btn.classList.add('opt-wrong');
+  });
+  if(chosen===correct){
+    totalScore++;
+    document.getElementById('cc-feedback').textContent='CORRECT · +1';
+  } else {
+    document.getElementById('cc-feedback').textContent='THE ANSWER WAS '+correct;
+  }
+  updateScoreDisplay();
+  /* Play chord and show theory */
+  playChord(currentKeys);
+  showTheory(ex.r,ex.t,currentKeys);
+  /* Show play button */
+  document.getElementById('cc-play-btn').style.display='inline-block';
+  document.getElementById('cc-controls').style.display='flex';
+  setTimeout(function(){
+    document.getElementById('cc-feedback').textContent='';
+    hideTheory();
+    chordIdx++;
+    loadChord();
+  },2800);
+}
+
+function submitChord(){
+  if(submitting)return;
+  var ex=LEVELS[lvlIdx][chordIdx];
+  submitting=true;
+  document.getElementById('cc-submit-btn').disabled=true;
+  document.getElementById('piano').classList.add('piano-disabled');
+
+  /* Evaluate */
+  var correctSet=currentKeys.slice().sort().join('|');
+  var selectedSet=selectedNotes.slice().sort().join('|');
+  var correctCount=0;
+
+  /* Mark each correct key */
+  currentKeys.forEach(function(n){
+    var el=keyEls[n];if(!el)return;
+    var playerSelected=selectedNotes.indexOf(n)!==-1;
+    if(playerSelected){
+      el.classList.remove('k-sel');
+      el.classList.add('k-correct');
+      correctCount++;
+    } else {
+      el.classList.add('k-missed');
+    }
+  });
+  /* Mark wrong selections */
+  selectedNotes.forEach(function(n){
+    if(currentKeys.indexOf(n)===-1){
+      var el=keyEls[n];if(el){el.classList.remove('k-sel');el.classList.add('k-wrong');}
+    }
+  });
+
+  totalScore+=correctCount;
+  updateScoreDisplay();
+  var feedback=correctCount===currentKeys.length?'PERFECT · ALL NOTES CORRECT':''+correctCount+' OF '+currentKeys.length+' CORRECT';
+  document.getElementById('cc-feedback').textContent=feedback;
+  showTheory(ex.r,ex.t,currentKeys);
+  playChord(currentKeys);
+
+  setTimeout(function(){
+    document.getElementById('cc-feedback').textContent='';
+    hideTheory();
+    chordIdx++;
+    loadChord();
+  },2800);
+}
+
+function startGame(){
+  lvlIdx=0;chordIdx=0;totalScore=0;submitting=false;
+  show('gs');
+  buildPiano();
+  loadChord();
+  var resizeTimer;
+  window.addEventListener('resize',function(){
+    clearTimeout(resizeTimer);
+    resizeTimer=setTimeout(buildPiano,200);
+  });
+}
+
+function endGame(){
+  show('os');
+  document.getElementById('finalScore').textContent=totalScore;
+  var msg;
+  if(totalScore>=60)msg='MASTER OF HARMONY · THE CHORDS OBEY YOUR HANDS';
+  else if(totalScore>=40)msg='YOUR THEORY DEEPENS · THE INTERVALS REVEAL THEMSELVES';
+  else if(totalScore>=20)msg='THE CHORDS ARE BEGINNING TO SPEAK TO YOU';
+  else msg='THE HARMONY ELUDES YOU STILL · RETURN AND LISTEN DEEPLY';
+  document.getElementById('os-result').textContent=msg;
+  if(typeof lbOnGameOver==='function')lbOnGameOver(totalScore);
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('startBtn').addEventListener('click',startGame);
+  document.getElementById('restartBtn').addEventListener('click',function(){
+    document.getElementById('os').classList.remove('active');
+    startGame();
+  });
+  document.getElementById('cc-submit-btn').addEventListener('click',submitChord);
+  document.getElementById('cc-clear-btn').addEventListener('click',function(){
+    if(submitting)return;
+    clearKeys();
+    resetPianoState();
+  });
+});
+})();
+</script>
+</body>
+</html>

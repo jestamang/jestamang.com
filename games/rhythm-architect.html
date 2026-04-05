@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jestamang</title>
+<meta name="description" content="Rhythm Architect — decode and construct rhythmic patterns. Master the pulse that holds the universe together. A cosmic rhythm game from Jestamang.">
+<meta name="keywords" content="Jestamang, rhythm game, beat pattern, time signature, music education, rhythm training, psychedelic">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jestamang.com/games/rhythm-architect.html">
+<meta property="og:site_name" content="Jestamang">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jestamang">
+<meta property="og:description" content="Rhythm Architect — decode and construct rhythmic patterns. A cosmic rhythm game from Jestamang.">
+<meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
+<meta property="og:url" content="https://jestamang.com/games/rhythm-architect.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rhythm Architect — Jestamang Games">
+<meta name="twitter:description" content="Decode and construct rhythmic patterns. Master the pulse.">
+<meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
+
+<style>
+@font-face{font-family:'Luminari';src:url('../assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#000}
+body{font-family:'Luminari',serif;background:#000;color:#fff;min-height:100vh;overflow-x:hidden;user-select:none;-webkit-user-select:none}
+
+/* Screens */
+.scr{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center}
+.scr.active{display:flex}
+
+/* Shared text */
+.eyebrow{font-size:clamp(0.58rem,1.8vw,0.76rem);letter-spacing:0.65em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:18px}
+.big-title{font-size:clamp(2.5rem,10vw,6rem);letter-spacing:0.3em;color:#c9a84c;text-shadow:0 0 50px rgba(201,168,76,0.7),0 0 100px rgba(201,168,76,0.2);text-transform:uppercase;line-height:1.05;margin-bottom:16px}
+.sub{font-size:clamp(0.68rem,2vw,0.86rem);letter-spacing:0.3em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:44px;line-height:2.1}
+.btn{font-family:'Luminari',serif;font-size:clamp(0.78rem,2.5vw,0.93rem);letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:14px 46px;cursor:pointer;transition:all 0.3s;min-height:52px;margin:4px}
+.btn:hover,.btn:active{background:rgba(201,168,76,0.1);border-color:#c9a84c;box-shadow:0 0 24px rgba(201,168,76,0.2)}
+
+/* Game screen */
+#gs{justify-content:flex-start;padding:60px 20px 40px}
+#ra-header{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:580px;margin-bottom:14px}
+#ra-level-display{font-size:clamp(0.7rem,2vw,0.88rem);letter-spacing:0.5em;color:#c9a84c;text-transform:uppercase}
+#ra-sig{font-size:clamp(0.6rem,1.6vw,0.74rem);letter-spacing:0.35em;color:rgba(201,168,76,0.45);text-transform:uppercase}
+#ra-score-display{font-size:clamp(0.6rem,1.6vw,0.72rem);letter-spacing:0.35em;color:rgba(201,168,76,0.45);text-transform:uppercase}
+#ra-mode-badge{font-size:0.58rem;letter-spacing:0.5em;text-transform:uppercase;color:rgba(4,2,10,0.9);background:#c9a84c;padding:4px 14px;margin-bottom:10px;display:inline-block}
+#ra-instruct{font-size:clamp(0.6rem,1.8vw,0.72rem);letter-spacing:0.2em;color:rgba(240,230,210,0.5);text-transform:uppercase;line-height:1.9;margin-bottom:20px;max-width:580px;min-height:2.8em;text-align:center}
+#ra-desc{font-size:clamp(0.63rem,1.8vw,0.75rem);letter-spacing:0.15em;color:rgba(201,168,76,0.45);text-transform:uppercase;line-height:1.85;margin-bottom:16px;max-width:580px;min-height:2.2em;text-align:center;font-style:italic}
+
+/* Beat grid */
+#beat-grid-wrap{width:100%;max-width:580px;margin:0 auto 20px}
+.beat-row-outer{display:flex;align-items:center;margin-bottom:5px;gap:8px}
+.beat-label{font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.2em;color:rgba(201,168,76,0.28);text-transform:uppercase;width:20px;flex-shrink:0;text-align:right}
+.beat-row{display:flex;gap:4px;flex:1}
+.beat-cell{flex:1;height:54px;background:rgba(4,2,10,0.7);border:1.5px solid rgba(201,168,76,0.18);cursor:pointer;transition:background 0.12s,border-color 0.12s,box-shadow 0.12s;border-radius:2px;position:relative}
+.beat-cell.downbeat{border-color:rgba(201,168,76,0.38)}
+.beat-cell.cell-on{background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.65);box-shadow:0 0 10px rgba(201,168,76,0.2) inset}
+.beat-cell.cell-play{background:rgba(201,168,76,0.42);border-color:#c9a84c;box-shadow:0 0 18px rgba(201,168,76,0.55)}
+.beat-cell.cell-correct{background:rgba(201,168,76,0.2);border-color:#c9a84c;box-shadow:0 0 12px rgba(201,168,76,0.35)}
+.beat-cell.cell-missed{background:rgba(255,140,0,0.18);border-color:rgba(255,140,0,0.7)}
+.beat-cell.cell-extra{background:rgba(251,56,56,0.15);border-color:rgba(251,56,56,0.6)}
+.beat-cell.cell-ok{background:transparent;border-color:rgba(201,168,76,0.12)}
+.beat-cell:not(.disabled):hover{border-color:rgba(201,168,76,0.5);background:rgba(201,168,76,0.07)}
+.beat-cell.disabled{cursor:default;pointer-events:none}
+
+/* Controls */
+#ra-controls{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:16px}
+#ra-playback-btn{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.38em;text-transform:uppercase;color:rgba(201,168,76,0.7);background:none;border:1px solid rgba(201,168,76,0.3);padding:10px 22px;cursor:pointer;transition:all 0.2s;min-height:44px}
+#ra-playback-btn:hover{border-color:#c9a84c;color:#c9a84c}
+#ra-submit-btn{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.38em;text-transform:uppercase;color:#000;background:#c9a84c;border:1px solid #c9a84c;padding:10px 30px;cursor:pointer;transition:background 0.2s;min-height:44px}
+#ra-submit-btn:hover{background:#deb95c}
+#ra-submit-btn:disabled{opacity:0.4;cursor:default;pointer-events:none}
+
+/* Feedback */
+#ra-feedback{font-size:clamp(0.65rem,2vw,0.8rem);letter-spacing:0.4em;text-transform:uppercase;color:rgba(255,255,255,0.35);min-height:2.2em;text-align:center;line-height:1.9}
+#ra-accuracy{font-size:clamp(1.5rem,6vw,2.8rem);letter-spacing:0.3em;color:#c9a84c;text-shadow:0 0 24px rgba(201,168,76,0.5);min-height:1.3em}
+
+/* End screen */
+.score-big{font-size:clamp(3rem,12vw,6rem);letter-spacing:0.3em;color:#c9a84c;text-shadow:0 0 40px rgba(201,168,76,0.7);margin-bottom:4px}
+.score-lbl{font-size:clamp(0.62rem,1.8vw,0.76rem);letter-spacing:0.5em;color:rgba(255,255,255,0.28);text-transform:uppercase;margin-bottom:8px}
+#os-result{font-size:clamp(0.63rem,1.8vw,0.75rem);letter-spacing:0.28em;color:rgba(255,255,255,0.2);text-transform:uppercase;margin-bottom:38px;line-height:2}
+
+#back{position:fixed;top:12px;left:14px;z-index:30;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.2s}
+#back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
+@media(max-width:480px){.beat-cell{height:44px}.btn{padding:12px 28px}}
+</style>
+<style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
+<style id="lb-styles">
+#lb-btn-hud{position:fixed;top:12px;right:62px;z-index:500;background:rgba(0,0,0,0.65);border:1px solid rgba(201,168,76,0.42);color:rgba(201,168,76,0.85);font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;padding:7px 12px;cursor:pointer;transition:background 0.2s,border-color 0.2s;display:none;min-height:36px;white-space:nowrap}
+#lb-btn-hud:hover{background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.7);color:#c9a84c}
+#lb-btn-over{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:11px 28px;cursor:pointer;transition:background 0.2s,border-color 0.2s;min-height:44px;display:none;margin-top:10px}
+#lb-btn-over:hover{background:rgba(201,168,76,0.1);border-color:#c9a84c}
+#lb-name-modal{display:none;position:fixed;inset:0;z-index:4000;background:rgba(4,2,10,0.96);align-items:center;justify-content:center}
+#lb-name-modal.lb-open{display:flex}
+#lb-name-card{background:rgba(4,2,10,0.99);border:1px solid rgba(201,168,76,0.55);padding:44px 40px;max-width:440px;width:90%;text-align:center;position:relative}
+#lb-name-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.65),transparent)}
+.lbnm-title{font-family:'Luminari',serif;font-size:1.1rem;letter-spacing:0.3em;color:#c9a84c;text-transform:uppercase;margin-bottom:8px}
+.lbnm-sub{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(240,230,210,0.42);text-transform:uppercase;margin-bottom:28px;line-height:1.7}
+#lb-name-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:'Luminari',serif;font-size:1rem;letter-spacing:0.15em;padding:10px 4px;outline:none;text-align:center;margin-bottom:24px;-webkit-appearance:none;caret-color:#c9a84c}
+#lb-name-input::placeholder{color:rgba(201,168,76,0.25)}
+#lb-name-submit{width:100%;background:#c9a84c;color:#000;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.42em;text-transform:uppercase;border:none;padding:15px 0;cursor:pointer;transition:background 0.2s;min-height:44px}
+#lb-name-submit:hover{background:#deb95c}
+#lb-name-skip{display:block;margin-top:16px;font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.2em;color:rgba(201,168,76,0.25);cursor:pointer;background:none;border:none;text-transform:uppercase;width:100%;transition:color 0.2s}
+#lb-name-skip:hover{color:rgba(201,168,76,0.55)}
+#lb-modal{display:none;position:fixed;inset:0;z-index:4000;background:rgba(4,2,10,0.96);align-items:center;justify-content:center}
+#lb-modal.lb-open{display:flex}
+#lb-modal-inner{background:rgba(4,2,10,0.99);border:1px solid rgba(201,168,76,0.55);padding:36px 32px;max-width:500px;width:95%;max-height:88vh;overflow-y:auto;position:relative}
+#lb-modal-inner::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.65),transparent)}
+#lb-modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(201,168,76,0.55);font-size:1.3rem;cursor:pointer;font-family:'Luminari',serif;min-width:36px;min-height:36px;line-height:1}
+#lb-modal-close:hover{color:#c9a84c}
+.lbm-header{text-align:center;margin-bottom:24px}
+.lbm-title{font-family:'Luminari',serif;font-size:1.2rem;letter-spacing:0.4em;color:#c9a84c;text-transform:uppercase;margin-bottom:5px}
+.lbm-game{font-family:'Luminari',serif;font-size:0.63rem;letter-spacing:0.45em;color:rgba(201,168,76,0.38);text-transform:uppercase}
+#lb-new-banner{font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.4em;text-transform:uppercase;color:#c9a84c;padding:10px;border:1px solid rgba(201,168,76,0.5);margin-bottom:20px;text-align:center;display:none;animation:lbFlash 0.9s ease-in-out infinite}
+@keyframes lbFlash{0%,100%{opacity:1;border-color:rgba(201,168,76,0.5)}50%{opacity:0.35;border-color:rgba(201,168,76,0.15)}}
+#lb-table{width:100%;border-collapse:collapse}
+#lb-table th{font-family:'Luminari',serif;font-size:0.57rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.38);padding:0 8px 12px;text-align:left;border-bottom:1px solid rgba(201,168,76,0.15)}
+#lb-table th:nth-child(3),#lb-table th:nth-child(4),#lb-table td:nth-child(3),#lb-table td:nth-child(4){text-align:right}
+#lb-table td{font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.05em;color:rgba(240,230,210,0.7);padding:10px 8px;border-bottom:1px solid rgba(201,168,76,0.07)}
+.lb-r1 td{color:#c9a84c}
+.lb-r23 td{color:rgba(201,168,76,0.78)}
+.lb-cur td{background:rgba(201,168,76,0.07);color:#c9a84c}
+.lb-loading-row td{text-align:center;padding:28px;font-family:'Luminari',serif;font-style:italic;color:rgba(201,168,76,0.32);letter-spacing:0.15em}
+@media(max-width:480px){#lb-name-card{padding:32px 22px}#lb-modal-inner{padding:28px 18px;max-height:92vh}}
+</style>
+<style id="jsearch-styles">
+.jsearch-float-btn{position:fixed;top:14px;right:14px;z-index:9000;background:rgba(0,0,0,0.55);border:1px solid rgba(201,168,76,0.35);color:rgba(201,168,76,0.75);cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s}
+.jsearch-float-btn:hover{border-color:rgba(201,168,76,0.75);color:#c9a84c}
+.jsearch-float-btn svg{pointer-events:none}
+#jsearch-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(4,2,10,0.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);flex-direction:column;align-items:center;padding-top:80px;overflow-y:auto}
+#jsearch-overlay.jsearch-open{display:flex}
+#jsearch-inner{width:100%;max-width:680px;padding:0 20px;position:relative}
+#jsearch-close-row{display:flex;justify-content:flex-end;margin-bottom:16px}
+#jsearch-close{background:none;border:none;color:rgba(201,168,76,0.6);font-size:1.5rem;cursor:pointer;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;transition:color 0.2s;font-family:'Luminari',serif;line-height:1}
+#jsearch-close:hover{color:#c9a84c}
+#jsearch-input{width:100%;background:rgba(0,0,0,0.7);border:1px solid rgba(201,168,76,0.65);color:#c9a84c;font-family:'Luminari',serif;font-size:0.95rem;letter-spacing:0.18em;padding:16px 20px;outline:none;text-transform:uppercase;caret-color:#c9a84c;-webkit-appearance:none;border-radius:0}
+#jsearch-input::placeholder{color:rgba(201,168,76,0.32);letter-spacing:0.12em}
+#jsearch-results{margin-top:10px}
+.jsearch-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid rgba(201,168,76,0.08);cursor:pointer;transition:background 0.15s;text-decoration:none;color:inherit}
+.jsearch-item:hover{background:rgba(201,168,76,0.07)}
+.jsearch-item-icon{font-size:0.85rem;flex-shrink:0;opacity:0.6;width:18px;text-align:center;font-family:'Luminari',serif}
+.jsearch-item-name{font-family:'Luminari',serif;font-size:0.88rem;letter-spacing:0.1em;color:rgba(240,230,210,0.9);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jsearch-item-name mark{background:none;color:#c9a84c;font-style:normal}
+.jsearch-item-cat{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.5);flex-shrink:0;margin-left:8px}
+.jsearch-empty,.jsearch-hint{text-align:center;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.25);padding:32px 0}
+@media(max-width:767px){#jsearch-overlay{padding-top:60px}#jsearch-inner{padding:0 14px}}
+</style>
+<style id="jbtt-styles">
+#jbtt{position:fixed;bottom:24px;right:24px;z-index:998;width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.15);border:1px solid #c9a84c;color:#c9a84c;cursor:pointer;display:none;align-items:center;justify-content:center;font-family:'Luminari',serif;font-size:1.1rem;line-height:1;transition:background 0.2s,color 0.2s,box-shadow 0.2s,opacity 0.3s;opacity:0}
+#jbtt.jbtt-visible{display:flex;opacity:1}
+#jbtt:hover{background:rgba(201,168,76,0.85);color:#000;box-shadow:0 0 18px rgba(201,168,76,0.45)}
+@media(max-width:768px){#jbtt{bottom:80px;right:16px}}
+</style>
+<link rel="preload" as="font" type="font/ttf" href="../assets/fonts/Luminari.ttf" crossorigin>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#c9a84c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jestamang">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/png" href="../assets/homepage/logo%20png.png">
+<link rel="apple-touch-icon" href="../assets/homepage/logo%20png.png">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="../assets/js/firebase-config.js"></script>
+<script>(function(GID,GDISP,FLFLOAT){
+var _score=0,_docId=null;
+var MON=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+var RD=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV','XXV','XXVI','XXVII','XXVIII','XXIX','XXX','XXXI'];
+function toRom(y){var t=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];var r='';t.forEach(function(p){while(y>=p[0]){r+=p[1];y-=p[0];}});return r;}
+function fmtD(ts){var d=ts&&ts.toDate?ts.toDate():new Date();return MON[d.getMonth()].slice(0,3)+' · '+RD[d.getDate()-1]+' · '+toRom(d.getFullYear());}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function fmtS(s){return FLFLOAT?parseFloat(s).toFixed(1)+'s':parseInt(s).toLocaleString();}
+function san(n){return n.replace(/[^a-zA-Z0-9 _\-\.!]/g,'').trim().slice(0,20);}
+function openLB(cur){
+var m=document.getElementById('lb-modal'),tb=document.getElementById('lb-tbody'),bn=document.getElementById('lb-new-banner');
+if(!m||!window.jestaDB)return;
+if(bn)bn.style.display='none';
+tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr>';
+m.classList.add('lb-open');
+window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(10).get()
+.then(function(snap){
+var rows=[];snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp});});
+var isTop=cur>0&&(rows.length===0||cur>rows[0].score);
+if(isTop&&bn)bn.style.display='block';
+tb.innerHTML='';
+if(!rows.length){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">NO SCORES YET — BE THE FIRST</td></tr>';return;}
+rows.forEach(function(r,i){
+var tr=document.createElement('tr');
+var cls=i===0?'lb-r1':i<3?'lb-r23':'';
+if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
+tr.className=cls;
+var cr=i===0?'<span style="margin-right:5px">✦</span>':'';
+tr.innerHTML='<td>'+(i+1)+'</td><td>'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
+tb.appendChild(tr);
+});
+}).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">SIGNAL LOST</td></tr>';});
+}
+function saveScore(name,score){
+if(!score||score<=0||!window.jestaDB)return;
+var ps=FLFLOAT?parseFloat(score):parseInt(score);
+window.jestaDB.collection('leaderboards').add({game:GID,name:san(name)||'Unknown',score:ps,timestamp:firebase.firestore.FieldValue.serverTimestamp()})
+.then(function(ref){_docId=ref.id;}).catch(function(e){console.warn('lb:',e);});
+}
+window.lbOnGameOver=function(score){
+_score=score;_docId=null;
+if(!score||score<=0)return;
+var ob=document.getElementById('lb-btn-over');if(ob)ob.style.display='inline-block';
+if(!window.jestaAuth)return;
+var user=window.jestaAuth.currentUser;
+if(user&&user.displayName){saveScore(user.displayName,score);}
+else{window.jestaAuth.signInAnonymously().catch(function(){}).then(function(){
+var m=document.getElementById('lb-name-modal');if(!m){openLB(score);return;}
+m.classList.add('lb-open');var inp=document.getElementById('lb-name-input');if(inp){inp.value='';setTimeout(function(){inp.focus();},120);};
+});}
+};
+document.addEventListener('DOMContentLoaded',function(){
+var gd=document.getElementById('lb-game-display');if(gd)gd.textContent=GDISP;
+var nm=document.getElementById('lb-name-modal'),ni=document.getElementById('lb-name-input'),ns=document.getElementById('lb-name-submit'),nsk=document.getElementById('lb-name-skip');
+var lm=document.getElementById('lb-modal'),lc=document.getElementById('lb-modal-close');
+var hb=document.getElementById('lb-btn-hud'),ob=document.getElementById('lb-btn-over');
+var sb=document.getElementById('startBtn'),rb=document.getElementById('restartBtn');
+function doSubmit(){var n=ni?san(ni.value):'';if(!n){if(ni)ni.focus();return;}if(nm)nm.classList.remove('lb-open');saveScore(n,_score);openLB(_score);}
+if(ns)ns.addEventListener('click',doSubmit);
+if(ni)ni.addEventListener('keydown',function(e){if(e.key==='Enter')doSubmit();});
+if(nsk)nsk.addEventListener('click',function(){if(nm)nm.classList.remove('lb-open');openLB(0);});
+if(lc)lc.addEventListener('click',function(){if(lm)lm.classList.remove('lb-open');});
+if(lm)lm.addEventListener('click',function(e){if(e.target===lm)lm.classList.remove('lb-open');});
+if(hb)hb.addEventListener('click',function(){openLB(0);});
+if(ob)ob.addEventListener('click',function(){openLB(_score);});
+if(sb&&hb)sb.addEventListener('click',function(){hb.style.display='block';});
+if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_score=0;_docId=null;});
+});
+})('rhythmArchitect','RHYTHM ARCHITECT',false);</script>
+</head>
+<body>
+<a href="../games.html" id="back">← Games</a>
+<button id="lb-btn-hud">Scrolls</button>
+
+<!-- START SCREEN -->
+<div id="ss" class="scr active">
+  <div class="eyebrow">Jestamang Universe</div>
+  <div class="big-title">Rhythm<br>Architect</div>
+  <div class="sub">Decode and construct rhythmic patterns<br>Master the pulse that holds the universe together</div>
+  <button class="btn" id="startBtn">Begin Construction</button>
+  <div style="font-size:0.58rem;letter-spacing:0.25em;color:rgba(255,255,255,0.12);text-transform:uppercase;margin-top:20px;line-height:2">10 levels · decode & build modes · 4/4 · 3/4 · 6/8 · 5/4</div>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="gs" class="scr">
+  <div id="ra-header">
+    <div id="ra-level-display">LEVEL I</div>
+    <div id="ra-sig">4 / 4</div>
+    <div id="ra-score-display">COMPLETED 0</div>
+  </div>
+  <div id="ra-mode-badge">DECODE</div>
+  <div id="ra-instruct">LISTEN TO THE PATTERN — THEN TAP THE BEATS</div>
+  <div id="ra-desc"></div>
+  <div id="beat-grid-wrap"></div>
+  <div id="ra-controls">
+    <button id="ra-playback-btn">▶ PLAY PATTERN</button>
+    <button id="ra-submit-btn" disabled>SUBMIT PATTERN</button>
+  </div>
+  <div id="ra-accuracy"></div>
+  <div id="ra-feedback"></div>
+</div>
+
+<!-- END SCREEN -->
+<div id="os" class="scr">
+  <div class="eyebrow">Architecture complete</div>
+  <div class="score-big" id="finalScore">0</div>
+  <div class="score-lbl">levels mastered out of 10</div>
+  <div id="os-result"></div>
+  <button class="btn" id="restartBtn">Rebuild</button>
+  <button id="lb-btn-over">The Cosmic Scrolls</button>
+</div>
+
+<!-- LEADERBOARD MODALS -->
+<div id="lb-name-modal">
+<div id="lb-name-card">
+<p class="lbnm-title">MARK YOUR SCORE</p>
+<p class="lbnm-sub">ENTER YOUR NAME FOR<br>THE COSMIC SCROLLS</p>
+<input id="lb-name-input" type="text" maxlength="20" autocomplete="off" spellcheck="false" placeholder="YOUR NAME...">
+<button id="lb-name-submit">SEAL IT</button>
+<button id="lb-name-skip">ENTER WITHOUT SAVING</button>
+</div></div>
+<div id="lb-modal">
+<div id="lb-modal-inner">
+<button id="lb-modal-close">✦</button>
+<div id="lb-new-banner">✦ NEW HIGH SCORE ✦</div>
+<div class="lbm-header">
+  <p class="lbm-title">THE COSMIC SCROLLS</p>
+  <p class="lbm-game" id="lb-game-display"></p>
+</div>
+<table id="lb-table">
+<thead><tr><th>RANK</th><th>NAME</th><th>SCORE</th><th>DATE</th></tr></thead>
+<tbody id="lb-tbody"><tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr></tbody>
+</table>
+</div></div>
+
+<footer style="text-align:center;padding:24px 20px 32px;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.3);border-top:1px solid rgba(201,168,76,0.12);margin-top:40px">
+  <a href="../privacy.html" style="color:rgba(201,168,76,0.45);text-decoration:none">Privacy Policy</a>
+  <span style="margin:0 10px;opacity:0.4">·</span>
+  <span>© <span class="jcyr"></span> Jestamang</span>
+  <span style="margin:0 10px;opacity:0.4">·</span>
+  <a href="../terms.html" style="color:rgba(201,168,76,0.45);text-decoration:none">Terms of Service</a>
+</footer>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
+<script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+
+<button class="jsearch-float-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button>
+<div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
+<div id="jsearch-inner">
+<div id="jsearch-close-row"><button id="jsearch-close" aria-label="Close search">✦</button></div>
+<input id="jsearch-input" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="SEARCH THE JESTAMANG UNIVERSE...">
+<div id="jsearch-results"><div class="jsearch-hint">ENTER A NAME &nbsp;·&nbsp; PAGE &nbsp;·&nbsp; ALBUM &nbsp;·&nbsp; ENTITY</div></div>
+</div>
+</div>
+<button id="jbtt" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>(function(){var btn=document.getElementById('jbtt');if(!btn)return;window.addEventListener('scroll',function(){if(window.scrollY>300){btn.classList.add('jbtt-visible');}else{btn.classList.remove('jbtt-visible');}},{passive:true});})();</script>
+
+<script>(function(){
+var IDX=[
+{n:'Home',u:'/index.html',c:'Page',i:'⌂',t:'homepage start jestamang'},
+{n:'Games',u:'/games.html',c:'Page',i:'◉',t:'play interactive arcade'},
+{n:'Arcade',u:'/arcade.html',c:'Page',i:'◉',t:'games play interactive'},
+{n:'Pitch Oracle',u:'/games/pitch-oracle.html',c:'Game',i:'◈',t:'ear training note pitch oracle music'},
+{n:'Rhythm Architect',u:'/games/rhythm-architect.html',c:'Game',i:'◈',t:'rhythm beat pattern music game'},
+{n:'Chord Conjurer',u:'/games/chord-conjurer.html',c:'Game',i:'◈',t:'chord theory piano music game'},
+{n:'Cosmic Conductor',u:'/games/cosmic-conductor.html',c:'Game',i:'◈',t:'play interactive music game cosmic'},
+{n:'The Void',u:'/games/void.html',c:'Game',i:'◈',t:'play void darkness game'}
+];
+function jSearchOpen(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.add('jsearch-open');document.body.style.overflow='hidden';var inp=document.getElementById('jsearch-input');if(inp){inp.value='';inp.focus();jSearchRender('');}}}
+function jSearchClose(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.remove('jsearch-open');document.body.style.overflow='';}}
+function jHL(text,q){if(!q)return text.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});var safe=text.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);tokens.forEach(function(tok){var re=new RegExp('('+tok.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');safe=safe.replace(re,'<mark>$1</mark>');});return safe;}
+function jSearchRender(q){var box=document.getElementById('jsearch-results');if(!box)return;if(!q.trim()){box.innerHTML='<div class="jsearch-hint">ENTER A NAME &nbsp;\u00b7&nbsp; PAGE &nbsp;\u00b7&nbsp; ALBUM &nbsp;\u00b7&nbsp; ENTITY</div>';return;}var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);var scored=[];IDX.forEach(function(e){var nl=e.n.toLowerCase();var tl=(e.t||'').toLowerCase();var score=0;tokens.forEach(function(tok){if(nl===tok)score+=100;else if(nl.startsWith(tok))score+=50;else if(nl.indexOf(tok)!==-1)score+=30;if(tl.indexOf(tok)!==-1)score+=10;});if(score>0)scored.push({e:e,s:score});});scored.sort(function(a,b){return b.s-a.s;});scored=scored.slice(0,8);if(!scored.length){box.innerHTML='<div class="jsearch-empty">NO TRANSMISSIONS FOUND</div>';return;}var html='';scored.forEach(function(r){var e=r.e;html+='<a class="jsearch-item" href="'+e.u+'" onclick="jSearchClose()"><span class="jsearch-item-icon">'+e.i+'</span><span class="jsearch-item-name">'+jHL(e.n,q)+'</span><span class="jsearch-item-cat">'+e.c+'</span></a>';});box.innerHTML=html;}
+document.addEventListener('DOMContentLoaded',function(){var inp=document.getElementById('jsearch-input');var closeBtn=document.getElementById('jsearch-close');var overlay=document.getElementById('jsearch-overlay');if(inp)inp.addEventListener('input',function(){jSearchRender(this.value);});if(closeBtn)closeBtn.addEventListener('click',jSearchClose);if(overlay)overlay.addEventListener('click',function(e){if(e.target===overlay)jSearchClose();});document.addEventListener('keydown',function(e){if(e.key==='Escape')jSearchClose();if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();jSearchOpen();}});});
+})();</script>
+
+<!-- GAME LOGIC -->
+<script>
+(function(){
+var ROM=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
+var CELL_MS=195;
+
+var LEVELS=[
+  {n:1,sig:'4/4',cpb:4,beats:4,mode:'decode',
+   pattern:[1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0],
+   desc:'Four quarter notes — one strike on each beat'},
+  {n:2,sig:'4/4',cpb:4,beats:4,mode:'build',
+   pattern:[1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0],
+   desc:'4/4 time — eighth notes throughout · two per beat · click every other cell'},
+  {n:3,sig:'4/4',cpb:4,beats:4,mode:'decode',
+   pattern:[1,1,1,0, 0,0,1,0, 1,1,1,0, 0,0,1,0],
+   desc:'Syncopated feel — triplet-like start, off-beat accent'},
+  {n:4,sig:'4/4',cpb:4,beats:4,mode:'build',
+   pattern:[1,0,0,1, 0,1,0,0, 1,0,0,1, 0,1,0,0],
+   desc:'4/4 time — accent on beat 1, the "and" of 2, then beat 3 and the "and" of 3'},
+  {n:5,sig:'3/4',cpb:4,beats:3,mode:'decode',
+   pattern:[1,0,0,0, 1,0,0,0, 1,0,0,0],
+   desc:'Waltz time — three quarter notes, strong-weak-weak'},
+  {n:6,sig:'3/4',cpb:4,beats:3,mode:'build',
+   pattern:[1,0,1,0, 0,1,0,0, 1,0,1,0],
+   desc:'3/4 time — beat 1 strong, eighth note on the "and" of 1, beat 2 off-beat, beat 3 with eighth'},
+  {n:7,sig:'6/8',cpb:3,beats:4,mode:'decode',
+   pattern:[1,0,0,1,0,0, 1,0,0,1,0,0],
+   desc:'Compound duple — felt in two groups of three, accent on beat 1 of each group'},
+  {n:8,sig:'6/8',cpb:3,beats:4,mode:'build',
+   pattern:[1,1,0,1,0,0, 1,1,0,1,0,1],
+   desc:'6/8 time — compound feel with subdivisions · first of each triplet is strong'},
+  {n:9,sig:'5/4',cpb:4,beats:5,mode:'decode',
+   pattern:[1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,1,0, 0,0,0,0],
+   desc:'Five beats — quintuple meter · an asymmetric feel · grouped 3+2'},
+  {n:10,sig:'5/4',cpb:4,beats:5,mode:'build',
+   pattern:[1,1,0,1, 0,0,1,0, 1,1,0,1, 0,1,0,1, 1,0,0,0],
+   desc:'5/4 time — syncopated quintuple · grouped 3+2 · dense rhythmic texture'}
+];
+
+var audioCtx=null;
+function getAudioCtx(){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended')audioCtx.resume();
+  return audioCtx;
+}
+function playClick(accent){
+  var c=getAudioCtx();
+  var dur=0.06;
+  var buf=c.createBuffer(1,Math.floor(c.sampleRate*dur),c.sampleRate);
+  var d=buf.getChannelData(0);
+  for(var i=0;i<d.length;i++){
+    d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,10);
+  }
+  var src=c.createBufferSource();
+  var g=c.createGain();
+  src.buffer=buf;
+  g.gain.value=accent?0.85:0.42;
+  src.connect(g);g.connect(c.destination);
+  src.start();
+}
+
+var lvlIdx=0,levelsCompleted=0,playerGrid=[],phase='idle',submitting=false;
+var cellEls=[];
+
+function show(id){
+  ['ss','gs','os'].forEach(function(s){
+    document.getElementById(s).classList.remove('active');
+  });
+  document.getElementById(id).classList.add('active');
+}
+
+function renderGrid(L){
+  var wrap=document.getElementById('beat-grid-wrap');
+  wrap.innerHTML='';
+  cellEls=[];
+  var cells=L.beats*L.cpb;
+  for(var b=0;b<L.beats;b++){
+    var row=document.createElement('div');
+    row.className='beat-row-outer';
+    var label=document.createElement('div');
+    label.className='beat-label';
+    label.textContent=b+1;
+    row.appendChild(label);
+    var beatRow=document.createElement('div');
+    beatRow.className='beat-row';
+    for(var s=0;s<L.cpb;s++){
+      var idx=b*L.cpb+s;
+      var cell=document.createElement('div');
+      cell.className='beat-cell'+(s===0?' downbeat':'');
+      cell.dataset.idx=idx;
+      (function(i,el){
+        el.addEventListener('click',function(){
+          if(phase!=='listening'||submitting)return;
+          playerGrid[i]=1-playerGrid[i];
+          el.classList.toggle('cell-on',playerGrid[i]===1);
+        });
+      })(idx,cell);
+      beatRow.appendChild(cell);
+      cellEls.push(cell);
+    }
+    row.appendChild(beatRow);
+    wrap.appendChild(row);
+  }
+}
+
+function highlightCell(idx,lit){
+  if(!cellEls[idx])return;
+  if(lit){
+    cellEls[idx].classList.add('cell-play');
+    setTimeout(function(){cellEls[idx].classList.remove('cell-play');},CELL_MS*0.85);
+  }
+}
+
+function clearReveal(){
+  cellEls.forEach(function(el){
+    el.classList.remove('cell-on','cell-play','cell-correct','cell-missed','cell-extra','cell-ok','disabled');
+  });
+}
+
+function playPattern(L,reps,onDone){
+  var cells=L.beats*L.cpb;
+  var rep=0;
+  document.getElementById('ra-submit-btn').disabled=true;
+  document.getElementById('ra-playback-btn').disabled=true;
+  function doRep(){
+    var i=0;
+    function doCell(){
+      if(i>=cells){
+        rep++;
+        if(rep>=reps){if(onDone)onDone();return;}
+        setTimeout(doRep,CELL_MS*1.5);
+        return;
+      }
+      highlightCell(i,L.pattern[i]===1);
+      if(L.pattern[i]===1)playClick(i%L.cpb===0);
+      i++;
+      setTimeout(doCell,CELL_MS);
+    }
+    doCell();
+  }
+  doRep();
+}
+
+function loadLevel(){
+  var L=LEVELS[lvlIdx];
+  var cells=L.beats*L.cpb;
+  playerGrid=new Array(cells).fill(0);
+  submitting=false;
+  phase='idle';
+  renderGrid(L);
+  clearReveal();
+  document.getElementById('ra-level-display').textContent='LEVEL '+ROM[lvlIdx];
+  document.getElementById('ra-sig').textContent=L.sig.replace('/',' / ');
+  document.getElementById('ra-score-display').textContent='COMPLETED '+levelsCompleted;
+  document.getElementById('ra-mode-badge').textContent=L.mode.toUpperCase();
+  document.getElementById('ra-accuracy').textContent='';
+  document.getElementById('ra-feedback').textContent='';
+  window.scrollTo(0,0);
+
+  var submitBtn=document.getElementById('ra-submit-btn');
+  var playBtn=document.getElementById('ra-playback-btn');
+
+  if(L.mode==='decode'){
+    document.getElementById('ra-instruct').textContent='LISTEN TO THE PATTERN — THEN TAP THE BEATS YOU HEARD';
+    document.getElementById('ra-desc').textContent='';
+    playBtn.style.display='inline-block';
+    submitBtn.disabled=true;
+    playPattern(L,3,function(){
+      phase='listening';
+      submitBtn.disabled=false;
+      document.getElementById('ra-instruct').textContent='TAP THE BEATS YOU HEARD · SUBMIT WHEN READY';
+      playBtn.disabled=false;
+    });
+  } else {
+    document.getElementById('ra-instruct').textContent='BUILD THE RHYTHM · CLICK CELLS TO TOGGLE BEATS ON';
+    document.getElementById('ra-desc').textContent=L.desc;
+    playBtn.style.display='none';
+    submitBtn.disabled=false;
+    phase='listening';
+  }
+}
+
+function submitPattern(){
+  if(submitting)return;
+  var L=LEVELS[lvlIdx];
+  var cells=L.beats*L.cpb;
+  submitting=true;
+  phase='reveal';
+  document.getElementById('ra-submit-btn').disabled=true;
+  document.getElementById('ra-playback-btn').disabled=true;
+
+  var correct=0;
+  for(var i=0;i<cells;i++){
+    var el=cellEls[i];
+    el.classList.add('disabled');
+    el.classList.remove('cell-on');
+    if(L.pattern[i]===1&&playerGrid[i]===1){correct++;el.classList.add('cell-correct');}
+    else if(L.pattern[i]===1&&playerGrid[i]===0){el.classList.add('cell-missed');}
+    else if(L.pattern[i]===0&&playerGrid[i]===1){el.classList.add('cell-extra');}
+    else{el.classList.add('cell-ok');}
+  }
+  var acc=Math.round(correct/cells*100);
+  var passed=acc>=70;
+  if(passed)levelsCompleted++;
+  document.getElementById('ra-score-display').textContent='COMPLETED '+levelsCompleted;
+  document.getElementById('ra-accuracy').textContent=acc+'%';
+  document.getElementById('ra-feedback').textContent=passed?'PATTERN MASTERED · ADVANCING':'STUDY THE RHYTHM · '+correct+' OF '+cells+' CORRECT';
+
+  /* For build mode: play correct pattern after brief pause */
+  if(L.mode==='build'){
+    setTimeout(function(){
+      playPattern(L,1,null);
+    },800);
+  }
+
+  setTimeout(function(){
+    lvlIdx++;
+    if(lvlIdx>=LEVELS.length){endGame();}
+    else{loadLevel();}
+  },L.mode==='build'?3200:2500);
+}
+
+function startGame(){
+  lvlIdx=0;levelsCompleted=0;submitting=false;
+  show('gs');
+  loadLevel();
+}
+
+function endGame(){
+  show('os');
+  document.getElementById('finalScore').textContent=levelsCompleted;
+  var msg;
+  if(levelsCompleted===10)msg='PERFECT RHYTHM · THE COSMOS PULSES WITH YOUR PRECISION';
+  else if(levelsCompleted>=7)msg='YOUR SENSE OF PULSE IS STRONG · THE UNIVERSE APPROVES';
+  else if(levelsCompleted>=4)msg='THE PATTERNS ARE BEGINNING TO REVEAL THEMSELVES';
+  else msg='THE RHYTHM ELUDES YOU STILL · LISTEN DEEPER';
+  document.getElementById('os-result').textContent=msg;
+  if(typeof lbOnGameOver==='function')lbOnGameOver(levelsCompleted);
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('startBtn').addEventListener('click',startGame);
+  document.getElementById('restartBtn').addEventListener('click',function(){
+    document.getElementById('os').classList.remove('active');
+    startGame();
+  });
+  document.getElementById('ra-submit-btn').addEventListener('click',submitPattern);
+  document.getElementById('ra-playback-btn').addEventListener('click',function(){
+    if(phase==='idle'||phase==='listening'){
+      var L=LEVELS[lvlIdx];
+      clearReveal();
+      playerGrid=new Array(L.beats*L.cpb).fill(0);
+      playPattern(L,1,function(){
+        phase='listening';
+        document.getElementById('ra-submit-btn').disabled=false;
+        document.getElementById('ra-playback-btn').disabled=false;
+      });
+    }
+  });
+});
+})();
+</script>
+</body>
+</html>
