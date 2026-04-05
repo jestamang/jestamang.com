@@ -3,7 +3,7 @@
 // Handles: push notifications, PWA caching, offline fallback
 // ════════════════════════════════════════════════════════════════
 
-var CACHE_NAME = 'jestamang-v1';
+var CACHE_NAME = 'jestamang-v2';
 var BADGE      = '/assets/homepage/logo%20png.png';
 
 var PRECACHE_URLS = [
