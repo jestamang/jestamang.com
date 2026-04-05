@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You Are Adrift — Jestamang</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="assets/homepage/logo%20png.png">
+<link rel="apple-touch-icon" href="assets/homepage/logo%20png.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#c9a84c">
+<style>
+@font-face { font-family: 'Luminari'; src: url('assets/fonts/Luminari.ttf') format('truetype'); font-display: swap; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: 'Luminari', serif;
+  background: #04020a;
+  color: #fff;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.void-ring {
+  position: fixed;
+  top: 50%; left: 50%;
+  border-radius: 50%;
+  border: 1px solid rgba(201,168,76,0.07);
+  pointer-events: none;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  animation: ring-pulse 6s ease-in-out infinite;
+}
+.void-ring:nth-child(1) { width: 140px; height: 140px; animation-delay: 0s; }
+.void-ring:nth-child(2) { width: 300px; height: 300px; animation-delay: 1.8s; border-color: rgba(201,168,76,0.05); }
+.void-ring:nth-child(3) { width: 500px; height: 500px; animation-delay: 3.2s; border-color: rgba(201,168,76,0.03); }
+.void-ring:nth-child(4) { width: 720px; height: 720px; animation-delay: 4.8s; border-color: rgba(201,168,76,0.015); }
+@keyframes ring-pulse {
+  0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.94); }
+  25%  { opacity: 1; }
+  70%  { opacity: 0.4; }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(1.06); }
+}
+@media (max-width: 768px) {
+  .void-ring:nth-child(3), .void-ring:nth-child(4) { display: none; }
+}
+#hz {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 22px 24px 10px;
+  position: relative;
+  z-index: 10;
+}
+.ornament {
+  font-size: 1rem;
+  color: rgba(201,168,76,0.38);
+  letter-spacing: 0.7em;
+  margin-bottom: 10px;
+  display: block;
+  animation: orn-float 4s ease-in-out infinite alternate;
+}
+@keyframes orn-float {
+  from { letter-spacing: 0.7em; opacity: 0.38; }
+  to   { letter-spacing: 0.85em; opacity: 0.58; }
+}
+h1 {
+  font-size: clamp(1.5rem, 4.5vw, 2.6rem);
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  margin-bottom: 10px;
+  text-shadow: 0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: rgba(201,168,76,0.38);
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  margin-bottom: 10px;
+}
+.rule::before, .rule::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 1px;
+  background: rgba(201,168,76,0.28);
+}
+.narrator {
+  font-style: italic;
+  font-size: clamp(0.82rem, 2.2vw, 1rem);
+  color: rgba(240,230,210,0.6);
+  letter-spacing: 0.06em;
+  line-height: 1.7;
+  max-width: 460px;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(0,0,0,0.95),0 2px 4px rgba(0,0,0,1);
+  margin-bottom: 36px;
+}
+.try-again-btn {
+  font-family: 'Luminari', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  background: none;
+  border: 1px solid rgba(201,168,76,0.45);
+  padding: 12px 36px;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+  min-height: 44px;
+}
+.try-again-btn:hover {
+  background: rgba(201,168,76,0.1);
+  box-shadow: 0 0 20px rgba(201,168,76,0.18);
+  color: #e0be6a;
+}
+#center-zone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+  padding: 0 24px 80px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<div class="void-ring"></div>
+<div class="void-ring"></div>
+<div class="void-ring"></div>
+<div class="void-ring"></div>
+
+<div id="hz">
+  <span class="ornament">✦ &nbsp; ✦ &nbsp; ✦</span>
+  <a href="index.html" style="font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.45);text-decoration:none;">Jestamang</a>
+</div>
+
+<div id="center-zone">
+  <h1>You Are Adrift</h1>
+  <div class="rule">✦</div>
+  <p class="narrator">
+    The signal has been lost.<br>
+    You appear to be offline.<br>
+    Return when the cosmos reconnects.
+  </p>
+  <button class="try-again-btn" onclick="window.location.reload()">Try Again</button>
+</div>
+
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
+</body>
+</html>

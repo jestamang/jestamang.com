@@ -40,6 +40,12 @@ canvas{display:block;position:fixed;inset:0;touch-action:none}
 #back{position:fixed;top:12px;left:14px;z-index:30;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.2s}
 #back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
 </style>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#c9a84c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jestamang">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
 <a href="../games.html" id="back">← Games</a>
@@ -290,5 +296,6 @@ document.getElementById('restartBtn').addEventListener('click', () => {
   <span style="margin:0 10px;opacity:0.4;">·</span>
   <a href="../terms.html" style="color:rgba(201,168,76,0.45);text-decoration:none;">Terms of Service</a>
 </footer>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
 </body>
 </html>
