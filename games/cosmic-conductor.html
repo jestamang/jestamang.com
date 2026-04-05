@@ -47,6 +47,12 @@ canvas{display:block;position:fixed;inset:0;touch-action:none}
 #tz-d{left:50%;width:25%}#tz-f{left:75%;width:25%}
 @media (max-width:900px){#touch-zones{display:block}}
 </style>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#c9a84c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jestamang">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
 <a href="../games.html" id="back">← Games</a>
@@ -406,5 +412,6 @@ document.getElementById('restartBtn').addEventListener('click', () => {
   <span style="margin:0 10px;opacity:0.4;">·</span>
   <a href="../terms.html" style="color:rgba(201,168,76,0.45);text-decoration:none;">Terms of Service</a>
 </footer>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
 </body>
 </html>

@@ -1,23 +1,109 @@
 // ════════════════════════════════════════════════════════════════
 // JESTAMANG SERVICE WORKER — sw.js
-// Handles push notifications and background caching
+// Handles: push notifications, PWA caching, offline fallback
 // ════════════════════════════════════════════════════════════════
 
-var BADGE = '/assets/homepage/logo%20png.png';
+var CACHE_NAME = 'jestamang-v1';
+var BADGE      = '/assets/homepage/logo%20png.png';
 
-// ── Install: activate immediately ────────────────────────────
+var PRECACHE_URLS = [
+  '/index.html',
+  '/albums.html',
+  '/entities.html',
+  '/lyrics.html',
+  '/merch.html',
+  '/photos.html',
+  '/videos.html',
+  '/email.html',
+  '/comix.html',
+  '/games.html',
+  '/arcade.html',
+  '/blog.html',
+  '/shows.html',
+  '/login.html',
+  '/profile.html',
+  '/members.html',
+  '/404.html',
+  '/terms.html',
+  '/accessibility.html',
+  '/offline.html',
+  '/assets/fonts/Luminari.ttf',
+  '/assets/homepage/logo%20png.png',
+  '/assets/homepage/background/Jesta background.jpg',
+  '/assets/js/firebase-config.js',
+  '/assets/js/jesta-auth.js'
+];
+
+// ── Install: precache core assets ────────────────────────────
 self.addEventListener('install', function (event) {
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(function (cache) {
+      // Cache individually so one missing file doesn't block install
+      return Promise.all(
+        PRECACHE_URLS.map(function (url) {
+          return cache.add(url).catch(function () {
+            // Silently skip assets that don't exist yet
+          });
+        })
+      );
+    })
+  );
 });
 
-// ── Activate: claim all clients ──────────────────────────────
+// ── Activate: purge old caches ───────────────────────────────
 self.addEventListener('activate', function (event) {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys().then(function (keys) {
+      return Promise.all(
+        keys.filter(function (key) { return key !== CACHE_NAME; })
+            .map(function (key)   { return caches.delete(key); })
+      );
+    }).then(function () {
+      return self.clients.claim();
+    })
+  );
+});
+
+// ── Fetch: cache-first, network fallback, offline page ──────
+self.addEventListener('fetch', function (event) {
+  // Only handle GET requests for same-origin or CDN assets
+  if (event.request.method !== 'GET') return;
+
+  // Skip Firebase / Cloudflare API calls — always network
+  var url = event.request.url;
+  if (url.indexOf('firestore.googleapis.com') !== -1 ||
+      url.indexOf('firebase') !== -1 ||
+      url.indexOf('googleapis.com') !== -1 ||
+      url.indexOf('gstatic.com') !== -1 ||
+      url.indexOf('cloudflareinsights') !== -1) {
+    return;
+  }
+
+  event.respondWith(
+    caches.match(event.request).then(function (cached) {
+      if (cached) return cached;
+
+      return fetch(event.request).then(function (response) {
+        // Cache successful responses for future use
+        if (response && response.status === 200 && response.type === 'basic') {
+          var clone = response.clone();
+          caches.open(CACHE_NAME).then(function (cache) {
+            cache.put(event.request, clone);
+          });
+        }
+        return response;
+      }).catch(function () {
+        // Network failed — serve offline page for navigation requests
+        if (event.request.mode === 'navigate') {
+          return caches.match('/offline.html');
+        }
+      });
+    })
+  );
 });
 
 // ── Push event — triggered by FCM ────────────────────────────
-// Receives the push payload and shows a notification.
-// FCM sends data in payload.notification + payload.data.
 self.addEventListener('push', function (event) {
   var data = {};
   if (event.data) {
@@ -33,13 +119,13 @@ self.addEventListener('push', function (event) {
   var link    = (data.data && data.data.link) ? data.data.link : '/';
 
   var options = {
-    body:             body,
-    icon:             BADGE,
-    badge:            BADGE,
-    vibrate:          [200, 100, 200],
-    data:             { link: link },
+    body:               body,
+    icon:               BADGE,
+    badge:              BADGE,
+    vibrate:            [200, 100, 200],
+    data:               { link: link },
     requireInteraction: false,
-    tag:              'jestamang-push'
+    tag:                'jestamang-push'
   };
 
   event.waitUntil(self.registration.showNotification(title, options));
@@ -54,7 +140,6 @@ self.addEventListener('notificationclick', function (event) {
 
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clients) {
-      // Focus an existing jestamang.com tab if open
       for (var i = 0; i < clients.length; i++) {
         if (clients[i].url.indexOf('jestamang.com') !== -1 && 'focus' in clients[i]) {
           clients[i].focus();
@@ -62,7 +147,6 @@ self.addEventListener('notificationclick', function (event) {
           return;
         }
       }
-      // Otherwise open a new window
       if (self.clients.openWindow) {
         return self.clients.openWindow(fullUrl);
       }
@@ -70,9 +154,7 @@ self.addEventListener('notificationclick', function (event) {
   );
 });
 
-// ── Message from client (e.g. show local notification) ───────
-// Used as free-tier fallback: client sends notification data
-// via postMessage when it detects a new Firestore document.
+// ── Message from client (show local notification) ────────────
 self.addEventListener('message', function (event) {
   if (!event.data || event.data.type !== 'SHOW_NOTIFICATION') return;
 
