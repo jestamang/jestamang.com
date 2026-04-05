@@ -174,6 +174,68 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
 <section id="hp-preview">
 
+  <!-- CONJURINGS (SHOWS PREVIEW) -->
+  <style>
+  .hp-section--void{background:rgba(10,5,22,0.94)}
+  .hp-conj-wrap{padding:72px 28px 64px;text-align:center;opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s cubic-bezier(0.16,1,0.3,1)}
+  .hp-section.jesta-revealed .hp-conj-wrap{opacity:1;transform:translateY(0)}
+  .hp-conj-header{margin-bottom:44px}
+  .hp-conj-header .hp-desc{text-align:center;max-width:480px;margin:0 auto}
+  .hp-show-card{
+    max-width:600px;margin:0 auto;position:relative;
+    background:rgba(6,3,14,0.97);
+    border:1px solid rgba(201,168,76,0.38);
+    padding:50px 48px 44px;
+    animation:conjPulse 3.5s ease-in-out infinite;
+  }
+  .hp-show-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.65),transparent)}
+  @keyframes conjPulse{
+    0%,100%{box-shadow:0 0 24px rgba(201,168,76,0.1),0 0 60px rgba(201,168,76,0.03),0 4px 30px rgba(0,0,0,0.7)}
+    50%{box-shadow:0 0 55px rgba(201,168,76,0.38),0 0 100px rgba(201,168,76,0.1),0 4px 30px rgba(0,0,0,0.8)}
+  }
+  .hp-show-date-ritual{font-size:0.72rem;letter-spacing:0.45em;text-transform:uppercase;color:rgba(201,168,76,0.55);margin-bottom:16px;margin-top:6px}
+  .hp-show-venue-name{font-size:clamp(1.55rem,4vw,2.2rem);letter-spacing:0.08em;color:#c9a84c;text-shadow:0 0 30px rgba(201,168,76,0.45),0 2px 16px rgba(0,0,0,1);line-height:1.2;margin-bottom:8px}
+  .hp-show-location{font-size:0.72rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(240,230,210,0.45);margin-bottom:26px}
+  .hp-show-rule-c{width:50px;height:1px;background:linear-gradient(to right,rgba(201,168,76,0.5),transparent);margin:0 auto 28px}
+  .hp-show-empty{font-style:italic;font-size:0.88rem;letter-spacing:0.06em;color:rgba(201,168,76,0.38);line-height:1.8}
+  .hp-show-btn-c{display:inline-block;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.42em;text-transform:uppercase;color:#000;background:#c9a84c;border:none;padding:13px 36px;text-decoration:none;transition:background 0.2s,box-shadow 0.2s;min-height:44px;line-height:1.4}
+  .hp-show-btn-c:hover{background:#e0be6a;box-shadow:0 0 24px rgba(201,168,76,0.45)}
+  .hp-conj-viewall{margin-top:30px}
+  .hp-conj-viewall a{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.38);text-decoration:none;transition:color 0.2s}
+  .hp-conj-viewall a:hover{color:#c9a84c}
+  @media(max-width:768px){
+    .hp-show-card{padding:36px 20px 32px;margin:0}
+    .hp-conj-wrap{padding:56px 16px 48px}
+    .hp-show-btn-c{display:block;text-align:center}
+  }
+  </style>
+  <div class="hp-section hp-section--void">
+    <div class="hp-conj-wrap">
+      <div class="hp-conj-header">
+        <span class="hp-eyebrow">The Physical World</span>
+        <h2 class="hp-title">Conjurings</h2>
+        <div class="hp-rule" style="margin:0 auto 20px"></div>
+        <p class="hp-desc" style="font-style:italic">The collective manifests in physical space.</p>
+      </div>
+
+      <!-- ── Featured show card ──────────────────────────────── -->
+      <!-- Update date/ticket link in shows.html when confirmed  -->
+      <div class="hp-show-card">
+        <p class="hp-show-date-ritual">Forthcoming &nbsp;·&nbsp; MMXXVI</p>
+        <h3 class="hp-show-venue-name">Madhouse</h3>
+        <p class="hp-show-location">Ft. Myers, FL</p>
+        <div class="hp-show-rule-c"></div>
+        <a href="shows.html" class="hp-show-btn-c">Get Tickets</a>
+      </div>
+
+      <div class="hp-conj-viewall">
+        <a href="shows.html">View all appearances &nbsp;&#8594;</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hp-divider"></div>
+
   <!-- ENTITIES -->
   <div class="hp-section hp-section--green">
     <div class="hp-inner">
