@@ -493,10 +493,49 @@ body::before{
   display:block;
   margin-bottom:6px;
 }
+.natal-form-note {
+  font-family:'Luminari',serif;
+  font-size:0.65rem;
+  letter-spacing:0.08em;
+  color:rgba(255,255,255,0.25);
+  font-style:italic;
+  margin-top:5px;
+}
 .natal-calc-btn-row {
   display:flex;
   justify-content:center;
-  margin-top:4px;
+  margin-top:12px;
+}
+.natal-calc-btn-row .btn-gold {
+  width:100%;
+  font-size:0.78rem;
+  letter-spacing:0.32em;
+  padding:16px 20px;
+  text-align:center;
+}
+
+/* Cosmic recall banner */
+.nc-cosmic-recall {
+  display:none;
+  font-family:'Luminari',serif;
+  font-size:0.65rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.7);
+  text-align:center;
+  padding:12px 16px;
+  border:1px solid rgba(201,168,76,0.2);
+  border-top:1px solid rgba(201,168,76,0.45);
+  background:rgba(201,168,76,0.04);
+  margin-bottom:24px;
+  position:relative;
+}
+.nc-cosmic-recall::before {
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:1px;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,0.5),transparent);
 }
 
 /* Loading overlay */
@@ -506,17 +545,17 @@ body::before{
   padding:48px 0 32px;
 }
 .natal-loading-wheel {
-  width:80px;height:80px;
-  margin:0 auto 28px;
-  animation:natal-spin 3s linear infinite;
+  width:90px;height:90px;
+  margin:0 auto 32px;
+  animation:natal-spin 2.4s linear infinite;
 }
 @keyframes natal-spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 .natal-loading-text {
   font-family:'Luminari',serif;
-  font-style:italic;
-  font-size:0.88rem;
-  letter-spacing:0.08em;
-  color:rgba(201,168,76,0.75);
+  font-size:0.75rem;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.8);
   min-height:1.5em;
 }
 
@@ -532,6 +571,23 @@ body::before{
   padding:16px;
   border:1px solid rgba(251,100,100,0.15);
   margin-top:16px;
+}
+
+/* Reveal animations */
+@keyframes nc-fadein{from{opacity:0;}to{opacity:1;}}
+@keyframes nc-slideup{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+.nc-reveal-wheel {
+  opacity:0;
+  animation:nc-fadein 0.7s ease forwards;
+}
+.nc-reveal-tables {
+  opacity:0;
+  transform:translateY(22px);
+  animation:nc-slideup 0.65s ease forwards;
+}
+.nc-reveal-interp {
+  opacity:0;
+  animation:nc-fadein 0.8s ease forwards;
 }
 
 /* ── Result dossier ── */
@@ -579,27 +635,35 @@ body::before{
 .natal-wheel-wrap {
   display:flex;
   justify-content:center;
-  margin:24px 0;
+  margin:24px 0 32px;
 }
 .natal-wheel-wrap svg {
-  max-width:420px;
+  max-width:500px;
   width:100%;
   height:auto;
+}
+@media(max-width:768px){
+  .natal-wheel-wrap svg{max-width:320px;}
 }
 /* Planetary table */
 .natal-planets-table {
   width:100%;
   border-collapse:collapse;
+  overflow-x:auto;
+  display:block;
 }
+@media(min-width:600px){.natal-planets-table{display:table;}}
 .natal-planets-table th {
   font-family:'Luminari',serif;
-  font-size:0.75rem;
+  font-size:0.72rem;
   letter-spacing:0.22em;
   text-transform:uppercase;
-  color:rgba(201,168,76,0.55);
-  padding:6px 8px;
-  border-bottom:1px solid rgba(201,168,76,0.12);
+  color:rgba(201,168,76,0.7);
+  padding:8px 8px;
+  border-bottom:1px solid rgba(201,168,76,0.2);
   text-align:left;
+  background:rgba(201,168,76,0.04);
+  white-space:nowrap;
 }
 .natal-planets-table td {
   font-family:'Luminari',serif;
@@ -608,8 +672,10 @@ body::before{
   padding:8px 8px;
   border-bottom:1px solid rgba(255,255,255,0.04);
   letter-spacing:0.03em;
+  white-space:nowrap;
 }
 .natal-planets-table tr:last-child td {border-bottom:none;}
+.natal-planets-table tr:nth-child(even) td {background:rgba(201,168,76,0.025);}
 .planet-glyph {
   font-size:1.1rem;
   color:#c9a84c;
@@ -621,8 +687,39 @@ body::before{
 }
 .house-num-cell {
   color:rgba(201,168,76,0.5);
-  font-size:0.7rem;
+  font-size:0.72rem;
 }
+/* Aspects table */
+.natal-aspects-table {
+  width:100%;
+  border-collapse:collapse;
+  overflow-x:auto;
+  display:block;
+}
+@media(min-width:600px){.natal-aspects-table{display:table;}}
+.natal-aspects-table th {
+  font-family:'Luminari',serif;
+  font-size:0.72rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.7);
+  padding:8px 8px;
+  border-bottom:1px solid rgba(201,168,76,0.2);
+  text-align:left;
+  background:rgba(201,168,76,0.04);
+  white-space:nowrap;
+}
+.natal-aspects-table td {
+  font-family:'Luminari',serif;
+  font-size:0.82rem;
+  color:rgba(255,255,255,0.7);
+  padding:7px 8px;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  letter-spacing:0.03em;
+  white-space:nowrap;
+}
+.natal-aspects-table tr:last-child td {border-bottom:none;}
+.natal-aspects-table tr:nth-child(even) td {background:rgba(201,168,76,0.025);}
 /* Houses grid */
 .natal-houses-grid {
   display:grid;
@@ -720,15 +817,43 @@ body::before{
   min-width:20px;
   text-align:center;
 }
-.asp-trine  {color:#4caf80;}
-.asp-square {color:#e05555;}
-.asp-opposition {color:#5599dd;}
+.asp-trine       {color:#3dbb7a;}
+.asp-square      {color:#e04848;}
+.asp-opposition  {color:#8050dd;}
 .asp-conjunction {color:#c9a84c;}
-.asp-sextile {color:#88aacc;}
+.asp-sextile     {color:#4fa8e0;}
+.asp-quincunx    {color:#d49830;}
+.asp-symbol      {font-size:1rem;min-width:22px;text-align:center;display:inline-block;}
 .asp-label {
   color:rgba(201,168,76,0.55);
   font-size:0.75rem;
   letter-spacing:0.1em;
+}
+/* Interpretation section */
+.natal-interp-section {
+  display:none;
+  margin-top:8px;
+}
+.natal-interp-block {
+  padding:22px 0 18px;
+  border-bottom:1px solid rgba(201,168,76,0.08);
+}
+.natal-interp-block:last-child{border-bottom:none;}
+.natal-interp-title {
+  font-family:'Luminari',serif;
+  font-size:0.82rem;
+  letter-spacing:0.24em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.85);
+  margin-bottom:12px;
+}
+.natal-interp-text {
+  font-family:'Luminari',serif;
+  font-size:0.84rem;
+  color:rgba(232,220,200,0.72);
+  line-height:1.85;
+  letter-spacing:0.03em;
+  font-style:italic;
 }
 /* Share button */
 .natal-share-row {
@@ -1058,6 +1183,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     <div style="font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.14em;color:rgba(255,255,255,0.3);font-style:italic;margin-bottom:20px;">Your natal chart, calculated from the stars</div>
     <div class="gold-rule-sm" style="margin-top:0;"></div>
 
+    <!-- Cosmic Recall Banner -->
+    <div class="nc-cosmic-recall" id="nc-cosmic-recall">&#10022; YOUR CHART HAS BEEN RECALLED FROM THE COSMIC ARCHIVE &#10022;</div>
+
     <!-- Calculator Form -->
     <div class="natal-calc-form" id="natal-form-area">
       <div class="natal-section-header">&#10022; Enter Your Birth Data &#10022;</div>
@@ -1069,6 +1197,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         <div>
           <label class="natal-form-label" for="nc-tob">Time of Birth</label>
           <input class="form-input" type="time" id="nc-tob" placeholder="HH:MM">
+          <div class="natal-form-note">Exact time needed for accurate houses and rising sign</div>
         </div>
         <div>
           <label class="natal-form-label" for="nc-pob">Place of Birth</label>
@@ -1076,7 +1205,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         </div>
       </div>
       <div class="natal-calc-btn-row">
-        <button class="btn-gold" id="natal-calc-btn" style="padding:13px 36px;font-size:0.76rem;letter-spacing:0.28em;">Calculate My Natal Chart</button>
+        <button class="btn-gold" id="natal-calc-btn">CALCULATE THE STARS</button>
       </div>
       <div id="natal-error"></div>
     </div>
@@ -1084,31 +1213,25 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     <!-- Loading State -->
     <div id="natal-loading">
       <svg class="natal-loading-wheel" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="44" stroke="rgba(201,168,76,0.12)" stroke-width="1.5"/>
-        <circle cx="50" cy="50" r="36" stroke="rgba(201,168,76,0.08)" stroke-width="1"/>
-        <circle cx="50" cy="50" r="28" stroke="rgba(201,168,76,0.06)" stroke-width="0.8"/>
-        <path d="M50 6 A44 44 0 0 1 94 50" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M50 14 A36 36 0 0 0 14 50" stroke="rgba(201,168,76,0.5)" stroke-width="1" stroke-linecap="round"/>
-        <circle cx="50" cy="6" r="2.5" fill="#c9a84c"/>
-        <circle cx="94" cy="50" r="1.8" fill="rgba(201,168,76,0.6)"/>
-        <!-- zodiac tick marks -->
-        <g stroke="rgba(201,168,76,0.3)" stroke-width="0.8">
-          <line x1="50" y1="6" x2="50" y2="10"/>
-          <line x1="72" y1="12.3" x2="70" y2="15.8"/>
-          <line x1="87.7" y1="28" x2="84.2" y2="30"/>
-          <line x1="94" y1="50" x2="90" y2="50"/>
-          <line x1="87.7" y1="72" x2="84.2" y2="70"/>
-          <line x1="72" y1="87.7" x2="70" y2="84.2"/>
-          <line x1="50" y1="94" x2="50" y2="90"/>
-          <line x1="28" y1="87.7" x2="30" y2="84.2"/>
-          <line x1="12.3" y1="72" x2="15.8" y2="70"/>
-          <line x1="6" y1="50" x2="10" y2="50"/>
-          <line x1="12.3" y1="28" x2="15.8" y2="30"/>
-          <line x1="28" y1="12.3" x2="30" y2="15.8"/>
+        <circle cx="50" cy="50" r="44" stroke="rgba(201,168,76,0.1)" stroke-width="1"/>
+        <circle cx="50" cy="50" r="36" stroke="rgba(201,168,76,0.07)" stroke-width="0.8"/>
+        <circle cx="50" cy="50" r="26" stroke="rgba(201,168,76,0.05)" stroke-width="0.6"/>
+        <path d="M50 6 A44 44 0 0 1 94 50" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/>
+        <path d="M50 14 A36 36 0 0 0 14 50" stroke="rgba(201,168,76,0.45)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M50 24 A26 26 0 0 1 76 50" stroke="rgba(201,168,76,0.25)" stroke-width="0.8" stroke-linecap="round"/>
+        <circle cx="50" cy="6" r="3" fill="#c9a84c" opacity="0.9"/>
+        <circle cx="94" cy="50" r="2" fill="rgba(201,168,76,0.6)"/>
+        <g stroke="rgba(201,168,76,0.25)" stroke-width="0.7">
+          <line x1="50" y1="6" x2="50" y2="10"/><line x1="72" y1="12.3" x2="70" y2="15.8"/>
+          <line x1="87.7" y1="28" x2="84.2" y2="30"/><line x1="94" y1="50" x2="90" y2="50"/>
+          <line x1="87.7" y1="72" x2="84.2" y2="70"/><line x1="72" y1="87.7" x2="70" y2="84.2"/>
+          <line x1="50" y1="94" x2="50" y2="90"/><line x1="28" y1="87.7" x2="30" y2="84.2"/>
+          <line x1="12.3" y1="72" x2="15.8" y2="70"/><line x1="6" y1="50" x2="10" y2="50"/>
+          <line x1="12.3" y1="28" x2="15.8" y2="30"/><line x1="28" y1="12.3" x2="30" y2="15.8"/>
         </g>
-        <text x="50" y="53" text-anchor="middle" font-size="9" fill="rgba(201,168,76,0.5)" font-family="serif">&#9737;</text>
+        <text x="50" y="54" text-anchor="middle" font-size="10" fill="rgba(201,168,76,0.4)" font-family="serif">&#9726;</text>
       </svg>
-      <div class="natal-loading-text" id="natal-loading-text">Consulting the celestial record...</div>
+      <div class="natal-loading-text" id="natal-loading-text">THE STARS ARE BEING CONSULTED</div>
     </div>
 
     <!-- Result Dossier -->
@@ -1120,45 +1243,62 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       </div>
 
       <!-- Chart Wheel -->
-      <div class="nc-divider">&#10022; Celestial Wheel &#10022;</div>
+      <div class="nc-divider" id="nr-wheel-divider">&#10022; Celestial Wheel &#10022;</div>
       <div class="natal-wheel-wrap" id="nr-wheel"></div>
 
       <!-- Planetary Positions -->
-      <div class="nc-divider">&#10022; Planetary Positions &#10022;</div>
-      <table class="natal-planets-table">
-        <thead>
-          <tr>
-            <th>Planet</th>
-            <th>Sign</th>
-            <th>Position</th>
-            <th>House</th>
-          </tr>
-        </thead>
-        <tbody id="nr-planets-tbody"></tbody>
-      </table>
+      <div class="nc-divider" id="nr-tables-divider">&#10022; Planetary Positions &#10022;</div>
+      <div id="nr-tables-wrap">
+        <table class="natal-planets-table">
+          <thead>
+            <tr>
+              <th>Planet</th>
+              <th>Sign</th>
+              <th>Position</th>
+              <th>House</th>
+              <th>&#8477;</th>
+            </tr>
+          </thead>
+          <tbody id="nr-planets-tbody"></tbody>
+        </table>
 
-      <!-- House Cusps -->
-      <div id="nr-houses-section">
-        <div class="nc-divider">&#10022; House Cusps &#10022;</div>
-        <div class="natal-houses-grid" id="nr-houses-grid"></div>
-      </div>
-
-      <!-- Elements & Modes -->
-      <div class="nc-divider">&#10022; Elements &amp; Modalities &#10022;</div>
-      <div class="natal-em-grid">
-        <div>
-          <div class="natal-em-section-label">Elements</div>
-          <div id="nr-elements"></div>
+        <!-- House Cusps -->
+        <div id="nr-houses-section">
+          <div class="nc-divider">&#10022; House Cusps &#10022;</div>
+          <div class="natal-houses-grid" id="nr-houses-grid"></div>
         </div>
-        <div>
-          <div class="natal-em-section-label">Modalities</div>
-          <div id="nr-modes"></div>
-        </div>
-      </div>
 
-      <!-- Aspects -->
-      <div class="nc-divider">&#10022; Major Aspects &#10022;</div>
-      <div class="natal-aspects-list" id="nr-aspects"></div>
+        <!-- Elements & Modes -->
+        <div class="nc-divider">&#10022; Elements &amp; Modalities &#10022;</div>
+        <div class="natal-em-grid">
+          <div>
+            <div class="natal-em-section-label">Elements</div>
+            <div id="nr-elements"></div>
+          </div>
+          <div>
+            <div class="natal-em-section-label">Modalities</div>
+            <div id="nr-modes"></div>
+          </div>
+        </div>
+
+        <!-- Aspects -->
+        <div class="nc-divider">&#10022; Major Aspects &#10022;</div>
+        <table class="natal-aspects-table">
+          <thead>
+            <tr>
+              <th>Planet</th>
+              <th>Aspect</th>
+              <th>Planet</th>
+              <th>Orb</th>
+            </tr>
+          </thead>
+          <tbody id="nr-aspects-tbody"></tbody>
+        </table>
+      </div><!-- end nr-tables-wrap -->
+
+      <!-- Interpretation -->
+      <div class="nc-divider" id="nr-interp-divider" style="display:none;">&#10022; Your Cosmic Signature &#10022;</div>
+      <div class="natal-interp-section" id="nr-interpretation"></div>
 
       <!-- Share -->
       <div class="nc-divider" style="margin-top:36px;">&#10022; Share &#10022;</div>
@@ -1257,63 +1397,57 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script src="assets/js/jesta-auth.js"></script>
 
 <!-- ═══════════════════════════════════════════════════
-     NATAL CHART ENGINE — Pure JavaScript, Meeus Algorithms
+     NATAL CHART ENGINE — Meeus Algorithms + Full SVG Wheel
 ═══════════════════════════════════════════════════ -->
 <script>
-// ─────────────────────────────────────────────────────
-// CONSTANTS & HELPERS
-// ─────────────────────────────────────────────────────
-const NC = (function(){
-  const DEG = Math.PI / 180;
-  const RAD = 180 / Math.PI;
+var NC = (function(){
+  'use strict';
+  var DEG = Math.PI / 180;
+  var RAD = 180 / Math.PI;
 
   function mod360(x){ return ((x % 360) + 360) % 360; }
   function calcT(jd){ return (jd - 2451545.0) / 36525; }
 
-  // Julian Date from UTC calendar components
   function toJulianDate(year, month, day, hour, minute, second){
     second = second || 0;
     if(month <= 2){ year--; month += 12; }
-    const A = Math.floor(year / 100);
-    const B = 2 - A + Math.floor(A / 4);
+    var A = Math.floor(year / 100);
+    var B = 2 - A + Math.floor(A / 4);
     return Math.floor(365.25 * (year + 4716))
          + Math.floor(30.6001 * (month + 1))
          + day + hour/24 + minute/1440 + second/86400 + B - 1524.5;
   }
 
-  // Obliquity of ecliptic
   function obliquity(jd){
-    const T = calcT(jd);
+    var T = calcT(jd);
     return 23.4392911 - 0.0130042*T - 0.00000164*T*T + 0.000000504*T*T*T;
   }
 
-  // Sun longitude (Meeus Ch. 25 low-accuracy)
   function sunLongitude(jd){
-    const T = calcT(jd);
-    const L0 = 280.46646 + 36000.76983*T + 0.0003032*T*T;
-    const M  = 357.52911 + 35999.05029*T - 0.0001537*T*T;
-    const Mrad = M * DEG;
-    const C = (1.914602 - 0.004817*T - 0.000014*T*T)*Math.sin(Mrad)
-            + (0.019993 - 0.000101*T)*Math.sin(2*Mrad)
-            + 0.000289*Math.sin(3*Mrad);
-    const sunLon = L0 + C;
-    const omega = 125.04 - 1934.136*T;
-    const apparent = sunLon - 0.00569 - 0.00478*Math.sin(omega*DEG);
+    var T = calcT(jd);
+    var L0 = 280.46646 + 36000.76983*T + 0.0003032*T*T;
+    var M  = 357.52911 + 35999.05029*T - 0.0001537*T*T;
+    var Mrad = M * DEG;
+    var C = (1.914602 - 0.004817*T - 0.000014*T*T)*Math.sin(Mrad)
+          + (0.019993 - 0.000101*T)*Math.sin(2*Mrad)
+          + 0.000289*Math.sin(3*Mrad);
+    var sunLon = L0 + C;
+    var omega = 125.04 - 1934.136*T;
+    var apparent = sunLon - 0.00569 - 0.00478*Math.sin(omega*DEG);
     return mod360(apparent);
   }
 
-  // Moon longitude (Meeus Ch. 47 — extended series, ~0.1° accuracy)
   function moonLongitude(jd){
-    const T = calcT(jd);
-    const L1 = mod360(218.3164477 + 481267.88123421*T - 0.0015786*T*T + T*T*T/538841 - T*T*T*T/65194000);
-    const D  = mod360(297.8501921 + 445267.1114034*T - 0.0018819*T*T + T*T*T/545868 - T*T*T*T/113065000);
-    const M  = mod360(357.5291092 + 35999.0502909*T  - 0.0001536*T*T + T*T*T/24490000);
-    const Mp = mod360(134.9633964 + 477198.8675055*T + 0.0087414*T*T + T*T*T/69699   - T*T*T*T/14712000);
-    const F  = mod360(93.2720950  + 483202.0175233*T - 0.0036539*T*T - T*T*T/3526000 + T*T*T*T/863310000);
-    const E  = 1 - 0.002516*T - 0.0000074*T*T; // eccentricity correction
-    const E2 = E*E;
-    const r = DEG; // alias
-    const lon = L1
+    var T = calcT(jd);
+    var L1 = mod360(218.3164477 + 481267.88123421*T - 0.0015786*T*T + T*T*T/538841 - T*T*T*T/65194000);
+    var D  = mod360(297.8501921 + 445267.1114034*T - 0.0018819*T*T + T*T*T/545868 - T*T*T*T/113065000);
+    var M  = mod360(357.5291092 + 35999.0502909*T  - 0.0001536*T*T + T*T*T/24490000);
+    var Mp = mod360(134.9633964 + 477198.8675055*T + 0.0087414*T*T + T*T*T/69699   - T*T*T*T/14712000);
+    var F  = mod360(93.2720950  + 483202.0175233*T - 0.0036539*T*T - T*T*T/3526000 + T*T*T*T/863310000);
+    var E  = 1 - 0.002516*T - 0.0000074*T*T;
+    var E2 = E*E;
+    var r  = DEG;
+    var lon = L1
       + 6.288774*Math.sin(Mp*r)
       + 1.274027*Math.sin((2*D - Mp)*r)
       + 0.658314*Math.sin(2*D*r)
@@ -1358,8 +1492,7 @@ const NC = (function(){
     return mod360(lon);
   }
 
-  // Planet orbital elements (J2000, degrees, rates per Julian century)
-  const PLANET_ELEMENTS = {
+  var PLANET_ELEMENTS = {
     Mercury: { L0:252.2509, Lr:149472.6746, M0:174.7948, Mr:149472.5153, e:0.20563 },
     Venus:   { L0:181.9798, Lr: 58517.8156, M0: 50.4161, Mr: 58517.8156, e:0.00677 },
     Mars:    { L0:355.4330, Lr: 19140.2993, M0: 19.3730, Mr: 19140.2993, e:0.09341 },
@@ -1371,21 +1504,19 @@ const NC = (function(){
   };
 
   function planetLongitude(name, jd){
-    const T = calcT(jd);
-    const el = PLANET_ELEMENTS[name];
-    const L = mod360(el.L0 + el.Lr * T / 100);
-    const M = mod360(el.M0 + el.Mr * T / 100);
-    const Mrad = M * DEG;
-    const e = el.e;
-    // Equation of centre (up to 3rd order)
-    const C = (2*e - e*e*e/4)*Math.sin(Mrad)
-            + 1.25*e*e*Math.sin(2*Mrad)
-            + (13/12)*e*e*e*Math.sin(3*Mrad);
-    let lon = mod360(L + C * RAD);
-    // Jupiter–Saturn mutual perturbation (Meeus, significant terms)
+    var T = calcT(jd);
+    var el = PLANET_ELEMENTS[name];
+    var L = mod360(el.L0 + el.Lr * T / 100);
+    var M = mod360(el.M0 + el.Mr * T / 100);
+    var Mrad = M * DEG;
+    var e = el.e;
+    var C = (2*e - e*e*e/4)*Math.sin(Mrad)
+          + 1.25*e*e*Math.sin(2*Mrad)
+          + (13/12)*e*e*e*Math.sin(3*Mrad);
+    var lon = mod360(L + C * RAD);
     if(name === 'Jupiter' || name === 'Saturn'){
-      const Mj = mod360(PLANET_ELEMENTS.Jupiter.M0 + PLANET_ELEMENTS.Jupiter.Mr * T / 100) * DEG;
-      const Ms = mod360(PLANET_ELEMENTS.Saturn.M0  + PLANET_ELEMENTS.Saturn.Mr  * T / 100) * DEG;
+      var Mj = mod360(PLANET_ELEMENTS.Jupiter.M0 + PLANET_ELEMENTS.Jupiter.Mr * T / 100) * DEG;
+      var Ms = mod360(PLANET_ELEMENTS.Saturn.M0  + PLANET_ELEMENTS.Saturn.Mr  * T / 100) * DEG;
       if(name === 'Jupiter'){
         lon += (0.332*Math.sin(2*Mj - 5*Ms - 67.6*DEG)
                + 0.056*Math.sin(2*Mj - 2*Ms + 21*DEG)
@@ -1405,208 +1536,151 @@ const NC = (function(){
     return mod360(lon);
   }
 
-  // Lilith (Black Moon Lilith — mean apogee, Meeus)
-  function lilithLongitude(jd){
-    const T = calcT(jd);
-    // Mean apogee longitude (degrees)
-    return mod360(83.3532465 + 4069.0137287*T - 0.0103200*T*T - T*T*T/80053 + T*T*T*T/18999000);
+  // Chiron — mean heliocentric longitude (period ~50.75 yr; J2000 position ~264.4°)
+  function chironLongitude(jd){
+    return mod360(264.4 + (jd - 2451545.0) * (360.0 / 18530.0));
   }
 
-  // North Node (mean)
   function northNodeLongitude(jd){
-    const T = calcT(jd);
+    var T = calcT(jd);
     return mod360(125.0445479 - 1934.1362608*T + 0.0020754*T*T);
   }
 
-  // Local Sidereal Time
+  function getRawLon(name, jd){
+    if(name === 'Sun')        return sunLongitude(jd);
+    if(name === 'Moon')       return moonLongitude(jd);
+    if(name === 'North Node') return northNodeLongitude(jd);
+    if(name === 'Chiron')     return chironLongitude(jd);
+    if(PLANET_ELEMENTS[name]) return planetLongitude(name, jd);
+    return 0;
+  }
+
+  function isRetrograde(name, jd){
+    if(name==='Sun'||name==='Moon'||name==='North Node'||name==='Chiron') return false;
+    var lon1 = getRawLon(name, jd - 0.5);
+    var lon2 = getRawLon(name, jd + 0.5);
+    var delta = mod360(lon2 - lon1);
+    if(delta > 180) delta -= 360;
+    return delta < 0;
+  }
+
   function localSiderealTime(jd, lng){
-    const T = calcT(jd);
-    const GMST = 280.46061837 + 360.98564736629*(jd - 2451545) + 0.000387933*T*T - T*T*T/38710000;
+    var T = calcT(jd);
+    var GMST = 280.46061837 + 360.98564736629*(jd - 2451545) + 0.000387933*T*T - T*T*T/38710000;
     return mod360(GMST + lng);
   }
 
-  // Ascendant
   function calcAscendant(jd, lat, lng){
-    const LST = localSiderealTime(jd, lng);
-    const eps = obliquity(jd);
-    const E = eps * DEG;
-    const R = LST * DEG;
-    const latRad = lat * DEG;
-    const y = -Math.cos(R);
-    const x = Math.sin(R)*Math.cos(E) + Math.tan(latRad)*Math.sin(E);
-    let asc = Math.atan2(y, x) * RAD;
+    var LST = localSiderealTime(jd, lng);
+    var eps = obliquity(jd);
+    var E = eps * DEG, R = LST * DEG, latRad = lat * DEG;
+    var y = -Math.cos(R);
+    var x = Math.sin(R)*Math.cos(E) + Math.tan(latRad)*Math.sin(E);
+    var asc = Math.atan2(y, x) * RAD;
     if(asc < 0) asc += 360;
     if(Math.cos(R) > 0) asc = mod360(asc + 180);
     return mod360(asc);
   }
 
-  // Midheaven (MC)
   function calcMC(jd, lng){
-    const LST = localSiderealTime(jd, lng);
-    const eps = obliquity(jd);
-    const R = LST * DEG;
-    const E = eps * DEG;
-    let mc = Math.atan2(Math.sin(R), Math.cos(R)*Math.cos(E)) * RAD;
+    var LST = localSiderealTime(jd, lng);
+    var eps = obliquity(jd);
+    var R = LST * DEG, E = eps * DEG;
+    var mc = Math.atan2(Math.sin(R), Math.cos(R)*Math.cos(E)) * RAD;
     if(mc < 0) mc += 360;
     return mod360(mc);
   }
 
-  // Placidus house cusps (standard system used by cafeastrology.com)
   function calcHouseCusps(asc, jd, lat, lng){
-    // If lat is too extreme (>66°), Placidus is undefined — fall back to equal
     if(Math.abs(lat) >= 66){
-      const cusps = [];
-      for(let i = 0; i < 12; i++) cusps.push(mod360(asc + i * 30));
+      var cusps = [];
+      for(var i=0;i<12;i++) cusps.push(mod360(asc + i*30));
       return cusps;
     }
-    const eps = obliquity(jd) * DEG;
-    const latR = lat * DEG;
-    const RAMC = localSiderealTime(jd, lng) * DEG; // RAMC in radians
-    const RAmcDeg = localSiderealTime(jd, lng);    // degrees
-
-    // MC cusp (10th house)
-    const mc = calcMC(jd, lng);
-    // ASC cusp (1st house) already computed
-
-    // Helper: given RAMC of a cusp, find its ecliptic longitude (Placidus semi-arc)
-    // Uses the standard iterative ecliptic longitude from RAMC + obliquity + lat
-    function placCusp(ramc_deg, frac){
-      // frac = 1/3 or 2/3 of semi-arc
-      let lon = mod360(ramc_deg + 90); // starting estimate
-      for(let iter = 0; iter < 20; iter++){
-        const lonR = lon * DEG;
-        const dec  = Math.asin(Math.sin(eps) * Math.sin(lonR));
-        const ad   = Math.asin(Math.tan(latR) * Math.tan(dec)); // ascensional difference
-        const raRise = lon * DEG - ad; // don't need exact RA, iterate
-        // Placidus: the cusp's RA satisfies: ramc_diff = semi_arc * frac
-        // semi_arc diurnal = 90 + ad (in degrees from dec)
-        // For upper cusps (11,12): RAMC_cusp = RAMC + 30*n, frac=1/3
-        const adDeg  = ad * RAD;
-        const saD    = 90 + adDeg; // diurnal semi-arc
-        const saN    = 90 - adDeg; // nocturnal semi-arc
-        // Cusp RA: for house 11 (frac=1/3 of diurnal), 12 (frac=2/3 of diurnal)
-        //           for house 2 (frac=1/3 of nocturnal+180), 3 (frac=2/3)
-        const targetRA = mod360(frac >= 0 ? RAmcDeg + frac * saD : RAmcDeg + 180 - frac * saN);
-        // Convert RA to ecliptic longitude
-        const ra = targetRA * DEG;
-        const newLon = Math.atan2(Math.sin(ra) * Math.cos(eps) - Math.tan(dec) * Math.sin(eps), Math.cos(ra)) * RAD;
-        const newLonN = mod360(newLon);
-        if(Math.abs(newLonN - lon) < 0.0001) break;
-        lon = newLonN;
-      }
-      return mod360(lon);
-    }
-
-    // Compute the 12 cusps
-    const saD = function(decDeg){ return 90 + Math.asin(Math.tan(latR)*Math.tan(decDeg*DEG))*RAD; };
-    const saN = function(decDeg){ return 90 - Math.asin(Math.tan(latR)*Math.tan(decDeg*DEG))*RAD; };
-
-    // Simple robust Placidus iteration
+    var eps = obliquity(jd) * DEG;
+    var latR = lat * DEG;
+    var RAmcDeg = localSiderealTime(jd, lng);
+    var mc = calcMC(jd, lng);
     function placitusCusp(houseNum){
-      // House 11 = MC + 1/3 diurnal arc, 12 = MC + 2/3, 2 = IC + 1/3 nocturnal, 3 = IC + 2/3
-      const isUpper = (houseNum === 11 || houseNum === 12);
-      const frac = (houseNum === 11 || houseNum === 2) ? 1/3 : 2/3;
-      let lon = mod360(mc + (isUpper ? frac * 60 : 180 + frac * 60));
-      for(let iter = 0; iter < 30; iter++){
-        const sinDec = Math.sin(eps) * Math.sin(lon * DEG);
-        const dec = Math.asin(Math.max(-1, Math.min(1, sinDec)));
-        const tanTanArg = Math.tan(latR) * Math.tan(dec);
-        if(Math.abs(tanTanArg) > 1) break; // polar case
-        const adRad = Math.asin(Math.max(-1, Math.min(1, tanTanArg)));
-        const adDeg = adRad * RAD;
-        const semiArc = isUpper ? (90 + adDeg) : (90 - adDeg);
-        const targetRA = mod360(isUpper ? RAmcDeg + frac * semiArc : RAmcDeg + 180 + frac * semiArc);
-        const ra = targetRA * DEG;
-        const newLon = mod360(Math.atan2(
-          Math.sin(ra)*Math.cos(eps) + Math.tan(dec)*Math.sin(eps),
-          Math.cos(ra)
-        ) * RAD);
-        if(Math.abs(newLon - lon) < 0.001){ lon = newLon; break; }
-        lon = newLon;
+      var isUpper = (houseNum===11||houseNum===12);
+      var frac = (houseNum===11||houseNum===2) ? 1/3 : 2/3;
+      var lon = mod360(mc + (isUpper ? frac*60 : 180 + frac*60));
+      for(var iter=0;iter<30;iter++){
+        var sinDec = Math.sin(eps)*Math.sin(lon*DEG);
+        var dec = Math.asin(Math.max(-1,Math.min(1,sinDec)));
+        var ttan = Math.tan(latR)*Math.tan(dec);
+        if(Math.abs(ttan)>1) break;
+        var adDeg = Math.asin(Math.max(-1,Math.min(1,ttan)))*RAD;
+        var semiArc = isUpper ? (90+adDeg) : (90-adDeg);
+        var targetRA = mod360(isUpper ? RAmcDeg+frac*semiArc : RAmcDeg+180+frac*semiArc);
+        var ra = targetRA*DEG;
+        var newLon = mod360(Math.atan2(Math.sin(ra)*Math.cos(eps)+Math.tan(dec)*Math.sin(eps),Math.cos(ra))*RAD);
+        if(Math.abs(newLon-lon)<0.001){lon=newLon;break;}
+        lon=newLon;
       }
       return mod360(lon);
     }
-
-    const h11 = placitusCusp(11);
-    const h12 = placitusCusp(12);
-    const ic  = mod360(mc + 180);
-    const h2  = placitusCusp(2);
-    const h3  = placitusCusp(3);
-
-    return [asc, h2, h3, ic, mod360(ic+30), mod360(ic+60),
-            mod360(asc+180), mod360(h2+180), mod360(h3+180),
-            mc, h11, h12];
+    var h11=placitusCusp(11),h12=placitusCusp(12),ic=mod360(mc+180),h2=placitusCusp(2),h3=placitusCusp(3);
+    return [asc,h2,h3,ic,mod360(ic+30),mod360(ic+60),mod360(asc+180),mod360(h2+180),mod360(h3+180),mc,h11,h12];
   }
 
-  // Assign planet to house
   function planetHouse(lon, cusps){
-    for(let i = 0; i < 12; i++){
-      const start = cusps[i];
-      const end = cusps[(i+1) % 12];
-      if(start <= end){
-        if(lon >= start && lon < end) return i + 1;
-      } else {
-        if(lon >= start || lon < end) return i + 1;
-      }
+    for(var i=0;i<12;i++){
+      var start=cusps[i], end=cusps[(i+1)%12];
+      if(start<=end){ if(lon>=start&&lon<end) return i+1; }
+      else { if(lon>=start||lon<end) return i+1; }
     }
     return 1;
   }
 
-  // Sign data
-  const SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
-                 'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-  const SIGN_GLYPHS = ['\u2648','\u2649','\u264A','\u264B','\u264C','\u264D',
-                       '\u264E','\u264F','\u2650','\u2651','\u2652','\u2653'];
+  var SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
+               'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+  var SIGN_GLYPHS = ['\u2648','\u2649','\u264A','\u264B','\u264C','\u264D',
+                     '\u264E','\u264F','\u2650','\u2651','\u2652','\u2653'];
 
   function lonToSign(lon){
-    const idx = Math.floor(mod360(lon) / 30) % 12;
-    const posInSign = mod360(lon) % 30;
-    const deg = Math.floor(posInSign);
-    const min = Math.floor((posInSign - deg) * 60);
-    return { sign: SIGNS[idx], glyph: SIGN_GLYPHS[idx], deg, min, totalDeg: mod360(lon), idx };
+    var idx = Math.floor(mod360(lon)/30)%12;
+    var pos = mod360(lon)%30;
+    var deg = Math.floor(pos), min = Math.floor((pos-deg)*60);
+    return {sign:SIGNS[idx],glyph:SIGN_GLYPHS[idx],deg:deg,min:min,totalDeg:mod360(lon),idx:idx};
   }
 
-  // Element / Mode assignments
-  const ELEMENT = {
-    Aries:'Fire', Leo:'Fire', Sagittarius:'Fire',
-    Taurus:'Earth', Virgo:'Earth', Capricorn:'Earth',
-    Gemini:'Air', Libra:'Air', Aquarius:'Air',
-    Cancer:'Water', Scorpio:'Water', Pisces:'Water'
+  var ELEMENT = {
+    Aries:'Fire',Leo:'Fire',Sagittarius:'Fire',
+    Taurus:'Earth',Virgo:'Earth',Capricorn:'Earth',
+    Gemini:'Air',Libra:'Air',Aquarius:'Air',
+    Cancer:'Water',Scorpio:'Water',Pisces:'Water'
   };
-  const MODE = {
-    Aries:'Cardinal', Cancer:'Cardinal', Libra:'Cardinal', Capricorn:'Cardinal',
-    Taurus:'Fixed', Leo:'Fixed', Scorpio:'Fixed', Aquarius:'Fixed',
-    Gemini:'Mutable', Virgo:'Mutable', Sagittarius:'Mutable', Pisces:'Mutable'
+  var MODE = {
+    Aries:'Cardinal',Cancer:'Cardinal',Libra:'Cardinal',Capricorn:'Cardinal',
+    Taurus:'Fixed',Leo:'Fixed',Scorpio:'Fixed',Aquarius:'Fixed',
+    Gemini:'Mutable',Virgo:'Mutable',Sagittarius:'Mutable',Pisces:'Mutable'
   };
 
-  // Aspect definitions
-  const ASPECTS = [
-    { name:'Conjunction', angle:0,   orb:8,  symbol:'\u260C' },
-    { name:'Opposition',  angle:180, orb:8,  symbol:'\u260D' },
-    { name:'Trine',       angle:120, orb:6,  symbol:'\u25B3' },
-    { name:'Square',      angle:90,  orb:6,  symbol:'\u25A1' },
-    { name:'Sextile',     angle:60,  orb:4,  symbol:'\u2736' },
+  var ASPECTS = [
+    {name:'Conjunction',angle:0,  orb:8,symbol:'\u260C',cls:'asp-conjunction'},
+    {name:'Opposition', angle:180,orb:8,symbol:'\u260D',cls:'asp-opposition'},
+    {name:'Trine',      angle:120,orb:8,symbol:'\u25B3',cls:'asp-trine'},
+    {name:'Square',     angle:90, orb:8,symbol:'\u25A1',cls:'asp-square'},
+    {name:'Sextile',    angle:60, orb:6,symbol:'\u2736',cls:'asp-sextile'},
+    {name:'Quincunx',   angle:150,orb:3,symbol:'\u26BB',cls:'asp-quincunx'},
   ];
 
-  function angularDiff(a, b){
-    let d = Math.abs(mod360(a) - mod360(b));
-    if(d > 180) d = 360 - d;
+  function angularDiff(a,b){
+    var d=Math.abs(mod360(a)-mod360(b));
+    if(d>180) d=360-d;
     return d;
   }
 
   function findAspects(planets){
-    const names = Object.keys(planets);
-    const result = [];
-    for(let i = 0; i < names.length; i++){
-      for(let j = i+1; j < names.length; j++){
-        const diff = angularDiff(planets[names[i]].totalDeg, planets[names[j]].totalDeg);
-        for(const asp of ASPECTS){
-          if(Math.abs(diff - asp.angle) <= asp.orb){
-            result.push({
-              p1: names[i], p2: names[j],
-              aspect: asp.name, symbol: asp.symbol,
-              orb: Math.abs(diff - asp.angle).toFixed(1)
-            });
+    var names=Object.keys(planets), result=[];
+    for(var i=0;i<names.length;i++){
+      for(var j=i+1;j<names.length;j++){
+        var diff=angularDiff(planets[names[i]].totalDeg,planets[names[j]].totalDeg);
+        for(var k=0;k<ASPECTS.length;k++){
+          var asp=ASPECTS[k];
+          if(Math.abs(diff-asp.angle)<=asp.orb){
+            result.push({p1:names[i],p2:names[j],aspect:asp.name,symbol:asp.symbol,cls:asp.cls,orb:Math.abs(diff-asp.angle).toFixed(1)});
             break;
           }
         }
@@ -1615,408 +1689,446 @@ const NC = (function(){
     return result;
   }
 
-  // ─────────────────────────────────────────────
-  // MAIN CALCULATE FUNCTION
-  // ─────────────────────────────────────────────
-  // utcOffsetMinutes: pre-computed UTC offset (positive = east of UTC)
-  //   If null/undefined, falls back to lng/15 approximation
   function calculate(dateStr, timeStr, lat, lng, utcOffsetMinutes){
-    // Parse date/time into UTC Julian Date
-    const [yr, mo, dy] = dateStr.split('-').map(Number);
-    let utcHour = 12, utcMin = 0;
-
-    if(timeStr && timeStr.length >= 4){
-      const [hh, mm] = timeStr.split(':').map(Number);
-      let offsetMins;
-      if(utcOffsetMinutes !== null && utcOffsetMinutes !== undefined){
-        offsetMins = utcOffsetMinutes;
-      } else {
-        offsetMins = Math.round(lng / 15 * 60);
-      }
-      // UTC = local - offset
-      const totalLocalMins = hh * 60 + mm;
-      const totalUTCMins   = totalLocalMins - offsetMins;
-      utcHour = Math.floor(((totalUTCMins % 1440) + 1440) % 1440 / 60);
-      utcMin  = ((totalUTCMins % 60) + 60) % 60;
+    var dp=dateStr.split('-').map(Number), yr=dp[0],mo=dp[1],dy=dp[2];
+    var utcHour=12,utcMin=0;
+    if(timeStr&&timeStr.length>=4){
+      var tp=timeStr.split(':').map(Number),hh=tp[0],mm=tp[1];
+      var offsetMins=(utcOffsetMinutes!==null&&utcOffsetMinutes!==undefined)?utcOffsetMinutes:Math.round(lng/15*60);
+      var totalLocalMins=hh*60+mm, totalUTCMins=totalLocalMins-offsetMins;
+      utcHour=Math.floor(((totalUTCMins%1440)+1440)%1440/60);
+      utcMin=((totalUTCMins%60)+60)%60;
     }
+    var jd=toJulianDate(yr,mo,dy,utcHour,utcMin,0);
+    var hasTime=!!(timeStr&&timeStr.length>=4);
 
-    const jd = toJulianDate(yr, mo, dy, utcHour, utcMin, 0);
-    const hasTime = !!(timeStr && timeStr.length >= 4);
-
-    // Compute all positions
-    const rawPositions = {
-      Sun:     sunLongitude(jd),
-      Moon:    moonLongitude(jd),
-      Mercury: planetLongitude('Mercury', jd),
-      Venus:   planetLongitude('Venus', jd),
-      Mars:    planetLongitude('Mars', jd),
-      Jupiter: planetLongitude('Jupiter', jd),
-      Saturn:  planetLongitude('Saturn', jd),
-      Uranus:  planetLongitude('Uranus', jd),
-      Neptune: planetLongitude('Neptune', jd),
-      Pluto:   planetLongitude('Pluto', jd),
-      'Black Moon Lilith': lilithLongitude(jd),
-      'North Node': northNodeLongitude(jd),
+    var rawPos={
+      Sun:sunLongitude(jd),Moon:moonLongitude(jd),
+      Mercury:planetLongitude('Mercury',jd),Venus:planetLongitude('Venus',jd),
+      Mars:planetLongitude('Mars',jd),Jupiter:planetLongitude('Jupiter',jd),
+      Saturn:planetLongitude('Saturn',jd),Uranus:planetLongitude('Uranus',jd),
+      Neptune:planetLongitude('Neptune',jd),Pluto:planetLongitude('Pluto',jd),
+      'North Node':northNodeLongitude(jd),Chiron:chironLongitude(jd),
     };
 
-    // Convert to sign objects
-    const planets = {};
-    for(const [name, lon] of Object.entries(rawPositions)){
-      planets[name] = lonToSign(lon);
+    var planets={};
+    var pnames=Object.keys(rawPos);
+    for(var pi=0;pi<pnames.length;pi++){
+      var pn=pnames[pi],s=lonToSign(rawPos[pn]);
+      s.retrograde=isRetrograde(pn,jd);
+      planets[pn]=s;
     }
 
-    // ASC, MC, Houses
-    let ascData = null, mcData = null, houseCusps = null;
+    var ascData=null,mcData=null,houseCusps=null;
     if(hasTime){
-      const ascLon = calcAscendant(jd, lat, lng);
-      const mcLon  = calcMC(jd, lng);
-      ascData = lonToSign(ascLon);
-      mcData  = lonToSign(mcLon);
-      houseCusps = calcHouseCusps(ascLon, jd, lat, lng);
-
-      // Assign houses to planets
-      for(const name of Object.keys(planets)){
-        planets[name].house = planetHouse(planets[name].totalDeg, houseCusps);
-      }
+      var ascLon=calcAscendant(jd,lat,lng),mcLon=calcMC(jd,lng);
+      ascData=lonToSign(ascLon); mcData=lonToSign(mcLon);
+      houseCusps=calcHouseCusps(ascLon,jd,lat,lng);
+      var pks=Object.keys(planets);
+      for(var pk=0;pk<pks.length;pk++) planets[pks[pk]].house=planetHouse(planets[pks[pk]].totalDeg,houseCusps);
     }
 
-    // Elements & Modes count (Sun through Saturn + ASC)
-    const coreplanets = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
-    const elements = {Fire:0, Earth:0, Air:0, Water:0};
-    const modes = {Cardinal:0, Fixed:0, Mutable:0};
-    const total = coreplanets.length + (ascData ? 1 : 0);
-    for(const p of coreplanets){
-      elements[ELEMENT[planets[p].sign]]++;
-      modes[MODE[planets[p].sign]]++;
+    var coreplanets=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
+    var elements={Fire:0,Earth:0,Air:0,Water:0},modes={Cardinal:0,Fixed:0,Mutable:0};
+    var total=coreplanets.length+(ascData?1:0);
+    for(var ci=0;ci<coreplanets.length;ci++){
+      elements[ELEMENT[planets[coreplanets[ci]].sign]]++;
+      modes[MODE[planets[coreplanets[ci]].sign]]++;
     }
-    if(ascData){
-      elements[ELEMENT[ascData.sign]]++;
-      modes[MODE[ascData.sign]]++;
-    }
+    if(ascData){elements[ELEMENT[ascData.sign]]++;modes[MODE[ascData.sign]]++;}
 
-    // Aspects (core planets only)
-    const corePlanObj = {};
-    for(const p of coreplanets){ corePlanObj[p] = planets[p]; }
-    if(ascData) corePlanObj['Ascendant'] = ascData;
-    const aspects = findAspects(corePlanObj);
+    var corePlanObj={};
+    for(var cj=0;cj<coreplanets.length;cj++) corePlanObj[coreplanets[cj]]=planets[coreplanets[cj]];
+    if(ascData) corePlanObj['Ascendant']=ascData;
+    var aspects=findAspects(corePlanObj);
 
-    return { jd, planets, ascData, mcData, houseCusps, elements, modes, aspects, hasTime, total };
+    return {jd:jd,planets:planets,ascData:ascData,mcData:mcData,houseCusps:houseCusps,elements:elements,modes:modes,aspects:aspects,hasTime:hasTime,total:total};
   }
 
-  // ─────────────────────────────────────────────
-  // SVG CHART WHEEL
-  // ─────────────────────────────────────────────
-  const ELEMENT_COLORS = {
-    Fire:  'rgba(180,60,40,0.18)',
-    Earth: 'rgba(60,120,40,0.18)',
-    Air:   'rgba(60,100,160,0.18)',
-    Water: 'rgba(40,80,140,0.18)',
+  // ════════════════════════ SVG CHART WHEEL ════════════════════════
+
+  var ELEMENT_COLORS={
+    Fire: 'rgba(160,45,20,0.26)',Earth:'rgba(35,110,30,0.23)',
+    Air:  'rgba(30,85,170,0.25)',Water:'rgba(20,45,150,0.25)',
   };
-  const SIGN_ELEMENT = {
-    Aries:'Fire', Taurus:'Earth', Gemini:'Air', Cancer:'Water',
-    Leo:'Fire', Virgo:'Earth', Libra:'Air', Scorpio:'Water',
-    Sagittarius:'Fire', Capricorn:'Earth', Aquarius:'Air', Pisces:'Water'
+  var SIGN_ELEMENT={
+    Aries:'Fire',Taurus:'Earth',Gemini:'Air',Cancer:'Water',
+    Leo:'Fire',Virgo:'Earth',Libra:'Air',Scorpio:'Water',
+    Sagittarius:'Fire',Capricorn:'Earth',Aquarius:'Air',Pisces:'Water'
   };
 
-  // Planet display info
-  const PLANET_INFO = {
-    Sun:     { glyph:'\u2609', color:'#f0c040' },
-    Moon:    { glyph:'\u263D', color:'#d0d8e8' },
-    Mercury: { glyph:'\u263F', color:'#b0b8c8' },
-    Venus:   { glyph:'\u2640', color:'#e8a0c0' },
-    Mars:    { glyph:'\u2642', color:'#e05050' },
-    Jupiter: { glyph:'\u2643', color:'#a88040' },
-    Saturn:  { glyph:'\u2644', color:'#a0a0b0' },
-    Uranus:  { glyph:'\u2645', color:'#80d0c0' },
-    Neptune: { glyph:'\u2646', color:'#6080c0' },
-    Pluto:   { glyph:'\u2647', color:'#906080' },
-    'Black Moon Lilith': { glyph:'\u26B8', color:'#c06080' },
-    'North Node': { glyph:'\u260A', color:'#c9a84c' },
-    Ascendant: { glyph:'AC', color:'#c9a84c' },
-    MC:        { glyph:'MC', color:'#c9a84c' },
+  var PLANET_INFO={
+    Sun:         {glyph:'\u2609',color:'#f0c040'},
+    Moon:        {glyph:'\u263D',color:'#c8d8f0'},
+    Mercury:     {glyph:'\u263F',color:'#90b8d0'},
+    Venus:       {glyph:'\u2640',color:'#f0a0c8'},
+    Mars:        {glyph:'\u2642',color:'#e04848'},
+    Jupiter:     {glyph:'\u2643',color:'#c09848'},
+    Saturn:      {glyph:'\u2644',color:'#b0b0c8'},
+    Uranus:      {glyph:'\u26E2',color:'#60d0c8'},
+    Neptune:     {glyph:'\u2646',color:'#5888d8'},
+    Pluto:       {glyph:'\u2647',color:'#a060b0'},
+    'North Node':{glyph:'\u260A',color:'#c9a84c'},
+    Chiron:      {glyph:'\u26B7',color:'#d0a870'},
+    Ascendant:   {glyph:'AC',    color:'#c9a84c'},
+    MC:          {glyph:'MC',    color:'#c9a84c'},
   };
 
-  const ROMAN_HOUSES = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+  var ROMAN_HOUSES=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+
+  function spreadAngles(arr, minGap){
+    var a=arr.map(function(p){return{name:p.name,angle:p.angle,orig:p.orig,info:p.info,p:p.p};});
+    for(var pass=0;pass<100;pass++){
+      var moved=false;
+      for(var i=0;i<a.length;i++){
+        for(var j=i+1;j<a.length;j++){
+          var diff=a[j].angle-a[i].angle;
+          while(diff>180) diff-=360; while(diff<-180) diff+=360;
+          if(Math.abs(diff)<minGap){
+            var fix=(minGap-Math.abs(diff))/2+0.2;
+            if(diff>=0){a[i].angle-=fix;a[j].angle+=fix;}else{a[i].angle+=fix;a[j].angle-=fix;}
+            moved=true;
+          }
+        }
+      }
+      if(!moved) break;
+    }
+    for(var k=0;k<a.length;k++) a[k].angle=mod360(a[k].angle);
+    return a;
+  }
 
   function generateChartSVG(planets, ascLon, houseCusps, mcLon){
-    const cx = 200, cy = 200;
-    const R  = 188; // outer zodiac ring edge
-    const r1 = 160; // zodiac sign ring inner
-    const r2 = 145; // house ring outer
-    const r3 = 120; // house ring inner / planet orbit
-    const rp = 95;  // planet positions ring
-    const rc = 35;  // inner circle
-    const W  = 400, H = 400;
+    var W=500,H=500,cx=250,cy=250;
+    var R_OUT=244, R_ZO=230, R_ZI=194, R_HO=184, R_HI=162;
+    var R_PO=148,  R_PG=133, R_PI=118, R_ASPL=110, R_IN=50;
 
-    function lonToAngle(lon){
-      // ASC at left (180 deg in SVG = 9 o'clock)
-      // Zodiac runs counterclockwise
-      return (180 - (mod360(lon - ascLon) )) % 360;
+    function lonToAngle(lon){ return mod360(180-mod360(lon-ascLon)); }
+    function polar(angle,r){
+      var a=angle*DEG;
+      return{x:cx+r*Math.cos(a),y:cy-r*Math.sin(a)};
     }
-    function polarToXY(angle, r){
-      const a = angle * DEG;
-      return { x: cx + r * Math.cos(a), y: cy - r * Math.sin(a) };
+    function sectorPath(r1,r2,a1,a2){
+      var sweep=mod360(a1-a2),large=sweep>180?1:0;
+      var s1=polar(a1,r1),e1=polar(a2,r1),s2=polar(a1,r2),e2=polar(a2,r2);
+      return 'M '+s1.x.toFixed(2)+' '+s1.y.toFixed(2)
+            +' A '+r1+' '+r1+' 0 '+large+' 0 '+e1.x.toFixed(2)+' '+e1.y.toFixed(2)
+            +' L '+e2.x.toFixed(2)+' '+e2.y.toFixed(2)
+            +' A '+r2+' '+r2+' 0 '+large+' 1 '+s2.x.toFixed(2)+' '+s2.y.toFixed(2)+' Z';
     }
-    function svgArcPath(cx, cy, r, startAngle, endAngle, sweep){
-      const s = polarToXY(startAngle, r);
-      const e = polarToXY(endAngle, r);
-      const large = sweep > 180 ? 1 : 0;
-      return `M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 0 ${e.x} ${e.y}`;
-    }
+    function fx(n){return n.toFixed(2);}
 
-    let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background:transparent">`;
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+    // Defs
+    svg+='<defs>';
+    svg+='<filter id="ncg" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+    svg+='<filter id="ncgs" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+    svg+='<radialGradient id="ncbg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0d0904"/><stop offset="100%" stop-color="#020100"/></radialGradient>';
+    svg+='</defs>';
 
-    // Outer background circle
-    svg += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="rgba(5,4,2,0.9)" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>`;
+    // Background circles
+    svg+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R_OUT+'" fill="url(#ncbg)"/>';
+    svg+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R_OUT+'" fill="none" stroke="rgba(201,168,76,0.85)" stroke-width="1.6" filter="url(#ncgs)"/>';
+    svg+='<circle cx="'+cx+'" cy="'+cy+'" r="'+(R_OUT-4)+'" fill="none" stroke="rgba(201,168,76,0.15)" stroke-width="0.5"/>';
 
-    // Zodiac sign segments (12 × 30°)
-    for(let i = 0; i < 12; i++){
-      const signIdx = i;
-      const sign = SIGNS[signIdx];
-      const startAngle = lonToAngle(ascLon + i * 30);
-      const endAngle   = lonToAngle(ascLon + (i+1) * 30);
-      // Arc sector
-      const s  = polarToXY(startAngle, R);
-      const e  = polarToXY(endAngle, R);
-      const s1 = polarToXY(startAngle, r1);
-      const e1 = polarToXY(endAngle, r1);
-      const color = ELEMENT_COLORS[SIGN_ELEMENT[sign]];
-      svg += `<path d="M ${s.x} ${s.y} A ${R} ${R} 0 0 0 ${e.x} ${e.y} L ${e1.x} ${e1.y} A ${r1} ${r1} 0 0 1 ${s1.x} ${s1.y} Z" fill="${color}" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>`;
-
-      // Sign glyph at midpoint
-      const midAngle = lonToAngle(ascLon + (i + 0.5) * 30);
-      const gmid = polarToXY(midAngle, (R + r1) / 2);
-      svg += `<text x="${gmid.x}" y="${gmid.y + 4}" text-anchor="middle" font-size="11" fill="rgba(201,168,76,0.8)" font-family="serif">${SIGN_GLYPHS[signIdx]}</text>`;
+    // Zodiac sign segments
+    for(var si=0;si<12;si++){
+      var a1=lonToAngle(ascLon+si*30), a2=lonToAngle(ascLon+(si+1)*30);
+      var color=ELEMENT_COLORS[SIGN_ELEMENT[SIGNS[si]]];
+      svg+='<path d="'+sectorPath(R_ZO,R_ZI,a1,a2)+'" fill="'+color+'" stroke="rgba(201,168,76,0.3)" stroke-width="0.5"/>';
+      var midA=lonToAngle(ascLon+si*30+15), gp=polar(midA,(R_ZO+R_ZI)/2);
+      svg+='<text x="'+fx(gp.x)+'" y="'+fx(gp.y+5.5)+'" text-anchor="middle" font-size="16" fill="rgba(201,168,76,0.95)" font-family="serif" filter="url(#ncgs)">'+SIGN_GLYPHS[si]+'</text>';
     }
 
-    // House ring
-    svg += `<circle cx="${cx}" cy="${cy}" r="${r2}" fill="none" stroke="rgba(201,168,76,0.15)" stroke-width="0.5"/>`;
-    svg += `<circle cx="${cx}" cy="${cy}" r="${r3}" fill="rgba(5,4,2,0.6)" stroke="rgba(201,168,76,0.2)" stroke-width="0.8"/>`;
+    // Degree ticks every 10° in zodiac ring
+    for(var td=0;td<360;td+=10){
+      var ta=lonToAngle(ascLon+td), tp1=polar(ta,R_ZO);
+      var isBorder=(td%30===0), tp2=polar(ta,R_ZO-(isBorder?15:7));
+      svg+='<line x1="'+fx(tp1.x)+'" y1="'+fx(tp1.y)+'" x2="'+fx(tp2.x)+'" y2="'+fx(tp2.y)+'" stroke="'+(isBorder?'rgba(201,168,76,0.65)':'rgba(201,168,76,0.28)')+'" stroke-width="'+(isBorder?1:0.6)+'"/>';
+    }
 
-    // House division lines
+    // Ring circles
+    svg+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R_ZI+'" fill="none" stroke="rgba(201,168,76,0.45)" stroke-width="0.9"/>';
+    svg+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R_HO+'" fill="rgba(6,4,2,0.5)" stroke="rgba(201,168,76,0.18)" stroke-width="0.5"/>';
+    svg+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R_HI+'" fill="rgba(4,3,1,0.65)" stroke="rgba(201,168,76,0.28)" stroke-width="0.8"/>';
+    svg+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R_PO+'" fill="rgba(3,2,1,0.4)" stroke="rgba(201,168,76,0.12)" stroke-width="0.4"/>';
+    svg+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R_PI+'" fill="none" stroke="rgba(201,168,76,0.1)" stroke-width="0.4"/>';
+
+    // House cusps and numbers
     if(houseCusps){
-      for(let i = 0; i < 12; i++){
-        const ang = lonToAngle(houseCusps[i]);
-        const inner = polarToXY(ang, rc);
-        const outer = polarToXY(ang, r3);
-        const isAngle = (i === 0 || i === 3 || i === 6 || i === 9);
-        svg += `<line x1="${inner.x}" y1="${inner.y}" x2="${outer.x}" y2="${outer.y}" stroke="${isAngle ? 'rgba(201,168,76,0.5)' : 'rgba(201,168,76,0.18)'}" stroke-width="${isAngle ? 1.2 : 0.6}"/>`;
-
-        // House number
-        const numAng = lonToAngle(houseCusps[i] + 15);
-        const nmid = polarToXY(numAng, (r2 + r3) / 2);
-        svg += `<text x="${nmid.x}" y="${nmid.y + 3.5}" text-anchor="middle" font-size="7" fill="rgba(201,168,76,0.55)" font-family="serif">${ROMAN_HOUSES[i]}</text>`;
+      for(var hi=0;hi<12;hi++){
+        var ha=lonToAngle(houseCusps[hi]);
+        var isAngle=(hi===0||hi===3||hi===6||hi===9);
+        var hout=polar(ha,R_ZI), hin=polar(ha,R_IN);
+        svg+='<line x1="'+fx(hout.x)+'" y1="'+fx(hout.y)+'" x2="'+fx(hin.x)+'" y2="'+fx(hin.y)+'" stroke="'+(isAngle?'rgba(201,168,76,0.65)':'rgba(201,168,76,0.22)')+'" stroke-width="'+(isAngle?1.3:0.6)+'"/>';
+        // House mid label
+        var nextLon=houseCusps[(hi+1)%12];
+        var mid=houseCusps[hi]; var span=mod360(nextLon-houseCusps[hi]); mid=houseCusps[hi]+span/2;
+        var nh_a=lonToAngle(mid), np=polar(nh_a,(R_HO+R_HI)/2);
+        svg+='<text x="'+fx(np.x)+'" y="'+fx(np.y+3.5)+'" text-anchor="middle" font-size="8.5" fill="rgba(201,168,76,0.65)" font-family="serif">'+ROMAN_HOUSES[hi]+'</text>';
       }
     }
 
-    // Inner decorative circle
-    svg += `<circle cx="${cx}" cy="${cy}" r="${rc}" fill="rgba(5,4,2,0.95)" stroke="rgba(201,168,76,0.25)" stroke-width="0.8"/>`;
+    // Inner circle
+    svg+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R_IN+'" fill="rgba(5,3,1,0.97)" stroke="rgba(201,168,76,0.38)" stroke-width="1" filter="url(#ncgs)"/>';
 
-    // Aspect lines (inside inner area)
-    // Draw aspect lines between planets (thin colored lines)
-    const aspColors = { Conjunction:'rgba(201,168,76,0.55)', Opposition:'rgba(80,140,220,0.4)', Trine:'rgba(60,180,110,0.4)', Square:'rgba(210,70,70,0.4)', Sextile:'rgba(100,160,200,0.3)' };
-    const corePlanetNames = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
-    if(houseCusps){ // only draw if we have full chart
-      const planetPos = {};
-      for(const p of corePlanetNames){
-        if(planets[p]){
-          const ang = lonToAngle(planets[p].totalDeg);
-          planetPos[p] = polarToXY(ang, rp - 15);
-        }
-      }
-      // Find aspects and draw lines
-      for(let i = 0; i < corePlanetNames.length; i++){
-        for(let j = i+1; j < corePlanetNames.length; j++){
-          const p1 = corePlanetNames[i], p2 = corePlanetNames[j];
-          if(!planets[p1] || !planets[p2]) continue;
-          const diff = angularDiff(planets[p1].totalDeg, planets[p2].totalDeg);
-          let aspName = null;
-          for(const asp of ASPECTS){
-            if(Math.abs(diff - asp.angle) <= asp.orb){ aspName = asp.name; break; }
-          }
-          if(aspName && planetPos[p1] && planetPos[p2]){
-            const c = aspColors[aspName] || 'rgba(255,255,255,0.1)';
-            svg += `<line x1="${planetPos[p1].x}" y1="${planetPos[p1].y}" x2="${planetPos[p2].x}" y2="${planetPos[p2].y}" stroke="${c}" stroke-width="0.6"/>`;
+    // Aspect lines
+    var ASP_COLORS={
+      Conjunction:'rgba(201,168,76,0.55)',Opposition:'rgba(130,80,220,0.45)',
+      Trine:'rgba(40,185,100,0.42)',Square:'rgba(220,55,55,0.48)',
+      Sextile:'rgba(70,160,220,0.38)',Quincunx:'rgba(220,155,40,0.32)',
+    };
+    var corePNs=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
+    if(houseCusps){
+      for(var ai=0;ai<corePNs.length;ai++){
+        for(var aj=ai+1;aj<corePNs.length;aj++){
+          var pn1=corePNs[ai],pn2=corePNs[aj];
+          if(!planets[pn1]||!planets[pn2]) continue;
+          var adiff=angularDiff(planets[pn1].totalDeg,planets[pn2].totalDeg);
+          var aspName=null;
+          for(var ak=0;ak<ASPECTS.length;ak++){if(Math.abs(adiff-ASPECTS[ak].angle)<=ASPECTS[ak].orb){aspName=ASPECTS[ak].name;break;}}
+          if(aspName){
+            var aa1=lonToAngle(planets[pn1].totalDeg),aa2=lonToAngle(planets[pn2].totalDeg);
+            var apt1=polar(aa1,R_ASPL),apt2=polar(aa2,R_ASPL);
+            var ac=ASP_COLORS[aspName]||'rgba(255,255,255,0.1)';
+            var isDash=(aspName==='Quincunx'||aspName==='Sextile');
+            svg+='<line x1="'+fx(apt1.x)+'" y1="'+fx(apt1.y)+'" x2="'+fx(apt2.x)+'" y2="'+fx(apt2.y)+'" stroke="'+ac+'" stroke-width="0.75"'+(isDash?' stroke-dasharray="4,3"':'')+'/>';
           }
         }
       }
     }
 
-    // Planet markers
-    const usedAngles = [];
-    for(const [name, info] of Object.entries(planets)){
-      if(!PLANET_INFO[name]) continue;
-      const pi = PLANET_INFO[name];
-      let ang = lonToAngle(info.totalDeg);
-      // Collision avoidance: nudge if too close to another
-      for(const ua of usedAngles){
-        if(Math.abs(ang - ua) < 8) ang += 9;
+    // Build planet display list and spread overlaps
+    var displayList=[];
+    var pikeys=Object.keys(PLANET_INFO);
+    for(var dli=0;dli<pikeys.length;dli++){
+      var dn=pikeys[dli];
+      if(dn==='Ascendant'||dn==='MC') continue;
+      var dp=planets[dn]; if(!dp) continue;
+      var dorig=lonToAngle(dp.totalDeg);
+      displayList.push({name:dn,angle:dorig,orig:dorig,info:PLANET_INFO[dn],p:dp});
+    }
+    displayList.sort(function(a,b){return a.angle-b.angle;});
+    displayList=spreadAngles(displayList,10);
+
+    for(var pli=0;pli<displayList.length;pli++){
+      var item=displayList[pli];
+      var pos=polar(item.angle,R_PG);
+      var dotPos=polar(item.orig,(R_PO+R_PI)/2);
+      var adspread=Math.abs(item.angle-item.orig);
+      if(adspread>1.5&&adspread<358){
+        svg+='<line x1="'+fx(dotPos.x)+'" y1="'+fx(dotPos.y)+'" x2="'+fx(pos.x)+'" y2="'+fx(pos.y)+'" stroke="'+item.info.color+'" stroke-width="0.4" opacity="0.3"/>';
       }
-      usedAngles.push(ang);
-      const pos = polarToXY(ang, rp);
-      // Dot
-      svg += `<circle cx="${pos.x}" cy="${pos.y}" r="3" fill="${pi.color}" opacity="0.9"/>`;
-      // Glyph
-      const gpos = polarToXY(ang, rp - 14);
-      svg += `<text x="${gpos.x}" y="${gpos.y + 4}" text-anchor="middle" font-size="10" fill="${pi.color}" font-family="serif" opacity="0.95">${pi.glyph}</text>`;
+      svg+='<circle cx="'+fx(dotPos.x)+'" cy="'+fx(dotPos.y)+'" r="2.8" fill="'+item.info.color+'" opacity="0.9" filter="url(#ncgs)"/>';
+      svg+='<text x="'+fx(pos.x)+'" y="'+fx(pos.y+4.5)+'" text-anchor="middle" font-size="14" fill="'+item.info.color+'" font-family="serif" filter="url(#ncg)" opacity="0.95">'+item.info.glyph+'</text>';
+      if(item.p.retrograde){
+        var rp=polar(item.angle,R_PG-14);
+        svg+='<text x="'+fx(rp.x)+'" y="'+fx(rp.y+3)+'" text-anchor="middle" font-size="7" fill="'+item.info.color+'" font-family="serif" opacity="0.6" font-style="italic">R</text>';
+      }
     }
 
-    // ASC / MC markers if present
+    // ASC / MC labels
     if(houseCusps){
-      const ascAng = lonToAngle(ascLon);
-      const ascPos = polarToXY(ascAng, r3 + 4);
-      svg += `<text x="${ascPos.x}" y="${ascPos.y + 3}" text-anchor="middle" font-size="7" fill="#c9a84c" font-family="serif" font-weight="bold">AC</text>`;
-      if(mcLon !== undefined){
-        const mcAng = lonToAngle(mcLon);
-        const mcPos = polarToXY(mcAng, r3 + 4);
-        svg += `<text x="${mcPos.x}" y="${mcPos.y + 3}" text-anchor="middle" font-size="7" fill="#c9a84c" font-family="serif" font-weight="bold">MC</text>`;
+      var ascA=lonToAngle(ascLon),ascPt=polar(ascA,R_ZI-10);
+      svg+='<text x="'+fx(ascPt.x)+'" y="'+fx(ascPt.y+3)+'" text-anchor="middle" font-size="8" fill="#c9a84c" font-family="serif" font-weight="bold" filter="url(#ncgs)">AC</text>';
+      if(mcLon!==undefined){
+        var mcA=lonToAngle(mcLon),mcPt=polar(mcA,R_ZI-10);
+        svg+='<text x="'+fx(mcPt.x)+'" y="'+fx(mcPt.y+3)+'" text-anchor="middle" font-size="8" fill="#c9a84c" font-family="serif" font-weight="bold" filter="url(#ncgs)">MC</text>';
       }
     }
 
-    // Center sun symbol
-    svg += `<text x="${cx}" y="${cy + 5}" text-anchor="middle" font-size="14" fill="rgba(201,168,76,0.4)" font-family="serif">\u2609</text>`;
-
-    svg += `</svg>`;
+    // Center ✦
+    svg+='<text x="'+cx+'" y="'+(cy+8)+'" text-anchor="middle" font-size="20" fill="rgba(201,168,76,0.28)" font-family="serif">\u2726</text>';
+    svg+='</svg>';
     return svg;
   }
 
-  // ─────────────────────────────────────────────
-  // RENDER RESULT DOSSIER
-  // ─────────────────────────────────────────────
+  // ════════════════════════ INTERPRETATIONS ════════════════════════
+
+  var INTERPRETATIONS={
+    Sun:{
+      Aries:'You arrived here as a kind of detonation. The Sun in Aries marks the self that refuses to wait for permission — you ignite things simply by showing up. Your chart carries the frequency of the pioneer, the one who begins before the path is visible. The cosmos encoded in you a capacity for pure impulse that most people only dream about.',
+      Taurus:'The Sun in Taurus says this: you were built to last. While others scatter their energy across passing obsessions, yours consolidates — slowly, deliberately, with the patience of stone becoming mountain. You carry a deep understanding of pleasure and permanence. The material world is not a trap for you but a sacred territory, and you move through it with the authority of one who has never doubted that beauty is worth the work.',
+      Gemini:'The Sun in Gemini means you arrived with two minds and have been living between them ever since. You are not inconsistent — you are prismatic. Every situation refracts through you into its full spectrum of possibility, and your genius is in seeing all angles simultaneously. You were made for transmission: the exchange of ideas, the collision of thoughts, the electric pleasure of a conversation that shifts something.',
+      Cancer:'The Sun in Cancer places your identity in the deep waters — in feeling, in memory, in the sacred architecture of belonging. You are not fragile; you are profoundly permeable, and that is a different thing entirely. Your chart codes the lunar rhythm into your very sense of self: you ebb and flood with the tides of your interior life. Home is wherever you have decided to pour your care.',
+      Leo:'The Sun in Leo is the chart\'s solar signature at maximum brightness. You are not performing ego — you are enacting the principle of radiance itself. Something in you was built to be witnessed, to warm the people around you the way fire warms a room without losing any of itself. Your calling is to shine with such specificity that no one else could do it in your place.',
+      Virgo:'The Sun in Virgo hides its power in the details. You see what others miss, feel the disruption in what doesn\'t fit, understand that the sacred lives inside the precise. Your intelligence is not flashy — it is surgical, devoted, and more powerful for its restraint. The cosmos placed in your chart the frequency of discernment: the knowledge that some things must be refined endlessly before they are offered to the world.',
+      Libra:'The Sun in Libra means your identity is formed in the space between. Not inside you, but in the architecture of relationship — in how things calibrate against each other, how beauty is built from tension and balance held. You understand justice not as a concept but as an aesthetic: the universe should be elegant, and you spend your life making it so.',
+      Scorpio:'The Sun in Scorpio does not glow — it burns from the inside out. Your identity is forged in depth, in the places other people turn away from. You carry the occult frequency: a natural access to what is hidden, what is transforming, what refuses to be sanitized. You have always known that the surface of things is just the beginning of the story.',
+      Sagittarius:'The Sun in Sagittarius means you were assembled from arrows — aimed at horizons you cannot yet see. Your chart codes the philosopher and the nomad into the same body: one who must understand everything, go everywhere, stretch the container of what is possible. You carry the frequency of expansion, and wherever you go, you take the edge of the known world with you.',
+      Capricorn:'The Sun in Capricorn is the chart\'s most quietly ambitious signature. Your identity is built on the long game — on choosing difficulty deliberately, on earning what you claim. You understand that structure is not a prison but a form of respect: for the work, for the craft, for the people who will inherit what you build. The mountain does not move for you; you move the mountain.',
+      Aquarius:'The Sun in Aquarius arrived in this century as a frequency ahead of its time, as it always has. Your identity is organized around the deviation from pattern — the refusal to normalize what the collective has accepted too easily. You carry the signal of revolution inside you as a kind of background radiation, always slightly ahead of the frequency everyone else is on.',
+      Pisces:'The Sun in Pisces does not anchor — it dissolves. Your identity is oceanic: boundless, absorbing, carrying the sediment of every shore it has touched. You were built to transcend the ordinary categories of self, to access the current beneath consensus reality, to feel what others have filed away as unverifiable. The mystic and the artist in you are not two people; they are one frequency flowing through you.',
+    },
+    Moon:{
+      Aries:'The Moon in Aries means your emotional life moves at the speed of fire. You feel first, process later — and your instinct is almost never wrong. There is a warrior frequency coded into your inner world: when something threatens what you love, the response is immediate, total, and primal. You need emotional honesty the way other people need air.',
+      Taurus:'The Moon in Taurus roots your emotional body in the earth. You feel safest when things are stable, beautiful, and predictable in the best sense of that word. Your inner life has a slow, luminous quality — you do not spike and crash but deepen gradually, like a wine that opens with time. Comfort is not laziness for you; it is a survival mechanism coded into your bones.',
+      Gemini:'The Moon in Gemini means your emotions arrive in language. You process feeling through communication, through the telling and retelling of experience until it becomes a story you can live with. Your inner life is quick, curious, and sometimes difficult to pin down — but that multiplicity is not instability. It is the signature of a mind that can hold contradiction with grace.',
+      Cancer:'The Moon in Cancer is at home — literally. This is the Moon\'s native frequency, and in your chart it means your emotional body is fully awake, fully feeling, fully tuned to the invisible currents around you. You absorb other people\'s inner weather without meaning to. The practice for you is learning to know which of your feelings belong to you.',
+      Leo:'The Moon in Leo means your emotional life is theatrical in the highest sense — you feel with a grandeur that cannot be contained. Your inner world has a performance quality not because you are performing, but because for you, emotion IS expression. You need to be witnessed in your feeling. The warmth you generate when loved is one of the most healing forces in any room you occupy.',
+      Virgo:'The Moon in Virgo processes emotion through analysis. You feel and immediately begin to categorize, to understand, to find the function of the feeling. This is not avoidance — it is how you metabolize. Your emotional body is precise and devoted to getting it right. The danger is the inner critic who turns that precision on yourself; the gift is a capacity for care that misses nothing.',
+      Libra:'The Moon in Libra needs beauty and equilibrium the way the body needs water. Your emotional wellbeing is directly tied to the harmony of your environment and your relationships — when things are out of balance, you feel it in your bones before you can name it. You have a gift for creating peace, but you must learn to include yourself in the negotiations.',
+      Scorpio:'The Moon in Scorpio means your emotional life has no surface. You feel with the full depth of the ocean — dark pressures, hidden currents, the weight of what lies at the bottom. You are not dramatic; you are simply awake to dimensions of feeling that most people have closed off. Your emotional intelligence is one of the most powerful instruments in any room.',
+      Sagittarius:'The Moon in Sagittarius means your feelings arrive as philosophies. You experience emotion as meaning — every feeling points toward a larger truth you are trying to locate. You need freedom in your emotional life the way fire needs oxygen. When the world feels too small, your inner life begins to suffocate, and the only cure is expansion: travel, learning, the open sky.',
+      Capricorn:'The Moon in Capricorn moves quietly through its inner world, rarely announcing what it carries. You feel deeply but prefer to demonstrate emotion through action — through loyalty, through showing up, through building something that lasts. You carry the ancestral frequency in your emotional body: a responsibility to the line, to what was inherited and what will be passed forward.',
+      Aquarius:'The Moon in Aquarius processes emotion at a slight remove — not because you don\'t feel, but because feeling, for you, is always also a kind of research. You observe your own inner states with the fascination of a scientist watching a phenomenon. Your emotional world is organized around ideals, around the collective, around the vision of what could be if only the world would catch up.',
+      Pisces:'The Moon in Pisces is an open channel. Your emotional body has no firewall — you receive everything: the grief in the room, the beauty in the weather, the feeling of music before the first note sounds. This is both your gift and your burden. You were assembled to feel on behalf of others, and the practice of your life is learning when to be the ocean and when to be the shore.',
+    },
+    Rising:{
+      Aries:'Aries rising means the world meets a detonation when it meets you. Your presence arrives first — quick, direct, charged with a kinetic energy that makes other people\'s systems recalibrate. You lead with the body, with action, with the refusal to wait. The mask you wear to face the world is also your truest face: someone who was born moving forward.',
+      Taurus:'Taurus rising means the world meets you as solid ground. Your presence carries a quality of permanence — people instinctively sense that you will not scatter, that you can be trusted to stay. You arrive in rooms with a sensory gravity, and others often don\'t know why they feel calmed until much later. You lead with beauty and with the kind of patience that only comes from knowing your own weight.',
+      Gemini:'Gemini rising means the world meets quicksilver when it meets you. Your face is the face of intelligence in motion — curious, multi-directional, always asking the question the room hasn\'t thought to ask yet. You adapt your presentation to your audience with the ease of someone who has always known that the self is a fluid territory. The twins are your mask, and you have learned to use all of them.',
+      Cancer:'Cancer rising means the world meets you as something that must be approached carefully — not because you are fragile, but because there is a protective quality in your bearing that reads as depth. People sense your feeling capacity before you speak. You lead with care, with receptivity, with a shell that you lower only when trust has been built slowly, the right way.',
+      Leo:'Leo rising means you were built to be seen. Your presence has a solar quality — warm, commanding, organizing the room around itself without effort. People look at you first, and they remember you after. This is not vanity; it is the frequency you were assigned. Your task is to learn to hold that attention without being consumed by the hunger for it.',
+      Virgo:'Virgo rising means the world meets precision when it meets you. Your presence reads as discerning, composed, organized in a way that suggests you have already seen the problem and begun to solve it. You lead with service and with the quiet authority of someone who understands the difference between what is real and what is merely impressive.',
+      Libra:'Libra rising means the world meets grace when it meets you. Your face is the face of the diplomat, the artist, the one who makes things more beautiful simply by being in proximity to them. People feel at ease with you before they know why. You lead with the principle of fairness, and your first instinct in any situation is to find the balance point.',
+      Scorpio:'Scorpio rising means the world meets intensity when it meets you — even when you are doing nothing, even when you are simply standing there. Your presence has a magnetic weight that other people feel but often cannot name. You lead with depth, with the sense that you are seeing through the surface of things directly into what\'s underneath. People do not forget you.',
+      Sagittarius:'Sagittarius rising means the world meets a fire aimed at the horizon when it meets you. Your presence reads as expansive, philosophical, restless with the need to move and understand. You lead with truth-telling — sometimes before the room is ready for it. Your laugh is a frequency that expands whatever space you enter, and your absence from any gathering is felt immediately.',
+      Capricorn:'Capricorn rising means the world meets authority when it meets you — the quiet, earned kind that does not need to announce itself. Your presence reads as someone who has already done the work, who has paid costs others refused to pay. You lead with discipline and with the long view. People sense that you carry something real, and they are often drawn to your gravity.',
+      Aquarius:'Aquarius rising means the world meets a frequency slightly out of phase with the present when it meets you. Your presence reads as different, visionary, organized around a logic that makes perfect sense only once you explain it — and sometimes not even then. You lead with your deviation. Your task is to transmit what you carry without apologizing for arriving ahead of schedule.',
+      Pisces:'Pisces rising means the world meets a mirror when it meets you. Your presence shifts to reflect what others need to see — compassionate, dreamy, slightly other-dimensional. People often project onto you before they know you, and the work of your life is to know where the projection ends and you begin. You lead with empathy, and the worlds you move through receive you as a kind of sacred frequency.',
+    }
+  };
+
+  function generateInterpretation(result){
+    var sun=result.planets['Sun'],moon=result.planets['Moon'],asc=result.ascData;
+    var html='';
+    if(sun&&INTERPRETATIONS.Sun[sun.sign]){
+      html+='<div class="natal-interp-block">'
+          +'<div class="natal-interp-title"><span style="color:#f0c040">'+sun.glyph+'</span> Sun in '+sun.sign+'</div>'
+          +'<div class="natal-interp-text">'+INTERPRETATIONS.Sun[sun.sign]+'</div>'
+          +'</div>';
+    }
+    if(moon&&INTERPRETATIONS.Moon[moon.sign]){
+      html+='<div class="natal-interp-block">'
+          +'<div class="natal-interp-title"><span style="color:#c8d8f0">\u263D</span> Moon in '+moon.sign+'</div>'
+          +'<div class="natal-interp-text">'+INTERPRETATIONS.Moon[moon.sign]+'</div>'
+          +'</div>';
+    }
+    if(asc&&INTERPRETATIONS.Rising[asc.sign]){
+      html+='<div class="natal-interp-block">'
+          +'<div class="natal-interp-title"><span style="color:#c9a84c">'+asc.glyph+'</span> '+asc.sign+' Rising</div>'
+          +'<div class="natal-interp-text">'+INTERPRETATIONS.Rising[asc.sign]+'</div>'
+          +'</div>';
+    }
+    return html;
+  }
+
   function formatPos(p){
-    return `${p.deg}\u00B0${String(p.min).padStart(2,'0')}'`;
+    return p.deg+'\u00B0'+String(p.min).padStart(2,'0')+'\'';
   }
 
   function renderDossier(result, userName, container){
-    // container: object with element IDs or element refs
+    var planets=result.planets,ascData=result.ascData,mcData=result.mcData;
+    var houseCusps=result.houseCusps,elements=result.elements,modes=result.modes;
+    var aspects=result.aspects,hasTime=result.hasTime,total=result.total;
 
-    const { planets, ascData, mcData, houseCusps, elements, modes, aspects, hasTime, total } = result;
-
-    // Header
-    if(container.nameEl) container.nameEl.textContent = userName.toUpperCase();
+    if(container.nameEl) container.nameEl.textContent=userName.toUpperCase();
     if(container.sunSubEl){
-      const sun = planets['Sun'];
-      container.sunSubEl.textContent = `${sun.glyph} Sun in ${sun.sign}` + (ascData ? `  \u2022  ${ascData.glyph} ${ascData.sign} Rising` : '');
+      var sun=planets['Sun'];
+      container.sunSubEl.textContent=sun.glyph+' Sun in '+sun.sign+(ascData?'  \u2022  '+ascData.glyph+' '+ascData.sign+' Rising':'');
     }
 
-    // SVG wheel
     if(container.wheelEl){
-      if(ascData && houseCusps){
-        container.wheelEl.innerHTML = generateChartSVG(planets, ascData.totalDeg, houseCusps, mcData ? mcData.totalDeg : undefined);
+      if(ascData&&houseCusps){
+        container.wheelEl.innerHTML=generateChartSVG(planets,ascData.totalDeg,houseCusps,mcData?mcData.totalDeg:undefined);
       } else {
-        // No time: simplified wheel without houses
-        container.wheelEl.innerHTML = generateChartSVG(planets, 0, null, undefined);
+        container.wheelEl.innerHTML=generateChartSVG(planets,0,null,undefined);
       }
     }
 
-    // Planets table
     if(container.planetsEl){
-      const pRows = [
-        ['Sun','☉'],['Moon','☽'],['Mercury','☿'],['Venus','♀'],['Mars','♂'],
-        ['Jupiter','♃'],['Saturn','♄'],['Uranus','♅'],['Neptune','♆'],['Pluto','♇'],
-        ['Black Moon Lilith','⚸'],['North Node','☊'],
+      var pRows=[
+        ['Sun','\u2609'],['Moon','\u263D'],['Mercury','\u263F'],['Venus','\u2640'],['Mars','\u2642'],
+        ['Jupiter','\u2643'],['Saturn','\u2644'],['Uranus','\u26E2'],['Neptune','\u2646'],['Pluto','\u2647'],
+        ['Chiron','\u26B7'],['North Node','\u260A'],
       ];
       if(ascData) pRows.push(['Ascendant','AC']);
       if(mcData)  pRows.push(['MC','MC']);
-      let html = '';
-      for(const [name, sym] of pRows){
-        const p = name === 'Ascendant' ? ascData : (name === 'MC' ? mcData : planets[name]);
+      var html='';
+      for(var ri=0;ri<pRows.length;ri++){
+        var rn=pRows[ri][0],rsym=pRows[ri][1];
+        var p=(rn==='Ascendant')?ascData:((rn==='MC')?mcData:planets[rn]);
         if(!p) continue;
-        const pi = PLANET_INFO[name] || { color:'#fff' };
-        html += `<tr>
-          <td><span style="color:${pi.color};font-size:1rem;">${sym}</span> ${name}</td>
-          <td><span class="sign-glyph">${p.glyph}</span>${p.sign}</td>
-          <td>${formatPos(p)}</td>
-          <td class="house-num-cell">${hasTime && p.house ? 'H' + p.house : '—'}</td>
-        </tr>`;
+        var pi2=PLANET_INFO[rn]||{color:'#fff'};
+        var retroStr=p.retrograde?'<span style="color:rgba(201,168,76,0.55);font-size:0.75rem;">\u211E</span>':'';
+        html+='<tr>'
+            +'<td><span style="color:'+pi2.color+';font-size:1.05rem;">'+rsym+'</span> '+rn+'</td>'
+            +'<td><span class="sign-glyph">'+p.glyph+'</span>'+p.sign+'</td>'
+            +'<td>'+formatPos(p)+'</td>'
+            +'<td class="house-num-cell">'+(hasTime&&p.house?'H'+p.house:'\u2014')+'</td>'
+            +'<td>'+retroStr+'</td>'
+            +'</tr>';
       }
-      container.planetsEl.innerHTML = html;
+      container.planetsEl.innerHTML=html;
     }
 
-    // Houses
     if(container.housesSectionEl){
-      if(hasTime && houseCusps){
-        container.housesSectionEl.style.display = '';
+      if(hasTime&&houseCusps){
+        container.housesSectionEl.style.display='';
         if(container.housesGridEl){
-          let html = '';
-          for(let i = 0; i < 12; i++){
-            const h = lonToSign(houseCusps[i]);
-            html += `<div class="natal-house-row">
-              <span class="natal-house-num">${ROMAN_HOUSES[i]}</span>
-              <span class="natal-house-sign">${h.glyph} ${h.sign} ${formatPos(h)}</span>
-            </div>`;
+          var hhtml='';
+          for(var hci=0;hci<12;hci++){
+            var h=lonToSign(houseCusps[hci]);
+            hhtml+='<div class="natal-house-row"><span class="natal-house-num">'+ROMAN_HOUSES[hci]+'</span><span class="natal-house-sign">'+h.glyph+' '+h.sign+' '+formatPos(h)+'</span></div>';
           }
-          container.housesGridEl.innerHTML = html;
+          container.housesGridEl.innerHTML=hhtml;
         }
       } else {
-        container.housesSectionEl.style.display = 'none';
+        container.housesSectionEl.style.display='none';
       }
     }
 
-    // Elements
     if(container.elementsEl){
-      const elOrder = ['Fire','Earth','Air','Water'];
-      const elMax = total || 8;
-      let html = '';
-      for(const el of elOrder){
-        const cnt = elements[el] || 0;
-        html += `<div class="natal-bar-row">
-          <span class="natal-bar-label">${el}</span>
-          <div class="natal-bar-track"><div class="natal-bar-fill" style="width:${Math.round(cnt/elMax*100)}%"></div></div>
-          <span class="natal-bar-count">${cnt}</span>
-        </div>`;
+      var elOrder=['Fire','Earth','Air','Water'],elMax=total||8,ehtml='';
+      for(var eli=0;eli<elOrder.length;eli++){
+        var el=elOrder[eli],cnt=elements[el]||0;
+        ehtml+='<div class="natal-bar-row"><span class="natal-bar-label">'+el+'</span><div class="natal-bar-track"><div class="natal-bar-fill" style="width:'+Math.round(cnt/elMax*100)+'%"></div></div><span class="natal-bar-count">'+cnt+'</span></div>';
       }
-      container.elementsEl.innerHTML = html;
+      container.elementsEl.innerHTML=ehtml;
     }
 
-    // Modes
     if(container.modesEl){
-      const modeOrder = ['Cardinal','Fixed','Mutable'];
-      const mMax = total || 8;
-      let html = '';
-      for(const m of modeOrder){
-        const cnt = modes[m] || 0;
-        html += `<div class="natal-bar-row">
-          <span class="natal-bar-label">${m}</span>
-          <div class="natal-bar-track"><div class="natal-bar-fill" style="width:${Math.round(cnt/mMax*100)}%"></div></div>
-          <span class="natal-bar-count">${cnt}</span>
-        </div>`;
+      var modeOrder=['Cardinal','Fixed','Mutable'],mMax=total||8,mhtml='';
+      for(var mi=0;mi<modeOrder.length;mi++){
+        var m=modeOrder[mi],mcnt=modes[m]||0;
+        mhtml+='<div class="natal-bar-row"><span class="natal-bar-label">'+m+'</span><div class="natal-bar-track"><div class="natal-bar-fill" style="width:'+Math.round(mcnt/mMax*100)+'%"></div></div><span class="natal-bar-count">'+mcnt+'</span></div>';
       }
-      container.modesEl.innerHTML = html;
+      container.modesEl.innerHTML=mhtml;
     }
 
-    // Aspects
-    if(container.aspectsEl){
-      const aspClasses = { Conjunction:'asp-conjunction', Opposition:'asp-opposition', Trine:'asp-trine', Square:'asp-square', Sextile:'asp-sextile' };
-      let html = '';
-      if(aspects.length === 0){
-        html = '<div class="empty-state" style="padding:12px 0 4px;">No major aspects found within standard orbs.</div>';
+    if(container.aspectsTbodyEl){
+      var aspHtml='';
+      if(aspects.length===0){
+        aspHtml='<tr><td colspan="4" style="text-align:center;color:rgba(201,168,76,0.35);font-style:italic;padding:16px 0;">No major aspects within orb.</td></tr>';
       } else {
-        for(const asp of aspects){
-          const cls = aspClasses[asp.aspect] || '';
-          html += `<div class="natal-aspect-row">
-            <span class="asp-symbol ${cls}">${asp.symbol}</span>
-            <span>${asp.p1}</span>
-            <span class="asp-label">${asp.aspect}</span>
-            <span>${asp.p2}</span>
-            <span class="asp-label" style="margin-left:auto;">${asp.orb}\u00B0 orb</span>
-          </div>`;
+        for(var aspi=0;aspi<aspects.length;aspi++){
+          var asp=aspects[aspi];
+          aspHtml+='<tr>'
+              +'<td>'+asp.p1+'</td>'
+              +'<td><span class="asp-symbol '+asp.cls+'">'+asp.symbol+'</span> <span class="'+asp.cls+'" style="font-size:0.75rem;letter-spacing:0.05em;">'+asp.aspect+'</span></td>'
+              +'<td>'+asp.p2+'</td>'
+              +'<td class="house-num-cell">'+asp.orb+'\u00B0</td>'
+              +'</tr>';
         }
       }
-      container.aspectsEl.innerHTML = html;
+      container.aspectsTbodyEl.innerHTML=aspHtml;
+    }
+
+    if(container.interpEl){
+      var interpHtml=generateInterpretation(result);
+      container.interpEl.innerHTML=interpHtml;
+      var interpDivider=document.getElementById('nr-interp-divider');
+      if(interpHtml){
+        container.interpEl.style.display='block';
+        if(interpDivider) interpDivider.style.display='';
+      }
     }
   }
 
-  // Public API
   return {
-    calculate,
-    renderDossier,
-    SIGNS,
-    SIGN_GLYPHS,
-    lonToSign,
-    PLANET_INFO,
-    ROMAN_HOUSES,
-    mod360,
+    calculate:calculate,renderDossier:renderDossier,
+    SIGNS:SIGNS,SIGN_GLYPHS:SIGN_GLYPHS,lonToSign:lonToSign,
+    PLANET_INFO:PLANET_INFO,ROMAN_HOUSES:ROMAN_HOUSES,mod360:mod360,
   };
 })();
 </script>
@@ -2034,10 +2146,10 @@ const NC = (function(){
 
   // Loading messages cycle
   var loadingMsgs = [
-    'Consulting the celestial record...',
-    'Mapping your planetary positions...',
-    'Calculating your house cusps...',
-    'Revealing your cosmic signature...',
+    'THE STARS ARE BEING CONSULTED',
+    'MAPPING YOUR PLANETARY POSITIONS',
+    'CALCULATING YOUR HOUSE CUSPS',
+    'REVEALING YOUR COSMIC SIGNATURE',
   ];
   var loadingIdx = 0;
   var loadingTimer = null;
@@ -2505,11 +2617,21 @@ const NC = (function(){
           housesGridEl:    document.getElementById('nr-houses-grid'),
           elementsEl:      document.getElementById('nr-elements'),
           modesEl:         document.getElementById('nr-modes'),
-          aspectsEl:       document.getElementById('nr-aspects'),
+          aspectsTbodyEl:  document.getElementById('nr-aspects-tbody'),
+          interpEl:        document.getElementById('nr-interpretation'),
         });
 
         document.getElementById('natal-result').style.display = 'block';
         document.getElementById('natal-form-area').style.display = 'none';
+
+        // Staggered reveal: wheel → tables → interpretation
+        var wheelEl = document.getElementById('nr-wheel');
+        var tablesEl = document.getElementById('nr-tables-wrap');
+        var interpEl = document.getElementById('nr-interpretation');
+        var interpDiv = document.getElementById('nr-interp-divider');
+        if(wheelEl){ wheelEl.classList.remove('nc-reveal-wheel'); void wheelEl.offsetWidth; wheelEl.classList.add('nc-reveal-wheel'); }
+        if(tablesEl){ tablesEl.style.opacity='0'; tablesEl.style.transform='translateY(22px)'; setTimeout(function(){ tablesEl.classList.add('nc-reveal-tables'); tablesEl.style.opacity=''; tablesEl.style.transform=''; }, 380); }
+        if(interpEl&&interpEl.innerHTML){ interpEl.style.opacity='0'; if(interpDiv) interpDiv.style.opacity='0'; setTimeout(function(){ interpEl.classList.add('nc-reveal-interp'); interpEl.style.opacity=''; if(interpDiv){interpDiv.style.opacity='';interpDiv.classList.add('nc-reveal-interp');} }, 720); }
 
         // Save to Firestore
         var chartSaveData = {
@@ -2616,19 +2738,24 @@ const NC = (function(){
                    'Member';
 
     NC.renderDossier(result, userName, {
-      nameEl:        document.getElementById('nr-name'),
-      sunSubEl:      document.getElementById('nr-sun-sub'),
-      wheelEl:       document.getElementById('nr-wheel'),
-      planetsEl:     document.getElementById('nr-planets-tbody'),
+      nameEl:          document.getElementById('nr-name'),
+      sunSubEl:        document.getElementById('nr-sun-sub'),
+      wheelEl:         document.getElementById('nr-wheel'),
+      planetsEl:       document.getElementById('nr-planets-tbody'),
       housesSectionEl: document.getElementById('nr-houses-section'),
-      housesGridEl:  document.getElementById('nr-houses-grid'),
-      elementsEl:    document.getElementById('nr-elements'),
-      modesEl:       document.getElementById('nr-modes'),
-      aspectsEl:     document.getElementById('nr-aspects'),
+      housesGridEl:    document.getElementById('nr-houses-grid'),
+      elementsEl:      document.getElementById('nr-elements'),
+      modesEl:         document.getElementById('nr-modes'),
+      aspectsTbodyEl:  document.getElementById('nr-aspects-tbody'),
+      interpEl:        document.getElementById('nr-interpretation'),
     });
 
     document.getElementById('natal-result').style.display = 'block';
     document.getElementById('natal-form-area').style.display = 'none';
+
+    // Show cosmic recall banner (auto-loaded from archive)
+    var recallEl = document.getElementById('nc-cosmic-recall');
+    if(recallEl) recallEl.style.display = 'block';
   }
 
   function escHtml(s){
