@@ -99,8 +99,28 @@ body::before{
   position:relative;
   z-index:1;
   display:block;
+  opacity:0;
+  transition:opacity 0.3s ease;
 }
-@media(max-width:600px){.avatar-img{width:90px;height:90px;}}
+.avatar-img.av-loaded{opacity:1;}
+@keyframes avatarPulse{
+  0%,100%{background:rgba(201,168,76,0.15);}
+  50%{background:rgba(201,168,76,0.32);}
+}
+.avatar-placeholder{
+  position:absolute;
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:rgba(201,168,76,0.2);
+  animation:avatarPulse 1.6s ease-in-out infinite;
+  z-index:0;
+  pointer-events:none;
+}
+@media(max-width:600px){
+  .avatar-img{width:90px;height:90px;}
+  .avatar-placeholder{width:90px;height:90px;}
+}
 
 /* ── Username / Header ── */
 .username-wrap{
@@ -113,8 +133,9 @@ body::before{
 }
 .profile-name{
   font-family:'Luminari',serif;
-  font-size:clamp(2.2rem,5.5vw,3.6rem);
-  letter-spacing:0.45em;
+  font-size:clamp(1.2rem,3.5vw,2.2rem);
+  letter-spacing:0.25em;
+  white-space:nowrap;
   color:#c9a84c;
   text-transform:uppercase;
   text-shadow:0 0 60px rgba(201,168,76,0.35),0 0 120px rgba(201,168,76,0.1);
@@ -948,7 +969,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <div class="avatar-ring-outer"></div>
       <div class="avatar-ring"></div>
       <div class="avatar-upload-wrap" id="avatar-upload-wrap" title="Upload profile photo">
-        <img class="avatar-img" id="avatar-img" src="assets/homepage/logo png.png" alt="Profile Photo" loading="eager">
+        <div class="avatar-placeholder" id="avatar-placeholder"></div>
+        <img class="avatar-img" id="avatar-img" src="assets/homepage/logo png.png" alt="Profile Photo" loading="eager" fetchpriority="high" width="120" height="120">
         <div class="avatar-upload-overlay">
           <span class="avatar-upload-icon">&#128247;</span>
         </div>
@@ -2027,10 +2049,49 @@ const NC = (function(){
     showPage(user);
   });
 
+  // ── Avatar load helpers ──
+  function _avatarFadeIn(){
+    var img = document.getElementById('avatar-img');
+    var ph  = document.getElementById('avatar-placeholder');
+    if(img) img.classList.add('av-loaded');
+    if(ph)  ph.style.display = 'none';
+  }
+  function _setAvatarSrc(src, lsKey){
+    var img = document.getElementById('avatar-img');
+    if(!img) return;
+    // Remove old handler, attach new one
+    img.onload  = _avatarFadeIn;
+    img.onerror = _avatarFadeIn; // still fade even on error
+    if(img.src !== src){
+      img.classList.remove('av-loaded');
+      img.src = src;
+    } else if(img.complete && img.naturalWidth){
+      // Already in browser cache — fire immediately
+      _avatarFadeIn();
+    }
+    if(lsKey){ try{ localStorage.setItem(lsKey, src); }catch(e){} }
+  }
+
   function showPage(user){
     document.getElementById('page-content').style.display = 'block';
     var name = user.displayName || user.email.split('@')[0];
     document.getElementById('display-name').textContent = name.toUpperCase();
+
+    // ── Avatar: show cached URL immediately while Firestore loads ──
+    var lsKey   = 'jesta_av_' + user.uid;
+    var avatarImg = document.getElementById('avatar-img');
+    var cachedUrl = null;
+    try{ cachedUrl = localStorage.getItem(lsKey); }catch(e){}
+
+    if(cachedUrl){
+      // Use cached Firebase Storage URL right away — no Firestore wait
+      _setAvatarSrc(cachedUrl, null);
+    } else {
+      // No cache: default logo is already the src; just wire up the fade
+      avatarImg.onload  = _avatarFadeIn;
+      avatarImg.onerror = _avatarFadeIn;
+      if(avatarImg.complete && avatarImg.naturalWidth) _avatarFadeIn();
+    }
 
     db.collection('users').doc(user.uid).get()
       .then(function(doc){
@@ -2038,9 +2099,13 @@ const NC = (function(){
         dossierData = data;
         renderViewMode(data, user);
         loadFavorites(user.uid);
-        // Load saved avatar
+        // ── Resolve avatar: update if Firestore has a URL ──
         if(data.avatarUrl){
-          document.getElementById('avatar-img').src = data.avatarUrl;
+          if(data.avatarUrl !== cachedUrl){
+            // Fresh or changed — update src and cache
+            _setAvatarSrc(data.avatarUrl, lsKey);
+          }
+          // If same as cached, already loading — nothing to do
         }
 
         // Check for saved natal chart
@@ -2593,7 +2658,9 @@ const NC = (function(){
       function(){
         uploadTask.snapshot.ref.getDownloadURL().then(function(url){
           spinner.style.display = 'none';
-          document.getElementById('avatar-img').src = url;
+          // Cache new URL immediately
+          try{ localStorage.setItem('jesta_av_'+currentUser.uid, url); }catch(e){}
+          _setAvatarSrc(url, null);
           db.collection('users').doc(currentUser.uid).set({ avatarUrl: url }, { merge: true })
             .catch(function(e){ console.error('Avatar URL save error:', e); });
         });
