@@ -193,6 +193,35 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 @media(max-width:767px){#jsearch-overlay{padding-top:60px}#jsearch-inner{padding:0 14px}}
 </style>
 </head> <body>
+<style>
+#jesta-splash{position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}
+#jesta-splash-badge{width:130px;height:130px;object-fit:contain;opacity:0;animation:splBadgeIn 1s ease 0.15s forwards}
+#jesta-splash-pulse{width:130px;height:130px;position:absolute;border-radius:50%;pointer-events:none;animation:splPulse 1s ease-in-out 1.15s 2}
+#jesta-splash-text{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.55em;text-transform:uppercase;color:rgba(201,168,76,0.85);opacity:0;animation:splTextIn 0.9s ease 2.2s forwards;text-shadow:0 0 18px rgba(201,168,76,0.6)}
+@keyframes splBadgeIn{from{opacity:0;transform:scale(0.88)}to{opacity:0.92;transform:scale(1)}}
+@keyframes splPulse{0%{box-shadow:0 0 0 0 rgba(201,168,76,0)}50%{box-shadow:0 0 60px 20px rgba(201,168,76,0.55),0 0 120px 40px rgba(201,168,76,0.18)}100%{box-shadow:0 0 0 0 rgba(201,168,76,0)}}
+@keyframes splTextIn{from{opacity:0;letter-spacing:0.75em}to{opacity:0.88;letter-spacing:0.55em}}
+@keyframes splFadeOut{from{opacity:1}to{opacity:0}}
+</style>
+<div id="jesta-splash">
+  <div style="position:relative;display:flex;align-items:center;justify-content:center">
+    <div id="jesta-splash-pulse"></div>
+    <img id="jesta-splash-badge" src="assets/homepage/logo png.png" alt="" aria-hidden="true">
+  </div>
+  <p id="jesta-splash-text">THE UNIVERSE OPENS</p>
+</div>
+<script>(function(){
+  if(sessionStorage.getItem('jestaSplash')){
+    var s=document.getElementById('jesta-splash');if(s)s.style.display='none';return;
+  }
+  sessionStorage.setItem('jestaSplash','1');
+  setTimeout(function(){
+    var s=document.getElementById('jesta-splash');
+    if(!s)return;
+    s.style.animation='splFadeOut 0.5s ease forwards';
+    setTimeout(function(){if(s){s.style.display='none';}},500);
+  },3100);
+})();</script>
 <div id="hp-hero">
 <img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72" loading="eager" width="1288" height="2564" fetchpriority="high"> <div class="logo-wrap"> <img src="assets/homepage/logo txt.png" alt="Jestamang" class="logo" loading="eager" fetchpriority="high" width="1428" height="370"> </div> <img src="assets/homepage/logo png.png" alt="Jestamang" class="center-image" loading="eager" width="2048" height="2048"> <nav class="left-nav" aria-label="Main navigation"> <a href="entities.html" class="nav-item"> <img src="assets/homepage/nav-icons/entities.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Entities</span> </a> <a href="albums.html" class="nav-item"> <img src="assets/homepage/nav-icons/albums.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Albums</span> </a> <a href="lyrics.html" class="nav-item"> <img src="assets/homepage/nav-icons/lyrics.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Lyrics</span> </a> <a href="merch.html" class="nav-item"> <img src="assets/homepage/nav-icons/merch.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Merch</span> </a> <a href="photos.html" class="nav-item"> <img src="assets/homepage/nav-icons/photos.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Photos</span> </a> <a href="videos.html" class="nav-item"> <img src="assets/homepage/nav-icons/videos.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Videos</span> </a> <a href="blog.html" class="nav-item"> <img src="assets/homepage/nav-icons/blog.png" alt="" class="nav-icon blog-icon" width="48" height="48"> <span class="nav-label">Blog</span> </a> <a href="email.html" class="nav-item"> <img src="assets/homepage/nav-icons/E-mail.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Email</span> </a> </nav> <nav class="right-nav" aria-label="Social and store navigation"> <a href="instagram.html" class="nav-item"> <img src="assets/homepage/nav-icons/instagram2.gif" alt="" class="nav-icon" id="insta-icon-desktop" width="48" height="48"> <span class="nav-label">Instagram</span> </a> <a href="https://www.youtube.com/@jestamang" class="nav-item" target="_blank" rel="noopener noreferrer"> <img src="assets/homepage/nav-icons/youtube2.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">YouTube</span> </a> <a href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" class="nav-item" target="_blank" rel="noopener noreferrer"> <img src="assets/homepage/nav-icons/spotify.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Spotify</span> </a> <a href="https://music.apple.com/us/artist/jestamang/1665724106" class="nav-item" target="_blank" rel="noopener noreferrer"> <img src="assets/homepage/nav-icons/apple music.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Apple Music</span> </a> <a href="comix.html" class="nav-item"> <img src="assets/homepage/nav-icons/comix2.png" alt="" class="nav-icon nav-icon-breathe" width="48" height="48"> <span class="nav-label">Comix</span> </a> <a href="games.html" class="nav-item"> <img src="assets/homepage/nav-icons/games.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Games</span> </a> <a href="shows.html" class="nav-item"> <img src="assets/homepage/nav-icons/events.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Events</span> </a> <a href="login.html" class="nav-item" id="hp-login-desktop"> <img src="assets/homepage/nav-icons/log%20in.png" alt="" class="nav-icon login-shimmer" width="48" height="48"> <span class="nav-label" id="hp-login-label-desktop">Login</span> </a> </nav> <nav class="mobile-nav" aria-label="Navigation"> <div class="mobile-nav-grid"> <a href="entities.html" class="nav-item"> <img src="assets/homepage/nav-icons/entities.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Entities</span> </a> <a href="albums.html" class="nav-item"> <img src="assets/homepage/nav-icons/albums.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Albums</span> </a> <a href="merch.html" class="nav-item"> <img src="assets/homepage/nav-icons/merch.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Merch</span> </a> <a href="photos.html" class="nav-item"> <img src="assets/homepage/nav-icons/photos.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Photos</span> </a> <a href="videos.html" class="nav-item"> <img src="assets/homepage/nav-icons/videos.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Videos</span> </a> <a href="blog.html" class="nav-item"> <img src="assets/homepage/nav-icons/blog.png" alt="" class="nav-icon blog-icon" width="48" height="48"> <span class="nav-label">Blog</span> </a> <a href="email.html" class="nav-item"> <img src="assets/homepage/nav-icons/E-mail.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Email</span> </a> <a href="lyrics.html" class="nav-item"> <img src="assets/homepage/nav-icons/lyrics.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Lyrics</span> </a> <a href="instagram.html" class="nav-item"> <img src="assets/homepage/nav-icons/instagram2.gif" alt="" class="nav-icon" id="insta-icon-mobile" width="48" height="48"> <span class="nav-label">Instagram</span> </a> <a href="https://www.youtube.com/@jestamang" class="nav-item" target="_blank" rel="noopener noreferrer"> <img src="assets/homepage/nav-icons/youtube2.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">YouTube</span> </a> <a href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" class="nav-item" target="_blank" rel="noopener noreferrer"> <img src="assets/homepage/nav-icons/spotify.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Spotify</span> </a> <a href="https://music.apple.com/us/artist/jestamang/1665724106" class="nav-item" target="_blank" rel="noopener noreferrer"> <img src="assets/homepage/nav-icons/apple music.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Apple Music</span> </a> <a href="comix.html" class="nav-item"> <img src="assets/homepage/nav-icons/comix2.png" alt="" class="nav-icon nav-icon-breathe" width="48" height="48"> <span class="nav-label">Comix</span> </a> <a href="games.html" class="nav-item"> <img src="assets/homepage/nav-icons/games.gif" alt="" class="nav-icon" width="48" height="48"> <span class="nav-label">Games</span> </a> <a href="shows.html" class="nav-item"> <img src="assets/homepage/nav-icons/events.gif" alt="" class="nav-icon" style="display:block!important" width="48" height="48"> <span class="nav-label">Events</span> </a> <a href="login.html" class="nav-item" id="hp-login-mobile"> <img src="assets/homepage/nav-icons/log%20in.png" alt="" class="nav-icon login-shimmer" width="48" height="48"> <span class="nav-label" id="hp-login-label-mobile">Login</span> </a> </div> </nav>
 <div class="hp-scroll-hint"><span>↓</span><small>Scroll</small></div>
@@ -257,6 +286,45 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <div class="hp-conj-viewall">
         <a href="shows.html">View all appearances &nbsp;&#8594;</a>
       </div>
+    </div>
+  </div>
+
+  <div class="hp-divider"></div>
+
+  <!-- ENTITY OF THE DAY -->
+  <style>
+  .hp-section--eotd{background:rgba(12,8,28,0.93)}
+  .eotd-wrap{padding:72px 28px 64px;text-align:center;opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s cubic-bezier(0.16,1,0.3,1)}
+  .hp-section.jesta-revealed .eotd-wrap{opacity:1;transform:translateY(0)}
+  .eotd-card{max-width:520px;margin:0 auto;background:rgba(4,2,10,0.97);border:1px solid rgba(201,168,76,0.35);padding:48px 40px 44px;position:relative}
+  .eotd-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.6),transparent)}
+  .eotd-subtitle{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.45em;text-transform:uppercase;color:rgba(201,168,76,0.55);margin-bottom:6px;display:block}
+  .eotd-date{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.38);margin-bottom:32px;display:block}
+  .eotd-photo-ring{width:80px;height:80px;border-radius:50%;border:1px solid rgba(201,168,76,0.6);overflow:hidden;margin:0 auto 20px;box-shadow:0 0 22px rgba(201,168,76,0.18)}
+  .eotd-photo-ring img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+  .eotd-name{font-family:'Luminari',serif;font-size:clamp(1.25rem,3.5vw,1.75rem);letter-spacing:0.12em;color:#c9a84c;margin:0 0 8px;text-shadow:0 0 28px rgba(201,168,76,0.3)}
+  .eotd-type{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.38em;text-transform:uppercase;color:rgba(201,168,76,0.45);margin-bottom:20px}
+  .eotd-divider{display:flex;align-items:center;justify-content:center;gap:12px;color:rgba(201,168,76,0.38);font-size:0.8rem;margin-bottom:18px}
+  .eotd-divider::before,.eotd-divider::after{content:'';display:block;width:40px;height:1px;background:rgba(201,168,76,0.22)}
+  .eotd-narrator{font-family:'Luminari',serif;font-style:italic;font-size:0.88rem;letter-spacing:0.05em;line-height:1.8;color:rgba(240,230,210,0.6);max-width:360px;margin:0 auto}
+  .eotd-cta{display:inline-block;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.42em;text-transform:uppercase;color:#c9a84c;border:1px solid rgba(201,168,76,0.45);padding:12px 32px;text-decoration:none;transition:background 0.2s,box-shadow 0.2s;min-height:44px;line-height:1.8;margin-top:32px}
+  .eotd-cta:hover{background:rgba(201,168,76,0.1);box-shadow:0 0 20px rgba(201,168,76,0.2)}
+  @media(max-width:768px){.eotd-card{padding:36px 20px 32px;margin:0}.eotd-wrap{padding:56px 16px 48px}.eotd-photo-ring{width:60px;height:60px}}
+  </style>
+  <div class="hp-section hp-section--eotd">
+    <div class="eotd-wrap">
+      <span class="hp-eyebrow">The Cosmos Chooses</span>
+      <h2 class="hp-title" style="margin-bottom:40px">Entity of the Day</h2>
+      <div class="eotd-card" id="eotd-card">
+        <span class="eotd-subtitle">ENTITY OF THE DAY</span>
+        <span class="eotd-date" id="eotd-date">&#8230;</span>
+        <div class="eotd-photo-ring"><img id="eotd-photo" src="" alt="" loading="lazy"></div>
+        <h3 class="eotd-name" id="eotd-name">&#8230;</h3>
+        <p class="eotd-type" id="eotd-type"></p>
+        <div class="eotd-divider">✦</div>
+        <p class="eotd-narrator" id="eotd-narrator">&#8230;</p>
+      </div>
+      <a href="entities.html" class="eotd-cta">Explore All Entities</a>
     </div>
   </div>
 
@@ -625,6 +693,69 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+<script>(function(){
+var NARRATOR={
+'ONE OF THE CHILDREN|The Ace of Chase':'Born between the worlds, this one chases harmonics through the astral corridor.',
+'ONE OF THE CHILDREN|Austinich':'His frequencies predate the stars. He carries the first sound inside his chest.',
+'ONE OF THE CHILDREN|Cricket Om':'She sings in the key of evening. The crickets answer without being asked.',
+'ONE OF THE CHILDREN|Israel':'A prophet in the making, walking barefoot across the edge of revelation.',
+'ONE OF THE CHILDREN|Kek-Buh':'He arrived in silence. The walls are still resonating.',
+'ONE OF THE CHILDREN|Porphigen':'Neither origin nor destination — she is the purple space between all things.',
+'CARTOON ENTITY|The Ace of Chase':'The eternal pursuer. His guitar strings vibrate at the frequency of longing.',
+'CARTOON ENTITY|Alissa Orange':'A citrus specter drifting through the warm seasons of sound.',
+'CARTOON ENTITY|Atlas Is Alice-Lillenger':'She carries the weight of a world only she can map.',
+'CARTOON ENTITY|Big Boy, New Cat. Records':'They pressed the vinyl before the groove existed.',
+'CARTOON ENTITY|Big Smoke, lil Skeez, DEW, Sno Bunni':'Four frequencies. One signal. The four corners hold.',
+'CARTOON ENTITY|Blue Jays':'They sing at the frequency of things that almost were.',
+'CARTOON ENTITY|The Boston Society of the Temple of Psychick Youth':'Ancient rites in a northern city. The ritual never ceased.',
+'CARTOON ENTITY|Caleb Mars':'A red planet spirit in a blue world. His percussion echoes across the void.',
+'CARTOON ENTITY|The Colours':'Each one a vibration. Together, they are light itself.',
+'CARTOON ENTITY|Father P. Journee':'The wayward priest walks forward. The road is the sermon.',
+'CARTOON ENTITY|Hodge':'He remembers everything the universe chose to forget.',
+'CARTOON ENTITY|J.R. Mason':'He built his cathedral out of recorded silence.',
+'CARTOON ENTITY|Jonas Kyle':'A transmitter between frequencies. He speaks in channels others cannot find.',
+'CARTOON ENTITY|Mike 55':'Fifty-five orbits and still accelerating toward the center.',
+'CARTOON ENTITY|Mutt Tour':'They move through towns like weather. Nothing stays the same after.',
+'CARTOON ENTITY|Ode to Bonnie':'This song never ends. It only changes form.',
+'CARTOON ENTITY|The Perfect Trip':'There is no destination — only the endless becoming.',
+'CARTOON ENTITY|Sounds Across the World':'The whole earth vibrates. This is the record of that hum.',
+'CARTOON ENTITY|Venus and the Flytrap':'She lures with beauty and transforms with darkness.',
+'CARTOON ENTITY|The Woodland Singapore Orchestra':'Deep in the green corridor, the rehearsal never ends.',
+'CARTOON ENTITY|You and the 7.5 Evils of the World':'Not all of the evils are enemies. Some are just misunderstood frequencies.'
+};
+var MONTHS=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+var RDAYS=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV','XXV','XXVI','XXVII','XXVIII','XXIX','XXX','XXXI'];
+function toRomanYear(y){var t=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];var r='';t.forEach(function(p){while(y>=p[0]){r+=p[1];y-=p[0];}});return r;}
+function ritualDate(){var d=new Date();return MONTHS[d.getMonth()]+' \u00b7 '+RDAYS[d.getDate()-1]+' \u00b7 '+toRomanYear(d.getFullYear());}
+function getDayOfYear(d){var s=new Date(d.getFullYear(),0,0);return Math.floor((d-s)/86400000);}
+function eotdRender(entity){
+  var el=function(id){return document.getElementById(id);};
+  var dateEl=el('eotd-date');var photoEl=el('eotd-photo');var nameEl=el('eotd-name');var typeEl=el('eotd-type');var narrEl=el('eotd-narrator');
+  if(dateEl)dateEl.textContent=ritualDate();
+  if(photoEl){photoEl.src=entity.photo;photoEl.alt=entity.name;}
+  if(nameEl)nameEl.textContent=entity.name;
+  if(typeEl)typeEl.textContent=entity.type;
+  if(narrEl){var key=entity.type+'|'+entity.name;narrEl.textContent=NARRATOR[key]||'A being of the Jestamang universe.';}
+}
+function eotdInit(){
+  fetch('entities.html').then(function(r){return r.text();}).then(function(html){
+    var parser=new DOMParser();var doc=parser.parseFromString(html,'text/html');
+    var entities=[];
+    doc.querySelectorAll('.dossier-panel').forEach(function(panel){
+      var img=panel.querySelector('.dossier-hero-img');var nameEl=panel.querySelector('.dossier-name');
+      if(img&&nameEl)entities.push({name:nameEl.textContent.trim(),photo:img.getAttribute('src'),type:'ONE OF THE CHILDREN'});
+    });
+    doc.querySelectorAll('.entity-card').forEach(function(card){
+      var img=card.querySelector('.entity-photo');var nameEl=card.querySelector('.entity-name');
+      if(img&&nameEl)entities.push({name:nameEl.textContent.trim(),photo:img.getAttribute('src'),type:'CARTOON ENTITY'});
+    });
+    if(!entities.length){document.getElementById('eotd-card').style.opacity='0.3';return;}
+    var day=getDayOfYear(new Date());var entity=entities[day%entities.length];
+    eotdRender(entity);
+  }).catch(function(){var c=document.getElementById('eotd-card');if(c)c.style.display='none';});
+}
+document.addEventListener('DOMContentLoaded',eotdInit);
+})();</script>
 <button class="jsearch-float-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button>
 <div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
 <div id="jsearch-inner">
