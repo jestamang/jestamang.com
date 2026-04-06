@@ -70,6 +70,10 @@ textarea.tx-input{resize:vertical;min-height:120px;line-height:1.65}
 #tx-error{display:none;font-family:'Luminari',serif;font-size:0.78rem;letter-spacing:0.1em;color:rgba(220,85,85,0.8);font-style:italic;text-align:center;margin-top:22px;line-height:1.8}
 #tx-error a{color:rgba(220,100,100,0.9);text-decoration:none}
 #tx-error a:hover{text-decoration:underline}
+/* ── FIELD ERRORS ── */
+.tx-field-error{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.08em;color:rgba(220,85,85,0.75);font-style:italic;margin-top:5px;display:block;min-height:1em}
+#tx-general-error{font-family:'Luminari',serif;font-size:0.78rem;letter-spacing:0.1em;color:rgba(220,85,85,0.8);font-style:italic;text-align:center;margin-bottom:14px}
+#tx-form-wrap{transition:opacity 0.4s ease}
 
 /* ── MOBILE ── */
 @media(max-width:768px){
@@ -199,7 +203,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .tx-title{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 </style>
 
-  <script>(function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[]).push(arguments);},l=d.createElement(e),l.async=1,l.src=u,n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})(window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');ml('account','1679810');</script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>emailjs.init('xJfBxMIcVCTgYvQr9');</script>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="dns-prefetch" href="https://apis.google.com">
@@ -284,8 +289,34 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
     <div class="tx-rule"></div>
 
-    <div class="tx-form-wrap">
-      <div class="ml-embedded" data-form="8EZtSf"></div>
+    <div class="tx-form-wrap" id="tx-form-wrap">
+      <div class="tx-field">
+        <label class="tx-label" for="fromName">Name</label>
+        <input class="tx-input" type="text" id="fromName" name="fromName" placeholder="Your name" autocomplete="name">
+        <span class="tx-field-error" id="err-name"></span>
+      </div>
+      <div class="tx-field">
+        <label class="tx-label" for="fromEmail">Email</label>
+        <input class="tx-input" type="email" id="fromEmail" name="fromEmail" placeholder="your@signal.com" autocomplete="email">
+        <span class="tx-field-error" id="err-email"></span>
+      </div>
+      <div class="tx-field">
+        <label class="tx-label" for="subject">Subject</label>
+        <input class="tx-input" type="text" id="subject" name="subject" placeholder="What signal are you sending?">
+      </div>
+      <div class="tx-field">
+        <label class="tx-label" for="message">Message</label>
+        <textarea class="tx-input" id="message" name="message" placeholder="Your transmission..." rows="5"></textarea>
+        <span class="tx-field-error" id="err-message"></span>
+      </div>
+      <div id="tx-general-error" style="display:none"></div>
+      <button class="tx-btn" id="transmitBtn" type="button">TRANSMIT</button>
+    </div>
+
+    <div id="tx-success" style="display:none;text-align:center;padding:64px 20px">
+      <span style="display:block;font-size:2.2rem;color:rgba(201,168,76,0.5);margin-bottom:28px;animation:tx-pulse 2.5s ease-in-out infinite alternate 0.5s">✦</span>
+      <div class="tx-success-title">YOUR TRANSMISSION HAS BEEN RECEIVED</div>
+      <p class="tx-success-sub">We receive what the cosmos allows.</p>
     </div>
 
   </div>
@@ -336,6 +367,59 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 })();
 </script>
 
+<script>
+(function(){
+  var btn = document.getElementById('transmitBtn');
+  if (!btn) return;
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    var name    = document.getElementById('fromName').value.trim();
+    var email   = document.getElementById('fromEmail').value.trim();
+    var subject = document.getElementById('subject').value.trim();
+    var message = document.getElementById('message').value.trim();
+
+    // Clear previous errors
+    ['err-name','err-email','err-message'].forEach(function(id){
+      var el = document.getElementById(id); if (el) el.textContent = '';
+    });
+    var genErr = document.getElementById('tx-general-error');
+    genErr.style.display = 'none'; genErr.textContent = '';
+
+    // Validate
+    var valid = true;
+    if (!name) { document.getElementById('err-name').textContent = 'Name is required.'; valid = false; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      document.getElementById('err-email').textContent = 'A valid email address is required.'; valid = false;
+    }
+    if (!message) { document.getElementById('err-message').textContent = 'Message is required.'; valid = false; }
+    if (!valid) return;
+
+    btn.textContent = 'TRANSMITTING...';
+    btn.disabled = true;
+
+    emailjs.send('jestamang', 'template_5l4a1lk', {
+      from_name:  name,
+      from_email: email,
+      subject:    subject || '(no subject)',
+      message:    message,
+      to_email:   'thejestamang@gmail.com'
+    }).then(function() {
+      var wrap = document.getElementById('tx-form-wrap');
+      wrap.style.opacity = '0';
+      setTimeout(function() {
+        wrap.style.display = 'none';
+        document.getElementById('tx-success').style.display = 'block';
+      }, 400);
+    }).catch(function(error) {
+      console.error('EmailJS error:', error);
+      btn.textContent = 'TRANSMIT';
+      btn.disabled = false;
+      genErr.textContent = 'TRANSMISSION FAILED — TRY AGAIN';
+      genErr.style.display = 'block';
+    });
+  });
+})();
+</script>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
