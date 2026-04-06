@@ -305,6 +305,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   .eotd-divider::before,.eotd-divider::after{content:'';display:block;width:40px;height:1px;background:rgba(201,168,76,0.22)}
   .eotd-narrator{font-family:'Luminari',serif;font-style:italic;font-size:0.88rem;letter-spacing:0.05em;line-height:1.8;color:rgba(240,230,210,0.6);max-width:360px;margin:0 auto}
   .eotd-play-wrap{margin-top:22px}
+  .eotd-embed-wrap{max-width:400px;margin:14px auto 0;overflow:hidden;max-height:0;transition:max-height 0.4s ease}
+  .eotd-embed-wrap.open{max-height:90px}
+  .eotd-embed-wrap iframe{display:block;width:100%;height:80px;border:none}
   .eotd-play-track{display:block;font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.38);margin-bottom:10px;font-style:italic}
   .eotd-play-btn{display:inline-flex;align-items:center;gap:8px;font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.42em;text-transform:uppercase;color:rgba(201,168,76,0.65);background:none;border:none;border-bottom:1px solid rgba(201,168,76,0.2);padding:6px 0;cursor:pointer;transition:color 0.2s,border-color 0.2s}
   .eotd-play-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
@@ -331,6 +334,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
             <svg width="11" height="13" viewBox="0 0 11 13" fill="currentColor"><path d="M0 0l11 6.5L0 13V0z"/></svg>
             Play
           </button>
+          <div class="eotd-embed-wrap" id="eotd-embed-wrap"></div>
         </div>
       </div>
       <a href="entities.html" class="eotd-cta">Explore All Entities</a>
@@ -784,7 +788,28 @@ function eotdRender(entity,cycle){
     var item=tracks[trackIdx];
     if(playTrack)playTrack.textContent=item.t;
     playWrap.style.display='block';
-    playBtn.onclick=function(){window.open(item.u,'_blank','noopener');};
+    var embedWrap=el('eotd-embed-wrap');
+    var playing=false;
+    playBtn.onclick=function(){
+      if(playing){
+        // Stop: clear embed, reset button
+        embedWrap.classList.remove('open');
+        setTimeout(function(){embedWrap.innerHTML='';},400);
+        playBtn.innerHTML='<svg width="11" height="13" viewBox="0 0 11 13" fill="currentColor"><path d="M0 0l11 6.5L0 13V0z"/></svg> Play';
+        playing=false;
+        return;
+      }
+      var ytMatch=item.u.match(/[?&]v=([^&]+)/);
+      var ytId=ytMatch?ytMatch[1]:'';
+      if(ytId){
+        embedWrap.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+ytId+'?autoplay=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&controls=1" allow="autoplay;clipboard-write;encrypted-media;picture-in-picture"></iframe>';
+        requestAnimationFrame(function(){requestAnimationFrame(function(){embedWrap.classList.add('open');});});
+        playBtn.innerHTML='<svg width="10" height="13" viewBox="0 0 10 13" fill="currentColor"><rect x="0" y="0" width="3.5" height="13"/><rect x="6.5" y="0" width="3.5" height="13"/></svg> Stop';
+        playing=true;
+      } else {
+        window.open(item.u,'_blank','noopener');
+      }
+    };
   }
 }
 function eotdInit(){
