@@ -60,6 +60,32 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 .win-sub{font-size:0.72rem;letter-spacing:0.28em;color:rgba(255,255,255,0.4);text-transform:uppercase}
 .win-stats-txt{font-size:0.85rem;letter-spacing:0.12em;color:rgba(201,168,76,0.65)}
 @media(max-width:520px){.card-grid{gap:7px}.stats{gap:24px}}
+/* LEADERBOARD */
+.lb-modal-wrap{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:16px}
+.lb-modal-wrap.open{display:flex}
+.lb-box{background:#0a0604;border:1px solid rgba(201,168,76,0.7);max-width:460px;width:100%;max-height:80vh;overflow-y:auto;padding:28px 22px;position:relative;box-shadow:0 0 60px rgba(201,168,76,0.12)}
+.lb-close{position:absolute;top:10px;right:14px;background:none;border:none;color:rgba(201,168,76,0.7);font-size:1.1rem;cursor:pointer;font-family:sans-serif;line-height:1;padding:4px 8px;min-height:unset}
+.lb-close:hover{color:#c9a84c}
+.lb-head{font-size:0.62rem;letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;margin-bottom:22px;text-align:center}
+.lb-row{display:grid;grid-template-columns:36px 1fr 80px 54px;gap:4px;align-items:center;border-bottom:1px solid rgba(201,168,76,0.07);padding:7px 0;font-size:0.72rem}
+.lb-row.lb-head-row{font-size:0.52rem;letter-spacing:0.3em;color:rgba(201,168,76,0.4);text-transform:uppercase;border-bottom:1px solid rgba(201,168,76,0.18);padding-bottom:8px;margin-bottom:2px}
+.lb-rank{color:rgba(201,168,76,0.55);text-align:center}
+.lb-name{color:rgba(255,255,255,0.75);letter-spacing:0.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-score{color:#c9a84c;letter-spacing:0.1em;text-align:right}
+.lb-date{color:rgba(201,168,76,0.32);font-size:0.58rem;text-align:right}
+.lb-empty{text-align:center;color:rgba(201,168,76,0.35);font-size:0.72rem;letter-spacing:0.2em;padding:24px 0}
+.lb-loading{text-align:center;color:rgba(201,168,76,0.35);font-size:0.65rem;letter-spacing:0.22em;padding:24px 0;animation:lbpulse 1.4s ease-in-out infinite}
+@keyframes lbpulse{0%,100%{opacity:0.4}50%{opacity:1}}
+.lb-name-wrap{display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,0.96);align-items:center;justify-content:center;padding:16px}
+.lb-name-wrap.open{display:flex}
+.lb-name-box{background:#0a0604;border:1px solid rgba(201,168,76,0.6);max-width:340px;width:100%;padding:26px 22px}
+.lb-name-prompt{font-size:0.58rem;letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;margin-bottom:18px;text-align:center;line-height:1.8}
+.lb-name-inp{width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:'Luminari',serif;font-size:0.9rem;padding:10px 14px;letter-spacing:0.1em;outline:none;margin-bottom:14px;box-sizing:border-box}
+.lb-name-inp:focus{border-color:rgba(201,168,76,0.8)}
+.lb-name-btns{display:flex;gap:10px}
+.lb-name-cancel{flex:1;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;border:1px solid rgba(201,168,76,0.25);padding:10px;cursor:pointer}
+.lb-name-confirm{flex:2;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:#000;background:#c9a84c;border:1px solid #c9a84c;padding:10px;cursor:pointer}
+.lb-name-confirm:hover{background:#e0be6a}
 /* jt-mobile-global-base */
 @media (max-width: 768px) {
   /* Prevent iOS input zoom */
@@ -157,6 +183,7 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
   <div class="card-grid" id="grid"></div>
   <div class="controls">
     <button class="ctrl-btn primary" id="btn-restart">Shuffle & Restart</button>
+    <button class="ctrl-btn" onclick="openLB('memory-vault','Memory Vault',true)">Leaderboard</button>
     <a href="games.html" class="ctrl-btn">← Back to Vault</a>
   </div>
 </div>
@@ -168,7 +195,28 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
   <p class="win-stats-txt" id="win-stat-txt"></p>
   <div class="controls" style="margin-top:12px">
     <button class="ctrl-btn primary" id="btn-again">Play Again</button>
+    <button class="ctrl-btn" onclick="openLB('memory-vault','Memory Vault',true)">Leaderboard</button>
     <a href="games.html" class="ctrl-btn">Return to Vault</a>
+  </div>
+</div>
+
+<!-- LEADERBOARD MODAL -->
+<div class="lb-modal-wrap" id="lb-modal">
+  <div class="lb-box">
+    <button class="lb-close" onclick="closeLB()">✕</button>
+    <div class="lb-head" id="lb-title">Leaderboard</div>
+    <div id="lb-list"><div class="lb-loading">Loading scrolls...</div></div>
+  </div>
+</div>
+<!-- NAME ENTRY MODAL -->
+<div class="lb-name-wrap" id="lb-name-modal">
+  <div class="lb-name-box">
+    <div class="lb-name-prompt">Enter Your Name<br>For the Scrolls</div>
+    <input class="lb-name-inp" id="lb-name-inp" type="text" maxlength="20" placeholder="Your name" autocomplete="off">
+    <div class="lb-name-btns">
+      <button class="lb-name-cancel" id="lb-name-cancel">Cancel</button>
+      <button class="lb-name-confirm" id="lb-name-confirm">Inscribe ✦</button>
+    </div>
   </div>
 </div>
 
@@ -236,6 +284,7 @@ function win(){
   var m=Math.floor(secs/60),s=secs%60;
   document.getElementById('win-stat-txt').textContent=moves+' moves  ·  '+m+':'+pad(s);
   document.getElementById('win-overlay').classList.add('show');
+  submitScore('memory-vault',moves,true,null);
 }
 
 document.getElementById('btn-restart').addEventListener('click',build);
@@ -243,6 +292,57 @@ document.getElementById('btn-again').addEventListener('click',build);
 build();
 </script>
 
+<script>
+/* LEADERBOARD SYSTEM */
+(function(){
+'use strict';
+function _san(n){return String(n).replace(/[^a-zA-Z0-9 '\-\.]/g,'').trim().slice(0,20)||'Anonymous';}
+function _esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function _fmtDate(ts){try{var d=ts&&ts.toDate?ts.toDate():new Date(ts);return(d.getMonth()+1)+'/'+d.getDate()+'/'+String(d.getFullYear()).slice(2);}catch(e){return '—';}}
+function _getDb(){try{return window.jestaDB||(window.firebase&&window.firebase.apps&&window.firebase.apps.length&&window.firebase.firestore())||null;}catch(e){return null;}}
+window.openLB=function(game,title,lowerBetter){
+  var modal=document.getElementById('lb-modal');
+  var list=document.getElementById('lb-list');
+  document.getElementById('lb-title').textContent=title+' · Leaderboard';
+  list.innerHTML='<div class="lb-loading">Loading...</div>';
+  modal.classList.add('open');
+  var db=_getDb();
+  if(!db){list.innerHTML='<div class="lb-empty">The scrolls are unavailable.</div>';return;}
+  db.collection('leaderboards').where('game','==',game).limit(50).get()
+    .then(function(snap){
+      if(snap.empty){list.innerHTML='<div class="lb-empty">No entries yet. Be the first.</div>';return;}
+      var docs=snap.docs.map(function(d){return d.data();});
+      docs.sort(function(a,b){return lowerBetter?a.score-b.score:b.score-a.score;});
+      docs=docs.slice(0,10);
+      var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Moves</span><span class="lb-date">Date</span></div>';
+      docs.forEach(function(d,i){
+        var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">✦</span>':(i+1);
+        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+_esc(d.name)+'</span><span class="lb-score">'+d.score+'</span><span class="lb-date">'+_fmtDate(d.timestamp)+'</span></div>';
+      });
+      list.innerHTML=html;
+    }).catch(function(){list.innerHTML='<div class="lb-empty">Scores temporarily unavailable.</div>';});
+};
+window.closeLB=function(){document.getElementById('lb-modal').classList.remove('open');};
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){window.closeLB();document.getElementById('lb-name-modal').classList.remove('open');}});
+document.getElementById('lb-modal').addEventListener('click',function(e){if(e.target===this)window.closeLB();});
+window.submitScore=function(game,score,lowerBetter,cb){
+  function doSave(name){
+    var db=_getDb();if(!db){if(cb)cb();return;}
+    db.collection('leaderboards').add({game:game,name:_san(name),score:score,timestamp:window.firebase.firestore.FieldValue.serverTimestamp()})
+      .then(function(){if(cb)cb();}).catch(function(){if(cb)cb();});
+  }
+  try{var auth=window.firebase&&window.firebase.auth&&window.firebase.auth();if(auth&&auth.currentUser&&auth.currentUser.displayName){doSave(auth.currentUser.displayName);return;}}catch(e){}
+  var nm=document.getElementById('lb-name-modal');var inp=document.getElementById('lb-name-inp');
+  nm.classList.add('open');inp.value='';setTimeout(function(){inp.focus();},100);
+  function doCancel(){nm.classList.remove('open');cleanup();if(cb)cb();}
+  function doConfirm(){var n=inp.value.trim();if(!n){inp.focus();return;}nm.classList.remove('open');cleanup();doSave(n);}
+  function cleanup(){document.getElementById('lb-name-confirm').onclick=null;document.getElementById('lb-name-cancel').onclick=null;inp.onkeydown=null;}
+  document.getElementById('lb-name-confirm').onclick=doConfirm;
+  document.getElementById('lb-name-cancel').onclick=doCancel;
+  inp.onkeydown=function(e){if(e.key==='Enter')doConfirm();if(e.key==='Escape')doCancel();};
+};
+})();
+</script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
