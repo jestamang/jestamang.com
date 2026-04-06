@@ -2132,7 +2132,7 @@ var NC = (function(){
       Trine:'rgba(40,185,100,0.42)',Square:'rgba(220,55,55,0.48)',
       Sextile:'rgba(70,160,220,0.38)',Quincunx:'rgba(220,155,40,0.32)',
     };
-    var corePNs=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
+    var corePNs=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Lilith','Fortune'];
     if(houseCusps){
       for(var ai=0;ai<corePNs.length;ai++){
         for(var aj=ai+1;aj<corePNs.length;aj++){
@@ -3120,24 +3120,11 @@ var NC = (function(){
   function displaySavedChart(cd, user){
     if(!cd || !cd.planets) return;
 
-    // Reconstruct result object from saved data
-    var result = {
-      planets:    cd.planets,
-      ascData:    cd.ascendant || null,
-      mcData:     cd.mc || null,
-      houseCusps: cd.houseCusps || null,
-      elements:   cd.elements || {Fire:0,Earth:0,Air:0,Water:0},
-      modes:      cd.modes || {Cardinal:0,Fixed:0,Mutable:0},
-      aspects:    cd.aspects || [],
-      hasTime:    cd.hasTime || false,
-      total:      8,
-    };
-
     var userName = (dossierData && dossierData.username) ||
                    (user && (user.displayName || user.email.split('@')[0])) ||
                    'Member';
 
-    NC.renderDossier(result, userName, {
+    var containers = {
       nameEl:          document.getElementById('nr-name'),
       sunSubEl:        document.getElementById('nr-sun-sub'),
       wheelEl:         document.getElementById('nr-wheel'),
@@ -3148,14 +3135,56 @@ var NC = (function(){
       modesEl:         document.getElementById('nr-modes'),
       aspectsTbodyEl:  document.getElementById('nr-aspects-tbody'),
       interpEl:        document.getElementById('nr-interpretation'),
-    });
+    };
 
-    document.getElementById('natal-result').style.display = 'block';
-    document.getElementById('natal-form-area').style.display = 'none';
+    function _render(planets){
+      var result = {
+        planets:    planets,
+        ascData:    cd.ascendant || null,
+        mcData:     cd.mc || null,
+        houseCusps: cd.houseCusps || null,
+        elements:   cd.elements || {Fire:0,Earth:0,Air:0,Water:0},
+        modes:      cd.modes || {Cardinal:0,Fixed:0,Mutable:0},
+        aspects:    cd.aspects || [],
+        hasTime:    cd.hasTime || false,
+        total:      8,
+      };
+      NC.renderDossier(result, userName, containers);
+      document.getElementById('natal-result').style.display = 'block';
+      document.getElementById('natal-form-area').style.display = 'none';
+      var recallEl = document.getElementById('nc-cosmic-recall');
+      if(recallEl) recallEl.style.display = 'block';
+    }
 
-    // Show cosmic recall banner (auto-loaded from archive)
-    var recallEl = document.getElementById('nc-cosmic-recall');
-    if(recallEl) recallEl.style.display = 'block';
+    // If saved chart pre-dates Lilith/South Node/Fortune, recalculate them on the fly
+    var needsUpdate = !cd.planets['South Node'] || !cd.planets['Lilith'];
+    if(needsUpdate && cd.birthDate && cd.lat != null && cd.lng != null){
+      try {
+        var fresh = NC.calculate(cd.birthDate, cd.birthTime || '', cd.lat, cd.lng, null);
+        var merged = {};
+        for(var k in cd.planets) merged[k] = cd.planets[k];
+        if(fresh.planets['South Node']) merged['South Node'] = fresh.planets['South Node'];
+        if(fresh.planets['Lilith'])     merged['Lilith']     = fresh.planets['Lilith'];
+        if(fresh.planets['Fortune'])    merged['Fortune']    = fresh.planets['Fortune'];
+        // Re-save patched planets to Firestore silently
+        if(db && currentUser){
+          var patch = {};
+          for(var pn in merged){
+            var mp = merged[pn];
+            patch[pn] = {sign:mp.sign,glyph:mp.glyph,deg:mp.deg,min:mp.min,totalDeg:mp.totalDeg,house:mp.house||null};
+          }
+          db.collection('users').doc(currentUser.uid).collection('natalChart').doc('chart')
+            .update({planets: patch})
+            .catch(function(){});
+        }
+        _render(merged);
+      } catch(e){
+        console.warn('Could not patch saved chart with new points:', e);
+        _render(cd.planets);
+      }
+    } else {
+      _render(cd.planets);
+    }
   }
 
   function escHtml(s){
