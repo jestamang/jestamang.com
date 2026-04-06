@@ -84,6 +84,7 @@ canvas{display:block;position:fixed;inset:0;touch-action:none}
 .lb-r23 td{color:rgba(201,168,76,0.78)}
 .lb-cur td{background:rgba(201,168,76,0.07);color:#c9a84c}
 .lb-loading-row td{text-align:center;padding:28px;font-family:'Luminari',serif;font-style:italic;color:rgba(201,168,76,0.32);letter-spacing:0.15em}
+.lb-av{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.4);background:#111;vertical-align:middle;margin-right:7px}
 @media(max-width:480px){#lb-name-card{padding:32px 22px}#lb-modal-inner{padding:28px 18px;max-height:92vh}}
 </style>
 <style id="jsearch-styles">
@@ -150,7 +151,7 @@ var cls=i===0?'lb-r1':i<3?'lb-r23':'';
 if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
 tr.className=cls;
 var cr=i===0?'<span style="margin-right:5px">✦</span>':'';
-tr.innerHTML='<td>'+(i+1)+'</td><td>'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
+tr.innerHTML='<td>'+(i+1)+'</td><td><img class="lb-av" src="../assets/homepage/jesta jr.jpg" onerror="this.onerror=null;this.src=\'../assets/homepage/jesta jr.jpg\'" alt="">'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
 tb.appendChild(tr);
 });
 }).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">SIGNAL LOST</td></tr>';});
@@ -252,10 +253,11 @@ C.addEventListener('touchmove', e => {
 C.addEventListener('touchend', e => { if (!e.touches.length) touch.on = false; }, { passive: false });
 
 function spawnShape(sec) {
-  const spd = 1.5 + Math.floor(sec / 15) * 0.45;
+  const spd = 2.0 + Math.floor(sec / 10) * 0.55 + (sec > 90 ? 1.0 : 0);
   const pool = ['triangle','ring','hexagon'];
-  if (sec > 30) pool.push('diamond');
-  if (sec > 55) pool.push('star');
+  if (sec > 20) pool.push('diamond');
+  if (sec > 38) pool.push('star');
+  if (sec > 60) pool.push('ring','triangle'); // weight fast types heavier at high difficulty
   const type = pool[0 | Math.random() * pool.length];
   let x, y;
   const edge = 0 | Math.random() * 4;
@@ -375,16 +377,25 @@ requestAnimationFrame(function loop(ts) {
       if (td > 8) { dx = (touch.x - player.x)/td; dy = (touch.y - player.y)/td; }
     }
     if (dx && dy) { dx *= 0.707; dy *= 0.707; }
-    player.x = Math.max(player.r, Math.min(W - player.r, player.x + dx * 4.2));
-    player.y = Math.max(player.r, Math.min(H - player.r, player.y + dy * 4.2));
+    const spd = 4.2 + Math.min(1.8, sec * 0.012); // player gets slightly faster over time
+    player.x = Math.max(player.r, Math.min(W - player.r, player.x + dx * spd));
+    player.y = Math.max(player.r, Math.min(H - player.r, player.y + dy * spd));
 
     trail.push({ x: player.x, y: player.y });
     if (trail.length > 30) trail.shift();
 
     spawnT++;
-    const si = Math.max(36, 90 - Math.floor(sec / 9) * 7);
-    if (spawnT >= si) { spawnShape(sec); spawnT = 0; }
-    HUD.textContent = sec.toFixed(1) + 's';
+    // Spawn 1 shape normally; spawn 2 after 45s; spawn 2 guaranteed after 75s
+    const si = Math.max(16, 85 - Math.floor(sec / 7) * 9);
+    if (spawnT >= si) {
+      spawnShape(sec);
+      if (sec > 45 && Math.random() < 0.4) spawnShape(sec);
+      if (sec > 75) spawnShape(sec);
+      spawnT = 0;
+    }
+    // Phase announcement
+    const phase = sec < 20 ? 'PHASE I' : sec < 45 ? 'PHASE II' : sec < 75 ? 'PHASE III' : 'PHASE IV';
+    HUD.textContent = sec.toFixed(1) + 's  ·  ' + phase;
   }
 
   // Trail
@@ -407,8 +418,17 @@ requestAnimationFrame(function loop(ts) {
     g.addColorStop(0, 'rgba(201,168,76,0.38)'); g.addColorStop(1, 'rgba(201,168,76,0)');
     X.beginPath(); X.arc(player.x, player.y, player.r * 3.5, 0, 6.283);
     X.fillStyle = g; X.fill();
+    // Near-miss warning (shape within 2x collision radius)
+    let nearMiss = false;
+    for (const s of shapes) {
+      const pulse = (s.type==='ring')?1+0.22*Math.sin(s.t*0.04):1+0.18*Math.sin(s.t*0.05);
+      const dist = Math.hypot(player.x-s.x, player.y-s.y);
+      if (dist < player.r + s.sz*pulse*1.6 && dist >= player.r + s.sz*pulse*0.74) { nearMiss = true; break; }
+    }
     X.beginPath(); X.arc(player.x, player.y, player.r, 0, 6.283);
-    X.fillStyle = '#c9a84c'; X.shadowColor = '#c9a84c'; X.shadowBlur = 22; X.fill(); X.shadowBlur = 0;
+    X.fillStyle = nearMiss ? '#FF6600' : '#c9a84c';
+    X.shadowColor = nearMiss ? '#FF6600' : '#c9a84c';
+    X.shadowBlur = nearMiss ? 38 : 22; X.fill(); X.shadowBlur = 0;
     if (collide()) die();
   }
 
