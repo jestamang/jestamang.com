@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>21 — Jestamang Games</title>
+<meta name="description" content="Play 21 (Blackjack) in the Jestamang universe. Hit, stand, double. The dealer is not your friend.">
+<meta name="keywords" content="Jestamang, blackjack, 21, card game, arcade, browser game, psychedelic">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jestamang.com/game-21.html">
+<meta property="og:site_name" content="Jestamang">
+<meta property="og:type" content="website">
+<meta property="og:title" content="21 — Jestamang Games">
+<meta property="og:description" content="Play 21 (Blackjack) in the Jestamang universe. Hit, stand, double. The dealer is not your friend.">
+<meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
+<meta property="og:url" content="https://jestamang.com/game-21.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="21 — Jestamang Games">
+<meta name="twitter:description" content="Play 21 (Blackjack) in the Jestamang universe.">
+<meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
+
+<style>
+@font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{min-height:100%}
+body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh;padding-top:20px;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:0;pointer-events:none}
+.game-wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:40px 20px 80px;text-align:center}
+.game-title{font-size:clamp(2rem,6vw,3.5rem);letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.6),0 0 80px rgba(201,168,76,0.2);margin-bottom:6px}
+.game-sub{font-size:0.75rem;letter-spacing:0.4em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:10px}
+.game-lore{font-style:italic;font-size:0.82rem;letter-spacing:0.1em;color:rgba(255,255,255,0.45);line-height:1.8;margin-bottom:28px}
+.gold-rule{width:100px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.6),transparent);margin:0 auto 28px}
+/* GAME AREA */
+.game-area{background:rgba(4,2,1,0.85);border:1px solid rgba(201,168,76,0.2);padding:24px;border-radius:4px;text-align:left;margin-bottom:20px}
+/* CARDS */
+.card{width:60px;height:84px;background:rgba(8,4,2,0.97);border:1px solid rgba(201,168,76,0.4);border-radius:5px;position:relative;display:inline-flex;flex-direction:column;padding:5px;color:rgba(201,168,76,0.9);box-shadow:0 2px 10px rgba(0,0,0,0.8);vertical-align:top;flex-shrink:0}
+.card.red{color:#e05555}
+.card .ct{font-size:0.7rem;line-height:1}
+.card .ct small{font-size:0.75rem;display:block}
+.card .cc{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1.8rem;opacity:0.65}
+.card .cb{position:absolute;bottom:5px;right:5px;font-size:0.7rem;transform:rotate(180deg);line-height:1}
+.card .cb small{font-size:0.75rem;display:block}
+.card.fd{background:linear-gradient(135deg,rgba(40,15,5,0.97),rgba(20,8,3,0.97))}
+.card.fd .card-back-pat{position:absolute;inset:4px;border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:rgba(201,168,76,0.3)}
+/* HAND DISPLAY */
+.hand-area{display:flex;flex-wrap:wrap;gap:6px;min-height:110px;align-items:flex-end;padding:8px 0}
+.hand-label{font-size:0.75rem;letter-spacing:0.3em;color:rgba(201,168,76,0.5);text-transform:uppercase;margin-bottom:4px}
+.total-display{font-size:0.9rem;letter-spacing:0.2em;color:rgba(201,168,76,0.7);margin-top:4px}
+/* BJ SPECIFIC */
+#bj-area{display:flex;flex-direction:column;gap:14px}
+.bj-section{border-bottom:1px solid rgba(201,168,76,0.1);padding-bottom:12px}
+.bj-bet-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:0.78rem;letter-spacing:0.18em;color:rgba(201,168,76,0.7);padding:8px 0}
+.bj-actions{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0}
+/* BUTTONS */
+.gbtn{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.8);background:none;border:1px solid rgba(201,168,76,0.35);padding:8px 20px;cursor:pointer;transition:all 0.2s;min-height:44px}
+.gbtn:hover{background:rgba(201,168,76,0.15);border-color:#c9a84c}
+.gbtn.primary{background:#c9a84c;color:#000;border-color:#c9a84c}
+.gbtn.primary:hover{background:#e0be6a}
+.gbtn:disabled{opacity:0.3;cursor:default;pointer-events:none}
+/* CHIPS */
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{width:44px;height:44px;border-radius:50%;font-family:'Luminari',serif;font-size:0.75rem;cursor:pointer;border:2px solid rgba(201,168,76,0.4);transition:transform 0.15s,box-shadow 0.15s;display:flex;align-items:center;justify-content:center;color:#fff}
+.chip:hover{transform:scale(1.12);box-shadow:0 0 12px rgba(201,168,76,0.4)}
+.chip-5{background:#1a5fb4}
+.chip-10{background:#a52b2b}
+.chip-25{background:#236b23}
+.chip-100{background:#1a1a1a;border:2px solid #c9a84c}
+.chip-500{background:#4a1a6b}
+/* MESSAGE */
+.game-msg{text-align:center;min-height:2em;font-size:1rem;color:#c9a84c;letter-spacing:0.1em;padding:8px 0}
+/* INSTRUCTIONS */
+.instr-box{margin-top:20px;border:1px solid rgba(201,168,76,0.18);background:rgba(0,0,0,0.35);text-align:left}
+.instr-toggle{width:100%;font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.5);background:none;border:none;padding:12px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:color 0.2s;min-height:44px}
+.instr-toggle:hover,.instr-toggle.open{color:#c9a84c;background:rgba(201,168,76,0.04)}
+.instr-arrow{display:inline-block;transition:transform 0.3s;font-style:normal}
+.instr-toggle.open .instr-arrow{transform:rotate(180deg)}
+.instr-content{overflow:hidden;height:0;opacity:0;transform:scaleY(0);transform-origin:top;transition:height 0.45s cubic-bezier(0.4,0,0.2,1),transform 0.45s cubic-bezier(0.4,0,0.2,1),opacity 0.45s cubic-bezier(0.4,0,0.2,1)}
+.instr-list{list-style:none;padding:14px 20px 18px;display:flex;flex-direction:column;gap:7px}
+.instr-list li{font-family:sans-serif;font-size:0.75rem;letter-spacing:0.03em;color:rgba(255,255,255,0.52);line-height:1.6;padding-left:14px;position:relative}
+.instr-list li::before{content:'·';position:absolute;left:0;color:rgba(201,168,76,0.45)}
+/* LEADERBOARD */
+.lb-modal-wrap{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:16px}
+.lb-modal-wrap.open{display:flex}
+.lb-box{background:#0a0604;border:1px solid rgba(201,168,76,0.7);max-width:460px;width:100%;max-height:80vh;overflow-y:auto;padding:28px 22px;position:relative;box-shadow:0 0 60px rgba(201,168,76,0.12)}
+.lb-close{position:absolute;top:10px;right:14px;background:none;border:none;color:rgba(201,168,76,0.7);font-size:1.1rem;cursor:pointer;font-family:sans-serif;line-height:1;padding:4px 8px;min-height:unset}
+.lb-close:hover{color:#c9a84c}
+.lb-head{font-size:0.62rem;letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;margin-bottom:22px;text-align:center}
+.lb-row{display:grid;grid-template-columns:36px 1fr 80px 54px;gap:4px;align-items:center;border-bottom:1px solid rgba(201,168,76,0.07);padding:7px 0;font-size:0.72rem}
+.lb-row.lb-head-row{font-size:0.52rem;letter-spacing:0.3em;color:rgba(201,168,76,0.4);text-transform:uppercase;border-bottom:1px solid rgba(201,168,76,0.18);padding-bottom:8px;margin-bottom:2px}
+.lb-rank{color:rgba(201,168,76,0.55);text-align:center}
+.lb-name{color:rgba(255,255,255,0.75);letter-spacing:0.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-score{color:#c9a84c;letter-spacing:0.1em;text-align:right}
+.lb-date{color:rgba(201,168,76,0.32);font-size:0.58rem;text-align:right}
+.lb-empty{text-align:center;color:rgba(201,168,76,0.35);font-size:0.72rem;letter-spacing:0.2em;padding:24px 0}
+.lb-loading{text-align:center;color:rgba(201,168,76,0.35);font-size:0.65rem;letter-spacing:0.22em;padding:24px 0;animation:lbpulse 1.4s ease-in-out infinite}
+@keyframes lbpulse{0%,100%{opacity:0.4}50%{opacity:1}}
+.lb-name-wrap{display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,0.96);align-items:center;justify-content:center;padding:16px}
+.lb-name-wrap.open{display:flex}
+.lb-name-box{background:#0a0604;border:1px solid rgba(201,168,76,0.6);max-width:340px;width:100%;padding:26px 22px}
+.lb-name-prompt{font-size:0.58rem;letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;margin-bottom:18px;text-align:center;line-height:1.8}
+.lb-name-inp{width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:'Luminari',serif;font-size:0.9rem;padding:10px 14px;letter-spacing:0.1em;outline:none;margin-bottom:14px;box-sizing:border-box}
+.lb-name-inp:focus{border-color:rgba(201,168,76,0.8)}
+.lb-name-btns{display:flex;gap:10px}
+.lb-name-cancel{flex:1;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;border:1px solid rgba(201,168,76,0.25);padding:10px;cursor:pointer}
+.lb-name-confirm{flex:2;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:#000;background:#c9a84c;border:1px solid #c9a84c;padding:10px;cursor:pointer}
+.lb-name-confirm:hover{background:#e0be6a}
+/* CONTROLS */
+.controls{margin-top:24px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.ctrl-btn{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;color:rgba(201,168,76,0.75);background:none;border:1px solid rgba(201,168,76,0.35);padding:10px 24px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;transition:all 0.2s;min-height:44px}
+.ctrl-btn:hover,.ctrl-btn.primary{background:#c9a84c;color:#000;border-color:#c9a84c}
+/* MOBILE */
+@media(max-width:600px){
+  .game-area{padding:14px 10px}
+  .card{width:40px!important;height:58px!important;padding:2px!important}
+  .card .ct,.card .cb{font-size:0.5rem!important}
+  .card .ct small,.card .cb small{font-size:0.5rem!important}
+  .card .cc{font-size:0.9rem!important}
+  .card.fd .card-back-pat{font-size:0.7rem!important}
+  .hand-area{min-height:70px;gap:3px}
+  .bj-bet-row{flex-direction:column;gap:3px;align-items:flex-start;font-size:0.68rem}
+  .bj-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+  .bj-actions .gbtn{width:100%!important;margin-left:0!important}
+  .chip-row{gap:5px}
+}
+@media(max-width:768px){body,#bg-wrap{background-attachment:scroll!important}input,textarea,select{font-size:16px!important}}
+/* text treatments */
+h1,h2{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important}
+</style>
+<style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#c9a84c">
+<link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "278a3dd9772141e6a6e40a9c83c51d57"}'></script>
+</head>
+<body>
+<img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72" loading="eager" width="1288" height="2564">
+
+<div class="game-wrap">
+  <h1 class="game-title">21</h1>
+  <p class="game-sub">Blackjack · Beat the dealer</p>
+  <p class="game-lore">The old game of twenty-one. The dealer is not your friend. Neither is luck. Play anyway.</p>
+  <div class="gold-rule"></div>
+
+  <div class="game-area">
+    <div id="bj-area">
+      <div class="bj-section">
+        <div class="hand-label">Dealer</div>
+        <div class="hand-area" id="bj-d-hand"></div>
+        <div class="total-display">Total: <span id="bj-d-total">—</span></div>
+      </div>
+      <div class="bj-section">
+        <div class="hand-label">You</div>
+        <div class="hand-area" id="bj-p-hand"></div>
+        <div class="total-display">Total: <span id="bj-p-total">—</span></div>
+      </div>
+      <div class="bj-bet-row">
+        <span>BET: <b id="bj-bet" style="color:#c9a84c">0</b></span>
+        <span>CHIPS: <b id="bj-chips" style="color:#c9a84c">500</b></span>
+      </div>
+      <div class="chip-row" style="margin-bottom:10px">
+        <button class="chip chip-5 bj-chip" data-v="5">5</button>
+        <button class="chip chip-10 bj-chip" data-v="10">10</button>
+        <button class="chip chip-25 bj-chip" data-v="25">25</button>
+        <button class="chip chip-100 bj-chip" data-v="100">100</button>
+        <button class="chip chip-500 bj-chip" data-v="500">500</button>
+        <button class="gbtn" id="bj-clear">Clear Bet</button>
+      </div>
+      <div class="bj-actions">
+        <button class="gbtn primary" id="bj-deal">Deal</button>
+        <button class="gbtn" id="bj-hit">Hit</button>
+        <button class="gbtn" id="bj-stand">Stand</button>
+        <button class="gbtn" id="bj-dbl">Double</button>
+        <button class="gbtn" id="bj-new" style="margin-left:auto">New Game</button>
+      </div>
+      <div class="game-msg" id="bj-msg">Place your bet and deal.</div>
+    </div>
+  </div>
+
+  <div class="instr-box">
+    <button class="instr-toggle" onclick="_toggleInstr(this)">
+      How to Play <span class="instr-arrow">&#9662;</span>
+    </button>
+    <div class="instr-content">
+      <ul class="instr-list">
+        <li>Goal: beat the dealer without going over 21</li>
+        <li>Hit to draw a card · Stand to hold · Double to double your bet and draw one final card</li>
+        <li>Blackjack (Ace + 10-value card on the deal) pays 3:2</li>
+        <li>Dealer must hit on 16, stand on 17</li>
+        <li>Aces count as 1 or 11 — whichever keeps you in the game</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:16px">
+    <button class="gbtn" style="font-size:0.7rem;letter-spacing:0.28em" onclick="openLB('21','21',false)">Leaderboard ✦</button>
+  </div>
+
+  <div class="controls">
+    <a href="games.html" class="ctrl-btn">← Back to Games</a>
+  </div>
+</div>
+
+<!-- LEADERBOARD MODAL -->
+<div class="lb-modal-wrap" id="lb-modal">
+  <div class="lb-box">
+    <button class="lb-close" onclick="closeLB()">✕</button>
+    <div class="lb-head" id="lb-title">Leaderboard</div>
+    <div id="lb-list"><div class="lb-loading">Loading scrolls...</div></div>
+  </div>
+</div>
+<!-- NAME ENTRY MODAL -->
+<div class="lb-name-wrap" id="lb-name-modal">
+  <div class="lb-name-box">
+    <div class="lb-name-prompt">Enter Your Name<br>For the Scrolls</div>
+    <input class="lb-name-inp" id="lb-name-inp" type="text" maxlength="20" placeholder="Your name" autocomplete="off">
+    <div class="lb-name-btns">
+      <button class="lb-name-cancel" id="lb-name-cancel">Cancel</button>
+      <button class="lb-name-confirm" id="lb-name-confirm">Inscribe ✦</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* BLACKJACK GAME */
+(function bjGame(){
+  const SUITS=['♠','♥','♦','♣'];
+  const VALS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  let deck=[],pHand=[],dHand=[],chips=500,bet=0,phase='bet';
+  function newDeck(){deck=shuffle(SUITS.flatMap(s=>VALS.map(v=>({v,s}))));}
+  function bjNumVal(v){if(v==='A')return 11;if('JQK'.includes(v))return 10;return+v;}
+  function total(hand){let t=0,a=0;for(let c of hand){t+=bjNumVal(c.v);if(c.v==='A')a++;}while(t>21&&a){t-=10;a--;}return t;}
+  function makeCard(v,s,fd){
+    const el=document.createElement('div');
+    el.className='card'+(fd?' fd':(['♥','♦'].includes(s)?' red':''));
+    if(fd){el.innerHTML='<div class="card-back-pat">✦</div>';}
+    else{el.innerHTML=`<div class="ct">${v}<small>${s}</small></div><div class="cc">${s}</div><div class="cb">${v}<small>${s}</small></div>`;}
+    return el;
+  }
+  function renderHands(hideDealer=false){
+    const dh=document.getElementById('bj-d-hand');dh.innerHTML='';
+    dHand.forEach((c,i)=>dh.appendChild(makeCard(c.v,c.s,hideDealer&&i===1)));
+    document.getElementById('bj-d-total').textContent=hideDealer?(dHand.length>0?'?':'—'):total(dHand)||'—';
+    const ph=document.getElementById('bj-p-hand');ph.innerHTML='';
+    pHand.forEach(c=>ph.appendChild(makeCard(c.v,c.s)));
+    document.getElementById('bj-p-total').textContent=pHand.length>0?total(pHand):'—';
+    document.getElementById('bj-chips').textContent=chips;
+    document.getElementById('bj-bet').textContent=bet;
+    document.getElementById('bj-deal').disabled=phase!=='bet'||bet===0;
+    document.getElementById('bj-hit').disabled=phase!=='play';
+    document.getElementById('bj-stand').disabled=phase!=='play';
+    document.getElementById('bj-dbl').disabled=phase!=='play'||pHand.length!==2||chips<bet;
+  }
+  function msg(t){document.getElementById('bj-msg').textContent=t;}
+  function deal(){
+    if(deck.length<15)newDeck();
+    pHand=[deck.pop(),deck.pop()];dHand=[deck.pop(),deck.pop()];
+    phase='play';msg('');renderHands(true);
+    if(total(pHand)===21){msg('Blackjack!');setTimeout(()=>stand(),600);}
+  }
+  function hit(){pHand.push(deck.pop());renderHands(true);if(total(pHand)>21)bust();}
+  function bust(){phase='over';msg('Bust! Dealer wins.');renderHands(false);settle('lose');}
+  function stand(){
+    phase='dealer';renderHands(false);
+    const play=()=>{
+      if(total(dHand)<17){dHand.push(deck.pop());renderHands(false);setTimeout(play,700);}
+      else{const p=total(pHand),d=total(dHand);if(d>21||p>d)settle('win');else if(d>p)settle('lose');else settle('push');}
+    };
+    setTimeout(play,600);
+  }
+  function dbl(){chips-=bet;bet*=2;pHand.push(deck.pop());renderHands(true);if(total(pHand)>21)bust();else stand();}
+  function settle(r){
+    phase='bet';
+    if(r==='win'){const pay=pHand.length===2&&total(pHand)===21?Math.floor(bet*2.5):bet*2;chips+=pay;msg(`You win ${pay} chips!`);}
+    else if(r==='lose'){msg('Dealer wins.');}
+    else{chips+=bet;msg('Push — bet returned.');}
+    bet=0;renderHands(false);
+  }
+  function addBet(n){if(phase!=='bet'||chips<=0)return;const a=Math.min(n,chips);chips-=a;bet+=a;renderHands();}
+  function clearBet(){if(phase!=='bet')return;chips+=bet;bet=0;renderHands();}
+  newDeck();renderHands();
+  document.getElementById('bj-deal').onclick=deal;
+  document.getElementById('bj-hit').onclick=hit;
+  document.getElementById('bj-stand').onclick=stand;
+  document.getElementById('bj-dbl').onclick=dbl;
+  document.querySelectorAll('.bj-chip').forEach(b=>b.onclick=()=>addBet(+b.dataset.v));
+  document.getElementById('bj-clear').onclick=clearBet;
+  document.getElementById('bj-new').onclick=()=>{
+    var g=chips-500;
+    if(g>0&&window.submitScore){
+      window.submitScore('21',g,false,function(){chips=500;bet=0;phase='bet';newDeck();pHand=[];dHand=[];msg('New game · '+g+' chips earned. Place your bet.');renderHands();});
+    }else{chips=500;bet=0;phase='bet';newDeck();pHand=[];dHand=[];msg('New game. Place your bet.');renderHands();}
+  };
+})();
+
+/* INSTRUCTIONS TOGGLE */
+function _toggleInstr(btn){
+  var panel=btn.nextElementSibling;
+  var opening=!panel.classList.contains('open');
+  if(opening){
+    panel.style.height='0';panel.style.opacity='0';panel.style.transform='scaleY(0)';
+    panel.classList.add('open');btn.classList.add('open');
+    panel.offsetHeight;
+    panel.style.height=panel.scrollHeight+'px';panel.style.opacity='1';panel.style.transform='scaleY(1)';
+    panel.addEventListener('transitionend',function done(e){
+      if(e.propertyName!=='height')return;
+      panel.style.height='auto';panel.removeEventListener('transitionend',done);
+    });
+  }else{
+    panel.style.height=panel.scrollHeight+'px';panel.offsetHeight;
+    panel.style.height='0';panel.style.opacity='0';panel.style.transform='scaleY(0)';
+    panel.classList.remove('open');btn.classList.remove('open');
+  }
+}
+
+/* LEADERBOARD SYSTEM */
+(function(){
+'use strict';
+function _san(n){return String(n).replace(/[^a-zA-Z0-9 '\-\.]/g,'').trim().slice(0,20)||'Anonymous';}
+function _esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function _fmtDate(ts){try{var d=ts&&ts.toDate?ts.toDate():new Date(ts);return(d.getMonth()+1)+'/'+d.getDate()+'/'+String(d.getFullYear()).slice(2);}catch(e){return '—';}}
+function _getDb(){try{return window.jestaDB||(window.firebase&&window.firebase.apps&&window.firebase.apps.length&&window.firebase.firestore())||null;}catch(e){return null;}}
+window.openLB=function(game,title,lowerBetter){
+  var modal=document.getElementById('lb-modal');
+  var list=document.getElementById('lb-list');
+  document.getElementById('lb-title').textContent=title+' · Leaderboard';
+  list.innerHTML='<div class="lb-loading">Loading...</div>';
+  modal.classList.add('open');
+  var db=_getDb();
+  if(!db){list.innerHTML='<div class="lb-empty">The scrolls are unavailable.</div>';return;}
+  db.collection('leaderboards').where('game','==',game).limit(50).get()
+    .then(function(snap){
+      if(snap.empty){list.innerHTML='<div class="lb-empty">No entries yet. Be the first.</div>';return;}
+      var docs=snap.docs.map(function(d){return d.data();});
+      docs.sort(function(a,b){return lowerBetter?a.score-b.score:b.score-a.score;});
+      docs=docs.slice(0,10);
+      var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Score</span><span class="lb-date">Date</span></div>';
+      docs.forEach(function(d,i){
+        var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">✦</span>':(i+1);
+        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+_esc(d.name)+'</span><span class="lb-score">'+d.score+'</span><span class="lb-date">'+_fmtDate(d.timestamp)+'</span></div>';
+      });
+      list.innerHTML=html;
+    }).catch(function(){list.innerHTML='<div class="lb-empty">Scores temporarily unavailable.</div>';});
+};
+window.closeLB=function(){document.getElementById('lb-modal').classList.remove('open');};
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){window.closeLB();document.getElementById('lb-name-modal').classList.remove('open');}});
+document.getElementById('lb-modal').addEventListener('click',function(e){if(e.target===this)window.closeLB();});
+window.submitScore=function(game,score,lowerBetter,cb){
+  function doSave(name){
+    var db=_getDb();if(!db){if(cb)cb();return;}
+    db.collection('leaderboards').add({game:game,name:_san(name),score:score,timestamp:window.firebase.firestore.FieldValue.serverTimestamp()})
+      .then(function(){if(cb)cb();}).catch(function(){if(cb)cb();});
+  }
+  try{var auth=window.firebase&&window.firebase.auth&&window.firebase.auth();if(auth&&auth.currentUser&&auth.currentUser.displayName){doSave(auth.currentUser.displayName);return;}}catch(e){}
+  var nm=document.getElementById('lb-name-modal');var inp=document.getElementById('lb-name-inp');
+  nm.classList.add('open');inp.value='';setTimeout(function(){inp.focus();},100);
+  function doCancel(){nm.classList.remove('open');cleanup();if(cb)cb();}
+  function doConfirm(){var n=inp.value.trim();if(!n){inp.focus();return;}nm.classList.remove('open');cleanup();doSave(n);}
+  function cleanup(){document.getElementById('lb-name-confirm').onclick=null;document.getElementById('lb-name-cancel').onclick=null;inp.onkeydown=null;}
+  document.getElementById('lb-name-confirm').onclick=doConfirm;
+  document.getElementById('lb-name-cancel').onclick=doCancel;
+  inp.onkeydown=function(e){if(e.key==='Enter')doConfirm();if(e.key==='Escape')doCancel();};
+};
+})();
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
+<script src="assets/js/firebase-config.js" defer></script>
+
+<footer style="position:relative;z-index:1;text-align:center;padding:24px 20px 32px;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.3);border-top:1px solid rgba(201,168,76,0.12);margin-top:20px;">
+  <a href="privacy.html" style="color:rgba(201,168,76,0.45);text-decoration:none;">Privacy Policy</a>
+  <span style="margin:0 10px;opacity:0.4;">·</span>
+  <span>© <span class="jcyr"></span> Jestamang</span>
+  <span style="margin:0 10px;opacity:0.4;">·</span>
+  <a href="terms.html" style="color:rgba(201,168,76,0.45);text-decoration:none;">Terms of Service</a>
+</footer>
+<script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";setTimeout(function(){window.location.href=h;},300);});})();</script>
+</body>
+</html>
