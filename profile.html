@@ -1721,17 +1721,25 @@ var NC = (function(){
     return mod360(omega + corr);
   }
 
+  function lilithLongitude(jd){
+    // Mean Black Moon Lilith (mean lunar apogee, Meeus formula)
+    var T = calcT(jd);
+    return mod360(83.3532465 + 4069.0137287*T - 0.0103200*T*T);
+  }
+
   function getRawLon(name, jd){
     if(name === 'Sun')        return sunLongitude(jd);
     if(name === 'Moon')       return moonLongitude(jd);
     if(name === 'North Node') return northNodeLongitude(jd);
+    if(name === 'South Node') return mod360(northNodeLongitude(jd) + 180);
     if(name === 'Chiron')     return chironLongitude(jd);
+    if(name === 'Lilith')     return lilithLongitude(jd);
     if(PLANET_ELEMENTS[name]) return planetLongitude(name, jd);
     return 0;
   }
 
   function isRetrograde(name, jd){
-    if(name==='Sun'||name==='Moon'||name==='North Node'||name==='Chiron') return false;
+    if(name==='Sun'||name==='Moon'||name==='North Node'||name==='South Node'||name==='Chiron'||name==='Lilith') return false;
     var lon1 = getRawLon(name, jd - 0.5);
     var lon2 = getRawLon(name, jd + 0.5);
     var delta = mod360(lon2 - lon1);
@@ -1789,52 +1797,48 @@ var NC = (function(){
 
     // Iterative Placidus cusp solver.
     //
-    // Placidus divides the diurnal semi-arc (DSA = 90°+AD) into thirds above the horizon
-    // and the nocturnal semi-arc (NSA = 90°−AD) into thirds below it:
-    //   H11 = 1/3 DSA from MC toward ASC  (OA = RAMC + DSA/3)
-    //   H12 = 2/3 DSA from MC toward ASC  (OA = RAMC + 2·DSA/3)
-    //   H3  = 1/3 NSA from IC toward ASC  (OA = RAMC+180 + NSA/3)
-    //   H2  = 2/3 NSA from IC toward ASC  (OA = RAMC+180 + 2·NSA/3)
-    //
-    // Key relationship: RA = OA + AD  (oblique ascension + ascensional difference)
-    // We iterate because AD depends on declination which depends on the ecliptic longitude
+    // Each cusp is the ecliptic degree at a given fraction of its semi-arc from the angles.
+    // HA = RAMC − RA, so target RA = RAMC − HA.
+    // H11: HA=−DSA/3  → RA=RAMC+DSA/3;    H12: HA=−2DSA/3 → RA=RAMC+2DSA/3
+    // H3:  HA=180+NSA/3 → RA=RAMC+180−NSA/3;  H2: HA=180+2NSA/3 → RA=RAMC+180−2NSA/3
+    // We iterate because AD (and hence DSA/NSA) depends on the declination of the cusp
     // we are trying to find.
     function placidusHouse(houseNum){
       var isUpper = (houseNum===11||houseNum===12);
-      // H11 and H3 are 1/3 from their respective anchor (MC or IC);
-      // H12 and H2 are 2/3 from their anchor.
+      // H11/H3 are at 1/3 of their semi-arc; H12/H2 are at 2/3.
       var frac = (houseNum===11||houseNum===3) ? 1/3 : 2/3;
 
-      // Initial guess: convert the expected RA region to an ecliptic longitude
-      var guessRA = isUpper ? mod360(RAMC + frac*90) : mod360(RAMC + 180 + frac*90);
-      var lon = raToLon(guessRA);
+      // Initial guess: target RA assuming AD≈0 (sa≈90°)
+      var lon = raToLon(isUpper
+        ? mod360(RAMC + frac * 90)
+        : mod360(RAMC + 180 - frac * 90));
 
-      for(var iter=0;iter<30;iter++){
+      for(var iter=0;iter<40;iter++){
         // Declination of current estimate
         var sinDec = Math.sin(epsRad) * Math.sin(lon*DEG);
         sinDec = Math.max(-1, Math.min(1, sinDec));
         var dec = Math.asin(sinDec);   // radians
 
-        // Ascensional difference (AD): arcsin(tan φ · tan δ)
+        // Ascensional difference: AD = arcsin(tan φ · tan δ)
         var tt = Math.tan(latRad) * Math.tan(dec);
-        if(Math.abs(tt) > 0.9999) break;  // circumpolar — use current estimate
+        if(Math.abs(tt) > 0.9999) break;  // circumpolar
         var ad = Math.asin(Math.max(-1,Math.min(1,tt))) * RAD;  // degrees
 
-        // Semi-arc: diurnal = 90+AD, nocturnal = 90−AD
+        // Semi-arc
         var sa = isUpper ? (90+ad) : (90-ad);
 
-        // Target oblique ascension
-        var oaTarget = isUpper
-          ? mod360(RAMC       + frac * sa)   // H11/H12: measured from MC
-          : mod360(RAMC + 180 + frac * sa);  // H2/H3:   measured from IC
+        // Target RIGHT ASCENSION for this cusp (Placidus semi-arc division).
+        // HA = RAMC - RA, so RA = RAMC - HA.
+        // H11: HA = -DSA/3  → RA = RAMC + DSA/3
+        // H12: HA = -2DSA/3 → RA = RAMC + 2DSA/3
+        // H3:  HA = 180+NSA/3  → RA = RAMC+180 - NSA/3
+        // H2:  HA = 180+2NSA/3 → RA = RAMC+180 - 2NSA/3
+        var raTarget = isUpper
+          ? mod360(RAMC + frac * sa)
+          : mod360(RAMC + 180 - frac * sa);
 
-        // Convert OA → RA  (RA = OA + AD)
-        var raTarget = mod360(oaTarget + ad);
-
-        // Convert target RA → ecliptic longitude
         var newLon = raToLon(raTarget);
 
-        // Check convergence (angular distance)
         var diff = Math.abs(mod360(newLon - lon + 180) - 180);
         lon = newLon;
         if(diff < 0.0001) break;
@@ -1940,7 +1944,8 @@ var NC = (function(){
       Mars:planetLongitude('Mars',jd),Jupiter:planetLongitude('Jupiter',jd),
       Saturn:planetLongitude('Saturn',jd),Uranus:planetLongitude('Uranus',jd),
       Neptune:planetLongitude('Neptune',jd),Pluto:planetLongitude('Pluto',jd),
-      'North Node':northNodeLongitude(jd),Chiron:chironLongitude(jd),
+      'North Node':northNodeLongitude(jd),'South Node':mod360(northNodeLongitude(jd)+180),
+      Chiron:chironLongitude(jd),Lilith:lilithLongitude(jd),
     };
 
     var planets={};
@@ -1958,6 +1963,15 @@ var NC = (function(){
       houseCusps=calcHouseCusps(ascLon,jd,lat,lng);
       var pks=Object.keys(planets);
       for(var pk=0;pk<pks.length;pk++) planets[pks[pk]].house=planetHouse(planets[pks[pk]].totalDeg,houseCusps);
+      // Part of Fortune: day chart (Sun in H7-H12) = ASC+Moon-Sun; night = ASC+Sun-Moon
+      var sunH=planets['Sun']?planets['Sun'].house:1;
+      var fortuneLon=mod360(sunH>=7
+        ? ascLon + rawPos['Moon'] - rawPos['Sun']
+        : ascLon + rawPos['Sun'] - rawPos['Moon']);
+      var fortuneData=lonToSign(fortuneLon);
+      fortuneData.house=planetHouse(fortuneLon,houseCusps);
+      fortuneData.retrograde=false;
+      planets['Fortune']=fortuneData;
     }
 
     var coreplanets=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
@@ -2001,7 +2015,10 @@ var NC = (function(){
     Neptune:     {glyph:'\u2646',color:'#5888d8'},
     Pluto:       {glyph:'\u2647',color:'#a060b0'},
     'North Node':{glyph:'\u260A',color:'#c9a84c'},
+    'South Node':{glyph:'\u260B',color:'#c9a84c'},
     Chiron:      {glyph:'\u26B7',color:'#d0a870'},
+    Lilith:      {glyph:'\u26B8',color:'#9060b8'},
+    Fortune:     {glyph:'\u2295',color:'#c9a84c'},
     Ascendant:   {glyph:'AC',    color:'#c9a84c'},
     MC:          {glyph:'MC',    color:'#c9a84c'},
   };
@@ -2272,7 +2289,8 @@ var NC = (function(){
       var pRows=[
         ['Sun','\u2609'],['Moon','\u263D'],['Mercury','\u263F'],['Venus','\u2640'],['Mars','\u2642'],
         ['Jupiter','\u2643'],['Saturn','\u2644'],['Uranus','\u26E2'],['Neptune','\u2646'],['Pluto','\u2647'],
-        ['Chiron','\u26B7'],['North Node','\u260A'],
+        ['Chiron','\u26B7'],['North Node','\u260A'],['South Node','\u260B'],
+        ['Lilith','\u26B8'],['Fortune','\u2295'],
       ];
       if(ascData) pRows.push(['Ascendant','AC']);
       if(mcData)  pRows.push(['MC','MC']);
@@ -2807,22 +2825,31 @@ var NC = (function(){
     if(box){ box.innerHTML=''; box.classList.remove('open'); }
     _pobActiveIdx = -1;
   }
+  function _pobCleanName(r){
+    var addr = r.address || {};
+    var city = addr.city || addr.town || addr.village || addr.hamlet || addr.municipality || '';
+    var state = addr.state || addr.region || '';
+    var country = addr.country || '';
+    var parts = [city, state, country].filter(Boolean);
+    return parts.length > 0 ? parts.join(', ') : r.display_name;
+  }
   function _pobSelectResult(r){
+    var cleanName = _pobCleanName(r);
     var inp = document.getElementById('nc-pob');
-    if(inp) inp.value = r.display_name;
+    if(inp) inp.value = cleanName;
     _pobLat = parseFloat(r.lat);
     _pobLng = parseFloat(r.lon);
-    _pobDisplayName = r.display_name;
+    _pobDisplayName = cleanName;
     _pobCloseSuggestions();
     _pobSetStatus('located',
-      'LOCATED: ' + r.display_name + '\u2002·\u2002LAT: ' +
-      _pobLat.toFixed(4) + '\u2002·\u2002LNG: ' + _pobLng.toFixed(4));
+      'LOCATED: ' + cleanName + '\u2002\u00b7\u2002LAT: ' +
+      _pobLat.toFixed(4) + '\u2002\u00b7\u2002LNG: ' + _pobLng.toFixed(4));
   }
   function _pobFetchSuggestions(query){
     if(!query){ _pobCloseSuggestions(); _pobSetStatus('',''); return; }
     _pobSetStatus('locating','LOCATING\u2026');
     fetch('https://nominatim.openstreetmap.org/search?q=' +
-      encodeURIComponent(query) + '&format=json&limit=5&addressdetails=0', {
+      encodeURIComponent(query) + '&format=json&limit=5&addressdetails=1', {
       headers:{ 'Accept-Language':'en', 'User-Agent':'Jestamang/1.0 (jestamang.com)' }
     })
     .then(function(r){ return r.json(); })
@@ -2837,11 +2864,11 @@ var NC = (function(){
       _pobSetStatus('','');
       box.innerHTML = '';
       _pobActiveIdx = -1;
-      data.forEach(function(r, i){
+      data.forEach(function(r){
         var item = document.createElement('div');
         item.className = 'nc-pob-sug-item';
         item.setAttribute('role','option');
-        item.textContent = r.display_name;
+        item.textContent = _pobCleanName(r);
         item.addEventListener('mousedown', function(e){ e.preventDefault(); _pobSelectResult(r); });
         box.appendChild(item);
       });
@@ -3031,7 +3058,7 @@ var NC = (function(){
     if(_pobLat !== null && _pobLng !== null){
       _withCoords(_pobLat, _pobLng, _pobDisplayName || pobVal);
     } else {
-      fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(pobVal) + '&format=json&limit=1', {
+      fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(pobVal) + '&format=json&limit=1&addressdetails=1', {
         headers: { 'Accept-Language': 'en', 'User-Agent': 'Jestamang/1.0 (jestamang.com)' }
       })
       .then(function(r){ return r.json(); })
@@ -3042,7 +3069,7 @@ var NC = (function(){
           setError('This location is unknown to the cosmic record. Try a nearby city or more specific name.');
           return;
         }
-        _withCoords(parseFloat(data[0].lat), parseFloat(data[0].lon), data[0].display_name);
+        _withCoords(parseFloat(data[0].lat), parseFloat(data[0].lon), _pobCleanName(data[0]));
       })
       .catch(function(e){
         console.error('Geocoding error:', e);
