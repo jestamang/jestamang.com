@@ -1,0 +1,104 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── HELPER ──────────────────────────────────────────────────────────────
+    function isAdmin() {
+      return request.auth != null
+          && request.auth.token.email == 'andrewwace0319@gmail.com';
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+
+    // ── LEADERBOARDS ─────────────────────────────────────────────────────────
+    // Public read. Authenticated create. No updates or deletes (scores are permanent).
+    match /leaderboards/{entryId} {
+      allow read:   if true;
+      allow create: if isSignedIn();
+      allow update: if false;
+      allow delete: if false;
+    }
+
+
+    // ── COMMENTS ─────────────────────────────────────────────────────────────
+    // Public read. Authenticated create.
+    // Delete: own document or admin only.
+    match /comments/{commentId} {
+      allow read:   if true;
+      allow create: if isSignedIn();
+      allow update: if false;
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+
+
+    // ── INNER CIRCLE CHAT ────────────────────────────────────────────────────
+    // Authenticated read and create.
+    // Delete: own message or admin only.
+    match /innerCircleChat/{messageId} {
+      allow read:   if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if false;
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+
+
+    // ── GUESTBOOK ────────────────────────────────────────────────────────────
+    // Public read. Authenticated create (one entry per user — keyed by uid).
+    // Users can update their own entry. Admin can delete any entry.
+    match /guestbook/{userId} {
+      allow read:   if true;
+      allow create: if isSignedIn()
+                    && request.auth.uid == userId
+                    && !exists(/databases/$(database)/documents/guestbook/$(request.auth.uid));
+      allow update: if isOwner(userId);
+      allow delete: if isAdmin();
+    }
+
+
+    // ── USERS ────────────────────────────────────────────────────────────────
+    // Users can read and write only their own document.
+    // Admin can read any user document.
+    match /users/{userId} {
+      allow read:  if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId);
+    }
+
+
+    // ── FAVORITES ────────────────────────────────────────────────────────────
+    // Users can only read and write their own favorites subcollection.
+    match /favorites/{userId} {
+      allow read, write: if isOwner(userId);
+
+      match /{item=**} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+
+    // ── INQUIRIES ────────────────────────────────────────────────────────────
+    // Anyone can create (merch inquiries from public visitors).
+    // Only admin can read. No updates or deletes.
+    match /inquiries/{inquiryId} {
+      allow read:   if isAdmin();
+      allow create: if true;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+
+    // ── NOTIFICATIONS ────────────────────────────────────────────────────────
+    // Only admin can read and write.
+    match /notifications/{notifId} {
+      allow read, write: if isAdmin();
+    }
+
+  }
+}
