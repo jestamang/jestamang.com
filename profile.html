@@ -509,6 +509,51 @@ body::before{
   font-style:italic;
   margin-top:5px;
 }
+.nc-pob-wrap{position:relative;}
+.nc-pob-status{
+  font-family:'Luminari',serif;
+  font-size:0.62rem;
+  letter-spacing:0.08em;
+  margin-top:5px;
+  min-height:14px;
+  line-height:1.5;
+}
+.nc-pob-status.locating{color:rgba(201,168,76,0.45);font-style:italic;}
+.nc-pob-status.located{color:rgba(201,168,76,0.7);}
+.nc-pob-status.not-found{color:rgba(220,80,80,0.7);}
+.nc-pob-suggestions{
+  position:absolute;
+  top:calc(100% - 12px);
+  left:0;right:0;
+  background:rgba(6,3,12,0.98);
+  border:1px solid rgba(201,168,76,0.4);
+  border-top:none;
+  z-index:500;
+  display:none;
+  max-height:220px;
+  overflow-y:auto;
+}
+.nc-pob-suggestions.open{display:block;}
+.nc-pob-sug-item{
+  font-family:'Luminari',serif;
+  font-size:0.72rem;
+  letter-spacing:0.04em;
+  color:rgba(240,228,195,0.85);
+  padding:10px 12px;
+  cursor:pointer;
+  border-bottom:1px solid rgba(201,168,76,0.08);
+  line-height:1.4;
+  transition:background 0.12s,color 0.12s;
+}
+.nc-pob-sug-item:last-child{border-bottom:none;}
+.nc-pob-sug-item:hover,.nc-pob-sug-item.active{
+  background:rgba(201,168,76,0.1);
+  color:#c9a84c;
+}
+@media(max-width:768px){
+  .nc-pob-suggestions{font-size:1rem;}
+  .nc-pob-sug-item{padding:13px 12px;font-size:0.8rem;}
+}
 .natal-calc-btn-row {
   display:flex;
   justify-content:center;
@@ -1254,9 +1299,11 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
           <input class="form-input" type="time" id="nc-tob" placeholder="HH:MM">
           <div class="natal-form-note">Exact time needed for accurate houses and rising sign</div>
         </div>
-        <div>
+        <div class="nc-pob-wrap">
           <label class="natal-form-label" for="nc-pob">Place of Birth</label>
-          <input class="form-input" type="text" id="nc-pob" placeholder="City, Country">
+          <input class="form-input" type="text" id="nc-pob" placeholder="City, Country" autocomplete="off" spellcheck="false">
+          <div id="nc-pob-status" class="nc-pob-status"></div>
+          <div id="nc-pob-suggestions" class="nc-pob-suggestions" role="listbox"></div>
         </div>
       </div>
       <div class="natal-calc-btn-row">
@@ -2402,6 +2449,15 @@ var NC = (function(){
               if(cd.birthDate) document.getElementById('nc-dob').value = cd.birthDate;
               if(cd.birthTime) document.getElementById('nc-tob').value = cd.birthTime;
               if(cd.birthPlace) document.getElementById('nc-pob').value = cd.birthPlace;
+              // Cache saved coords so recalculation skips geocoding
+              if(cd.lat != null && cd.lng != null){
+                _pobLat = cd.lat; _pobLng = cd.lng;
+                _pobDisplayName = cd.birthPlace || null;
+                _pobSetStatus('located',
+                  'LOCATED: ' + (cd.birthPlace||'') +
+                  '\u2002\u00b7\u2002LAT: ' + cd.lat.toFixed(4) +
+                  '\u2002\u00b7\u2002LNG: ' + cd.lng.toFixed(4));
+              }
               // Display saved result
               displaySavedChart(cd, user);
             }
@@ -2722,6 +2778,101 @@ var NC = (function(){
     if(loadingTimer){ clearInterval(loadingTimer); loadingTimer = null; }
   }
 
+  /* ── Place-of-birth autocomplete (Nominatim) ── */
+  var _pobLat = null, _pobLng = null, _pobDisplayName = null;
+  var _pobDebounceTimer = null;
+  var _pobActiveIdx = -1;
+
+  function _pobSetStatus(type, msg){
+    var el = document.getElementById('nc-pob-status');
+    if(!el) return;
+    el.className = 'nc-pob-status' + (type ? ' '+type : '');
+    el.textContent = msg || '';
+  }
+  function _pobCloseSuggestions(){
+    var box = document.getElementById('nc-pob-suggestions');
+    if(box){ box.innerHTML=''; box.classList.remove('open'); }
+    _pobActiveIdx = -1;
+  }
+  function _pobSelectResult(r){
+    var inp = document.getElementById('nc-pob');
+    if(inp) inp.value = r.display_name;
+    _pobLat = parseFloat(r.lat);
+    _pobLng = parseFloat(r.lon);
+    _pobDisplayName = r.display_name;
+    _pobCloseSuggestions();
+    _pobSetStatus('located',
+      'LOCATED: ' + r.display_name + '\u2002·\u2002LAT: ' +
+      _pobLat.toFixed(4) + '\u2002·\u2002LNG: ' + _pobLng.toFixed(4));
+  }
+  function _pobFetchSuggestions(query){
+    if(!query){ _pobCloseSuggestions(); _pobSetStatus('',''); return; }
+    _pobSetStatus('locating','LOCATING\u2026');
+    fetch('https://nominatim.openstreetmap.org/search?q=' +
+      encodeURIComponent(query) + '&format=json&limit=5&addressdetails=0', {
+      headers:{ 'Accept-Language':'en', 'User-Agent':'Jestamang/1.0 (jestamang.com)' }
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var box = document.getElementById('nc-pob-suggestions');
+      if(!box) return;
+      if(!data || !data.length){
+        _pobCloseSuggestions();
+        _pobSetStatus('not-found','LOCATION NOT FOUND \u2014 try being more specific (City, Country)');
+        return;
+      }
+      _pobSetStatus('','');
+      box.innerHTML = '';
+      _pobActiveIdx = -1;
+      data.forEach(function(r, i){
+        var item = document.createElement('div');
+        item.className = 'nc-pob-sug-item';
+        item.setAttribute('role','option');
+        item.textContent = r.display_name;
+        item.addEventListener('mousedown', function(e){ e.preventDefault(); _pobSelectResult(r); });
+        box.appendChild(item);
+      });
+      box.classList.add('open');
+    })
+    .catch(function(){ _pobCloseSuggestions(); _pobSetStatus('not-found','Could not reach location service. Check connection.'); });
+  }
+
+  (function _initPobAutocomplete(){
+    var inp = document.getElementById('nc-pob');
+    if(!inp) return;
+    inp.addEventListener('input', function(){
+      // Clear cached coords when user changes text
+      _pobLat = null; _pobLng = null; _pobDisplayName = null;
+      clearTimeout(_pobDebounceTimer);
+      var q = inp.value.trim();
+      if(!q){ _pobCloseSuggestions(); _pobSetStatus('',''); return; }
+      _pobDebounceTimer = setTimeout(function(){ _pobFetchSuggestions(q); }, 500);
+    });
+    inp.addEventListener('keydown', function(e){
+      var box = document.getElementById('nc-pob-suggestions');
+      var items = box ? box.querySelectorAll('.nc-pob-sug-item') : [];
+      if(e.key === 'ArrowDown'){
+        e.preventDefault();
+        _pobActiveIdx = Math.min(_pobActiveIdx+1, items.length-1);
+        items.forEach(function(it,i){ it.classList.toggle('active', i===_pobActiveIdx); });
+      } else if(e.key === 'ArrowUp'){
+        e.preventDefault();
+        _pobActiveIdx = Math.max(_pobActiveIdx-1, 0);
+        items.forEach(function(it,i){ it.classList.toggle('active', i===_pobActiveIdx); });
+      } else if(e.key === 'Enter' && _pobActiveIdx >= 0 && items[_pobActiveIdx]){
+        items[_pobActiveIdx].dispatchEvent(new MouseEvent('mousedown'));
+      } else if(e.key === 'Escape'){
+        _pobCloseSuggestions();
+      }
+    });
+    inp.addEventListener('blur', function(){
+      setTimeout(_pobCloseSuggestions, 150);
+    });
+    document.addEventListener('click', function(e){
+      if(!e.target.closest('.nc-pob-wrap')) _pobCloseSuggestions();
+    });
+  })();
+
   function runNatalCalculation(){
     var dobVal  = document.getElementById('nc-dob').value.trim();
     var tobVal  = document.getElementById('nc-tob').value.trim();
@@ -2740,22 +2891,8 @@ var NC = (function(){
 
     showLoading();
 
-    // Geocode via Nominatim
-    fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(pobVal) + '&format=json&limit=1', {
-      headers: { 'Accept-Language': 'en' }
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      if(!data || data.length === 0){
-        hideLoading();
-        document.getElementById('natal-form-area').style.display = 'block';
-        setError('This location is unknown to the cosmic record. Try a nearby city or more specific name.');
-        return;
-      }
-      var lat = parseFloat(data[0].lat);
-      var lng = parseFloat(data[0].lon);
-
-      // Fetch accurate timezone offset for birth location + date
+    // If coords already cached from autocomplete selection, skip geocoding
+    function _withCoords(lat, lng, displayName){
       function doCalculate(utcOffsetMins){
         var result;
         try {
@@ -2808,7 +2945,7 @@ var NC = (function(){
         var chartSaveData = {
           birthDate:  dobVal,
           birthTime:  tobVal,
-          birthPlace: pobVal,
+          birthPlace: displayName || pobVal,
           lat: lat,
           lng: lng,
           planets: {},
@@ -2852,12 +2989,10 @@ var NC = (function(){
             var offsetMins = null;
             if(tzName){
               try {
-                // Compute UTC offset at the birth date using Intl API
                 var dobParts = dobVal.split('-').map(Number);
                 var yr=dobParts[0], mo=dobParts[1], dy=dobParts[2];
                 var tobParts = tobVal.split(':').map(Number);
                 var hh=tobParts[0], mm=tobParts[1];
-                // Treat local time as UTC temporarily to query Intl
                 var probe = new Date(Date.UTC(yr, mo-1, dy, hh, mm, 0));
                 var fmt = new Intl.DateTimeFormat('en-US', {
                   timeZone: tzName,
@@ -2873,18 +3008,36 @@ var NC = (function(){
             }
             doCalculate(offsetMins);
           })
-          .catch(function(){ doCalculate(null); }); // fallback to lng/15
+          .catch(function(){ doCalculate(null); });
       } else {
         doCalculate(null);
       }
+    } // end _withCoords
 
-    })
-    .catch(function(e){
-      console.error('Geocoding error:', e);
-      hideLoading();
-      document.getElementById('natal-form-area').style.display = 'block';
-      setError('Could not reach the celestial coordinates service. Check your connection and try again.');
-    });
+    // Use cached coords from autocomplete, or geocode fresh
+    if(_pobLat !== null && _pobLng !== null){
+      _withCoords(_pobLat, _pobLng, _pobDisplayName || pobVal);
+    } else {
+      fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(pobVal) + '&format=json&limit=1', {
+        headers: { 'Accept-Language': 'en', 'User-Agent': 'Jestamang/1.0 (jestamang.com)' }
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(!data || data.length === 0){
+          hideLoading();
+          document.getElementById('natal-form-area').style.display = 'block';
+          setError('This location is unknown to the cosmic record. Try a nearby city or more specific name.');
+          return;
+        }
+        _withCoords(parseFloat(data[0].lat), parseFloat(data[0].lon), data[0].display_name);
+      })
+      .catch(function(e){
+        console.error('Geocoding error:', e);
+        hideLoading();
+        document.getElementById('natal-form-area').style.display = 'block';
+        setError('Could not reach the celestial coordinates service. Check your connection and try again.');
+      });
+    }
   }
 
   // Display saved chart from Firestore
