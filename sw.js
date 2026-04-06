@@ -4,7 +4,7 @@
 // ════════════════════════════════════════════════════════════════
 
 var CACHE_NAME = 'jestamang-v2';
-var BADGE      = '/assets/homepage/logo%20png.png';
+var BADGE      = '/assets/icons/icon-192.png';
 
 var PRECACHE_URLS = [
   '/index.html',
@@ -28,7 +28,7 @@ var PRECACHE_URLS = [
   '/accessibility.html',
   '/offline.html',
   '/assets/fonts/Luminari.ttf',
-  '/assets/homepage/logo%20png.png',
+  '/assets/icons/icon-192.png',
   '/assets/homepage/background/Jesta background.jpg',
   '/assets/js/firebase-config.js',
   '/assets/js/jesta-auth.js'

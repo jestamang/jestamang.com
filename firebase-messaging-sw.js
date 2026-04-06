@@ -33,8 +33,8 @@ messaging.onBackgroundMessage(function (payload) {
 
   var options = {
     body:    body,
-    icon:    '/assets/homepage/logo%20png.png',
-    badge:   '/assets/homepage/logo%20png.png',
+    icon:    '/assets/icons/icon-192.png',
+    badge:   '/assets/icons/icon-192.png',
     vibrate: [200, 100, 200],
     data:    { link: link },
     tag:     'jestamang-push'
