@@ -182,8 +182,8 @@ a.back-link:hover{color:#c9a84c}
 <img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72" loading="eager" width="1288" height="2564">
 
 <div class="oracle-wrap">
-  <h1 class="oracle-title">The Oracle</h1>
-  <p class="oracle-sub">Draw from the deck of the Jestamang Universe</p>
+  <h1 class="oracle-title" id="oracle-title">The Oracle</h1>
+  <p class="oracle-sub" id="oracle-sub">Draw from the deck of the Jestamang Universe</p>
   <div class="drawn-count" id="drawn-count">&nbsp;</div>
 
   <div class="card-stage">
@@ -205,7 +205,7 @@ a.back-link:hover{color:#c9a84c}
 
   <div class="oracle-btns">
     <button class="draw-btn" id="draw-btn">Draw a Card</button>
-    <button class="reset-btn" id="reset-btn">Reshuffle the Deck</button>
+    <button class="reset-btn" id="reset-btn" style="display:none"></button>
     <a href="arcade.html" class="back-link">← Return to the Vault</a>
   </div>
 </div>
@@ -235,88 +235,137 @@ var CARDS = [
   {arcana:'XXI · Fire',name:'The Circus Spits',glyph:'⁑',reading:'Free, free, FREE! Marvelous — miraculous — meticulous creations beyond the limits of those fussy gods. Today you are one of them. Create without a single shred of doubt.'}
 ];
 
-var deck = [], drawn = 0, total = CARDS.length, busy = false;
+var TWENTY_FOUR = 24 * 60 * 60 * 1000;
+var _countdownTimer = null;
 
-function initDeck() {
-  deck = CARDS.slice().sort(function(){ return Math.random() - 0.5; });
-  drawn = 0;
-  updateCount();
+function fillCard(idx) {
+  var c = CARDS[idx];
+  document.getElementById('c-arcana').textContent = c.arcana;
+  document.getElementById('c-name').textContent = c.name;
+  document.getElementById('c-glyph').textContent = c.glyph;
+  document.getElementById('c-reading').textContent = c.reading;
 }
 
-function updateCount() {
+function getCountdownText(drawTime) {
+  var remaining = TWENTY_FOUR - (Date.now() - drawTime);
+  if (remaining <= 0) return null;
+  var totalMins = Math.floor(remaining / 60000);
+  var h = Math.floor(totalMins / 60);
+  var m = totalMins % 60;
+  return 'RETURN IN ' + h + (h !== 1 ? ' HOURS' : ' HOUR') + ' · ' + m + (m !== 1 ? ' MINUTES' : ' MINUTE');
+}
+
+function startCountdown(drawTime) {
+  clearInterval(_countdownTimer);
   var el = document.getElementById('drawn-count');
-  if (drawn === 0) el.innerHTML = '&nbsp;';
-  else if (drawn === total) el.textContent = 'All ' + total + ' cards have spoken';
-  else el.textContent = drawn + ' of ' + total + ' cards drawn';
-}
-
-function fillCard(card) {
-  document.getElementById('c-arcana').textContent = card.arcana;
-  document.getElementById('c-name').textContent = card.name;
-  document.getElementById('c-glyph').textContent = card.glyph;
-  document.getElementById('c-reading').textContent = card.reading;
-}
-
-var drawBtn = document.getElementById('draw-btn');
-var resetBtn = document.getElementById('reset-btn');
-var ocard = document.getElementById('oracle-card');
-
-drawBtn.addEventListener('click', function() {
-  if (busy || !deck.length) return;
-  busy = true;
-  drawBtn.disabled = true;
-
-  var cardData = deck.pop();
-  drawn++;
-  updateCount();
-
-  var isRevealed = ocard.classList.contains('revealed');
-
-  if (isRevealed) {
-    // Flip back to show back face
-    ocard.classList.remove('revealed');
-    // Wait for flip to reach midpoint (~275ms), update content, then flip forward
-    setTimeout(function() {
-      fillCard(cardData);
-      setTimeout(function() {
-        ocard.classList.add('revealed');
-        busy = false;
-        if (!deck.length) {
-          resetBtn.classList.add('show');
-        } else {
-          drawBtn.disabled = false;
-        }
-      }, 80);
-    }, 300);
-  } else {
-    // First draw — just fill and flip
-    fillCard(cardData);
-    setTimeout(function() {
-      ocard.classList.add('revealed');
-      busy = false;
-      if (!deck.length) {
-        resetBtn.classList.add('show');
-      } else {
-        drawBtn.disabled = false;
-      }
-    }, 60);
+  function tick() {
+    var txt = getCountdownText(drawTime);
+    if (!txt) { clearInterval(_countdownTimer); showDrawState(); return; }
+    el.textContent = txt;
   }
-});
+  tick();
+  _countdownTimer = setInterval(tick, 60000);
+}
 
-resetBtn.addEventListener('click', function() {
+function showLockedState(idx, drawTime) {
+  document.getElementById('oracle-title').textContent = 'YOUR SIGIL HAS BEEN CAST';
+  document.getElementById('oracle-sub').textContent = 'Your card for today has been drawn';
+  document.getElementById('draw-btn').style.display = 'none';
+  fillCard(idx);
+  var ocard = document.getElementById('oracle-card');
+  if (!ocard.classList.contains('revealed')) ocard.classList.add('revealed');
+  startCountdown(drawTime);
+}
+
+function showDrawState() {
+  clearInterval(_countdownTimer);
+  document.getElementById('oracle-title').textContent = 'THE ORACLE AWAITS';
+  document.getElementById('oracle-sub').textContent = 'Draw from the deck of the Jestamang Universe';
+  document.getElementById('drawn-count').innerHTML = '&nbsp;';
+  document.getElementById('draw-btn').style.display = '';
+  document.getElementById('draw-btn').disabled = false;
+  var ocard = document.getElementById('oracle-card');
   ocard.classList.remove('revealed');
-  drawBtn.disabled = false;
-  resetBtn.classList.remove('show');
+  document.getElementById('c-arcana').innerHTML = '&nbsp;';
+  document.getElementById('c-name').innerHTML = '&nbsp;';
+  document.getElementById('c-glyph').innerHTML = '&nbsp;';
+  document.getElementById('c-reading').innerHTML = '&nbsp;';
+}
+
+function lockDraw(idx) {
+  var now = Date.now();
+  localStorage.setItem('sigilLastDraw', now.toString());
+  localStorage.setItem('sigilLastCard', idx.toString());
+  document.getElementById('oracle-title').textContent = 'YOUR SIGIL HAS BEEN CAST';
+  document.getElementById('oracle-sub').textContent = 'Your card for today has been drawn';
+  document.getElementById('draw-btn').style.display = 'none';
+  startCountdown(now);
+}
+
+function syncToFirestore(idx, drawTs) {
+  try {
+    var db = window.jestaDB;
+    var user = window.jestaAuth && window.jestaAuth.currentUser;
+    if (!db || !user) return;
+    db.collection('users').doc(user.uid).set({ sigilLastDraw: drawTs, sigilLastCard: idx }, { merge: true })
+      .catch(function(e){ console.warn('sigil:fs write', e); });
+  } catch(e){}
+}
+
+// Draw button
+document.getElementById('draw-btn').addEventListener('click', function() {
+  var btn = this;
+  if (btn.disabled) return;
+  btn.disabled = true;
+  var idx = Math.floor(Math.random() * CARDS.length);
+  fillCard(idx);
+  var ocard = document.getElementById('oracle-card');
   setTimeout(function() {
-    document.getElementById('c-arcana').innerHTML = '&nbsp;';
-    document.getElementById('c-name').innerHTML = '&nbsp;';
-    document.getElementById('c-glyph').innerHTML = '&nbsp;';
-    document.getElementById('c-reading').innerHTML = '&nbsp;';
-    initDeck();
-  }, 300);
+    ocard.classList.add('revealed');
+    setTimeout(function() {
+      lockDraw(idx);
+      syncToFirestore(idx, parseInt(localStorage.getItem('sigilLastDraw')));
+    }, 400);
+  }, 60);
 });
 
-initDeck();
+// Init: check localStorage first
+(function init() {
+  var lastDraw = localStorage.getItem('sigilLastDraw');
+  var lastCard = localStorage.getItem('sigilLastCard');
+  if (lastDraw && lastCard !== null && (Date.now() - parseInt(lastDraw)) < TWENTY_FOUR) {
+    showLockedState(parseInt(lastCard), parseInt(lastDraw));
+  } else {
+    showDrawState();
+  }
+})();
+
+// Firestore sync for logged-in users — runs after Firebase loads
+document.addEventListener('DOMContentLoaded', function() {
+  var authPoll = setInterval(function() {
+    if (!window.jestaAuth) return;
+    clearInterval(authPoll);
+    window.jestaAuth.onAuthStateChanged(function(user) {
+      if (!user || !window.jestaDB) return;
+      window.jestaDB.collection('users').doc(user.uid).get().then(function(doc) {
+        if (!doc.exists) return;
+        var d = doc.data();
+        if (d.sigilLastDraw == null || d.sigilLastCard == null) return;
+        var fsTs = d.sigilLastDraw, fsCard = d.sigilLastCard;
+        var localTs = parseInt(localStorage.getItem('sigilLastDraw') || '0');
+        if (fsTs > localTs) {
+          localStorage.setItem('sigilLastDraw', fsTs.toString());
+          localStorage.setItem('sigilLastCard', fsCard.toString());
+          if ((Date.now() - fsTs) < TWENTY_FOUR) {
+            showLockedState(fsCard, fsTs);
+          } else {
+            showDrawState();
+          }
+        }
+      }).catch(function(e){ console.warn('sigil:fs read', e); });
+    });
+  }, 100);
+});
 </script>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
