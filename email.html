@@ -84,12 +84,122 @@ textarea.tx-input{resize:vertical;min-height:120px;line-height:1.65}
   .tx-btn{min-height:54px;letter-spacing:0.38em}
   .tx-title{letter-spacing:0.1em;font-size:clamp(1rem,5vw,1.4rem)}
 }
+/* ── MAILERLITE OVERRIDES ── */
+.ml-embedded{width:100%}
+.ml-form-embedContainer,.ml-form-embedWrapper,.ml-form-embedBody,
+.ml-form-align-left,.ml-form-align-center,.ml-form-align-right{
+  background:transparent!important;border:none!important;
+  box-shadow:none!important;padding:0!important;margin:0!important}
+.ml-embedded .ml-form-embedBody{padding:0!important}
+.ml-form-fieldRow,.ml-form-formContent{margin-bottom:0!important;padding:0!important}
+.ml-form-fieldRow input[type="text"],
+.ml-form-fieldRow input[type="email"],
+.ml-form-fieldRow input[type="tel"],
+.ml-embedded input[type="text"],
+.ml-embedded input[type="email"]{
+  background:transparent!important;
+  border:none!important;
+  border-bottom:1px solid rgba(201,168,76,0.3)!important;
+  border-radius:0!important;
+  color:#e8e0d0!important;
+  font-family:'Luminari',serif!important;
+  font-size:16px!important;
+  letter-spacing:0.05em!important;
+  padding:6px 0 10px!important;
+  outline:none!important;
+  box-shadow:none!important;
+  width:100%!important;
+  margin-bottom:26px!important;
+  -webkit-appearance:none!important;
+  appearance:none!important}
+.ml-form-fieldRow input:focus,
+.ml-embedded input:focus{
+  border-bottom-color:#c9a84c!important;
+  box-shadow:none!important}
+.ml-form-fieldRow input::placeholder,
+.ml-embedded input::placeholder{
+  color:rgba(201,168,76,0.2)!important;
+  font-style:italic!important}
+.ml-form-fieldRow label,
+.ml-embedded label{
+  font-family:'Luminari',serif!important;
+  font-size:0.58rem!important;
+  letter-spacing:0.38em!important;
+  text-transform:uppercase!important;
+  color:rgba(201,168,76,0.55)!important;
+  margin-bottom:10px!important;
+  display:block!important;
+  font-weight:normal!important}
+.ml-form-horizontalRow button[type="submit"],
+.ml-form-embedSubmit button[type="submit"],
+.ml-embedded button[type="submit"]{
+  background:#c9a84c!important;
+  border:none!important;
+  border-radius:0!important;
+  color:transparent!important;
+  font-family:'Luminari',serif!important;
+  font-size:0!important;
+  letter-spacing:0.42em!important;
+  text-transform:uppercase!important;
+  padding:0!important;
+  width:100%!important;
+  min-height:56px!important;
+  cursor:pointer!important;
+  transition:background 0.22s,box-shadow 0.22s!important;
+  margin-top:14px!important;
+  position:relative!important;
+  display:block!important;
+  box-shadow:none!important}
+.ml-form-horizontalRow button[type="submit"]::after,
+.ml-form-embedSubmit button[type="submit"]::after,
+.ml-embedded button[type="submit"]::after{
+  content:'TRANSMIT';
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Luminari',serif;
+  font-size:0.82rem;
+  letter-spacing:0.42em;
+  color:#08060a;
+  text-transform:uppercase}
+.ml-form-horizontalRow button[type="submit"]:hover,
+.ml-form-embedSubmit button[type="submit"]:hover,
+.ml-embedded button[type="submit"]:hover{
+  background:#deb95c!important;
+  box-shadow:0 0 40px rgba(201,168,76,0.45),0 0 80px rgba(201,168,76,0.15)!important}
+.ml-form-successBody,.ml-form-successContent,.ml-success-content{
+  background:transparent!important;
+  border:none!important;
+  box-shadow:none!important;
+  padding:24px 0!important}
+.ml-form-successContent h4,.ml-form-successBody h4{
+  font-family:'Luminari',serif!important;
+  color:#c9a84c!important;
+  font-size:clamp(1rem,3vw,1.4rem)!important;
+  letter-spacing:0.3em!important;
+  text-transform:uppercase!important;
+  text-shadow:0 0 40px rgba(201,168,76,0.4)!important;
+  font-weight:normal!important}
+.ml-form-successContent p,.ml-form-successBody p{
+  font-family:'Luminari',serif!important;
+  color:rgba(255,255,255,0.3)!important;
+  font-style:italic!important;
+  font-size:0.8rem!important;
+  letter-spacing:0.12em!important}
+.ml-form-checkboxRow .description,.ml-error-container,
+.ml-form-errorMessage,.ml-embedded .label-description{
+  font-family:'Luminari',serif!important;
+  font-size:0.75rem!important;
+  color:rgba(220,85,85,0.8)!important;
+  letter-spacing:0.06em!important}
+.ml-form-note,.ml-form-recaptcha,.ml-subscribe-close,
+.ml-form-formContent .ml-form-fieldRow:last-child .label-description,
+.powered-by{display:none!important}
 /* jt-text-treatments */
 h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .tx-title{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 </style>
 
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js" defer></script>
+  <script>(function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[]).push(arguments);},l=d.createElement(e),l.async=1,l.src=u,n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})(window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');ml('account','1679810');</script>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="dns-prefetch" href="https://apis.google.com">
@@ -172,39 +282,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
     <div class="tx-rule"></div>
 
-    <div class="tx-form-wrap" id="tx-form-wrap">
-      <form id="tx-form" autocomplete="off" novalidate>
-
-        <div class="tx-field">
-          <label class="tx-label" for="tx-name">Name</label>
-          <input class="tx-input" type="text" id="tx-name" name="from_name" autocomplete="name" required placeholder="Your name" />
-        </div>
-
-        <div class="tx-field">
-          <label class="tx-label" for="tx-email">Email</label>
-          <input class="tx-input" type="email" id="tx-email" name="email" autocomplete="email" required placeholder="your@signal.com" />
-        </div>
-
-        <div class="tx-field">
-          <label class="tx-label" for="tx-subject">Subject</label>
-          <input class="tx-input" type="text" id="tx-subject" name="subject" placeholder="Nature of transmission" />
-        </div>
-
-        <div class="tx-field">
-          <label class="tx-label" for="tx-msg">Message</label>
-          <textarea class="tx-input" id="tx-msg" name="message" rows="5" required placeholder="Speak your transmission into the void..."></textarea>
-        </div>
-
-        <button type="submit" class="tx-btn" id="tx-btn">Transmit</button>
-      </form>
-
-      <div id="tx-error">The transmission could not be sent through.<br>Try again or reach us directly at <a href="mailto:thejestamang@gmail.com">thejestamang@gmail.com</a></div>
-    </div>
-
-    <div id="tx-success">
-      <span class="tx-success-rune">✦</span>
-      <div class="tx-success-title">Your Transmission<br>Has Been Received</div>
-      <p class="tx-success-sub">It travels now through the in-between.<br>We will answer when the stars permit.</p>
+    <div class="tx-form-wrap">
+      <div class="ml-embedded" data-form="8EZtSf"></div>
     </div>
 
   </div>
@@ -255,79 +334,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 })();
 </script>
 
-<!-- EmailJS transmission logic -->
-<script>
-(function(){
-  emailjs.init('xJfBxMIcVCTgYvQr9');
-
-  var form    = document.getElementById('tx-form');
-  var btn     = document.getElementById('tx-btn');
-  var wrap    = document.getElementById('tx-form-wrap');
-  var success = document.getElementById('tx-success');
-  var errEl   = document.getElementById('tx-error');
-
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-
-    var fromName  = document.getElementById('tx-name').value.trim();
-    var fromEmail = document.getElementById('tx-email').value.trim();
-    var subject   = document.getElementById('tx-subject').value.trim() || '(no subject)';
-    var message   = document.getElementById('tx-msg').value.trim();
-
-    if(!fromName||!fromEmail||!message){
-      errEl.textContent='All fields marked are required for transmission.';
-      errEl.style.display='block';
-      return;
-    }
-
-    var fullSubject='Transmission: '+subject;
-
-    btn.textContent='Transmitting…';
-    btn.disabled=true;
-    errEl.style.display='none';
-
-    var params={
-      from_name: fromName,
-      from_email: fromEmail,
-      reply_to: fromEmail,
-      subject: fullSubject,
-      message: message,
-      to_entity: 'Jestamang',
-      to_email: 'jestamang@jestamang.com'
-    };
-
-    emailjs.send('jestamang','template_5l4a1lk', params)
-    .then(function(){
-      emailjs.send('jestamang','template_cteslf8',{
-        from_name: fromName,
-        from_email: fromEmail,
-        reply_to: 'thejestamang@gmail.com',
-        subject: fullSubject,
-        message: message,
-        to_entity: 'Jestamang',
-        to_email: 'jestamang@jestamang.com'
-      });
-      // Fade out form, fade in success
-      wrap.style.transition='opacity 0.55s ease';
-      wrap.style.opacity='0';
-      setTimeout(function(){
-        wrap.style.display='none';
-        success.style.opacity='0';
-        success.style.display='block';
-        success.style.transition='opacity 0.6s ease';
-        requestAnimationFrame(function(){success.style.opacity='1';});
-      },560);
-    })
-    .catch(function(err){
-      console.error(err);
-      btn.textContent='TRANSMIT';
-      btn.disabled=false;
-      errEl.textContent='The transmission failed. Try again or reach us at thejestamang@gmail.com';
-      errEl.style.display='block';
-    });
-  });
-})();
-</script>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
