@@ -12,7 +12,7 @@ SEO & SOCIAL SHARING (all 23 HTML pages)
   - Added Twitter Card tags (twitter:card, twitter:title, twitter:description, twitter:image)
   - OG image points to https://jestamang.com/assets/homepage/logo%20png.png
   Pages updated: index.html, albums.html, entities.html, lyrics.html, merch.html,
-  photos.html, videos.html, email.html, comix.html, games.html, instagram.html,
+  photos.html, videos.html, email.html, comix.html, arcade.html, instagram.html,
   youtube.html, spotify.html, apple-music.html, blog.html, shows.html, login.html,
   profile.html, members.html, arcade.html, dossier.html, game-memory.html, game-oracle.html
 

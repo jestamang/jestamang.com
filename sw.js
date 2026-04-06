@@ -16,7 +16,7 @@ var PRECACHE_URLS = [
   '/videos.html',
   '/email.html',
   '/comix.html',
-  '/games.html',
+  '/arcade.html',
   '/arcade.html',
   '/blog.html',
   '/shows.html',
