@@ -199,24 +199,21 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 @media(max-width:768px){#jbtt{bottom:80px;right:16px}}
 </style>
 <style id="ml-signup-styles">
-.ml-signup-wrap{padding:56px 24px;text-align:center;position:relative;z-index:1;opacity:0;transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease}
-.ml-signup-wrap.ml-visible{opacity:1;transform:translateY(0)}
-.ml-signup-box{display:inline-block;background:rgba(0,0,0,0.6);border:1px solid #c9a84c;padding:40px 36px;max-width:500px;width:100%;border-radius:4px;text-align:center;position:relative}
-.ml-signup-box::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.65),transparent)}
-.ml-signup-title{font-family:'Luminari',serif;font-size:clamp(1.05rem,3.5vw,1.4rem);letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase;margin-bottom:10px}
-.ml-signup-sub{font-family:'Luminari',serif;font-size:clamp(0.63rem,1.8vw,0.76rem);letter-spacing:0.18em;color:rgba(240,230,210,0.42);text-transform:uppercase;font-style:italic;line-height:2;margin-bottom:26px}
+.ml-signup-wrap{padding:40px 24px 36px;text-align:center;position:relative;z-index:1;opacity:0;transition:opacity 0.9s ease}
+.ml-signup-wrap.ml-visible{opacity:1}
+.ml-signup-wrap::before{content:'';display:block;width:60px;height:1px;background:rgba(201,168,76,0.3);margin:0 auto 28px}
+.ml-signup-title{font-family:'Luminari',serif;font-size:clamp(0.62rem,1.6vw,0.72rem);letter-spacing:0.55em;color:rgba(201,168,76,0.55);text-transform:uppercase;margin-bottom:20px}
 .ml-embedded .ml-form-embedWrapper{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important}
 .ml-embedded .ml-form-embedWrapper .ml-form-embedBody,.ml-embedded .ml-form-embedWrapper .ml-form-embedBody .ml-form-formContent{padding:0!important;background:transparent!important}
-.ml-embedded input[type="email"],.ml-embedded input[type="text"]{background:transparent!important;border:none!important;border-bottom:1px solid rgba(201,168,76,0.45)!important;border-radius:0!important;color:#e8e0d0!important;font-family:'Luminari',serif!important;font-size:16px!important;letter-spacing:0.12em!important;padding:10px 4px!important;outline:none!important;width:100%!important;box-shadow:none!important;text-align:center!important;caret-color:#c9a84c!important}
-.ml-embedded input[type="email"]::placeholder,.ml-embedded input[type="text"]::placeholder{color:rgba(201,168,76,0.28)!important}
-.ml-embedded button[type="submit"],.ml-embedded .ml-form-embedSubmit button{background:#c9a84c!important;color:#1a1a1a!important;font-family:'Luminari',serif!important;font-size:0.75rem!important;letter-spacing:0.45em!important;text-transform:uppercase!important;border:none!important;border-radius:0!important;padding:16px 0!important;width:100%!important;min-height:54px!important;cursor:pointer!important;margin-top:16px!important;transition:background 0.2s!important}
-.ml-embedded button[type="submit"]:hover,.ml-embedded .ml-form-embedSubmit button:hover{background:#deb95c!important}
+.ml-embedded input[type="email"],.ml-embedded input[type="text"]{background:transparent!important;border:none!important;border-bottom:1px solid rgba(201,168,76,0.25)!important;border-radius:0!important;color:#e8e0d0!important;font-family:'Luminari',serif!important;font-size:16px!important;letter-spacing:0.12em!important;padding:8px 4px!important;outline:none!important;width:100%!important;max-width:280px!important;box-shadow:none!important;text-align:center!important;caret-color:#c9a84c!important}
+.ml-embedded input[type="email"]::placeholder,.ml-embedded input[type="text"]::placeholder{color:rgba(201,168,76,0.22)!important}
+.ml-embedded button[type="submit"],.ml-embedded .ml-form-embedSubmit button{background:transparent!important;color:rgba(201,168,76,0.6)!important;font-family:'Luminari',serif!important;font-size:0.62rem!important;letter-spacing:0.5em!important;text-transform:uppercase!important;border:none!important;border-bottom:1px solid rgba(201,168,76,0.2)!important;border-radius:0!important;padding:8px 0!important;width:auto!important;min-width:120px!important;min-height:unset!important;cursor:pointer!important;margin-top:14px!important;transition:color 0.2s,border-color 0.2s!important;display:block!important;margin-left:auto!important;margin-right:auto!important}
+.ml-embedded button[type="submit"]:hover,.ml-embedded .ml-form-embedSubmit button:hover{color:#c9a84c!important;border-color:rgba(201,168,76,0.5)!important}
 .ml-embedded .ml-form-successBody{text-align:center!important}
-.ml-embedded .ml-form-successContent h4{font-family:'Luminari',serif!important;color:#c9a84c!important;letter-spacing:0.25em!important;text-transform:uppercase!important}
-.ml-embedded .ml-form-successContent p{font-family:'Luminari',serif!important;color:rgba(240,230,210,0.45)!important;font-size:0.72rem!important;letter-spacing:0.14em!important}
+.ml-embedded .ml-form-successContent h4{font-family:'Luminari',serif!important;color:rgba(201,168,76,0.6)!important;letter-spacing:0.3em!important;text-transform:uppercase!important;font-size:0.72rem!important}
+.ml-embedded .ml-form-successContent p{font-family:'Luminari',serif!important;color:rgba(240,230,210,0.35)!important;font-size:0.62rem!important;letter-spacing:0.14em!important}
 .ml-embedded .ml-form-fieldRow{margin-bottom:4px!important}
-.ml-embedded label{font-family:'Luminari',serif!important;color:rgba(201,168,76,0.35)!important;font-size:0.6rem!important;letter-spacing:0.3em!important;text-transform:uppercase!important}
-@media(max-width:768px){.ml-signup-wrap{padding:36px 16px}.ml-signup-box{padding:28px 18px}.ml-embedded button[type="submit"],.ml-embedded .ml-form-embedSubmit button{width:100%!important;min-height:54px!important}}
+.ml-embedded label{display:none!important}
 </style>
 <script>(function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[]).push(arguments);};l=d.createElement(e);l.async=1;l.src=u;n=d.getElementsByTagName(e)[0];n.parentNode.insertBefore(l,n);})(window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');ml('account','1679810');</script>
 </head> <body>
@@ -632,6 +629,12 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <button onclick="document.getElementById('cookie-notice').style.display='none';localStorage.setItem('cookieAccepted','true')" style="background:none;border:1px solid rgba(201,168,76,0.5);color:rgba(201,168,76,0.85);font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.14em;padding:6px 14px;cursor:pointer;white-space:nowrap;" aria-label="Dismiss cookie notice">OK</button>
 </div>
 <script>if(!localStorage.getItem('cookieAccepted'))document.getElementById('cookie-notice').style.display='flex';</script>
+
+<div class="ml-signup-wrap" id="ml-signup-wrap-index">
+  <div class="ml-signup-title">Join the Jestagang</div>
+  <div class="ml-embedded" data-form="8EZtSf"></div>
+</div>
+<script>(function(){var w=document.getElementById('ml-signup-wrap-index');if(!w||!window.IntersectionObserver){if(w)w.classList.add('ml-visible');return;}new IntersectionObserver(function(e,o){e.forEach(function(en){if(en.isIntersecting){w.classList.add('ml-visible');o.disconnect();}});},{threshold:0.1}).observe(w);})();</script>
 
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span> Jestamang<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a></footer>
 </section><!-- /#hp-preview -->
