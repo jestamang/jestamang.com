@@ -1309,8 +1309,14 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         </div>
         <div>
           <label class="natal-form-label" for="nc-tob">Time of Birth</label>
-          <input class="form-input" type="time" id="nc-tob" placeholder="HH:MM">
-          <div class="natal-form-note">Exact time needed for accurate houses and rising sign</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input class="form-input" type="time" id="nc-tob" placeholder="HH:MM" style="flex:1;min-width:0;">
+            <label id="nc-tob-unknown-label" style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;color:rgba(201,168,76,0.65);font-size:0.72rem;letter-spacing:0.08em;padding-top:2px;">
+              <input type="checkbox" id="nc-tob-unknown" style="accent-color:#c9a84c;cursor:pointer;width:14px;height:14px;">
+              UNKNOWN
+            </label>
+          </div>
+          <div class="natal-form-note" id="nc-tob-note">Exact time needed for rising sign &amp; houses</div>
         </div>
         <div class="nc-pob-wrap">
           <label class="natal-form-label" for="nc-pob">Place of Birth</label>
@@ -2731,6 +2737,15 @@ var NC = (function(){
     document.getElementById('natal-result').style.display = 'none';
     document.getElementById('natal-form-area').style.display = 'block';
     document.getElementById('natal-error').style.display = 'none';
+    // Restore time field if checkbox was checked
+    var tobCb = document.getElementById('nc-tob-unknown');
+    var tobInp = document.getElementById('nc-tob');
+    var tobNote = document.getElementById('nc-tob-note');
+    if(tobCb && tobCb.checked){
+      tobCb.checked = false;
+      if(tobInp){ tobInp.disabled = false; tobInp.style.opacity = ''; }
+      if(tobNote) tobNote.textContent = 'Exact time needed for rising sign & houses';
+    }
   });
 
   document.getElementById('natal-share-btn').addEventListener('click', function(){
@@ -2877,6 +2892,25 @@ var NC = (function(){
     .catch(function(){ _pobCloseSuggestions(); _pobSetStatus('not-found','Could not reach location service. Check connection.'); });
   }
 
+  (function _initTobUnknown(){
+    var cb   = document.getElementById('nc-tob-unknown');
+    var inp  = document.getElementById('nc-tob');
+    var note = document.getElementById('nc-tob-note');
+    if(!cb || !inp) return;
+    cb.addEventListener('change', function(){
+      if(cb.checked){
+        inp.value = '';
+        inp.disabled = true;
+        inp.style.opacity = '0.3';
+        if(note) note.textContent = 'Rising sign and houses will not be calculated';
+      } else {
+        inp.disabled = false;
+        inp.style.opacity = '';
+        if(note) note.textContent = 'Exact time needed for rising sign & houses';
+      }
+    });
+  })();
+
   (function _initPobAutocomplete(){
     var inp = document.getElementById('nc-pob');
     if(!inp) return;
@@ -2915,7 +2949,8 @@ var NC = (function(){
 
   function runNatalCalculation(){
     var dobVal  = document.getElementById('nc-dob').value.trim();
-    var tobVal  = document.getElementById('nc-tob').value.trim();
+    var tobCb   = document.getElementById('nc-tob-unknown');
+    var tobVal  = (tobCb && tobCb.checked) ? '' : document.getElementById('nc-tob').value.trim();
     var pobVal  = document.getElementById('nc-pob').value.trim();
 
     clearError();
