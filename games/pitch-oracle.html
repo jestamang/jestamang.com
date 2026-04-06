@@ -40,6 +40,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Lu
 #po-msg-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;min-height:48px}
 #po-msg{font-size:clamp(0.65rem,2vw,0.78rem);letter-spacing:0.5em;color:rgba(255,255,255,0.4);text-transform:uppercase}
 #po-sub{font-size:clamp(0.55rem,1.5vw,0.63rem);letter-spacing:0.35em;color:rgba(201,168,76,0.3);text-transform:uppercase;min-height:1em}
+#po-replay{font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.4);background:none;border:1px solid rgba(201,168,76,0.2);padding:6px 18px;cursor:pointer;transition:all 0.2s;display:none;min-height:34px;margin-top:2px}
+#po-replay:hover{border-color:rgba(201,168,76,0.5);color:#c9a84c}
 /* Note ring */
 #note-ring{position:relative;width:260px;height:260px;flex-shrink:0}
 .note-btn{position:absolute;width:88px;height:88px;border-radius:50%;font-family:'Luminari',serif;font-size:clamp(0.85rem,2.5vw,1.05rem);letter-spacing:0.1em;color:rgba(201,168,76,0.75);background:rgba(4,2,10,0.85);border:2px solid rgba(201,168,76,0.3);cursor:pointer;transition:background 0.25s,border-color 0.25s,color 0.25s,box-shadow 0.25s,opacity 0.3s;display:flex;align-items:center;justify-content:center;text-transform:uppercase}
@@ -107,6 +109,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Lu
 .lb-r23 td{color:rgba(201,168,76,0.78)}
 .lb-cur td{background:rgba(201,168,76,0.07);color:#c9a84c}
 .lb-loading-row td{text-align:center;padding:28px;font-family:'Luminari',serif;font-style:italic;color:rgba(201,168,76,0.32);letter-spacing:0.15em}
+.lb-av{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.4);background:#111;vertical-align:middle;margin-right:7px}
 @media(max-width:480px){#lb-name-card{padding:32px 22px}#lb-modal-inner{padding:28px 18px;max-height:92vh}}
 </style>
 <style id="jsearch-styles">
@@ -182,7 +185,7 @@ var cls=i===0?'lb-r1':i<3?'lb-r23':'';
 if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
 tr.className=cls;
 var cr=i===0?'<span style="margin-right:5px">✦</span>':'';
-tr.innerHTML='<td>'+(i+1)+'</td><td>'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
+tr.innerHTML='<td>'+(i+1)+'</td><td><img class="lb-av" src="../assets/homepage/jesta jr.jpg" onerror="this.onerror=null;this.src=\'../assets/homepage/jesta jr.jpg\'" alt="">'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
 tb.appendChild(tr);
 });
 }).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">SIGNAL LOST</td></tr>';});
@@ -248,6 +251,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
   <div id="po-msg-wrap">
     <div id="po-msg">THE ORACLE SPEAKS</div>
     <div id="po-sub">LISTEN CLOSELY</div>
+    <button id="po-replay">HEAR AGAIN</button>
   </div>
   <div id="note-ring">
     <button class="note-btn" id="nb0" disabled></button>
@@ -349,17 +353,17 @@ function noteFreq(name,octave){
 function playTone(freq,dur,delay){
   delay=delay||0;
   var c=getAudioCtx();
-  var osc=c.createOscillator();
-  var g=c.createGain();
   var now=c.currentTime+delay;
-  osc.type='sine';
-  osc.frequency.value=freq;
-  g.gain.setValueAtTime(0.001,now);
-  g.gain.linearRampToValueAtTime(0.38,now+0.04);
-  g.gain.setValueAtTime(0.38,now+Math.max(0.05,dur-0.22));
-  g.gain.linearRampToValueAtTime(0.001,now+dur);
-  osc.connect(g);g.connect(c.destination);
-  osc.start(now);osc.stop(now+dur+0.02);
+  [[1,0.28],[2,0.10],[3,0.05]].forEach(function(h){
+    var osc=c.createOscillator(),g=c.createGain();
+    osc.type='sine';osc.frequency.value=freq*h[0];
+    g.gain.setValueAtTime(0.001,now);
+    g.gain.linearRampToValueAtTime(h[1],now+0.04);
+    g.gain.setValueAtTime(h[1],now+Math.max(0.05,dur-0.22));
+    g.gain.linearRampToValueAtTime(0.001,now+dur);
+    osc.connect(g);g.connect(c.destination);
+    osc.start(now);osc.stop(now+dur+0.02);
+  });
 }
 
 /* Wave canvas */
@@ -419,7 +423,8 @@ function activateWave(dur){
 }
 
 /* Game state */
-var round=0,lives=3,score=0,isListening=false,correctNote='',correctOctave=0;
+var round=0,lives=3,score=0,streak=0,isListening=false,correctNote='',correctOctave=0;
+var replayCount=0,maxReplays=2,replayIsSeq=false,replayFirstFreq=0,replaySecondFreq=0,replayDurVal=0;
 var NB;
 
 function setupButtons(){
@@ -434,7 +439,7 @@ function updateHUD(){
     lh+=i<lives?'✦ ':'<span style="opacity:0.15">✦ </span>';
   }
   document.getElementById('po-lives').innerHTML=lh.trim();
-  document.getElementById('po-score').textContent='SCORE '+score;
+  document.getElementById('po-score').textContent='SCORE '+score+(streak>1?' · ×'+streak:'');
 }
 
 function setMsg(main,sub){
@@ -450,16 +455,26 @@ function setButtons(arr,enabled){
   });
 }
 
+function flashRing(ok){
+  var r=document.getElementById('note-ring');
+  r.style.transition='box-shadow 0.06s';
+  r.style.boxShadow=ok?'0 0 55px rgba(201,168,76,0.85)':'0 0 55px rgba(251,56,56,0.85)';
+  setTimeout(function(){r.style.boxShadow='0 0 0 transparent';setTimeout(function(){r.style.boxShadow='';r.style.transition='';},320);},220);
+}
 function handleAnswer(chosenNote){
   if(!isListening)return;
   isListening=false;
+  document.getElementById('po-replay').style.display='none';
   NB.forEach(function(b){b.disabled=true;});
   if(chosenNote===correctNote){
+    streak++;
     score+=100;
     NB.forEach(function(b){if(b.textContent===correctNote)b.classList.add('nb-correct');});
-    setMsg('YOUR EAR IS ATTUNED','+ 100 POINTS');
+    setMsg('YOUR EAR IS ATTUNED',streak>2?'+ 100 · STREAK ×'+streak:'+ 100 POINTS');
+    flashRing(true);
     updateHUD();
   } else {
+    streak=0;
     lives--;
     NB.forEach(function(b){
       if(b.textContent===chosenNote)b.classList.add('nb-wrong');
@@ -467,6 +482,7 @@ function handleAnswer(chosenNote){
       else b.classList.add('nb-dim');
     });
     setMsg('THE PITCH ELUDES YOU','THE NOTE WAS '+correctNote);
+    flashRing(false);
     updateHUD();
   }
   setTimeout(function(){
@@ -484,12 +500,28 @@ function startRound(){
   correctNote=pool[0|Math.random()*pool.length];
   var octs=[3,4,5];
   correctOctave=octs[0|Math.random()*3];
-  /* 3 wrong answers */
+  /* 3 wrong answers — adjacent semitones in later rounds for harder difficulty */
   var wrong=[];
-  var wrongPool=NOTES_ALL.filter(function(n){return n!==correctNote;});
-  while(wrong.length<3){
-    var w=wrongPool[0|Math.random()*wrongPool.length];
-    if(wrong.indexOf(w)===-1)wrong.push(w);
+  if(round>=7){
+    var corrIdx=NOTES_ALL.indexOf(correctNote);
+    var byDist=NOTES_ALL.map(function(_,i){return i;})
+      .filter(function(i){return i!==corrIdx;})
+      .sort(function(a,b){
+        var da=Math.min(Math.abs(a-corrIdx),12-Math.abs(a-corrIdx));
+        var db=Math.min(Math.abs(b-corrIdx),12-Math.abs(b-corrIdx));
+        return da-db;
+      });
+    var nearPool=byDist.slice(0,6).map(function(i){return NOTES_ALL[i];});
+    while(wrong.length<3){
+      var np=nearPool.splice(0|Math.random()*nearPool.length,1)[0];
+      wrong.push(np);
+    }
+  } else {
+    var wrongPool=NOTES_ALL.filter(function(n){return n!==correctNote;});
+    while(wrong.length<3){
+      var w=wrongPool[0|Math.random()*wrongPool.length];
+      if(wrong.indexOf(w)===-1)wrong.push(w);
+    }
   }
   var answers=wrong.concat(correctNote).sort(function(){return Math.random()-0.5;});
   setButtons(answers,false);
@@ -499,32 +531,39 @@ function startRound(){
   });
 
   var dur=isSeq?0.75:1.85;
+  replayDurVal=dur;replayIsSeq=isSeq;replayCount=0;
+  document.getElementById('po-replay').style.display='none';
   if(isSeq){
     var firstNote=pool[0|Math.random()*pool.length];
     var firstOct=octs[0|Math.random()*3];
+    replayFirstFreq=noteFreq(firstNote,firstOct);
+    replaySecondFreq=noteFreq(correctNote,correctOctave);
     setMsg('THE ORACLE SPEAKS','IDENTIFY THE SECOND NOTE');
-    playTone(noteFreq(firstNote,firstOct),dur,0);
+    playTone(replayFirstFreq,dur,0);
     activateWave(dur*2.8);
-    setTimeout(function(){playTone(noteFreq(correctNote,correctOctave),dur,0);},( dur+0.38)*1000);
+    setTimeout(function(){playTone(replaySecondFreq,dur,0);},(dur+0.38)*1000);
     setTimeout(function(){
       setMsg('WHAT IS THE SECOND NOTE?','');
       setButtons(answers,true);
       isListening=true;
+      document.getElementById('po-replay').style.display='inline-block';
     },(dur*2+0.55)*1000);
   } else {
+    replaySecondFreq=noteFreq(correctNote,correctOctave);
     setMsg('THE ORACLE SPEAKS','LISTEN CLOSELY');
-    playTone(noteFreq(correctNote,correctOctave),dur,0);
+    playTone(replaySecondFreq,dur,0);
     activateWave(dur);
     setTimeout(function(){
       setMsg('WHAT NOTE DO YOU HEAR?','');
       setButtons(answers,true);
       isListening=true;
+      document.getElementById('po-replay').style.display='inline-block';
     },(dur+0.42)*1000);
   }
 }
 
 function startGame(){
-  round=0;lives=3;score=0;isListening=false;
+  round=0;lives=3;score=0;streak=0;replayCount=0;isListening=false;
   document.getElementById('ss').classList.add('off');
   document.getElementById('os').classList.add('off');
   document.getElementById('gs').classList.remove('off');
@@ -552,6 +591,37 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('restartBtn').addEventListener('click',function(){
     document.getElementById('os').classList.add('off');
     startGame();
+  });
+  document.getElementById('po-replay').addEventListener('click',function(){
+    if(!isListening||replayCount>=maxReplays)return;
+    replayCount++;
+    score=Math.max(0,score-15);
+    updateHUD();
+    document.getElementById('po-replay').style.display='none';
+    NB.forEach(function(b){b.disabled=true;});
+    isListening=false;
+    if(replayIsSeq){
+      setMsg('THE ORACLE SPEAKS AGAIN','REPLAY '+replayCount+' / '+maxReplays+' · −15');
+      playTone(replayFirstFreq,replayDurVal,0);
+      activateWave(replayDurVal*2.8);
+      setTimeout(function(){playTone(replaySecondFreq,replayDurVal,0);},(replayDurVal+0.38)*1000);
+      setTimeout(function(){
+        setMsg('WHAT IS THE SECOND NOTE?','');
+        NB.forEach(function(b){b.disabled=false;});
+        isListening=true;
+        if(replayCount<maxReplays)document.getElementById('po-replay').style.display='inline-block';
+      },(replayDurVal*2+0.55)*1000);
+    } else {
+      setMsg('THE ORACLE SPEAKS AGAIN','REPLAY '+replayCount+' / '+maxReplays+' · −15');
+      playTone(replaySecondFreq,replayDurVal,0);
+      activateWave(replayDurVal);
+      setTimeout(function(){
+        setMsg('WHAT NOTE DO YOU HEAR?','');
+        NB.forEach(function(b){b.disabled=false;});
+        isListening=true;
+        if(replayCount<maxReplays)document.getElementById('po-replay').style.display='inline-block';
+      },(replayDurVal+0.42)*1000);
+    }
   });
 });
 })();

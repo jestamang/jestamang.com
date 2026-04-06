@@ -91,6 +91,7 @@ canvas{display:block;position:fixed;inset:0;touch-action:none}
 .lb-r23 td{color:rgba(201,168,76,0.78)}
 .lb-cur td{background:rgba(201,168,76,0.07);color:#c9a84c}
 .lb-loading-row td{text-align:center;padding:28px;font-family:'Luminari',serif;font-style:italic;color:rgba(201,168,76,0.32);letter-spacing:0.15em}
+.lb-av{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.4);background:#111;vertical-align:middle;margin-right:7px}
 @media(max-width:480px){#lb-name-card{padding:32px 22px}#lb-modal-inner{padding:28px 18px;max-height:92vh}}
 </style>
 <style id="jsearch-styles">
@@ -157,7 +158,7 @@ var cls=i===0?'lb-r1':i<3?'lb-r23':'';
 if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
 tr.className=cls;
 var cr=i===0?'<span style="margin-right:5px">✦</span>':'';
-tr.innerHTML='<td>'+(i+1)+'</td><td>'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
+tr.innerHTML='<td>'+(i+1)+'</td><td><img class="lb-av" src="../assets/homepage/jesta jr.jpg" onerror="this.onerror=null;this.src=\'../assets/homepage/jesta jr.jpg\'" alt="">'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
 tb.appendChild(tr);
 });
 }).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">SIGNAL LOST</td></tr>';});
@@ -250,6 +251,37 @@ let laneActive = [false,false,false,false];
 let laneFlash = [0,0,0,0];
 let keyDown = {};
 
+// ─── Audio ───────────────────────────────
+let _AC = null;
+function getAC(){if(!_AC){try{_AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}return _AC;}
+function playTone(freq,type,vol,dur,delay){
+  try{
+    const ac=getAC();if(!ac)return;
+    if(ac.state==='suspended')ac.resume();
+    const t=ac.currentTime+(delay||0);
+    const o=ac.createOscillator(),g=ac.createGain();
+    o.connect(g);g.connect(ac.destination);
+    o.type=type||'sine';o.frequency.value=freq;
+    g.gain.setValueAtTime(vol||0.3,t);
+    g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    o.start(t);o.stop(t+dur+0.01);
+  }catch(e){}
+}
+function playHit(type,cmb){
+  if(type==='perfect'){
+    playTone(880,'sine',0.32,0.22);
+    playTone(1320,'sine',0.14,0.14);
+    if(cmb&&cmb%10===0){playTone(440+cmb*4,'triangle',0.18,0.3,0.05);}
+  }else if(type==='good'){
+    playTone(660,'sine',0.22,0.16);
+  }else if(type==='miss'){
+    playTone(80,'sawtooth',0.22,0.18);
+    playTone(55,'sine',0.12,0.22,0.04);
+  }else if(type==='beat'){
+    playTone(50,'sine',0.07,0.09);
+  }
+}
+
 // ─── Target line Y ───────────────────────
 function targetY() { return H * 0.80; }
 
@@ -314,6 +346,7 @@ function scheduleOrb() {
     orbs.push({ lane, y: -ORB_R, targetTime: now + travelMs, hit: null, alpha: 1 });
   }
   nextOrbTime = now + beatInterval;
+  playHit('beat');
 }
 
 // ─── Press lane ──────────────────────────
@@ -332,12 +365,14 @@ function pressLane(li) {
     score += 100 * mult;
     spawnEffect(closest.lane, 'PERFECT', '#c9a84c', combo >= 5 ? '✦ x'+mult : '');
     nebulaHue = (nebulaHue + 20) % 360;
+    playHit('perfect', combo);
   } else if (dist <= GOOD_WINDOW) {
     closest.hit = 'good';
     combo++; maxCombo = Math.max(maxCombo, combo);
     const mult = Math.min(8, 1 + Math.floor(combo / 5));
     score += 50 * mult;
     spawnEffect(closest.lane, 'GOOD', '#aaaaff', '');
+    playHit('good');
   }
 }
 
@@ -516,6 +551,7 @@ requestAnimationFrame(function loop(ts) {
       combo = 0;
       health--;
       spawnEffect(o.lane, 'MISS', '#FF3838', '');
+      playHit('miss');
       orbs.splice(i, 1);
       if (health <= 0) { gameOver(elapsed); return; }
     }

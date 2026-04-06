@@ -166,32 +166,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <!-- Cloudflare Web Analytics -->
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "278a3dd9772141e6a6e40a9c83c51d57"}'></script>
 <!-- End Cloudflare Web Analytics -->
-<style id="jsearch-styles">
-#jsearch-btn{background:none;border:none;color:rgba(255,255,255,0.75);cursor:pointer;padding:0 10px;line-height:52px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:color 0.2s;min-width:40px;min-height:44px}
-#jsearch-btn:hover{color:#c9a84c}
-#jsearch-btn svg{display:block;pointer-events:none}
-#jsearch-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(4,2,10,0.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);flex-direction:column;align-items:center;padding-top:80px;overflow-y:auto}
-#jsearch-overlay.jsearch-open{display:flex}
-#jsearch-inner{width:100%;max-width:680px;padding:0 20px;position:relative}
-#jsearch-close-row{display:flex;justify-content:flex-end;margin-bottom:16px}
-#jsearch-close{background:none;border:none;color:rgba(201,168,76,0.6);font-size:1.5rem;cursor:pointer;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;transition:color 0.2s;font-family:'Luminari',serif;line-height:1}
-#jsearch-close:hover{color:#c9a84c}
-#jsearch-input{width:100%;background:rgba(0,0,0,0.7);border:1px solid rgba(201,168,76,0.65);color:#c9a84c;font-family:'Luminari',serif;font-size:0.95rem;letter-spacing:0.18em;padding:16px 20px;outline:none;text-transform:uppercase;caret-color:#c9a84c;-webkit-appearance:none;border-radius:0}
-#jsearch-input::placeholder{color:rgba(201,168,76,0.32);letter-spacing:0.12em}
-#jsearch-results{margin-top:10px}
-.jsearch-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid rgba(201,168,76,0.08);cursor:pointer;transition:background 0.15s;text-decoration:none;color:inherit}
-.jsearch-item:hover{background:rgba(201,168,76,0.07)}
-.jsearch-item-icon{font-size:0.85rem;flex-shrink:0;opacity:0.6;width:18px;text-align:center;font-family:'Luminari',serif}
-.jsearch-item-name{font-family:'Luminari',serif;font-size:0.88rem;letter-spacing:0.1em;color:rgba(240,230,210,0.9);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.jsearch-item-name mark{background:none;color:#c9a84c;font-style:normal}
-.jsearch-item-cat{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.5);flex-shrink:0;margin-left:8px}
-.jsearch-empty{text-align:center;font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.3);padding:40px 0}
-.jsearch-hint{text-align:center;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.2);padding:28px 0}
-.jsearch-float-btn{position:fixed;top:14px;left:14px;z-index:9000;background:rgba(0,0,0,0.55);border:1px solid rgba(201,168,76,0.35);color:rgba(201,168,76,0.75);cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s}
-.jsearch-float-btn:hover{border-color:rgba(201,168,76,0.75);color:#c9a84c}
-.jsearch-float-btn svg{pointer-events:none}
-@media(max-width:767px){#jsearch-overlay{padding-top:60px}#jsearch-inner{padding:0 14px}}
-</style>
 <style id="jbtt-styles">
 #jbtt{position:fixed;bottom:24px;right:24px;z-index:998;width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.15);border:1px solid #c9a84c;color:#c9a84c;cursor:pointer;display:none;align-items:center;justify-content:center;font-family:'Luminari',serif;font-size:1.1rem;line-height:1;transition:background 0.2s,color 0.2s,box-shadow 0.2s,opacity 0.3s;opacity:0}
 #jbtt.jbtt-visible{display:flex;opacity:1}
@@ -833,103 +807,7 @@ function eotdInit(){
 }
 document.addEventListener('DOMContentLoaded',eotdInit);
 })();</script>
-<button class="jsearch-float-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button>
-<div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
-<div id="jsearch-inner">
-<div id="jsearch-close-row"><button id="jsearch-close" aria-label="Close search">✦</button></div>
-<input id="jsearch-input" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="SEARCH THE JESTAMANG UNIVERSE...">
-<div id="jsearch-results"><div class="jsearch-hint">ENTER A NAME &nbsp;·&nbsp; PAGE &nbsp;·&nbsp; ALBUM &nbsp;·&nbsp; ENTITY</div></div>
 </div>
-</div>
-<script>(function(){
-var IDX=[
-{n:'Home',u:'/index.html',c:'Page',i:'⌂',t:'homepage start jestamang'},
-{n:'Entities',u:'/entities.html',c:'Page',i:'✦',t:'characters cartoons children cosmos'},
-{n:'Albums',u:'/albums.html',c:'Page',i:'◈',t:'music releases discography records'},
-{n:'Lyrics',u:'/lyrics.html',c:'Page',i:'☽',t:'words songs text poetry'},
-{n:'Merch',u:'/merch.html',c:'Page',i:'◉',t:'shop buy store clothing'},
-{n:'Photos',u:'/photos.html',c:'Page',i:'◎',t:'images gallery visual photography'},
-{n:'Videos',u:'/videos.html',c:'Page',i:'▷',t:'film visual youtube watch'},
-{n:'Shows',u:'/shows.html',c:'Page',i:'✦',t:'events live tour concerts appearances'},
-{n:'Blog',u:'/blog.html',c:'Page',i:'◇',t:'posts writing press news'},
-{n:'Comix',u:'/comix.html',c:'Page',i:'◈',t:'comics art illustration graphic'},
-{n:'Games',u:'/games.html',c:'Page',i:'◉',t:'play interactive arcade'},
-{n:'Email',u:'/email.html',c:'Page',i:'✉',t:'contact subscribe mailing list'},
-{n:'Members',u:'/members.html',c:'Page',i:'✦',t:'inner circle forum guestbook community'},
-{n:'Profile',u:'/profile.html',c:'Page',i:'◉',t:'account user settings'},
-{n:'Login',u:'/login.html',c:'Page',i:'✦',t:'sign in invitation access'},
-{n:'Arcade',u:'/arcade.html',c:'Page',i:'◉',t:'games play interactive'},
-{n:'Quarter Days',u:'/albums.html',c:'Album',i:'◈',t:'jestamang release'},
-{n:'2K2323',u:'/albums.html',c:'Album',i:'◈',t:'release 2023'},
-{n:'2K2123',u:'/albums.html',c:'Album',i:'◈',t:'release 2021'},
-{n:'NONS',u:'/albums.html',c:'Album',i:'◈',t:'release nons'},
-{n:'Zodiac',u:'/albums.html',c:'Album',i:'◈',t:'astrology stars cosmic zodiac'},
-{n:'New \u00c6on',u:'/albums.html',c:'Album',i:'◈',t:'aeon new era'},
-{n:'Niga Denots',u:'/albums.html',c:'Album',i:'◈',t:'niga denots'},
-{n:'Jestress Melody',u:'/albums.html',c:'Album',i:'◈',t:'jestress melody'},
-{n:'The Naples Society of the Temple of Psychick Youth',u:'/albums.html',c:'Album',i:'◈',t:'topy naples psychick youth'},
-{n:'Peter Thy Godfather',u:'/albums.html',c:'Album',i:'◈',t:'peter godfather'},
-{n:'Covers the Taste',u:'/albums.html',c:'Album',i:'◈',t:'covers taste'},
-{n:'Sleep Cycle',u:'/albums.html',c:'Album',i:'◈',t:'sleep dream cycle'},
-{n:'Jonas Kyle Meets The Perfect Trip',u:'/albums.html',c:'Album',i:'◈',t:'jonas kyle perfect trip'},
-{n:"Summer O' Sahr",u:'/albums.html',c:'Album',i:'◈',t:'summer sahr'},
-{n:'\ua4d8',u:'/albums.html',c:'Album',i:'◈',t:'k kee'},
-{n:'8slush',u:'/albums.html',c:'Album',i:'◈',t:'8slush slush'},
-{n:'Jestawomang',u:'/albums.html',c:'Album',i:'◈',t:'jestawomang jesta womang'},
-{n:'Xmas 23',u:'/albums.html',c:'Album',i:'◈',t:'christmas holiday xmas 2023'},
-{n:'Revolution Epilogue: 2K2321\u20132K2323',u:'/albums.html',c:'Album',i:'◈',t:'revolution epilogue'},
-{n:'You and the 7.5 Evils of the World',u:'/albums.html',c:'Album',i:'◈',t:'evils 7.5 world'},
-{n:'El Santo De Gangster Volume II',u:'/albums.html',c:'Album',i:'◈',t:'santo gangster volume'},
-{n:'Ode to Bonnie',u:'/albums.html',c:'Album',i:'◈',t:'bonnie ode'},
-{n:'I Can Touch the Revolution From My Home',u:'/albums.html',c:'Album',i:'◈',t:'revolution home touch'},
-{n:"Talkin' Jesus",u:'/albums.html',c:'Album',i:'◈',t:'jesus talkin gospel'},
-{n:'Green House',u:'/albums.html',c:'Album',i:'◈',t:'green house'},
-{n:'The Boston Society of the Temple of Psychick Youth',u:'/albums.html',c:'Album',i:'◈',t:'topy boston psychick'},
-{n:'Alissa Orange',u:'/albums.html',c:'Album',i:'◈',t:'alissa orange'},
-{n:'The Woodland Singapore Orchestra',u:'/albums.html',c:'Album',i:'◈',t:'woodland singapore orchestra'},
-{n:'The Colours',u:'/albums.html',c:'Album',i:'◈',t:'colors colours'},
-{n:'Sounds Across the World',u:'/albums.html',c:'Album',i:'◈',t:'sounds world'},
-{n:'Ball of Energy',u:'/albums.html',c:'Album',i:'◈',t:'ball energy'},
-{n:"Babylon's Final Hours",u:'/albums.html',c:'Album',i:'◈',t:'babylon final hours'},
-{n:'The Ace of Chase',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon character ace chase'},
-{n:'Alissa Orange',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon alissa orange'},
-{n:'Atlas Is Alice-Lillenger',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon atlas alice lillenger'},
-{n:'Big Boy, New Cat. Records',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon big boy cat records'},
-{n:'Big Smoke, lil Skeez, DEW, Sno Bunni',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon smoke skeez dew bunni'},
-{n:'Blue Jays',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon birds blue jays'},
-{n:'The Boston Society of the Temple of Psychick Youth',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon topy boston psychick'},
-{n:'Caleb Mars',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon caleb mars planet'},
-{n:'The Colours',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon colours colors spectrum'},
-{n:'Father P. Journee',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon father journee priest'},
-{n:'Hodge',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon hodge'},
-{n:'J.R. Mason',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon jr mason'},
-{n:'Jonas Kyle',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon jonas kyle'},
-{n:'Mike 55',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon mike 55'},
-{n:'Mutt Tour',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon mutt tour'},
-{n:'Ode to Bonnie',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon bonnie ode'},
-{n:'The Perfect Trip',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon perfect trip'},
-{n:'Sounds Across the World',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon sounds world'},
-{n:'Venus and the Flytrap',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon venus flytrap'},
-{n:'The Woodland Singapore Orchestra',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon woodland singapore orchestra'},
-{n:'You and the 7.5 Evils of the World',u:'/entities.html',c:'Cartoon Entity',i:'✦',t:'cartoon evils 7.5 world'},
-{n:'The Ace of Chase',u:'/entities.html',c:'One of the Children',i:'◉',t:'child ace chase core six'},
-{n:'Austinich',u:'/entities.html',c:'One of the Children',i:'◉',t:'child austinich core six'},
-{n:'Cricket Om',u:'/entities.html',c:'One of the Children',i:'◉',t:'child cricket om core six'},
-{n:'Israel',u:'/entities.html',c:'One of the Children',i:'◉',t:'child israel core six'},
-{n:'Kek-Buh',u:'/entities.html',c:'One of the Children',i:'◉',t:'child kek buh core six'},
-{n:'Porphigen',u:'/entities.html',c:'One of the Children',i:'◉',t:'child porphigen core six'},
-{n:'Cosmic Conductor',u:'/games/cosmic-conductor.html',c:'Game',i:'◈',t:'play interactive music game cosmic'},
-{n:'Entity Invaders',u:'/games/entity-invaders.html',c:'Game',i:'◈',t:'play invaders shoot game'},
-{n:'The Void',u:'/games/void.html',c:'Game',i:'◈',t:'play void darkness game'},
-{n:'Memory',u:'/game-memory.html',c:'Game',i:'◈',t:'card match memory recall'},
-{n:'Oracle',u:'/game-oracle.html',c:'Game',i:'◈',t:'divination prophecy cosmic oracle'}
-];
-function jSearchOpen(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.add('jsearch-open');document.body.style.overflow='hidden';var inp=document.getElementById('jsearch-input');if(inp){inp.value='';inp.focus();jSearchRender('');}}}
-function jSearchClose(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.remove('jsearch-open');document.body.style.overflow='';}}
-function jHL(text,q){if(!q)return text.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});var safe=text.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);tokens.forEach(function(tok){var re=new RegExp('('+tok.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');safe=safe.replace(re,'<mark>$1</mark>');});return safe;}
-function jSearchRender(q){var box=document.getElementById('jsearch-results');if(!box)return;if(!q.trim()){box.innerHTML='<div class="jsearch-hint">ENTER A NAME &nbsp;\u00b7&nbsp; PAGE &nbsp;\u00b7&nbsp; ALBUM &nbsp;\u00b7&nbsp; ENTITY</div>';return;}var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);var scored=[];IDX.forEach(function(e){var nl=e.n.toLowerCase();var tl=(e.t||'').toLowerCase();var score=0;tokens.forEach(function(tok){if(nl===tok)score+=100;else if(nl.startsWith(tok))score+=50;else if(nl.indexOf(tok)!==-1)score+=30;if(tl.indexOf(tok)!==-1)score+=10;});if(score>0)scored.push({e:e,s:score});});scored.sort(function(a,b){return b.s-a.s;});scored=scored.slice(0,8);if(!scored.length){box.innerHTML='<div class="jsearch-empty">NO TRANSMISSIONS FOUND</div>';return;}var html='';scored.forEach(function(r){var e=r.e;html+='<a class="jsearch-item" href="'+e.u+'" onclick="jSearchClose()"><span class="jsearch-item-icon">'+e.i+'</span><span class="jsearch-item-name">'+jHL(e.n,q)+'</span><span class="jsearch-item-cat">'+e.c+'</span></a>';});box.innerHTML=html;}
-document.addEventListener('DOMContentLoaded',function(){var inp=document.getElementById('jsearch-input');var closeBtn=document.getElementById('jsearch-close');var overlay=document.getElementById('jsearch-overlay');if(inp)inp.addEventListener('input',function(){jSearchRender(this.value);});if(closeBtn)closeBtn.addEventListener('click',jSearchClose);if(overlay)overlay.addEventListener('click',function(e){if(e.target===overlay)jSearchClose();});document.addEventListener('keydown',function(e){if(e.key==='Escape')jSearchClose();if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();jSearchOpen();}});});
-})();</script>
 <button id="jbtt" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 <script>(function(){var btn=document.getElementById('jbtt');if(!btn)return;window.addEventListener('scroll',function(){if(window.scrollY>300){btn.classList.add('jbtt-visible');}else{btn.classList.remove('jbtt-visible');}},{passive:true});})();</script>
 </body> </html>

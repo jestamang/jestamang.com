@@ -447,7 +447,7 @@ body::before{
 @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 .chat-avatar{
-  width:30px;height:30px;
+  width:32px;height:32px;
   border-radius:50%;
   background:rgba(201,168,76,0.12);
   border:1px solid rgba(201,168,76,0.35);
@@ -456,12 +456,15 @@ body::before{
   color:#c9a84c;
   flex-shrink:0;
   font-family:'Luminari',serif;
+  overflow:hidden;
 }
+.chat-avatar img{width:100%;height:100%;object-fit:cover;display:block}
 .chat-msg--me .chat-avatar{
   background:rgba(120,0,222,0.12);
   border-color:rgba(120,0,222,0.4);
   color:#b060ff;
 }
+.gb-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1px solid #c9a84c;background:#1a1a1a;flex-shrink:0}
 
 .chat-bubble{
   max-width:72%;
@@ -1058,6 +1061,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       db.collection('innerCircleChat').add({
         uid:  currentUser.uid,
         name: currentName,
+        photo: currentUser.photoURL||null,
         text: text,
         ts:   firebase.firestore.FieldValue.serverTimestamp()
       }).then(function(){
@@ -1117,8 +1121,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       var wrap = document.createElement('div');
       wrap.className  = 'chat-msg'+(isMe?' chat-msg--me':'');
       wrap.setAttribute('data-id', doc.id);
+      var avSrc1 = d.photo || '/assets/homepage/jesta jr.jpg';
       wrap.innerHTML  =
-        '<div class="chat-avatar">'+initial+'</div>'+
+        '<div class="chat-avatar"><img src="'+esc(avSrc1)+'" onerror="this.onerror=null;this.src=\'/assets/homepage/jesta jr.jpg\'" alt=""></div>'+
         '<div class="chat-bubble">'+
           '<div class="chat-meta">'+
             '<span class="chat-name">'+esc(d.name||'Unknown')+'</span>'+
@@ -1237,6 +1242,7 @@ function initForum(user, uname, fdb) {
       fdb.collection('innerCircleChat').add({
         uid:       user.uid,
         name:      uname,
+        photo:     user.photoURL||null,
         message:   text,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       }).then(function(){
@@ -1290,9 +1296,10 @@ function initForum(user, uname, fdb) {
           var wrap = document.createElement('div');
           wrap.className = 'chat-msg'+(isMe?' chat-msg--me':'');
           wrap.setAttribute('data-fid', doc.id);
+          var avSrc2 = d.photo || '/assets/homepage/jesta jr.jpg';
           wrap.innerHTML =
             delHtml+
-            '<div class="chat-avatar">'+esc(initial)+'</div>'+
+            '<div class="chat-avatar"><img src="'+esc(avSrc2)+'" onerror="this.onerror=null;this.src=\'/assets/homepage/jesta jr.jpg\'" alt=""></div>'+
             '<div class="chat-bubble">'+
               '<div class="chat-meta">'+
                 '<span class="chat-name">'+esc(d.name||'Unknown')+'</span>'+
@@ -1364,11 +1371,15 @@ function initForum(user, uname, fdb) {
       var card = document.createElement('div');
       card.className = 'gb-entry'+(isOwn?' gb-entry-own':'');
       card.setAttribute('data-gbid', doc.id);
+      var gbAv = d.photo || '/assets/homepage/jesta jr.jpg';
       card.innerHTML =
         (isOwn ? '<div class="gb-own-label">Your Sealed Entry</div>' : '')+
         (canDel ? '<button class="gb-entry-del" data-gbid="'+doc.id+'">Remove</button>' : '')+
-        '<div class="gb-entry-name">'+esc(d.name||'Unknown')+'</div>'+
-        '<div class="gb-entry-date">'+ritualDate(d.timestamp)+'</div>'+
+        '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">'+
+          '<img class="gb-avatar" src="'+esc(gbAv)+'" onerror="this.onerror=null;this.src=\'/assets/homepage/jesta jr.jpg\'" alt="">'+
+          '<div><div class="gb-entry-name">'+esc(d.name||'Unknown')+'</div>'+
+          '<div class="gb-entry-date">'+ritualDate(d.timestamp)+'</div></div>'+
+        '</div>'+
         '<div class="gb-entry-rule"></div>'+
         '<div class="gb-entry-text">'+esc(d.entry||'')+'</div>';
 
@@ -1433,6 +1444,7 @@ function initForum(user, uname, fdb) {
         fdb.collection('guestbook').add({
           uid:       user.uid,
           name:      uname,
+          photo:     user.photoURL||null,
           entry:     text,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           approved:  true

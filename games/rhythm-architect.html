@@ -120,6 +120,7 @@ body{font-family:'Luminari',serif;background:#000;color:#fff;min-height:100vh;ov
 .lb-r23 td{color:rgba(201,168,76,0.78)}
 .lb-cur td{background:rgba(201,168,76,0.07);color:#c9a84c}
 .lb-loading-row td{text-align:center;padding:28px;font-family:'Luminari',serif;font-style:italic;color:rgba(201,168,76,0.32);letter-spacing:0.15em}
+.lb-av{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.4);background:#111;vertical-align:middle;margin-right:7px}
 @media(max-width:480px){#lb-name-card{padding:32px 22px}#lb-modal-inner{padding:28px 18px;max-height:92vh}}
 </style>
 <style id="jsearch-styles">
@@ -191,7 +192,7 @@ var cls=i===0?'lb-r1':i<3?'lb-r23':'';
 if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
 tr.className=cls;
 var cr=i===0?'<span style="margin-right:5px">✦</span>':'';
-tr.innerHTML='<td>'+(i+1)+'</td><td>'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
+tr.innerHTML='<td>'+(i+1)+'</td><td><img class="lb-av" src="../assets/homepage/jesta jr.jpg" onerror="this.onerror=null;this.src=\'../assets/homepage/jesta jr.jpg\'" alt="">'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
 tb.appendChild(tr);
 });
 }).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">SIGNAL LOST</td></tr>';});
@@ -433,6 +434,7 @@ function renderGrid(L){
           if(phase!=='listening'||submitting)return;
           playerGrid[i]=1-playerGrid[i];
           el.classList.toggle('cell-on',playerGrid[i]===1);
+          if(playerGrid[i]===1)playClick(i%LEVELS[lvlIdx].cpb===0);
         });
       })(idx,cell);
       beatRow.appendChild(cell);
@@ -490,7 +492,8 @@ function loadLevel(){
   renderGrid(L);
   clearReveal();
   document.getElementById('ra-level-display').textContent='LEVEL '+ROM[lvlIdx];
-  document.getElementById('ra-sig').textContent=L.sig.replace('/',' / ');
+  var bpm=Math.round(60000/(CELL_MS*L.cpb));
+  document.getElementById('ra-sig').textContent=L.sig.replace('/',' / ')+' · '+bpm+' BPM';
   document.getElementById('ra-score-display').textContent='COMPLETED '+levelsCompleted;
   document.getElementById('ra-mode-badge').textContent=L.mode.toUpperCase();
   document.getElementById('ra-accuracy').textContent='';
@@ -529,14 +532,14 @@ function submitPattern(){
   document.getElementById('ra-submit-btn').disabled=true;
   document.getElementById('ra-playback-btn').disabled=true;
 
-  var correct=0;
+  var correct=0,missed=0,extra=0;
   for(var i=0;i<cells;i++){
     var el=cellEls[i];
     el.classList.add('disabled');
     el.classList.remove('cell-on');
     if(L.pattern[i]===1&&playerGrid[i]===1){correct++;el.classList.add('cell-correct');}
-    else if(L.pattern[i]===1&&playerGrid[i]===0){el.classList.add('cell-missed');}
-    else if(L.pattern[i]===0&&playerGrid[i]===1){el.classList.add('cell-extra');}
+    else if(L.pattern[i]===1&&playerGrid[i]===0){missed++;el.classList.add('cell-missed');}
+    else if(L.pattern[i]===0&&playerGrid[i]===1){extra++;el.classList.add('cell-extra');}
     else{el.classList.add('cell-ok');}
   }
   var acc=Math.round(correct/cells*100);
@@ -544,7 +547,8 @@ function submitPattern(){
   if(passed)levelsCompleted++;
   document.getElementById('ra-score-display').textContent='COMPLETED '+levelsCompleted;
   document.getElementById('ra-accuracy').textContent=acc+'%';
-  document.getElementById('ra-feedback').textContent=passed?'PATTERN MASTERED · ADVANCING':'STUDY THE RHYTHM · '+correct+' OF '+cells+' CORRECT';
+  var fb=passed?'PATTERN MASTERED · ADVANCING':(missed>0&&extra>0)?missed+' MISSED · '+extra+' EXTRA':missed>0?missed+' BEATS MISSED':'STUDY THE RHYTHM · '+correct+' OF '+cells+' CORRECT';
+  document.getElementById('ra-feedback').textContent=fb;
 
   /* For build mode: play correct pattern after brief pause */
   if(L.mode==='build'){
@@ -595,6 +599,16 @@ document.addEventListener('DOMContentLoaded',function(){
         document.getElementById('ra-submit-btn').disabled=false;
         document.getElementById('ra-playback-btn').disabled=false;
       });
+    }
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+    var playBtn=document.getElementById('ra-playback-btn');
+    var subBtn=document.getElementById('ra-submit-btn');
+    if(e.code==='Space'&&playBtn&&!playBtn.disabled&&playBtn.style.display!=='none'){
+      e.preventDefault();playBtn.click();
+    } else if((e.code==='Enter'||e.code==='NumpadEnter')&&subBtn&&!subBtn.disabled){
+      e.preventDefault();subBtn.click();
     }
   });
 });
