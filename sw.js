@@ -3,7 +3,7 @@
 // Handles: push notifications, PWA caching, offline fallback
 // ════════════════════════════════════════════════════════════════
 
-var CACHE_NAME = 'jestamang-v2';
+var CACHE_NAME = 'jestamang-v3';
 var BADGE      = '/assets/icons/icon-192.png';
 
 var PRECACHE_URLS = [
@@ -51,27 +51,33 @@ self.addEventListener('install', function (event) {
   );
 });
 
-// ── Activate: purge old caches ───────────────────────────────
+// ── Activate: purge old caches, reload all open tabs ─────────
 self.addEventListener('activate', function (event) {
   event.waitUntil(
     caches.keys().then(function (keys) {
-      return Promise.all(
-        keys.filter(function (key) { return key !== CACHE_NAME; })
-            .map(function (key)   { return caches.delete(key); })
-      );
-    }).then(function () {
-      return self.clients.claim();
+      var oldKeys = keys.filter(function (key) { return key !== CACHE_NAME; });
+      var wasUpdate = oldKeys.length > 0;
+      return Promise.all(oldKeys.map(function (key) { return caches.delete(key); }))
+        .then(function () { return self.clients.claim(); })
+        .then(function () {
+          // Reload all open tabs so they pick up the latest content
+          if (wasUpdate) {
+            return self.clients.matchAll({ type: 'window' }).then(function (clients) {
+              clients.forEach(function (client) { client.navigate(client.url); });
+            });
+          }
+        });
     })
   );
 });
 
-// ── Fetch: cache-first, network fallback, offline page ──────
+// ── Fetch: network-first for HTML, cache-first for assets ───
 self.addEventListener('fetch', function (event) {
-  // Only handle GET requests for same-origin or CDN assets
   if (event.request.method !== 'GET') return;
 
-  // Skip Firebase / Cloudflare API calls — always network
   var url = event.request.url;
+
+  // Always go to network for Firebase / external APIs
   if (url.indexOf('firestore.googleapis.com') !== -1 ||
       url.indexOf('firebase') !== -1 ||
       url.indexOf('googleapis.com') !== -1 ||
@@ -80,27 +86,38 @@ self.addEventListener('fetch', function (event) {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then(function (cached) {
-      if (cached) return cached;
+  var isNavigation = event.request.mode === 'navigate';
 
-      return fetch(event.request).then(function (response) {
-        // Cache successful responses for future use
-        if (response && response.status === 200 && response.type === 'basic') {
+  if (isNavigation) {
+    // Network-first for HTML pages: always fetch fresh, fall back to cache
+    event.respondWith(
+      fetch(event.request).then(function (response) {
+        if (response && response.status === 200) {
           var clone = response.clone();
-          caches.open(CACHE_NAME).then(function (cache) {
-            cache.put(event.request, clone);
-          });
+          caches.open(CACHE_NAME).then(function (cache) { cache.put(event.request, clone); });
         }
         return response;
       }).catch(function () {
-        // Network failed — serve offline page for navigation requests
-        if (event.request.mode === 'navigate') {
-          return caches.match('/offline.html');
-        }
-      });
-    })
-  );
+        return caches.match(event.request).then(function (cached) {
+          return cached || caches.match('/offline.html');
+        });
+      })
+    );
+  } else {
+    // Cache-first for static assets (fonts, images, scripts)
+    event.respondWith(
+      caches.match(event.request).then(function (cached) {
+        if (cached) return cached;
+        return fetch(event.request).then(function (response) {
+          if (response && response.status === 200 && response.type === 'basic') {
+            var clone = response.clone();
+            caches.open(CACHE_NAME).then(function (cache) { cache.put(event.request, clone); });
+          }
+          return response;
+        }).catch(function () {});
+      })
+    );
+  }
 });
 
 // ── Push event — triggered by FCM ────────────────────────────
