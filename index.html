@@ -118,7 +118,7 @@
 .hp-photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
 .hp-photo-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center top;display:block;border:1px solid rgba(201,168,76,0.08);filter:brightness(0.78);transition:filter 0.3s,transform 0.3s}
 .hp-photo-grid img:hover{filter:brightness(1);transform:scale(1.02)}
-.hp-footer{background:linear-gradient(to bottom,rgba(35,10,55,0.85),rgba(0,0,0,0.96));text-align:center;padding:32px 0 44px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.55);position:relative;z-index:10}
+.hp-footer{background:linear-gradient(to bottom,rgba(35,10,55,0.85),rgba(0,0,0,0.96));text-align:center;padding:32px 24px 56px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.55);position:relative;z-index:10}
 .hp-footer a{color:rgba(201,168,76,0.55);text-decoration:none;transition:color 0.2s}.hp-footer a:hover{color:#c9a84c}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4)}
 @media(max-width:900px){.hp-inner{padding:48px 28px;gap:48px}}
 @media(max-width:768px){#hp-hero{height:auto;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}.hp-scroll-hint{display:none}#hp-preview{padding:0}.hp-inner{flex-direction:column!important;gap:24px;padding:36px 16px}.hp-text{flex:none;width:100%}.hp-title{font-size:clamp(1.8rem,6vw,2.5rem)}.hp-visual{width:100%}.hp-text>*{opacity:0}.hp-section.jesta-revealed .hp-text>*:nth-child(1){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(2){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(3){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(4){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(5){animation-duration:0.5s}.hp-section.jesta-revealed .hp-visual{animation-duration:0.5s}.hp-strip img{height:110px}.hp-album-card{width:100px}.hp-album-card img{width:100px;height:100px}.hp-comix-strip{width:100%}.hp-comix-strip img{width:90px;height:128px}.hp-photo-grid{grid-template-columns:repeat(3,1fr)}.hp-merch-item{width:100px}.hp-merch-item img{width:100px;height:100px}.hp-entity-grid{grid-template-columns:repeat(4,1fr);gap:12px 8px}.hp-entity-img{width:64px;height:64px}.hp-entity-name{font-size:0.4rem}.hp-cta{display:block;text-align:center;padding:14px 20px;min-height:44px}}
@@ -199,9 +199,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 @media(max-width:768px){#jbtt{bottom:80px;right:16px}}
 </style>
 <style id="ml-signup-styles">
-.ml-signup-wrap{padding:40px 24px 36px;text-align:center;position:relative;z-index:1;opacity:0;transition:opacity 0.9s ease}
+.ml-signup-wrap{padding:28px 24px 0;text-align:center;position:relative;z-index:1;opacity:0;transition:opacity 0.9s ease}
 .ml-signup-wrap.ml-visible{opacity:1}
-.ml-signup-wrap::before{content:'';display:block;width:60px;height:1px;background:rgba(201,168,76,0.3);margin:0 auto 28px}
+.ml-signup-wrap::before{content:'';display:block;width:40px;height:1px;background:rgba(201,168,76,0.2);margin:0 auto 20px}
 .ml-signup-title{font-family:'Luminari',serif;font-size:clamp(0.62rem,1.6vw,0.72rem);letter-spacing:0.55em;color:rgba(201,168,76,0.55);text-transform:uppercase;margin-bottom:20px}
 .ml-embedded .ml-form-embedWrapper{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important}
 .ml-embedded .ml-form-embedWrapper .ml-form-embedBody,.ml-embedded .ml-form-embedWrapper .ml-form-embedBody .ml-form-formContent{padding:0!important;background:transparent!important}
@@ -615,13 +615,13 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 </div>
 <script>if(!localStorage.getItem('cookieAccepted'))document.getElementById('cookie-notice').style.display='flex';</script>
 
+<footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span> Jestamang<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a>
 <div class="ml-signup-wrap" id="ml-signup-wrap-index">
   <div class="ml-signup-title">Join the Jestagang</div>
   <div class="ml-embedded" data-form="8EZtSf"></div>
 </div>
 <script>(function(){var w=document.getElementById('ml-signup-wrap-index');if(!w||!window.IntersectionObserver){if(w)w.classList.add('ml-visible');return;}new IntersectionObserver(function(e,o){e.forEach(function(en){if(en.isIntersecting){w.classList.add('ml-visible');o.disconnect();}});},{threshold:0.1}).observe(w);})();</script>
-
-<footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span> Jestamang<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a></footer>
+</footer>
 </section><!-- /#hp-preview -->
 <script>
 (function(){
