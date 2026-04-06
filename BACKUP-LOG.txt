@@ -15,7 +15,7 @@ email.html
 entities.html
 game-memory.html
 game-oracle.html
-games.html
+arcade.html
 index.html
 instagram.html
 login.html
