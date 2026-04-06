@@ -304,6 +304,12 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   .eotd-divider{display:flex;align-items:center;justify-content:center;gap:12px;color:rgba(201,168,76,0.38);font-size:0.8rem;margin-bottom:18px}
   .eotd-divider::before,.eotd-divider::after{content:'';display:block;width:40px;height:1px;background:rgba(201,168,76,0.22)}
   .eotd-narrator{font-family:'Luminari',serif;font-style:italic;font-size:0.88rem;letter-spacing:0.05em;line-height:1.8;color:rgba(240,230,210,0.6);max-width:360px;margin:0 auto}
+  .eotd-play-wrap{margin-top:22px}
+  .eotd-play-track{display:block;font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.38);margin-bottom:10px;font-style:italic}
+  .eotd-play-btn{display:inline-flex;align-items:center;gap:8px;font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.42em;text-transform:uppercase;color:rgba(201,168,76,0.65);background:none;border:none;border-bottom:1px solid rgba(201,168,76,0.2);padding:6px 0;cursor:pointer;transition:color 0.2s,border-color 0.2s}
+  .eotd-play-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
+  .eotd-play-btn svg{flex-shrink:0;transition:transform 0.15s}
+  .eotd-play-btn:hover svg{transform:scale(1.15)}
   .eotd-cta{display:inline-block;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.42em;text-transform:uppercase;color:#c9a84c;border:1px solid rgba(201,168,76,0.45);padding:12px 32px;text-decoration:none;transition:background 0.2s,box-shadow 0.2s;min-height:44px;line-height:1.8;margin-top:32px}
   .eotd-cta:hover{background:rgba(201,168,76,0.1);box-shadow:0 0 20px rgba(201,168,76,0.2)}
   @media(max-width:768px){.eotd-card{padding:36px 20px 32px;margin:0}.eotd-wrap{padding:56px 16px 48px}.eotd-photo-ring{width:60px;height:60px}}
@@ -313,13 +319,19 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <span class="hp-eyebrow">The Cosmos Chooses</span>
       <h2 class="hp-title" style="margin-bottom:40px">Entity of the Day</h2>
       <div class="eotd-card" id="eotd-card">
-        <span class="eotd-subtitle">ENTITY OF THE DAY</span>
         <span class="eotd-date" id="eotd-date">&#8230;</span>
         <div class="eotd-photo-ring"><img id="eotd-photo" src="" alt="" loading="lazy"></div>
         <h3 class="eotd-name" id="eotd-name">&#8230;</h3>
         <p class="eotd-type" id="eotd-type"></p>
         <div class="eotd-divider">✦</div>
         <p class="eotd-narrator" id="eotd-narrator">&#8230;</p>
+        <div class="eotd-play-wrap" id="eotd-play-wrap" style="display:none">
+          <span class="eotd-play-track" id="eotd-play-track"></span>
+          <button class="eotd-play-btn" id="eotd-play-btn" aria-label="Play track">
+            <svg width="11" height="13" viewBox="0 0 11 13" fill="currentColor"><path d="M0 0l11 6.5L0 13V0z"/></svg>
+            Play
+          </button>
+        </div>
       </div>
       <a href="entities.html" class="eotd-cta">Explore All Entities</a>
     </div>
@@ -726,19 +738,65 @@ var NARRATOR={
 'CARTOON ENTITY|The Woodland Singapore Orchestra':'Deep in the green corridor, the rehearsal never ends.',
 'CARTOON ENTITY|You and the 7.5 Evils of the World':'Not all of the evils are enemies. Some are just misunderstood frequencies.'
 };
-var MONTHS=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+var RMONTHS=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
 var RDAYS=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV','XXV','XXVI','XXVII','XXVIII','XXIX','XXX','XXXI'];
 function toRomanYear(y){var t=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];var r='';t.forEach(function(p){while(y>=p[0]){r+=p[1];y-=p[0];}});return r;}
-function ritualDate(){var d=new Date();return MONTHS[d.getMonth()]+' \u00b7 '+RDAYS[d.getDate()-1]+' \u00b7 '+toRomanYear(d.getFullYear());}
+function ritualDate(){var d=new Date();return RMONTHS[d.getMonth()]+' \u00b7 '+RDAYS[d.getDate()-1]+' \u00b7 '+toRomanYear(d.getFullYear());}
 function getDayOfYear(d){var s=new Date(d.getFullYear(),0,0);return Math.floor((d-s)/86400000);}
-function eotdRender(entity){
+var TRACKS={
+'The Ace of Chase':['Jestawomang','Choke','LSD City','Partner In Crime','Witch Pit','The Fatherland','Village Fuse','1 & 2 & 1','Kiss Abyss','Zoo'],
+'Austinich':['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Aquarius'],
+'Cricket Om':['Jesta Jamboree','Red Shoes','Wizard','Awkward Bird','Wake Up I Love You','Kingdom Quest','The Wired Mind','Tranquility'],
+'Israel':['Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius'],
+'Kek-Buh':["Awoken Orb","The Oracle's Prophecy","Dance of the Reborn","New \u00c6on","Ruin","Transmuted Darkness","Descent to Cruelty"],
+'Porphigen':['Aries','Gemini','Leo','Virgo','Pisces','Sagittarius'],
+'Alissa Orange':['Love Without Sound','Libra Season','Ghost Waltz','Evol','No Face'],
+'Atlas Is Alice-Lillenger':["Allƨɟon","ᒐɒzz","⅃ɘɘbƨ 23"],
+'Big Boy, New Cat. Records':['SEVEN DAYS','DOUBLE DECKER','WORLDBUILDING','MAINFRAMED','HUNT4VAMPS','NEED IT'],
+'Big Smoke, lil Skeez, DEW, Sno Bunni':['Eat Dat Question','People In the 212','Jeff Davis','Donovan','Hippie Hippie Moo Moo'],
+'Blue Jays':['Tandem Jump','Big Bayou','All My Friends','More Than Toast','Happy Island',"Tom's Cabin",'Van Duser'],
+'The Boston Society of the Temple of Psychick Youth':['Shwittas','Thee Psychick Anthem',"Peterspoon's Toon",'Pump Heart Pump','Know Like Actually','Die Ourselves Black'],
+'Caleb Mars':['Caterpillar Rider','Purple Sally','Chief Man','Come Take My Hand','The Magic Eye Parts I, II & III','Gravy Baby Shoeshine Mgee'],
+'The Colours':['Pink','Green','Orange','Yellow','Purple','Red','Blue'],
+'Father P. Journee':["Talkin' Jesus",'Wild Heart','Funk Orient Express','Psalm 91','Anti-Christ',"Who In Here Wants To Get Baptized?"],
+'Hodge':['Xmas 23','Coke','Get Up and Bar the Door (Jestalib)'],
+'J.R. Mason':['Words of Wayley','God Song','Golden Gate Squallies','The Naples Society of the Temple of Psychick Youth','Chapter 1 (Delusions of Grandeur)','Brainbuster'],
+'Jonas Kyle':['So What (Shit Out of Luck) [V1]','Billy',"Geronimo's Geranium",'Time to Elope',"California Screamin'"],
+'Mike 55':['Five Feelings','Ball of Energy','I Ball Hard','Supermike','Phone Home In the Atlantic Ocean','Dick Randall'],
+'Mutt Tour':['Drift','Wake','Daemon','Hurricane Backbeat',"Rottin' Hee Haw",'Boiling','Scarboro'],
+'Ode to Bonnie':['Si-Si','Stoogehead','Bloodhouse','Friends Till the End','I Multiply','Goodbye Yesterday','Ode to Bonnie'],
+'The Perfect Trip':['DMT','Psych Blues','Lady Day','Evol','I Can Touch the Revolution From My Home','Who In Here Wants To Get Hypnotized?',"Magician's Trick"],
+'Sounds Across the World':['North America','South America','Europe','Asia','Africa','Oceania','Antarctica'],
+'Venus and the Flytrap':['Basic Bitch','Lady Day','Freak of Nature',"Don't ID Jesus",'General Tsu','Our Galaxy'],
+'The Woodland Singapore Orchestra':['Bach Orchestra - BWV 20','Eternal Lyfe - BWV 18','Westgate Shopping Center - BWV 19','Hulusi Drip - BWV 16','New Slice - BWV 20'],
+'You and the 7.5 Evils of the World':['Change','Poverty','Top of the Pyramid','Disney Yes','God',"It's U",'Rattle Satan to Sleep','The Reptile']
+};
+var TRACK_ARTIST={
+'Caleb Mars':'Caleb Mars Hickman',
+'Atlas Is Alice-Lillenger':'Atlas Is Alice Lillenger',
+'Austinich':'Children','Israel':'Children','Porphigen':'Children'
+};
+function eotdRender(entity,cycle){
   var el=function(id){return document.getElementById(id);};
   var dateEl=el('eotd-date');var photoEl=el('eotd-photo');var nameEl=el('eotd-name');var typeEl=el('eotd-type');var narrEl=el('eotd-narrator');
   if(dateEl)dateEl.textContent=ritualDate();
   if(photoEl){photoEl.src=entity.photo;photoEl.alt=entity.name;}
   if(nameEl)nameEl.textContent=entity.name;
-  if(typeEl)typeEl.textContent=entity.type;
-  if(narrEl){var key=entity.type+'|'+entity.name;narrEl.textContent=NARRATOR[key]||'A being of the Jestamang universe.';}
+  if(typeEl)typeEl.textContent=entity.type==='ONE OF THE CHILDREN'?'CHILD':'CARTOON';
+  if(narrEl){var key=entity.rawType+'|'+entity.name;narrEl.textContent=NARRATOR[key]||'A being of the Jestamang universe.';}
+  var tracks=TRACKS[entity.name];
+  var playWrap=el('eotd-play-wrap');var playTrack=el('eotd-play-track');var playBtn=el('eotd-play-btn');
+  if(tracks&&tracks.length&&playWrap&&playBtn){
+    var trackIdx=cycle%tracks.length;
+    var track=tracks[trackIdx];
+    var artist=TRACK_ARTIST[entity.name]||entity.name;
+    if(playTrack)playTrack.textContent=track;
+    playWrap.style.display='block';
+    playBtn.onclick=function(){
+      var q=encodeURIComponent(artist+' '+track);
+      window.open('https://open.spotify.com/search/'+q,'_blank','noopener');
+    };
+  }
 }
 function eotdInit(){
   fetch('entities.html').then(function(r){return r.text();}).then(function(html){
@@ -746,15 +804,17 @@ function eotdInit(){
     var entities=[];
     doc.querySelectorAll('.dossier-panel').forEach(function(panel){
       var img=panel.querySelector('.dossier-hero-img');var nameEl=panel.querySelector('.dossier-name');
-      if(img&&nameEl)entities.push({name:nameEl.textContent.trim(),photo:img.getAttribute('src'),type:'ONE OF THE CHILDREN'});
+      if(img&&nameEl)entities.push({name:nameEl.textContent.trim(),photo:img.getAttribute('src'),type:'CHILD',rawType:'ONE OF THE CHILDREN'});
     });
     doc.querySelectorAll('.entity-card').forEach(function(card){
       var img=card.querySelector('.entity-photo');var nameEl=card.querySelector('.entity-name');
-      if(img&&nameEl)entities.push({name:nameEl.textContent.trim(),photo:img.getAttribute('src'),type:'CARTOON ENTITY'});
+      if(img&&nameEl)entities.push({name:nameEl.textContent.trim(),photo:img.getAttribute('src'),type:'CARTOON',rawType:'CARTOON ENTITY'});
     });
     if(!entities.length){document.getElementById('eotd-card').style.opacity='0.3';return;}
-    var day=getDayOfYear(new Date());var entity=entities[day%entities.length];
-    eotdRender(entity);
+    var day=getDayOfYear(new Date());
+    var entity=entities[day%entities.length];
+    var cycle=Math.floor(day/entities.length);
+    eotdRender(entity,cycle);
   }).catch(function(){var c=document.getElementById('eotd-card');if(c)c.style.display='none';});
 }
 document.addEventListener('DOMContentLoaded',eotdInit);
