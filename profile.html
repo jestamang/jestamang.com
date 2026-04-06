@@ -1560,16 +1560,16 @@ var NC = (function(){
   }
 
   // Orbital elements (Meeus Table 31.a — J2000, rates in °/Julian century)
-  // a=semi-major axis (AU), omega=longitude of perihelion
+  // omega0=longitude of perihelion, Omega0=longitude of ascending node, i0=inclination
   var PLANET_ELEMENTS = {
-    Mercury: { L0:252.250906, Lr:149472.6746358, omega0: 77.456119, omegaR:0.1588643, a:0.387098310, e:0.20563175 },
-    Venus:   { L0:181.979801, Lr: 58517.8156760, omega0:131.563707, omegaR:0.0048646, a:0.723329820, e:0.00677188 },
-    Mars:    { L0:355.433275, Lr: 19140.2993313, omega0:336.060234, omegaR:0.4438898, a:1.523679342, e:0.09341233 },
-    Jupiter: { L0: 34.351484, Lr:  3034.9056746, omega0: 14.331309, omegaR:0.2155525, a:5.202603191, e:0.04849485 },
-    Saturn:  { L0: 50.077444, Lr:  1222.1137943, omega0: 93.057237, omegaR:0.5665415, a:9.554909596, e:0.05550825 },
-    Uranus:  { L0:314.055005, Lr:   428.4669983, omega0:173.005291, omegaR:0.0893212, a:19.21844606, e:0.04629590 },
-    Neptune: { L0:304.348665, Lr:   218.4862002, omega0: 48.123691, omegaR:0.0291587, a:30.11038700, e:0.00898809 },
-    Pluto:   { L0:238.958116, Lr:   145.1786136, omega0:224.069855, omegaR:0.0000000, a:39.48168677, e:0.24880766 },
+    Mercury: { L0:252.250906, Lr:149472.6746358, omega0: 77.456119, omegaR:0.1588643, a:0.387098310, e:0.20563175, Omega0: 48.330893, OmegaR:-0.1254229, i0: 7.004986, ir: 0.0018215  },
+    Venus:   { L0:181.979801, Lr: 58517.8156760, omega0:131.563707, omegaR:0.0048646, a:0.723329820, e:0.00677188, Omega0: 76.679920, OmegaR:-0.2780559, i0: 3.394662, ir:-0.0008568  },
+    Mars:    { L0:355.433275, Lr: 19140.2993313, omega0:336.060234, omegaR:0.4438898, a:1.523679342, e:0.09341233, Omega0: 49.558093, OmegaR:-0.2949846, i0: 1.849726, ir:-0.0006011  },
+    Jupiter: { L0: 34.351484, Lr:  3034.9056746, omega0: 14.331309, omegaR:0.2155525, a:5.202603191, e:0.04849485, Omega0:100.464407, OmegaR: 0.1767232, i0: 1.303270, ir:-0.0054966  },
+    Saturn:  { L0: 50.077444, Lr:  1222.1137943, omega0: 93.057237, omegaR:0.5665415, a:9.554909596, e:0.05550825, Omega0:113.665524, OmegaR:-0.2566649, i0: 2.488878, ir: 0.0025514  },
+    Uranus:  { L0:314.055005, Lr:   428.4669983, omega0:173.005291, omegaR:0.0893212, a:19.21844606, e:0.04629590, Omega0: 74.005947, OmegaR: 0.0741461, i0: 0.773196, ir:-0.0016869  },
+    Neptune: { L0:304.348665, Lr:   218.4862002, omega0: 48.123691, omegaR:0.0291587, a:30.11038700, e:0.00898809, Omega0:131.784057, OmegaR: 1.1022057, i0: 1.769952, ir: 0.0002257  },
+    Pluto:   { L0:238.958116, Lr:   145.1786136, omega0:224.069855, omegaR:0.0000000, a:39.48168677, e:0.24880766, Omega0:110.307,    OmegaR: 0.0,       i0:17.141750, ir: 0.0        },
   };
 
   // Newton-Raphson Kepler solver (eccentric anomaly from mean anomaly, radians)
@@ -1583,47 +1583,60 @@ var NC = (function(){
     return E;
   }
 
-  // Geocentric ecliptic longitude via heliocentric→geocentric conversion (Meeus Ch.25-26)
+  // Geocentric ecliptic longitude via full 3-D heliocentric→geocentric conversion
+  // Includes orbital inclination — critical for accurate Pluto, Uranus, Neptune
   function planetLongitude(name, jd){
     var T = calcT(jd);
     var el = PLANET_ELEMENTS[name];
 
-    // Planet heliocentric
-    var L       = mod360(el.L0 + el.Lr * T);
-    var omega   = mod360(el.omega0 + el.omegaR * T);
-    var M_deg   = mod360(L - omega);
-    var E_p     = solveKepler(M_deg * DEG, el.e);
-    var v_p     = 2*Math.atan2(Math.sqrt(1+el.e)*Math.sin(E_p/2), Math.sqrt(1-el.e)*Math.cos(E_p/2));
-    var r_p     = el.a * (1 - el.e*Math.cos(E_p));
-    var lon_p   = mod360(omega + v_p * RAD);
+    // Keplerian elements
+    var varpi = mod360(el.omega0  + el.omegaR  * T);  // longitude of perihelion
+    var Omega = mod360(el.Omega0  + el.OmegaR  * T);  // longitude of ascending node
+    var L     = mod360(el.L0      + el.Lr      * T);  // mean longitude
+    var incRad = (el.i0 + el.ir * T) * DEG;            // inclination in radians
 
-    // Jupiter-Saturn mutual perturbations (Meeus §22 — degrees)
+    var M_rad = mod360(L - varpi) * DEG;               // mean anomaly in radians
+    var E_p   = solveKepler(M_rad, el.e);
+    var v_p   = 2*Math.atan2(Math.sqrt(1+el.e)*Math.sin(E_p/2), Math.sqrt(1-el.e)*Math.cos(E_p/2));
+    var r_p   = el.a * (1 - el.e*Math.cos(E_p));
+
+    // Argument of latitude from ascending node (radians)
+    var argPeri = (varpi - Omega) * DEG;  // argument of perihelion (radians)
+    var u = argPeri + v_p;                // argument of latitude (radians)
+
+    // Heliocentric ecliptic rectangular coordinates (full 3-D)
+    var OmR = Omega * DEG;
+    var X_p = r_p*(Math.cos(OmR)*Math.cos(u) - Math.sin(OmR)*Math.sin(u)*Math.cos(incRad));
+    var Y_p = r_p*(Math.sin(OmR)*Math.cos(u) + Math.cos(OmR)*Math.sin(u)*Math.cos(incRad));
+
+    // Jupiter-Saturn mutual perturbations (Meeus §22) — applied to geocentric result
+    var dLon = 0;
     if(name==='Jupiter'||name==='Saturn'){
       var Mj_deg=mod360(PLANET_ELEMENTS.Jupiter.L0+PLANET_ELEMENTS.Jupiter.Lr*T-(PLANET_ELEMENTS.Jupiter.omega0+PLANET_ELEMENTS.Jupiter.omegaR*T));
       var Ms_deg=mod360(PLANET_ELEMENTS.Saturn.L0 +PLANET_ELEMENTS.Saturn.Lr *T-(PLANET_ELEMENTS.Saturn.omega0 +PLANET_ELEMENTS.Saturn.omegaR *T));
       var Mj=Mj_deg*DEG, Ms=Ms_deg*DEG;
       if(name==='Jupiter'){
-        lon_p+=(0.332*Math.sin(2*Mj-5*Ms-67.6*DEG)+0.056*Math.sin(2*Mj-2*Ms+21*DEG)
-               +0.042*Math.sin(3*Mj-5*Ms+100*DEG)-0.036*Math.sin(Mj-2*Ms)
-               +0.022*Math.cos(Mj-Ms)+0.023*Math.sin(2*Mj-3*Ms+52*DEG)
-               -0.016*Math.sin(Mj-5*Ms-69*DEG));
+        dLon=(0.332*Math.sin(2*Mj-5*Ms-67.6*DEG)+0.056*Math.sin(2*Mj-2*Ms+21*DEG)
+             +0.042*Math.sin(3*Mj-5*Ms+100*DEG)-0.036*Math.sin(Mj-2*Ms)
+             +0.022*Math.cos(Mj-Ms)+0.023*Math.sin(2*Mj-3*Ms+52*DEG)
+             -0.016*Math.sin(Mj-5*Ms-69*DEG));
       } else {
-        lon_p+=(0.812*Math.sin(2*Mj-5*Ms-67.6*DEG)-0.229*Math.cos(2*Mj-4*Ms-2*DEG)
-               +0.119*Math.sin(Mj-2*Ms-3*DEG)+0.046*Math.sin(2*Mj-6*Ms-69*DEG)
-               +0.014*Math.sin(Mj-3*Ms+32*DEG));
+        dLon=(0.812*Math.sin(2*Mj-5*Ms-67.6*DEG)-0.229*Math.cos(2*Mj-4*Ms-2*DEG)
+             +0.119*Math.sin(Mj-2*Ms-3*DEG)+0.046*Math.sin(2*Mj-6*Ms-69*DEG)
+             +0.014*Math.sin(Mj-3*Ms+32*DEG));
       }
-      lon_p=mod360(lon_p);
     }
 
-    // Earth heliocentric position (derived from Sun geocentric + eccentricity)
-    var Me_deg  = mod360(357.52911 + 35999.05029*T - 0.0001537*T*T);
-    var E_e     = solveKepler(Me_deg*DEG, 0.016709);
-    var r_e     = 1.000001018*(1 - 0.016709*Math.cos(E_e));
-    var lon_e   = mod360(sunLongitude(jd) + 180);
+    // Earth heliocentric position (ecliptic plane, inclination ≈ 0 by definition)
+    var Me_deg = mod360(357.52911 + 35999.05029*T - 0.0001537*T*T);
+    var E_e    = solveKepler(Me_deg*DEG, 0.016709);
+    var r_e    = 1.000001018*(1 - 0.016709*Math.cos(E_e));
+    var lon_e  = mod360(sunLongitude(jd) + 180);
+    var X_e    = r_e*Math.cos(lon_e*DEG);
+    var Y_e    = r_e*Math.sin(lon_e*DEG);
 
-    // Heliocentric → geocentric via vector triangle
-    var dL   = (lon_p - lon_e) * DEG;
-    var geo  = mod360(Math.atan2(r_p*Math.sin(dL), r_p*Math.cos(dL) - r_e)*RAD + lon_e);
+    // Geocentric ecliptic longitude
+    var geo = mod360(Math.atan2(Y_p - Y_e, X_p - X_e)*RAD + dLon);
     return geo;
   }
 
@@ -1634,7 +1647,18 @@ var NC = (function(){
 
   function northNodeLongitude(jd){
     var T = calcT(jd);
-    return mod360(125.0445479 - 1934.1362608*T + 0.0020754*T*T);
+    // Mean ascending node
+    var omega = 125.0445479 - 1934.1362608*T + 0.0020754*T*T + 0.0000022*T*T*T;
+    // Correct mean → true node (main perturbation terms)
+    // Primary term: -1.4979° × sin(2Ω - 2L☉)
+    var Lsun = mod360(280.46646 + 36000.76983*T + 0.0003032*T*T);
+    var corr  = -1.4979 * Math.sin(2*(omega - Lsun)*DEG);
+    // Secondary terms
+    var M   = mod360(357.5291092 + 35999.0502909*T);
+    var F   = mod360(93.2720950  + 483202.0175233*T - 0.0036539*T*T);
+    corr += 0.1500 * Math.sin(M * DEG);
+    corr -= 0.1179 * Math.sin(2 * F * DEG);
+    return mod360(omega + corr);
   }
 
   function getRawLon(name, jd){
@@ -1683,37 +1707,93 @@ var NC = (function(){
   }
 
   function calcHouseCusps(asc, jd, lat, lng){
+    // Polar latitudes: fall back to equal houses
     if(Math.abs(lat) >= 66){
       var cusps = [];
       for(var i=0;i<12;i++) cusps.push(mod360(asc + i*30));
       return cusps;
     }
-    var eps = obliquity(jd) * DEG;
-    var latR = lat * DEG;
-    var RAmcDeg = localSiderealTime(jd, lng);
-    var mc = calcMC(jd, lng);
-    function placitusCusp(houseNum){
+    var eps    = obliquity(jd);              // obliquity in degrees
+    var RAMC   = localSiderealTime(jd, lng); // RAMC in degrees (= LMST)
+    var mc     = calcMC(jd, lng);            // MC ecliptic longitude in degrees
+    var latRad = lat * DEG;
+    var epsRad = eps * DEG;
+
+    // Convert Right Ascension (degrees) → ecliptic longitude (degrees) for a point on the ecliptic.
+    // Correct formula: λ = atan2(sin(RA), cos(RA)·cos(ε))
+    // Handles all four quadrants without sign-flip issues.
+    function raToLon(ra){
+      var r = mod360(ra) * DEG;
+      return mod360(Math.atan2(Math.sin(r), Math.cos(r)*Math.cos(epsRad)) * RAD);
+    }
+
+    // Iterative Placidus cusp solver.
+    //
+    // Placidus divides the diurnal semi-arc (DSA = 90°+AD) into thirds above the horizon
+    // and the nocturnal semi-arc (NSA = 90°−AD) into thirds below it:
+    //   H11 = 1/3 DSA from MC toward ASC  (OA = RAMC + DSA/3)
+    //   H12 = 2/3 DSA from MC toward ASC  (OA = RAMC + 2·DSA/3)
+    //   H3  = 1/3 NSA from IC toward ASC  (OA = RAMC+180 + NSA/3)
+    //   H2  = 2/3 NSA from IC toward ASC  (OA = RAMC+180 + 2·NSA/3)
+    //
+    // Key relationship: RA = OA + AD  (oblique ascension + ascensional difference)
+    // We iterate because AD depends on declination which depends on the ecliptic longitude
+    // we are trying to find.
+    function placidusHouse(houseNum){
       var isUpper = (houseNum===11||houseNum===12);
-      var frac = (houseNum===11||houseNum===2) ? 1/3 : 2/3;
-      var lon = mod360(mc + (isUpper ? frac*60 : 180 + frac*60));
+      // H11 and H3 are 1/3 from their respective anchor (MC or IC);
+      // H12 and H2 are 2/3 from their anchor.
+      var frac = (houseNum===11||houseNum===3) ? 1/3 : 2/3;
+
+      // Initial guess: convert the expected RA region to an ecliptic longitude
+      var guessRA = isUpper ? mod360(RAMC + frac*90) : mod360(RAMC + 180 + frac*90);
+      var lon = raToLon(guessRA);
+
       for(var iter=0;iter<30;iter++){
-        var sinDec = Math.sin(eps)*Math.sin(lon*DEG);
-        var dec = Math.asin(Math.max(-1,Math.min(1,sinDec)));
-        var ttan = Math.tan(latR)*Math.tan(dec);
-        if(Math.abs(ttan)>1) break;
-        var adDeg = Math.asin(Math.max(-1,Math.min(1,ttan)))*RAD;
-        var semiArc = isUpper ? (90+adDeg) : (90-adDeg);
-        var targetRA = mod360(isUpper ? RAmcDeg+frac*semiArc : RAmcDeg+180+frac*semiArc);
-        var ra = targetRA*DEG;
-        var newLon = mod360(Math.atan2(Math.sin(ra)*Math.cos(eps)+Math.tan(dec)*Math.sin(eps),Math.cos(ra))*RAD);
-        if(Math.abs(newLon-lon)<0.001){lon=newLon;break;}
-        lon=newLon;
+        // Declination of current estimate
+        var sinDec = Math.sin(epsRad) * Math.sin(lon*DEG);
+        sinDec = Math.max(-1, Math.min(1, sinDec));
+        var dec = Math.asin(sinDec);   // radians
+
+        // Ascensional difference (AD): arcsin(tan φ · tan δ)
+        var tt = Math.tan(latRad) * Math.tan(dec);
+        if(Math.abs(tt) > 0.9999) break;  // circumpolar — use current estimate
+        var ad = Math.asin(Math.max(-1,Math.min(1,tt))) * RAD;  // degrees
+
+        // Semi-arc: diurnal = 90+AD, nocturnal = 90−AD
+        var sa = isUpper ? (90+ad) : (90-ad);
+
+        // Target oblique ascension
+        var oaTarget = isUpper
+          ? mod360(RAMC       + frac * sa)   // H11/H12: measured from MC
+          : mod360(RAMC + 180 + frac * sa);  // H2/H3:   measured from IC
+
+        // Convert OA → RA  (RA = OA + AD)
+        var raTarget = mod360(oaTarget + ad);
+
+        // Convert target RA → ecliptic longitude
+        var newLon = raToLon(raTarget);
+
+        // Check convergence (angular distance)
+        var diff = Math.abs(mod360(newLon - lon + 180) - 180);
+        lon = newLon;
+        if(diff < 0.0001) break;
       }
       return mod360(lon);
     }
-    var h11=placitusCusp(11),h12=placitusCusp(12),ic=mod360(mc+180),h2=placitusCusp(2),h3=placitusCusp(3);
-    // H5=opposite H11, H6=opposite H12 (Placidus symmetry across horizon)
-    return [asc,h2,h3,ic,mod360(h11+180),mod360(h12+180),mod360(asc+180),mod360(h2+180),mod360(h3+180),mc,h11,h12];
+
+    var h11 = placidusHouse(11);
+    var h12 = placidusHouse(12);
+    var ic  = mod360(mc + 180);
+    var h2  = placidusHouse(2);
+    var h3  = placidusHouse(3);
+
+    // Return array indexed [H1..H12].  Opposite cusps differ by exactly 180°.
+    // [H1=ASC, H2, H3, H4=IC, H5=H11+180, H6=H12+180, H7=DSC, H8=H2+180, H9=H3+180, H10=MC, H11, H12]
+    return [asc, h2, h3, ic,
+            mod360(h11+180), mod360(h12+180),
+            mod360(asc+180), mod360(h2+180), mod360(h3+180),
+            mc, h11, h12];
   }
 
   function planetHouse(lon, cusps){
