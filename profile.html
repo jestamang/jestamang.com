@@ -2842,7 +2842,8 @@ var NC = (function(){
   }
   function _pobCleanName(r){
     var addr = r.address || {};
-    var city = addr.city || addr.town || addr.village || addr.hamlet || addr.municipality || '';
+    // r.name is the place's own name (most reliable — always present)
+    var city = r.name || addr.city || addr.town || addr.village || addr.hamlet || addr.municipality || '';
     var state = addr.state || addr.region || '';
     var country = addr.country || '';
     var parts = [city, state, country].filter(Boolean);
