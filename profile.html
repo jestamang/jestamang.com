@@ -1758,9 +1758,9 @@ var NC = (function(){
   }
 
   function lilithLongitude(jd){
-    // Mean Black Moon Lilith (mean lunar apogee, Meeus formula)
+    // Mean Black Moon Lilith (mean lunar apogee = perigee + 180°, Meeus formula)
     var T = calcT(jd);
-    return mod360(83.3532465 + 4069.0137287*T - 0.0103200*T*T);
+    return mod360(83.3532465 + 4069.0137287*T - 0.0103200*T*T + 180);
   }
 
   // VSOP87 heliocentric longitude for Uranus
@@ -1778,12 +1778,13 @@ var NC = (function(){
     var L1 = 7478270000.0;
     // Heliocentric ecliptic longitude (degrees)
     var L_helio = mod360((L0 + L1*tau) * 1e-8 * RAD);
-    // Long-period perturbations (degrees), T in Julian centuries
-    var dL = 0.002083*Math.sin(0.01014*T)
-           + 0.001484*Math.sin(3.4581 + 0.0134*T)
-           + 0.001417*Math.sin(2.1881 + 0.0134*T)
-           + 0.001124*Math.sin(4.800  + 0.0402*T)
-           + 0.000765*Math.sin(3.6232 + 0.0134*T);
+    // Long-period perturbations (degrees), D = Julian days from J2000
+    var D = T * 36525;
+    var dL = 0.002083*Math.sin(0.01014*D)
+           + 0.001484*Math.sin(3.4581 + 0.0134*D)
+           + 0.001417*Math.sin(2.1881 + 0.0134*D)
+           + 0.001124*Math.sin(4.800  + 0.0402*D)
+           + 0.000765*Math.sin(3.6232 + 0.0134*D);
     L_helio = mod360(L_helio + dL);
     // Heliocentric distance from Keplerian elements (sufficient accuracy)
     var el = PLANET_ELEMENTS['Uranus'];
@@ -1816,9 +1817,10 @@ var NC = (function(){
     // L1: mean motion (10^-8 rad/millennium)
     var L1 = 3813360000.0;
     var L_helio = mod360((L0 + L1*tau) * 1e-8 * RAD);
-    // Long-period perturbations (degrees)
-    var dL = 0.001454*Math.sin(0.4331 + 0.0066*T)
-           + 0.001017*Math.sin(3.5747 + 0.0134*T);
+    // Long-period perturbations (degrees), D = Julian days from J2000
+    var D = T * 36525;
+    var dL = 0.001454*Math.sin(0.4331 + 0.0066*D)
+           + 0.001017*Math.sin(3.5747 + 0.0134*D);
     L_helio = mod360(L_helio + dL);
     // Heliocentric distance from Keplerian elements
     var el = PLANET_ELEMENTS['Neptune'];
@@ -2058,10 +2060,14 @@ var NC = (function(){
                      '\u264E','\u264F','\u2650','\u2651','\u2652','\u2653'];
 
   function lonToSign(lon){
-    var idx = Math.floor(mod360(lon)/30)%12;
-    var pos = mod360(lon)%30;
-    var deg = Math.floor(pos), min = Math.floor((pos-deg)*60);
-    return {sign:SIGNS[idx],glyph:SIGN_GLYPHS[idx],deg:deg,min:min,totalDeg:mod360(lon),idx:idx};
+    var norm = mod360(lon);
+    var idx = Math.floor(norm/30)%12;
+    var pos = norm%30;
+    var totalMin = Math.round(pos * 60);
+    var deg = Math.floor(totalMin / 60);
+    var min = totalMin % 60;
+    if(deg >= 30){ deg = 29; min = 59; }
+    return {sign:SIGNS[idx],glyph:SIGN_GLYPHS[idx],deg:deg,min:min,totalDeg:norm,idx:idx};
   }
 
   var ELEMENT = {
@@ -2125,8 +2131,8 @@ var NC = (function(){
       Sun:sunLongitude(jd),Moon:moonLongitude(jd),
       Mercury:planetLongitude('Mercury',jd),Venus:planetLongitude('Venus',jd),
       Mars:planetLongitude('Mars',jd),Jupiter:planetLongitude('Jupiter',jd),
-      Saturn:planetLongitude('Saturn',jd),Uranus:planetLongitude('Uranus',jd),
-      Neptune:planetLongitude('Neptune',jd),Pluto:planetLongitude('Pluto',jd),
+      Saturn:planetLongitude('Saturn',jd),Uranus:uranusLongitude(jd),
+      Neptune:neptuneLongitude(jd),Pluto:plutoLongitude(jd),
       'North Node':northNodeLongitude(jd),'South Node':mod360(northNodeLongitude(jd)+180),
       Chiron:chironLongitude(jd),Lilith:lilithLongitude(jd),
     };
@@ -2157,7 +2163,7 @@ var NC = (function(){
       planets['Fortune']=fortuneData;
     }
 
-    var coreplanets=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
+    var coreplanets=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
     var elements={Fire:0,Earth:0,Air:0,Water:0},modes={Cardinal:0,Fixed:0,Mutable:0};
     var total=coreplanets.length+(ascData?1:0);
     for(var ci=0;ci<coreplanets.length;ci++){
