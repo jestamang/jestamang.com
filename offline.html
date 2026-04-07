@@ -137,8 +137,84 @@ h1 {
   justify-content: center;
   position: relative;
   z-index: 10;
-  padding: 0 24px 80px;
+  padding: 0 24px 40px;
   text-align: center;
+}
+/* Cached chart display */
+#offline-chart {
+  display: none;
+  margin-top: 36px;
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid rgba(201,168,76,0.18);
+  background: rgba(201,168,76,0.03);
+  padding: 24px 20px 20px;
+}
+.oc-header {
+  font-size: 0.6rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,0.55);
+  margin-bottom: 16px;
+}
+.oc-divider {
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  color: rgba(201,168,76,0.3);
+  margin: 14px 0 12px;
+}
+.oc-chart-name {
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  color: #c9a84c;
+  margin-bottom: 4px;
+}
+.oc-birth-meta {
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.35);
+  font-style: italic;
+  margin-bottom: 6px;
+}
+.oc-saved-at {
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: rgba(201,168,76,0.25);
+}
+.oc-list {
+  list-style: none;
+  width: 100%;
+  margin-top: 4px;
+}
+.oc-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(201,168,76,0.07);
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.04em;
+}
+.oc-list li:last-child { border-bottom: none; }
+.oc-chart-num {
+  font-size: 0.62rem;
+  color: rgba(201,168,76,0.4);
+  letter-spacing: 0.1em;
+  margin-right: 8px;
+}
+.oc-chart-name-tag {
+  flex: 1;
+  text-align: left;
+  color: rgba(201,168,76,0.7);
+}
+.oc-note {
+  font-style: italic;
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.05em;
+  margin-top: 16px;
+  line-height: 1.6;
 }
 </style>
 </head>
@@ -162,10 +238,69 @@ h1 {
     Return when the cosmos reconnects.
   </p>
   <button class="try-again-btn" onclick="window.location.reload()">Try Again</button>
+
+  <div id="offline-chart">
+    <div class="oc-header">&#10022; Your Celestial Record Remains &#10022;</div>
+    <div id="oc-body"></div>
+    <p class="oc-note">Recalled from your last session.<br>Reconnect to recalculate.</p>
+  </div>
 </div>
 
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
+
+<script>
+(function(){
+  try {
+    var charts = JSON.parse(localStorage.getItem('jestaCharts') || '[]');
+    if (!charts || charts.length === 0) return;
+
+    // Sort by savedAt descending to get most recent first
+    charts.sort(function(a, b){ return (b.savedAt||'').localeCompare(a.savedAt||''); });
+
+    var container = document.getElementById('offline-chart');
+    var body = document.getElementById('oc-body');
+    if (!container || !body) return;
+
+    function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function fmtDate(s){
+      try{ var d=new Date(s); return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }catch(e){ return s; }
+    }
+
+    if (charts.length === 1) {
+      // Single chart — show details
+      var c = charts[0];
+      var savedDate = c.savedAt ? fmtDate(c.savedAt) : '';
+      body.innerHTML =
+        '<div class="oc-chart-name">' + esc(c.name || 'My Chart') + '</div>' +
+        '<div class="oc-birth-meta">' +
+          esc(c.birthDate || '') +
+          (c.birthTime ? ' &nbsp;&middot;&nbsp; ' + esc(c.birthTime) : '') +
+          (c.birthPlace ? '<br>' + esc(c.birthPlace) : '') +
+        '</div>' +
+        (savedDate ? '<div class="oc-saved-at">Sealed ' + esc(savedDate) + '</div>' : '');
+    } else {
+      // Multiple charts — list them
+      var html = '<div class="oc-divider">&#10022; ' + charts.length + ' Charts Sealed &#10022;</div><ul class="oc-list">';
+      for (var i = 0; i < Math.min(charts.length, 5); i++) {
+        var c = charts[i];
+        html += '<li>' +
+          '<span class="oc-chart-num">' + (i+1) + '</span>' +
+          '<span class="oc-chart-name-tag">' + esc(c.name || 'My Chart') + '</span>' +
+          '<span style="color:rgba(255,255,255,0.28);font-size:0.62rem;">' + esc(c.birthDate || '') + '</span>' +
+          '</li>';
+      }
+      if (charts.length > 5) {
+        html += '<li style="justify-content:center;color:rgba(201,168,76,0.3);font-size:0.6rem;letter-spacing:0.1em;">+ ' + (charts.length - 5) + ' more</li>';
+      }
+      html += '</ul>';
+      body.innerHTML = html;
+    }
+
+    container.style.display = 'block';
+  } catch(e) {}
+})();
+</script>
 
 <!-- SW Update Banner -->
 <div id="sw-update-banner" style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#c9a84c;color:#0a0702;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;font-family:sans-serif;font-size:13px;font-weight:600;letter-spacing:0.04em;box-shadow:0 2px 12px rgba(0,0,0,0.5);transform:translateY(-100%);transition:transform 0.4s ease;opacity:0;pointer-events:none;"></div>

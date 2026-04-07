@@ -4,7 +4,7 @@
 // UPDATE CACHE_VERSION DATE ON EVERY PUSH
 // ════════════════════════════════════════════════════════════════
 
-var CACHE_NAME = 'jestamang-20260406';
+var CACHE_NAME = 'jestamang-v4';
 var BADGE      = '/assets/icons/icon-192.png';
 
 var PRECACHE_URLS = [
@@ -74,6 +74,15 @@ self.addEventListener('activate', function (event) {
   );
 });
 
+// Large asset paths that should never be cached (photos, albums, videos, etc.)
+var SKIP_CACHE_PATHS = [
+  '/assets/photos/',
+  '/assets/albums/',
+  '/assets/comix/',
+  '/assets/videos/',
+  '/assets/merch/'
+];
+
 // ── Fetch: network-first for HTML, cache-first for assets ───
 self.addEventListener('fetch', function (event) {
   if (event.request.method !== 'GET') return;
@@ -88,6 +97,16 @@ self.addEventListener('fetch', function (event) {
       url.indexOf('cloudflareinsights') !== -1) {
     return;
   }
+
+  // Skip caching for large media assets — always fetch from network
+  try {
+    var parsed = new URL(url);
+    var skip = SKIP_CACHE_PATHS.some(function (p) { return parsed.pathname.startsWith(p); });
+    if (skip) {
+      event.respondWith(fetch(event.request));
+      return;
+    }
+  } catch (e) {}
 
   var isNavigation = event.request.mode === 'navigate';
 
