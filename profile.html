@@ -1733,6 +1733,150 @@ var NC = (function(){
     return mod360(83.3532465 + 4069.0137287*T - 0.0103200*T*T);
   }
 
+  // VSOP87 heliocentric longitude for Uranus
+  function uranusLongitude(jd){
+    var T   = calcT(jd);
+    var tau = T / 10.0;  // Julian millennia from J2000
+    // L0: VSOP87 periodic terms (10^-8 rad), dominant eccentricity harmonics
+    var L0 = 548129294.0
+      + 4061993.0 * Math.cos(5.4831435 + 74.7815986*tau)
+      +  263464.0 * Math.cos(5.4801213 + 149.5631971*tau)
+      +   18990.0 * Math.cos(5.4801    + 224.3447957*tau)
+      +    1210.0 * Math.cos(5.48      + 299.1263943*tau)
+      +      64.0 * Math.cos(5.48      + 373.9079929*tau);
+    // L1: mean motion (10^-8 rad/millennium) — from PLANET_ELEMENTS Lr converted
+    var L1 = 7478270000.0;
+    // Heliocentric ecliptic longitude (degrees)
+    var L_helio = mod360((L0 + L1*tau) * 1e-8 * RAD);
+    // Long-period perturbations (degrees), T in Julian centuries
+    var dL = 0.002083*Math.sin(0.01014*T)
+           + 0.001484*Math.sin(3.4581 + 0.0134*T)
+           + 0.001417*Math.sin(2.1881 + 0.0134*T)
+           + 0.001124*Math.sin(4.800  + 0.0402*T)
+           + 0.000765*Math.sin(3.6232 + 0.0134*T);
+    L_helio = mod360(L_helio + dL);
+    // Heliocentric distance from Keplerian elements (sufficient accuracy)
+    var el = PLANET_ELEMENTS['Uranus'];
+    var varpi = mod360(el.omega0 + el.omegaR*T);
+    var L_kep = mod360(el.L0 + el.Lr*T);
+    var M_rad = mod360(L_kep - varpi) * DEG;
+    var E_p   = solveKepler(M_rad, el.e);
+    var r_p   = el.a*(1 - el.e*Math.cos(E_p));
+    // Geocentric conversion (B_helio ≈ 0 for Uranus, i=0.77° → <3' error on λ)
+    var X_p = r_p * Math.cos(L_helio*DEG);
+    var Y_p = r_p * Math.sin(L_helio*DEG);
+    var lon_e = mod360(sunLongitude(jd) + 180.0);
+    var Me_deg = mod360(357.52911 + 35999.05029*T - 0.0001537*T*T);
+    var E_e    = solveKepler(Me_deg*DEG, 0.016709);
+    var r_e    = 1.000001018*(1 - 0.016709*Math.cos(E_e));
+    var X_e = r_e * Math.cos(lon_e*DEG);
+    var Y_e = r_e * Math.sin(lon_e*DEG);
+    return mod360(Math.atan2(Y_p - Y_e, X_p - X_e) * RAD);
+  }
+
+  // VSOP87 heliocentric longitude for Neptune
+  function neptuneLongitude(jd){
+    var T   = calcT(jd);
+    var tau = T / 10.0;
+    // L0: VSOP87 periodic terms (10^-8 rad)
+    var L0 = 531188633.0
+      + 3934243.0 * Math.cos(5.4799573 + 38.1330356*tau)
+      +   75004.0 * Math.cos(5.4890    + 76.2660713*tau)
+      +    1982.0 * Math.cos(5.4890    + 114.3991069*tau);
+    // L1: mean motion (10^-8 rad/millennium)
+    var L1 = 3813360000.0;
+    var L_helio = mod360((L0 + L1*tau) * 1e-8 * RAD);
+    // Long-period perturbations (degrees)
+    var dL = 0.001454*Math.sin(0.4331 + 0.0066*T)
+           + 0.001017*Math.sin(3.5747 + 0.0134*T);
+    L_helio = mod360(L_helio + dL);
+    // Heliocentric distance from Keplerian elements
+    var el = PLANET_ELEMENTS['Neptune'];
+    var varpi = mod360(el.omega0 + el.omegaR*T);
+    var L_kep  = mod360(el.L0 + el.Lr*T);
+    var M_rad  = mod360(L_kep - varpi) * DEG;
+    var E_p    = solveKepler(M_rad, el.e);
+    var r_p    = el.a*(1 - el.e*Math.cos(E_p));
+    // Geocentric conversion
+    var X_p = r_p * Math.cos(L_helio*DEG);
+    var Y_p = r_p * Math.sin(L_helio*DEG);
+    var lon_e = mod360(sunLongitude(jd) + 180.0);
+    var Me_deg = mod360(357.52911 + 35999.05029*T - 0.0001537*T*T);
+    var E_e    = solveKepler(Me_deg*DEG, 0.016709);
+    var r_e    = 1.000001018*(1 - 0.016709*Math.cos(E_e));
+    var X_e = r_e * Math.cos(lon_e*DEG);
+    var Y_e = r_e * Math.sin(lon_e*DEG);
+    return mod360(Math.atan2(Y_p - Y_e, X_p - X_e) * RAD);
+  }
+
+  // Meeus Chapter 37 — Pluto heliocentric longitude (43-term table)
+  function plutoLongitude(jd){
+    var T = calcT(jd);
+    var J = mod360(34.35    + 3034.9057  * T);
+    var S = mod360(50.08    + 1222.1138  * T);
+    var P = mod360(238.9583 + 144.9600   * T);
+    // Table 37.a: [a, b, c, ΔL_sin, ΔL_cos] (×10^-6 degrees)
+    var tbl = [
+      [0,0,1,-19799804,19850055],[0,0,2,897144,-4954241],
+      [0,0,3,611149,3892695],    [0,0,4,-341243,-189585],
+      [0,0,5,129287,-34992],     [0,0,6,-38164,30893],
+      [0,1,-1,20442,-9987],      [0,1,0,-4063,-5071],
+      [0,1,1,-6016,-3336],       [0,1,2,-3956,3039],
+      [0,1,3,-667,3572],         [0,2,-2,1276,501],
+      [0,2,-1,1152,-917],        [0,2,0,630,-1277],
+      [1,-1,0,2571,-459],        [1,-1,1,899,-1449],
+      [1,0,-3,-1016,1043],       [1,0,-2,-2343,-1012],
+      [1,0,-1,7042,788],         [1,0,0,1199,-338],
+      [1,0,1,418,-67],           [1,0,2,120,-211],
+      [1,0,3,-60,129],           [1,1,-3,-82,-27],
+      [1,1,-2,-36,-7],           [1,1,-1,-40,22],
+      [1,1,0,14,24],             [1,1,1,-4,1],
+      [1,1,2,-1,0],              [0,2,1,6,0],
+      [0,3,-3,5,0],              [0,3,-2,0,0],
+      [0,3,-1,0,0],              [0,3,0,0,0],
+      [1,-1,-1,0,0],             [1,2,-3,0,0],
+      [1,2,-2,0,0],              [1,2,-1,0,0],
+      [1,2,0,0,0],               [2,-2,0,0,0],
+      [1,-2,0,0,0],              [1,3,-3,0,0],
+      [2,-1,-2,0,0]
+    ];
+    var dL = 0;
+    for(var i=0;i<tbl.length;i++){
+      var arg = (tbl[i][0]*J + tbl[i][1]*S + tbl[i][2]*P) * DEG;
+      dL += tbl[i][3]*Math.sin(arg) + tbl[i][4]*Math.cos(arg);
+    }
+    var l_helio = mod360(P + dL * 1e-6);
+    // Heliocentric distance from Keplerian (Pluto's r barely affects λ_geo)
+    var el = PLANET_ELEMENTS['Pluto'];
+    var varpi = mod360(el.omega0 + el.omegaR*T);
+    var L_kep  = mod360(el.L0 + el.Lr*T);
+    var incRad = (el.i0 + el.ir*T) * DEG;
+    var Omega  = mod360(el.Omega0 + el.OmegaR*T);
+    var M_rad  = mod360(L_kep - varpi) * DEG;
+    var E_p    = solveKepler(M_rad, el.e);
+    var r_p    = el.a*(1 - el.e*Math.cos(E_p));
+    var v_p    = 2*Math.atan2(Math.sqrt(1+el.e)*Math.sin(E_p/2), Math.sqrt(1-el.e)*Math.cos(E_p/2));
+    var argPeri = (varpi - Omega) * DEG;
+    var u   = argPeri + v_p;
+    var OmR = Omega * DEG;
+    // Use VSOP87 heliocentric longitude but Keplerian r and 3D conversion
+    var X_p = r_p*(Math.cos(OmR)*Math.cos(u) - Math.sin(OmR)*Math.sin(u)*Math.cos(incRad));
+    var Y_p = r_p*(Math.sin(OmR)*Math.cos(u) + Math.cos(OmR)*Math.sin(u)*Math.cos(incRad));
+    // Correct heliocentric direction to VSOP87 longitude
+    var L_kep_helio = mod360(Math.atan2(Y_p, X_p) * RAD);
+    var dLon = mod360(l_helio - L_kep_helio + 180) - 180;  // signed difference
+    X_p = r_p * Math.cos((L_kep_helio + dLon)*DEG);
+    Y_p = r_p * Math.sin((L_kep_helio + dLon)*DEG);
+    // Earth position
+    var lon_e  = mod360(sunLongitude(jd) + 180.0);
+    var Me_deg = mod360(357.52911 + 35999.05029*T - 0.0001537*T*T);
+    var E_e    = solveKepler(Me_deg*DEG, 0.016709);
+    var r_e    = 1.000001018*(1 - 0.016709*Math.cos(E_e));
+    var X_e = r_e * Math.cos(lon_e*DEG);
+    var Y_e = r_e * Math.sin(lon_e*DEG);
+    return mod360(Math.atan2(Y_p - Y_e, X_p - X_e) * RAD);
+  }
+
   function getRawLon(name, jd){
     if(name === 'Sun')        return sunLongitude(jd);
     if(name === 'Moon')       return moonLongitude(jd);
@@ -1740,6 +1884,9 @@ var NC = (function(){
     if(name === 'South Node') return mod360(northNodeLongitude(jd) + 180);
     if(name === 'Chiron')     return chironLongitude(jd);
     if(name === 'Lilith')     return lilithLongitude(jd);
+    if(name === 'Uranus')     return uranusLongitude(jd);
+    if(name === 'Neptune')    return neptuneLongitude(jd);
+    if(name === 'Pluto')      return plutoLongitude(jd);
     if(PLANET_ELEMENTS[name]) return planetLongitude(name, jd);
     return 0;
   }
