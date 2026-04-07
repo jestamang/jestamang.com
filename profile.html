@@ -936,6 +936,31 @@ body::before{
   transition:opacity 0.3s;
 }
 .natal-copied-msg.show{opacity:1;}
+/* Download chart button */
+.btn-dl-chart {
+  font-family:'Luminari',serif;
+  font-size:0.72rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:#c9a84c;
+  background:transparent;
+  border:1px solid rgba(201,168,76,0.45);
+  padding:13px 22px;
+  cursor:pointer;
+  transition:background 0.2s, border-color 0.2s, color 0.2s;
+  border-radius:2px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.btn-dl-chart:hover {
+  background:rgba(201,168,76,0.08);
+  border-color:rgba(201,168,76,0.8);
+}
+.btn-dl-chart:disabled {
+  opacity:0.45;
+  cursor:default;
+}
 /* Recalculate link */
 .natal-recalc-link {
   font-family:'Luminari',serif;
@@ -1429,6 +1454,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <div class="nc-divider" style="margin-top:36px;">&#10022; Share &#10022;</div>
       <div class="natal-share-row">
         <button class="btn-gold" id="natal-share-btn" style="padding:13px 28px;">Share My Dossier</button>
+        <button class="btn-dl-chart" id="natal-dl-btn" title="Download chart as PNG">&#11015; Download Chart</button>
         <span class="natal-copied-msg" id="natal-copied-msg">Link copied to the cosmic record &#10022;</span>
       </div>
       <div class="natal-share-note">Chart calculated using Meeus astronomical algorithms. For ceremonial purposes only.</div>
@@ -3010,6 +3036,112 @@ var NC = (function(){
     try { document.execCommand('copy'); showCopied(); } catch(e){}
     document.body.removeChild(ta);
   }
+
+  // ── Download Chart as PNG ────────────────────────────────────
+  document.getElementById('natal-dl-btn').addEventListener('click', function(){
+    var btn = this;
+    var svgEl = document.querySelector('#nr-wheel svg');
+    if(!svgEl){ return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Rendering\u2026';
+
+    var name = (document.getElementById('nr-name').textContent || 'Member').trim();
+    var sunSub = (document.getElementById('nr-sun-sub').textContent || '').trim();
+
+    // Serialize SVG to blob URL
+    var svgStr = new XMLSerializer().serializeToString(svgEl);
+    // Inject white background rect so filters don't bleed on transparent canvas
+    svgStr = svgStr.replace('<svg ', '<svg style="background:#020100;" ');
+    var blob = new Blob([svgStr], {type:'image/svg+xml;charset=utf-8'});
+    var svgUrl = URL.createObjectURL(blob);
+
+    var W = 600, H = 780, SCALE = 2;
+    var img = new Image();
+    img.onload = function(){
+      var canvas = document.createElement('canvas');
+      canvas.width  = W * SCALE;
+      canvas.height = H * SCALE;
+      var ctx = canvas.getContext('2d');
+      ctx.scale(SCALE, SCALE);
+
+      // Background
+      ctx.fillStyle = '#020100';
+      ctx.fillRect(0, 0, W, H);
+
+      // Outer border
+      ctx.strokeStyle = 'rgba(201,168,76,0.3)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(14, 14, W-28, H-28);
+
+      // Top star ornament
+      ctx.fillStyle = 'rgba(201,168,76,0.35)';
+      ctx.font = '18px serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('\u2726', W/2, 42);
+
+      // Name
+      ctx.fillStyle = '#c9a84c';
+      ctx.font = 'bold 24px serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(name.toUpperCase(), W/2, 72);
+
+      // Sun / rising sub-line
+      if(sunSub){
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.font = '13px serif';
+        ctx.fillText(sunSub, W/2, 92);
+      }
+
+      // Hairline divider
+      ctx.strokeStyle = 'rgba(201,168,76,0.22)';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath(); ctx.moveTo(50, 106); ctx.lineTo(W-50, 106); ctx.stroke();
+
+      // Chart wheel — centred, square
+      var chartSize = 500;
+      var chartX = (W - chartSize) / 2;
+      var chartY = 114;
+      ctx.drawImage(img, chartX, chartY, chartSize, chartSize);
+
+      // Bottom hairline
+      ctx.strokeStyle = 'rgba(201,168,76,0.22)';
+      ctx.lineWidth = 0.5;
+      var divY = chartY + chartSize + 10;
+      ctx.beginPath(); ctx.moveTo(50, divY); ctx.lineTo(W-50, divY); ctx.stroke();
+
+      // Wordmark
+      ctx.fillStyle = 'rgba(201,168,76,0.5)';
+      ctx.font = '11px serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('J  E  S  T  A  M  A  N  G', W/2, divY + 24);
+
+      // Bottom star
+      ctx.fillStyle = 'rgba(201,168,76,0.25)';
+      ctx.font = '14px serif';
+      ctx.fillText('\u2726', W/2, divY + 42);
+
+      URL.revokeObjectURL(svgUrl);
+
+      // Trigger download
+      var date = new Date().toISOString().split('T')[0];
+      var slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+      var link = document.createElement('a');
+      link.download = 'jestamang-chart-' + slug + '-' + date + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+
+      btn.disabled = false;
+      btn.innerHTML = '\u2B07 Download Chart';
+    };
+    img.onerror = function(){
+      URL.revokeObjectURL(svgUrl);
+      btn.disabled = false;
+      btn.innerHTML = '\u2B07 Download Chart';
+      alert('Could not render chart. Try again.');
+    };
+    img.src = svgUrl;
+  });
 
   function setError(msg){
     var el = document.getElementById('natal-error');
