@@ -978,6 +978,166 @@ body::before{
   margin:0 auto;
 }
 .natal-recalc-link:hover{color:rgba(201,168,76,0.8);}
+/* Shared chart banner */
+.nc-shared-banner{
+  font-family:'Luminari',serif;
+  font-size:0.7rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.75);
+  font-style:italic;
+  text-align:center;
+  padding:8px 0 0;
+  display:none;
+}
+/* Share chart URL button */
+.btn-share-url{
+  font-family:'Luminari',serif;
+  font-size:0.72rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:#c9a84c;
+  background:transparent;
+  border:1px solid rgba(201,168,76,0.45);
+  padding:13px 22px;
+  cursor:pointer;
+  transition:background 0.2s,border-color 0.2s;
+  border-radius:2px;
+}
+.btn-share-url:hover{background:rgba(201,168,76,0.08);border-color:rgba(201,168,76,0.8);}
+/* Save chart section */
+.natal-save-section{
+  margin-top:28px;
+  padding-top:0;
+  text-align:center;
+}
+.natal-save-row{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+.natal-save-input{
+  font-family:'Luminari',serif;
+  font-size:0.75rem;
+  letter-spacing:0.08em;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(201,168,76,0.3);
+  color:#e8d9a0;
+  padding:10px 14px;
+  border-radius:2px;
+  width:180px;
+  outline:none;
+  transition:border-color 0.2s;
+}
+.natal-save-input:focus{border-color:rgba(201,168,76,0.65);}
+.natal-save-input::placeholder{color:rgba(201,168,76,0.3);}
+.btn-seal{
+  font-family:'Luminari',serif;
+  font-size:0.7rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:#c9a84c;
+  background:transparent;
+  border:1px solid rgba(201,168,76,0.45);
+  padding:10px 20px;
+  cursor:pointer;
+  transition:background 0.2s,border-color 0.2s;
+  border-radius:2px;
+}
+.btn-seal:hover{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.75);}
+.natal-save-msg{
+  font-family:'Luminari',serif;
+  font-style:italic;
+  font-size:0.7rem;
+  color:rgba(201,168,76,0.7);
+  letter-spacing:0.05em;
+  opacity:0;
+  transition:opacity 0.3s;
+  display:block;
+  margin-top:6px;
+  min-height:16px;
+}
+.natal-save-msg.show{opacity:1;}
+/* Saved charts list */
+.saved-charts-section{
+  margin-top:32px;
+  padding-top:24px;
+  border-top:1px solid rgba(201,168,76,0.1);
+}
+.saved-charts-title{
+  font-family:'Luminari',serif;
+  font-size:0.65rem;
+  letter-spacing:0.26em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.5);
+  text-align:center;
+  margin-bottom:16px;
+}
+.saved-chart-card{
+  background:rgba(255,255,255,0.025);
+  border:1px solid rgba(201,168,76,0.12);
+  border-radius:3px;
+  padding:14px 16px;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.saved-chart-info{flex:1;min-width:0;}
+.saved-chart-name{
+  font-family:'Luminari',serif;
+  font-size:0.85rem;
+  color:#c9a84c;
+  letter-spacing:0.05em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.saved-chart-meta{
+  font-family:'Luminari',serif;
+  font-size:0.65rem;
+  color:rgba(255,255,255,0.35);
+  letter-spacing:0.04em;
+  margin-top:3px;
+}
+.saved-chart-actions{display:flex;gap:8px;flex-shrink:0;}
+.btn-sc-load,.btn-sc-del{
+  font-family:'Luminari',serif;
+  font-size:0.62rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  padding:6px 12px;
+  border-radius:2px;
+  cursor:pointer;
+  transition:background 0.18s,border-color 0.18s;
+  border:1px solid;
+}
+.btn-sc-load{color:#c9a84c;background:transparent;border-color:rgba(201,168,76,0.4);}
+.btn-sc-load:hover{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.7);}
+.btn-sc-del{color:rgba(255,80,80,0.65);background:transparent;border-color:rgba(255,80,80,0.25);}
+.btn-sc-del:hover{background:rgba(255,80,80,0.07);border-color:rgba(255,80,80,0.5);}
+.saved-charts-empty{
+  font-family:'Luminari',serif;
+  font-style:italic;
+  font-size:0.72rem;
+  color:rgba(255,255,255,0.2);
+  text-align:center;
+  letter-spacing:0.06em;
+  padding:12px 0;
+}
+.saved-charts-limit{
+  font-family:'Luminari',serif;
+  font-size:0.65rem;
+  color:rgba(255,100,100,0.6);
+  letter-spacing:0.06em;
+  text-align:center;
+  margin-top:8px;
+  display:none;
+}
 /* ── Circle account buttons ── */
 .circ-actions{display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;padding-top:8px;}
 .circ-btn{display:inline-flex;background:none;border:none;padding:0;cursor:pointer;text-decoration:none;transition:filter 0.22s;}
@@ -1324,6 +1484,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     <!-- Cosmic Recall Banner -->
     <div class="nc-cosmic-recall" id="nc-cosmic-recall">&#10022; YOUR CHART HAS BEEN RECALLED FROM THE COSMIC ARCHIVE &#10022;</div>
 
+    <!-- Shared Chart Banner -->
+    <div class="nc-shared-banner" id="nc-shared-banner">&#10022; VIEWING SHARED CHART &#10022; &nbsp;<span style="opacity:0.5;font-size:0.62rem;">Sign in to save this chart</span></div>
+
     <!-- Calculator Form -->
     <div class="natal-calc-form" id="natal-form-area">
       <div class="natal-section-header">&#10022; Enter Your Birth Data &#10022;</div>
@@ -1454,15 +1617,36 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <div class="nc-divider" style="margin-top:36px;">&#10022; Share &#10022;</div>
       <div class="natal-share-row">
         <button class="btn-gold" id="natal-share-btn" style="padding:13px 28px;">Share My Dossier</button>
+        <button class="btn-share-url" id="natal-share-url-btn">SHARE THIS CHART &#10022;</button>
         <button class="btn-dl-chart" id="natal-dl-btn" title="Download chart as PNG">&#11015; Download Chart</button>
         <span class="natal-copied-msg" id="natal-copied-msg">Link copied to the cosmic record &#10022;</span>
+        <span class="natal-copied-msg" id="natal-chart-url-msg">CHART LINK COPIED TO CLIPBOARD &#10022;</span>
       </div>
       <div class="natal-share-note">Chart calculated using Meeus astronomical algorithms. For ceremonial purposes only.</div>
+
+      <!-- Save Chart -->
+      <div class="natal-save-section" id="natal-save-section" style="display:none;">
+        <div class="nc-divider" style="margin-top:8px;">&#10022; Save Chart &#10022;</div>
+        <div class="natal-save-row">
+          <input class="natal-save-input" type="text" id="natal-save-name" placeholder="My Chart" maxlength="40">
+          <button class="btn-seal" id="natal-seal-btn">SEAL IT</button>
+        </div>
+        <span class="natal-save-msg" id="natal-save-msg"></span>
+        <div class="saved-charts-limit" id="natal-save-limit">MAXIMUM CHARTS REACHED &mdash; DELETE ONE TO SAVE ANOTHER</div>
+      </div>
 
       <!-- Recalculate -->
       <div style="text-align:center;margin-top:24px;">
         <button class="natal-recalc-link" id="natal-recalc-btn">Recalculate with different birth data</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Saved Charts -->
+  <div class="dark-card profile-section" id="sec-saved-charts" style="display:none;">
+    <div class="saved-charts-section">
+      <div class="saved-charts-title">&#10022; Your Saved Charts &#10022;</div>
+      <div id="saved-charts-list"></div>
     </div>
   </div>
 
@@ -2257,12 +2441,35 @@ var NC = (function(){
     displayList.sort(function(a,b){return a.angle-b.angle;});
     displayList=spreadAngles(displayList,10);
 
+    // Pixel-space collision resolution for glyph positions
+    var glyphPos=displayList.map(function(item){
+      var p=polar(item.angle,R_PG);
+      return{x:p.x,y:p.y};
+    });
+    var MIN_DIST=16;
+    var gpChanged=true,gpIter=0;
+    while(gpChanged&&gpIter<50){
+      gpChanged=false;gpIter++;
+      for(var ci=0;ci<glyphPos.length;ci++){
+        for(var cj=ci+1;cj<glyphPos.length;cj++){
+          var dx=glyphPos[cj].x-glyphPos[ci].x,dy=glyphPos[cj].y-glyphPos[ci].y;
+          var dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<MIN_DIST&&dist>0.001){
+            var ang=Math.atan2(dy,dx),push=(MIN_DIST-dist)/2;
+            glyphPos[ci].x-=Math.cos(ang)*push;glyphPos[ci].y-=Math.sin(ang)*push;
+            glyphPos[cj].x+=Math.cos(ang)*push;glyphPos[cj].y+=Math.sin(ang)*push;
+            gpChanged=true;
+          }
+        }
+      }
+    }
+
     for(var pli=0;pli<displayList.length;pli++){
       var item=displayList[pli];
-      var pos=polar(item.angle,R_PG);
+      var pos=glyphPos[pli];
       var dotPos=polar(item.orig,(R_PO+R_PI)/2);
-      var adspread=Math.abs(item.angle-item.orig);
-      if(adspread>1.5&&adspread<358){
+      var ddx=pos.x-dotPos.x,ddy=pos.y-dotPos.y;
+      if(Math.sqrt(ddx*ddx+ddy*ddy)>1.5){
         svg+='<line x1="'+fx(dotPos.x)+'" y1="'+fx(dotPos.y)+'" x2="'+fx(pos.x)+'" y2="'+fx(pos.y)+'" stroke="'+item.info.color+'" stroke-width="0.4" opacity="0.3"/>';
       }
       svg+='<circle cx="'+fx(dotPos.x)+'" cy="'+fx(dotPos.y)+'" r="2.8" fill="'+item.info.color+'" opacity="0.9" filter="url(#ncgs)"/>';
@@ -2272,8 +2479,7 @@ var NC = (function(){
           +'<text x="'+fx(pos.x)+'" y="'+fx(pos.y+4.5)+'" text-anchor="middle" font-size="14" fill="'+item.info.color+'" font-family="serif" filter="url(#ncg)" opacity="0.95">'+item.info.glyph+'</text>'
           +'</g>';
       if(item.p.retrograde){
-        var rp=polar(item.angle,R_PG-14);
-        svg+='<text x="'+fx(rp.x)+'" y="'+fx(rp.y+3)+'" text-anchor="middle" font-size="7" fill="'+item.info.color+'" font-family="serif" opacity="0.6" font-style="italic">R</text>';
+        svg+='<text x="'+fx(pos.x)+'" y="'+fx(pos.y-9)+'" text-anchor="middle" font-size="7" fill="'+item.info.color+'" font-family="serif" opacity="0.6" font-style="italic">R</text>';
       }
     }
 
@@ -2609,30 +2815,35 @@ var NC = (function(){
           // If same as cached, already loading — nothing to do
         }
 
-        // Check for saved natal chart
-        db.collection('users').doc(user.uid).collection('natalChart').doc('chart').get()
-          .then(function(chartDoc){
-            if(chartDoc.exists){
-              var cd = chartDoc.data();
-              savedNatalChart = cd;
-              // Pre-fill form from saved data
-              if(cd.birthDate) document.getElementById('nc-dob').value = cd.birthDate;
-              if(cd.birthTime) document.getElementById('nc-tob').value = cd.birthTime;
-              if(cd.birthPlace) document.getElementById('nc-pob').value = cd.birthPlace;
-              // Cache saved coords so recalculation skips geocoding
-              if(cd.lat != null && cd.lng != null){
-                _pobLat = cd.lat; _pobLng = cd.lng;
-                _pobDisplayName = cd.birthPlace || null;
-                _pobSetStatus('located',
-                  'LOCATED: ' + (cd.birthPlace||'') +
-                  '\u2002\u00b7\u2002LAT: ' + cd.lat.toFixed(4) +
-                  '\u2002\u00b7\u2002LNG: ' + cd.lng.toFixed(4));
+        // If page loaded from a shared URL, auto-calculate and skip saved chart restore
+        if(_sharedBirthData){
+          setTimeout(function(){ document.getElementById('natal-calc-btn').click(); }, 200);
+        } else {
+          // Check for saved natal chart
+          db.collection('users').doc(user.uid).collection('natalChart').doc('chart').get()
+            .then(function(chartDoc){
+              if(chartDoc.exists){
+                var cd = chartDoc.data();
+                savedNatalChart = cd;
+                // Pre-fill form from saved data
+                if(cd.birthDate) document.getElementById('nc-dob').value = cd.birthDate;
+                if(cd.birthTime) document.getElementById('nc-tob').value = cd.birthTime;
+                if(cd.birthPlace) document.getElementById('nc-pob').value = cd.birthPlace;
+                // Cache saved coords so recalculation skips geocoding
+                if(cd.lat != null && cd.lng != null){
+                  _pobLat = cd.lat; _pobLng = cd.lng;
+                  _pobDisplayName = cd.birthPlace || null;
+                  _pobSetStatus('located',
+                    'LOCATED: ' + (cd.birthPlace||'') +
+                    '\u2002\u00b7\u2002LAT: ' + cd.lat.toFixed(4) +
+                    '\u2002\u00b7\u2002LNG: ' + cd.lng.toFixed(4));
+                }
+                // Display saved result
+                displaySavedChart(cd, user);
               }
-              // Display saved result
-              displaySavedChart(cd, user);
-            }
-          })
-          .catch(function(e){ console.log('No saved natal chart or error:', e); });
+            })
+            .catch(function(e){ console.log('No saved natal chart or error:', e); });
+        }
       })
       .catch(function(e){ console.error('Profile load error:', e); loadFavorites(user.uid); });
   }
@@ -2927,6 +3138,154 @@ var NC = (function(){
     try { document.execCommand('copy'); showCopied(); } catch(e){}
     document.body.removeChild(ta);
   }
+
+  // ── Share Chart via URL ──────────────────────────────────────
+  var _sharedBirthData = null; // holds {dob,tob,pob,lat,lng} when loaded from URL
+
+  document.getElementById('natal-share-url-btn').addEventListener('click', function(){
+    var dob = document.getElementById('nc-dob').value;
+    var tob = document.getElementById('nc-tob').value;
+    var pob = document.getElementById('nc-pob').value;
+    if(!dob || !pob){ return; }
+    var params = new URLSearchParams({ d: dob, t: tob||'', p: pob });
+    if(_pobLat !== null) params.set('lat', _pobLat.toFixed(5));
+    if(_pobLng !== null) params.set('lng', _pobLng.toFixed(5));
+    var url = window.location.origin + '/profile.html?' + params.toString();
+    var msg = document.getElementById('natal-chart-url-msg');
+    function showUrlCopied(){ msg.classList.add('show'); setTimeout(function(){ msg.classList.remove('show'); }, 2200); }
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(url).then(showUrlCopied).catch(function(){
+        var ta=document.createElement('textarea'); ta.value=url; ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); showUrlCopied(); }catch(e){}
+        document.body.removeChild(ta);
+      });
+    } else {
+      var ta=document.createElement('textarea'); ta.value=url; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); showUrlCopied(); }catch(e){}
+      document.body.removeChild(ta);
+    }
+  });
+
+  // Auto-load chart from URL params on page load
+  (function(){
+    var params = new URLSearchParams(window.location.search);
+    var d = params.get('d'), t = params.get('t'), p = params.get('p');
+    var lat = parseFloat(params.get('lat')), lng = parseFloat(params.get('lng'));
+    if(!d || !p) return;
+    var dobEl = document.getElementById('nc-dob');
+    var tobEl = document.getElementById('nc-tob');
+    var pobEl = document.getElementById('nc-pob');
+    if(dobEl) dobEl.value = d;
+    if(tobEl && t) tobEl.value = t;
+    if(pobEl) pobEl.value = p;
+    if(!isNaN(lat) && !isNaN(lng)){
+      _pobLat = lat; _pobLng = lng; _pobDisplayName = p;
+    }
+    var banner = document.getElementById('nc-shared-banner');
+    if(banner) banner.style.display = 'block';
+    // Auto-calculate — defer until after auth state resolved
+    _sharedBirthData = {dob:d, tob:t||'', pob:p, lat:lat, lng:lng};
+  })();
+
+  // ── Saved Charts (localStorage) ──────────────────────────────
+  var JESTA_CHARTS_KEY = 'jestaCharts';
+  var MAX_SAVED_CHARTS = 10;
+
+  function getSavedCharts(){
+    try{ return JSON.parse(localStorage.getItem(JESTA_CHARTS_KEY)||'[]'); }catch(e){ return []; }
+  }
+
+  function saveSavedCharts(arr){
+    try{ localStorage.setItem(JESTA_CHARTS_KEY, JSON.stringify(arr)); }catch(e){}
+  }
+
+  function renderSavedChartsList(){
+    var charts = getSavedCharts();
+    var section = document.getElementById('sec-saved-charts');
+    var listEl = document.getElementById('saved-charts-list');
+    var limitEl = document.getElementById('natal-save-limit');
+    if(!listEl) return;
+    if(charts.length === 0){
+      if(section) section.style.display = 'none';
+      return;
+    }
+    if(section) section.style.display = 'block';
+    if(limitEl) limitEl.style.display = charts.length >= MAX_SAVED_CHARTS ? 'block' : 'none';
+    listEl.innerHTML = '';
+    charts.slice().reverse().forEach(function(chart){
+      var card = document.createElement('div');
+      card.className = 'saved-chart-card';
+      var savedDate = chart.savedAt ? new Date(chart.savedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+      card.innerHTML =
+        '<div class="saved-chart-info">' +
+          '<div class="saved-chart-name">' + escHtml(chart.name || 'Unnamed Chart') + '</div>' +
+          '<div class="saved-chart-meta">' + escHtml(chart.birthDate||'') + (chart.birthPlace ? ' &nbsp;&middot;&nbsp; '+escHtml(chart.birthPlace) : '') + (savedDate ? ' &nbsp;&middot;&nbsp; saved '+savedDate : '') + '</div>' +
+        '</div>' +
+        '<div class="saved-chart-actions">' +
+          '<button class="btn-sc-load" data-id="'+chart.id+'">LOAD</button>' +
+          '<button class="btn-sc-del" data-id="'+chart.id+'">DELETE</button>' +
+        '</div>';
+      listEl.appendChild(card);
+    });
+    listEl.querySelectorAll('.btn-sc-load').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = parseInt(btn.getAttribute('data-id'));
+        var charts = getSavedCharts();
+        var chart = null;
+        for(var i=0;i<charts.length;i++){ if(charts[i].id===id){ chart=charts[i]; break; } }
+        if(!chart) return;
+        var dobEl=document.getElementById('nc-dob'),tobEl=document.getElementById('nc-tob'),pobEl=document.getElementById('nc-pob');
+        if(dobEl) dobEl.value = chart.birthDate||'';
+        if(tobEl) tobEl.value = chart.birthTime||'';
+        if(pobEl) pobEl.value = chart.birthPlace||'';
+        _pobLat = chart.lat||null; _pobLng = chart.lng||null; _pobDisplayName = chart.birthPlace||'';
+        document.getElementById('natal-calc-btn').click();
+        document.getElementById('sec-chart').scrollIntoView({behavior:'smooth'});
+      });
+    });
+    listEl.querySelectorAll('.btn-sc-del').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = parseInt(btn.getAttribute('data-id'));
+        var charts = getSavedCharts().filter(function(c){ return c.id !== id; });
+        saveSavedCharts(charts);
+        renderSavedChartsList();
+      });
+    });
+  }
+
+  document.getElementById('natal-seal-btn').addEventListener('click', function(){
+    var charts = getSavedCharts();
+    if(charts.length >= MAX_SAVED_CHARTS){
+      var limitEl = document.getElementById('natal-save-limit');
+      if(limitEl){ limitEl.style.display = 'block'; }
+      return;
+    }
+    var nameEl = document.getElementById('natal-save-name');
+    var chartName = (nameEl && nameEl.value.trim()) || 'My Chart';
+    var dob = document.getElementById('nc-dob').value;
+    var tob = document.getElementById('nc-tob').value;
+    var pob = document.getElementById('nc-pob').value;
+    charts.push({
+      id: Date.now(),
+      name: chartName,
+      birthDate: dob,
+      birthTime: tob,
+      birthPlace: pob,
+      lat: _pobLat,
+      lng: _pobLng,
+      savedAt: new Date().toISOString()
+    });
+    saveSavedCharts(charts);
+    var msg = document.getElementById('natal-save-msg');
+    if(msg){ msg.textContent = '\u2756 Chart sealed in the archive'; msg.classList.add('show'); setTimeout(function(){ msg.classList.remove('show'); }, 2200); }
+    if(nameEl) nameEl.value = '';
+    renderSavedChartsList();
+  });
+
+  // Render saved charts on load
+  renderSavedChartsList();
 
   // ── Download Chart as PNG ────────────────────────────────────
   document.getElementById('natal-dl-btn').addEventListener('click', function(){
@@ -3247,6 +3606,11 @@ var NC = (function(){
 
         document.getElementById('natal-result').style.display = 'block';
         document.getElementById('natal-form-area').style.display = 'none';
+        // Show save section
+        var saveSection = document.getElementById('natal-save-section');
+        if(saveSection) saveSection.style.display = 'block';
+        var limitEl2 = document.getElementById('natal-save-limit');
+        if(limitEl2) limitEl2.style.display = getSavedCharts().length >= MAX_SAVED_CHARTS ? 'block' : 'none';
 
         // Staggered reveal: wheel → tables → interpretation
         var wheelEl = document.getElementById('nr-wheel');
