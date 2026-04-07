@@ -2063,9 +2063,9 @@ var NC = (function(){
     var norm = mod360(lon);
     var idx = Math.floor(norm/30)%12;
     var pos = norm%30;
-    var totalMin = Math.round(pos * 60);
-    var deg = Math.floor(totalMin / 60);
-    var min = totalMin % 60;
+    var totalSec = Math.round(pos * 3600);
+    var deg = Math.floor(totalSec / 3600);
+    var min = Math.floor((totalSec % 3600) / 60);
     if(deg >= 30){ deg = 29; min = 59; }
     return {sign:SIGNS[idx],glyph:SIGN_GLYPHS[idx],deg:deg,min:min,totalDeg:norm,idx:idx};
   }
@@ -2132,7 +2132,7 @@ var NC = (function(){
       Mercury:planetLongitude('Mercury',jd),Venus:planetLongitude('Venus',jd),
       Mars:planetLongitude('Mars',jd),Jupiter:planetLongitude('Jupiter',jd),
       Saturn:planetLongitude('Saturn',jd),Uranus:uranusLongitude(jd),
-      Neptune:neptuneLongitude(jd),Pluto:plutoLongitude(jd),
+      Neptune:planetLongitude('Neptune',jd),Pluto:planetLongitude('Pluto',jd),
       'North Node':northNodeLongitude(jd),'South Node':mod360(northNodeLongitude(jd)+180),
       Chiron:chironLongitude(jd),Lilith:lilithLongitude(jd),
     };
@@ -2152,11 +2152,8 @@ var NC = (function(){
       houseCusps=calcHouseCusps(ascLon,jd,lat,lng);
       var pks=Object.keys(planets);
       for(var pk=0;pk<pks.length;pk++) planets[pks[pk]].house=planetHouse(planets[pks[pk]].totalDeg,houseCusps);
-      // Part of Fortune: day chart (Sun in H7-H12) = ASC+Moon-Sun; night = ASC+Sun-Moon
-      var sunH=planets['Sun']?planets['Sun'].house:1;
-      var fortuneLon=mod360(sunH>=7
-        ? ascLon + rawPos['Moon'] - rawPos['Sun']
-        : ascLon + rawPos['Sun'] - rawPos['Moon']);
+      // Part of Fortune: always use day formula (ASC + Moon - Sun)
+      var fortuneLon=mod360(ascLon + rawPos['Moon'] - rawPos['Sun']);
       var fortuneData=lonToSign(fortuneLon);
       fortuneData.house=planetHouse(fortuneLon,houseCusps);
       fortuneData.retrograde=false;
@@ -2165,12 +2162,11 @@ var NC = (function(){
 
     var coreplanets=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
     var elements={Fire:0,Earth:0,Air:0,Water:0},modes={Cardinal:0,Fixed:0,Mutable:0};
-    var total=coreplanets.length+(ascData?1:0);
+    var total=coreplanets.length;
     for(var ci=0;ci<coreplanets.length;ci++){
       elements[ELEMENT[planets[coreplanets[ci]].sign]]++;
       modes[MODE[planets[coreplanets[ci]].sign]]++;
     }
-    if(ascData){elements[ELEMENT[ascData.sign]]++;modes[MODE[ascData.sign]]++;}
 
     var corePlanObj={};
     for(var cj=0;cj<coreplanets.length;cj++) corePlanObj[coreplanets[cj]]=planets[coreplanets[cj]];
