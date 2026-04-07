@@ -1402,6 +1402,10 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
           </div>
         </div>
 
+        <!-- Decan Dominance -->
+        <div class="nc-divider">&#10022; Decan Dominance &#10022;</div>
+        <div id="nr-decans"></div>
+
         <!-- Aspects -->
         <div class="nc-divider">&#10022; Major Aspects &#10022;</div>
         <table class="natal-aspects-table">
@@ -2178,6 +2182,30 @@ var NC = (function(){
 
   var ROMAN_HOUSES=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
 
+  var DECAN_RULERS={
+    Aries:       ['Mars','Sun','Jupiter'],
+    Taurus:      ['Venus','Mercury','Saturn'],
+    Gemini:      ['Mercury','Venus','Uranus'],
+    Cancer:      ['Moon','Pluto','Neptune'],
+    Leo:         ['Sun','Jupiter','Mars'],
+    Virgo:       ['Mercury','Saturn','Venus'],
+    Libra:       ['Venus','Uranus','Mercury'],
+    Scorpio:     ['Pluto','Neptune','Moon'],
+    Sagittarius: ['Jupiter','Mars','Sun'],
+    Capricorn:   ['Saturn','Venus','Mercury'],
+    Aquarius:    ['Uranus','Mercury','Venus'],
+    Pisces:      ['Neptune','Moon','Pluto'],
+  };
+  var DECAN_ORDINALS=['1st','2nd','3rd'];
+
+  function getDecan(totalDeg){
+    var deg=mod360(totalDeg)%30;
+    var signIdx=Math.floor(mod360(totalDeg)/30)%12;
+    var sign=SIGNS[signIdx];
+    var num=deg<10?1:(deg<20?2:3);
+    return{num:num,ruler:(DECAN_RULERS[sign]||['?','?','?'])[num-1]};
+  }
+
   function spreadAngles(arr, minGap){
     var a=arr.map(function(p){return{name:p.name,angle:p.angle,orig:p.orig,info:p.info,p:p.p};});
     for(var pass=0;pass<100;pass++){
@@ -2321,7 +2349,11 @@ var NC = (function(){
         svg+='<line x1="'+fx(dotPos.x)+'" y1="'+fx(dotPos.y)+'" x2="'+fx(pos.x)+'" y2="'+fx(pos.y)+'" stroke="'+item.info.color+'" stroke-width="0.4" opacity="0.3"/>';
       }
       svg+='<circle cx="'+fx(dotPos.x)+'" cy="'+fx(dotPos.y)+'" r="2.8" fill="'+item.info.color+'" opacity="0.9" filter="url(#ncgs)"/>';
-      svg+='<text x="'+fx(pos.x)+'" y="'+fx(pos.y+4.5)+'" text-anchor="middle" font-size="14" fill="'+item.info.color+'" font-family="serif" filter="url(#ncg)" opacity="0.95">'+item.info.glyph+'</text>';
+      var _dc=getDecan(item.p.totalDeg);
+      var _tip=item.name+' \u00B7 '+item.p.sign+' '+formatPos(item.p)+' \u00B7 '+DECAN_ORDINALS[_dc.num-1]+' Decan';
+      svg+='<g><title>'+_tip+'</title>'
+          +'<text x="'+fx(pos.x)+'" y="'+fx(pos.y+4.5)+'" text-anchor="middle" font-size="14" fill="'+item.info.color+'" font-family="serif" filter="url(#ncg)" opacity="0.95">'+item.info.glyph+'</text>'
+          +'</g>';
       if(item.p.retrograde){
         var rp=polar(item.angle,R_PG-14);
         svg+='<text x="'+fx(rp.x)+'" y="'+fx(rp.y+3)+'" text-anchor="middle" font-size="7" fill="'+item.info.color+'" font-family="serif" opacity="0.6" font-style="italic">R</text>';
@@ -2454,8 +2486,10 @@ var NC = (function(){
         if(!p) continue;
         var pi2=PLANET_INFO[rn]||{color:'#fff'};
         var retroStr=p.retrograde?'<span style="color:rgba(201,168,76,0.55);font-size:0.75rem;">\u211E</span>':'';
+        var dcan=getDecan(p.totalDeg);
+        var decanSub='<div style="font-size:10px;color:rgba(201,168,76,0.6);font-style:italic;margin-top:2px;white-space:nowrap;">'+DECAN_ORDINALS[dcan.num-1]+' Decan \u00B7 '+dcan.ruler+'</div>';
         html+='<tr>'
-            +'<td><span style="color:'+pi2.color+';font-size:1.05rem;">'+rsym+'</span> '+rn+'</td>'
+            +'<td><span style="color:'+pi2.color+';font-size:1.05rem;">'+rsym+'</span> '+rn+decanSub+'</td>'
             +'<td><span class="sign-glyph">'+p.glyph+'</span>'+p.sign+'</td>'
             +'<td>'+formatPos(p)+'</td>'
             +'<td class="house-num-cell">'+(hasTime&&p.house?'H'+p.house:'\u2014')+'</td>'
@@ -2497,6 +2531,41 @@ var NC = (function(){
         mhtml+='<div class="natal-bar-row"><span class="natal-bar-label">'+m+'</span><div class="natal-bar-track"><div class="natal-bar-fill" style="width:'+Math.round(mcnt/mMax*100)+'%"></div></div><span class="natal-bar-count">'+mcnt+'</span></div>';
       }
       container.modesEl.innerHTML=mhtml;
+    }
+
+    if(container.decansEl){
+      var allPRows=[
+        'Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto',
+        'Chiron','North Node','South Node','Lilith','Fortune',
+      ];
+      var dCounts=[0,0,0];
+      for(var dci=0;dci<allPRows.length;dci++){
+        var dcp=planets[allPRows[dci]];
+        if(!dcp) continue;
+        var dcdec=getDecan(dcp.totalDeg);
+        dCounts[dcdec.num-1]++;
+      }
+      if(ascData){ var dA=getDecan(ascData.totalDeg); dCounts[dA.num-1]++; }
+      if(mcData){  var dM=getDecan(mcData.totalDeg);  dCounts[dM.num-1]++; }
+      var dMax=Math.max(dCounts[0],dCounts[1],dCounts[2]);
+      var dMaxIdx=dCounts.indexOf(dMax);
+      var DECAN_NARR=[
+        'The 1st Decan dominates your chart \u2014 raw instinct and new beginnings shape your path.',
+        'The 2nd Decan dominates your chart \u2014 refinement, development, and deepening are your defining themes.',
+        'The 3rd Decan dominates your chart \u2014 mastery through completion and synthesis.',
+      ];
+      var dhtml='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 6px;">';
+      for(var di=0;di<3;di++){
+        var isMax=(dCounts[di]===dMax&&dCounts[di]>0);
+        dhtml+='<div style="text-align:center;padding:10px 6px;border:1px solid rgba(201,168,76,'+(isMax?'0.55':'0.12')+');border-radius:4px;background:rgba(201,168,76,'+(isMax?'0.07':'0.015')+');">'
+            +'<div style="font-size:9px;color:rgba(201,168,76,'+(isMax?'1':'0.45')+');font-family:serif;letter-spacing:0.06em;text-transform:uppercase;">'+(isMax?'\u2605 ':'')+DECAN_ORDINALS[di]+' Decan</div>'
+            +'<div style="font-size:1.5rem;font-weight:700;color:'+(isMax?'#c9a84c':'rgba(201,168,76,0.35)')+';margin:4px 0;">'+dCounts[di]+'</div>'
+            +'<div style="font-size:9px;color:rgba(201,168,76,0.35);">planets</div>'
+            +'</div>';
+      }
+      dhtml+='</div>';
+      dhtml+='<div style="font-size:11px;color:rgba(201,168,76,0.65);font-style:italic;text-align:center;padding:4px 0 2px;">'+DECAN_NARR[dMaxIdx]+'</div>';
+      container.decansEl.innerHTML=dhtml;
     }
 
     if(container.aspectsTbodyEl){
@@ -3148,6 +3217,7 @@ var NC = (function(){
           housesGridEl:    document.getElementById('nr-houses-grid'),
           elementsEl:      document.getElementById('nr-elements'),
           modesEl:         document.getElementById('nr-modes'),
+          decansEl:        document.getElementById('nr-decans'),
           aspectsTbodyEl:  document.getElementById('nr-aspects-tbody'),
           interpEl:        document.getElementById('nr-interpretation'),
         });
@@ -3280,6 +3350,7 @@ var NC = (function(){
       housesGridEl:    document.getElementById('nr-houses-grid'),
       elementsEl:      document.getElementById('nr-elements'),
       modesEl:         document.getElementById('nr-modes'),
+      decansEl:        document.getElementById('nr-decans'),
       aspectsTbodyEl:  document.getElementById('nr-aspects-tbody'),
       interpEl:        document.getElementById('nr-interpretation'),
     };
