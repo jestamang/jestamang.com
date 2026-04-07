@@ -173,9 +173,9 @@ if(!m||!window.jestaDB)return;
 if(bn)bn.style.display='none';
 tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr>';
 m.classList.add('lb-open');
-window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(10).get()
+window.jestaDB.collection('leaderboards').where('game','==',GID).limit(50).get()
 .then(function(snap){
-var rows=[];snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp});});
+var rows=[];snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp});});rows.sort(function(a,b){return b.score-a.score;});rows=rows.slice(0,10);
 var isTop=cur>0&&(rows.length===0||cur>rows[0].score);
 if(isTop&&bn)bn.style.display='block';
 tb.innerHTML='';
