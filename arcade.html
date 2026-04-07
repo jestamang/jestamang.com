@@ -247,6 +247,7 @@ h1{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0
   <div class="lb-box">
     <button class="lb-close" onclick="closeLB()">✕</button>
     <div class="lb-head" id="lb-title">Leaderboard</div>
+    <div id="lb-personal-best"></div>
     <div id="lb-list"><div class="lb-loading">Loading scrolls...</div></div>
   </div>
 </div>
@@ -317,12 +318,22 @@ window.openLB=function(game,title,lowerBetter){
   modal.classList.add('open');
   var db=_getDb();
   if(!db){list.innerHTML='<div class="lb-empty">The scrolls are unavailable.</div>';return;}
-  db.collection('leaderboards').where('game','==',game).limit(50).get()
+  // Personal best from localStorage
+  var _pbKey='lbBest_'+game;
+  var _pb=null;try{_pb=JSON.parse(localStorage.getItem(_pbKey)||'null');}catch(e){}
+  var pbEl=document.getElementById('lb-personal-best');
+  if(pbEl){
+    if(_pb&&_pb.score!==undefined){
+      var _pbDate='';try{var _pbd=new Date(_pb.date);_pbDate=(_pbd.getMonth()+1)+'/'+_pbd.getDate()+'/'+String(_pbd.getFullYear()).slice(2);}catch(e){}
+      pbEl.innerHTML='<div class="lb-row" style="justify-content:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.18);"><span style="color:rgba(201,168,76,0.55);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;margin-right:10px;">Your Best</span><span style="color:#c9a84c;">\u2605 '+_pb.score+'</span>'+(_pbDate?'<span style="color:rgba(201,168,76,0.4);font-size:0.6rem;margin-left:8px;">\u00b7 '+_pbDate+'</span>':'')+'</div>';
+    } else {
+      pbEl.innerHTML='<div style="text-align:center;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.05em;">No personal best yet \u2014 play to set one</div>';
+    }
+  }
+  db.collection('leaderboards').where('game','==',game).orderBy('score','desc').limit(10).get()
     .then(function(snap){
       if(snap.empty){list.innerHTML='<div class="lb-empty">No entries yet. Be the first.</div>';return;}
       var docs=snap.docs.map(function(d){return d.data();});
-      docs.sort(function(a,b){return lowerBetter?a.score-b.score:b.score-a.score;});
-      docs=docs.slice(0,10);
       var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Score</span><span class="lb-date">Date</span></div>';
       docs.forEach(function(d,i){
         var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">✦</span>':(i+1);
