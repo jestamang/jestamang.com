@@ -1,9 +1,10 @@
 // ════════════════════════════════════════════════════════════════
 // JESTAMANG SERVICE WORKER — sw.js
 // Handles: push notifications, PWA caching, offline fallback
+// UPDATE CACHE_VERSION DATE ON EVERY PUSH
 // ════════════════════════════════════════════════════════════════
 
-var CACHE_NAME = 'jestamang-v3';
+var CACHE_NAME = 'jestamang-20260406';
 var BADGE      = '/assets/icons/icon-192.png';
 
 var PRECACHE_URLS = [
@@ -60,10 +61,12 @@ self.addEventListener('activate', function (event) {
       return Promise.all(oldKeys.map(function (key) { return caches.delete(key); }))
         .then(function () { return self.clients.claim(); })
         .then(function () {
-          // Reload all open tabs so they pick up the latest content
+          // Notify open tabs to show update banner (no jarring force-reload)
           if (wasUpdate) {
             return self.clients.matchAll({ type: 'window' }).then(function (clients) {
-              clients.forEach(function (client) { client.navigate(client.url); });
+              clients.forEach(function (client) {
+                client.postMessage({ type: 'UPDATE' });
+              });
             });
           }
         });
