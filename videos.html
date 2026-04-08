@@ -50,6 +50,51 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .page-header p,.video-title,.lightbox-title{text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 4px rgba(0,0,0,1),0 0 40px rgba(0,0,0,0.9),1px 1px 3px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .hp-footer{background:transparent;text-align:center;padding:32px 24px 56px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.55);position:relative;z-index:10}.hp-footer a{color:rgba(201,168,76,0.55);text-decoration:none;transition:color 0.2s}.hp-footer a:hover{color:#c9a84c}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4)}
 </style>
+<style>
+/* ── Jestamang gold border treatment ── */
+.video-card{
+  border:1px solid #c9a84c !important;
+  box-shadow:0 0 12px rgba(201,168,76,0.2);
+  border-radius:4px;
+  padding:6px;
+  background:rgba(0,0,0,0.4) !important;
+  position:relative;
+  overflow:visible !important;
+  transition:border-color 0.3s ease,box-shadow 0.3s ease,transform 0.3s ease !important;
+}
+.video-card:hover{
+  border-color:rgba(201,168,76,0.9) !important;
+  box-shadow:0 0 20px rgba(201,168,76,0.4);
+  transform:scale(1.02);
+}
+.video-thumb{
+  border-radius:2px;
+  overflow:hidden !important;
+}
+.video-title{
+  color:#c9a84c !important;
+  text-align:center;
+  letter-spacing:0.08em;
+}
+/* corner ornaments */
+.vc-corner{
+  position:absolute;
+  font-size:10px;
+  color:#c9a84c;
+  opacity:0.7;
+  pointer-events:none;
+  line-height:1;
+  z-index:2;
+  font-family:'Luminari',serif;
+}
+.vc-tl{top:3px;left:5px}
+.vc-tr{top:3px;right:5px}
+.vc-bl{bottom:3px;left:5px}
+.vc-br{bottom:3px;right:5px}
+@media(max-width:768px){
+  .video-card:hover{transform:none !important;}
+}
+</style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="dns-prefetch" href="https://apis.google.com">
@@ -121,7 +166,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script>(function(){var page=window.location.pathname.split('/').pop()||'index.html';document.querySelectorAll('.jtnav-link, .jtnav-mob-link').forEach(function(el){if(el.getAttribute('data-page')===page){el.classList.add('jtnav-active');}});var toggle=document.getElementById('jtnav-mobile-toggle');var overlay=document.getElementById('jtnav-mobile-overlay');var closeBtn=document.getElementById('jtnav-mob-close');function openMenu(){document.body.style.overflow='hidden';overlay.classList.add('jtnav-mob-open');}function closeMenu(){overlay.classList.remove('jtnav-mob-open');document.body.style.overflow='';}if(toggle&&overlay){toggle.addEventListener('click',openMenu);closeBtn.addEventListener('click',closeMenu);overlay.addEventListener('click',function(e){if(e.target===overlay)closeMenu();});overlay.querySelectorAll('.jtnav-mob-link').forEach(function(link){link.addEventListener('click',closeMenu);});document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMenu();});}})();</script><script>(function(){var nav=document.getElementById('jtnav');if(nav){window.addEventListener('scroll',function(){if(window.scrollY>50){nav.classList.add('jtnav-scrolled');}else{nav.classList.remove('jtnav-scrolled');}},{passive:true});}})();</script>
 <a href="index.html" class="home-btn">← Home</a> <div class="content"> <div class="page-header"> <h1>Videos</h1> <p>Moving images from the Jestamang universe</p> </div> <div class="video-grid" id="videoGrid"></div> </div>
 <script>const videos=[{title:'Jestamang Live at Prison Break',id:'31DacId6G1E'},{title:'Jestamang Live at 529',id:'Ty0YL3Twaak'},{title:'Meet Aliens Today',id:'Y-FqtXAQjk8'},{title:'The Circus Speaks (I)',id:'mGBYMgb4-VU'},{title:'The Circus Speaks (II)',id:'LcOpNRK_3-Q'},{title:'The Circus Speaks (III)',id:'yQugxfPBo68'},{title:'The Circus Speaks (IV)',id:'xNhFnwtR9ww'},{title:'The Circus Speaks (V)',id:'bxE-B8783H0'},{title:'A Short Film About Murder',id:'6E5RwAPYRwE'},{title:'Xmas 23',id:'Rd6Gd_6aufQ'},{title:'Zoo',id:'yFK3HfDBtJ8'},{title:'1 & 2 & 1',id:'u5lvabHpj-E'},{title:'Jesta Joint',id:'FFaJSmvSTVI'},{title:'Bloodhouse',id:'K6VuiospEL4'},{title:"Don't ID Jesus",id:'pfq7quk0X68'},{title:'Underworld',id:'FxI4OktsWoI'},{title:'Covers the Greats',id:'CpqSfxoDac8'},{title:'A Girl Once Told Me',id:'p31-N6OsQLI'},{title:'Who In Here Wants To Get Hypnotized?',id:'AOrjSnkqeTI'},{title:'Red Shaydez',id:'Abhh7bmFzFM'},{title:'ATTENCHUN!',id:'F25D2ZOVgsE'},{title:'Donovan',id:'5ypwaWPuVls'},{title:'Daemon',id:'Bi0J0ymQQ98'},{title:'Ode to the Pig',id:'pK6lQ2QU1kI'},{title:"Magician's Trick (Flashback)",id:'H0EoIEza8hA'},{title:'Cell Life',id:'8Q817bJ6qvk'},{title:'Caterpillar Rider',id:'EmEQVPSw-pU'},{title:'Sahr Ngaujah & the Genre Transcendence Movement',id:'XunvkvSRcsQ'},{title:'The Perfect Trip',id:'vU-fmBbFODM'},{title:'∞',id:'OUgXzy58J_4'}];const grid=document.getElementById('videoGrid');videos.forEach(v=>{const card=document.createElement('div');card.className='video-card';card.onclick=(function(id,title){return function(){openLightbox(id,title);};})(v.id,v.title);const thumb=document.createElement('div');thumb.className='video-thumb';const img=document.createElement('img');img.src='https://img.youtube.com/vi/'+v.id+'/maxresdefault.jpg';img.alt=v.title;img.loading='lazy';img.dataset.id=v.id;img.dataset.fallback='0';function tryNextFallback(el){const fallbacks=['sddefault.jpg','hqdefault.jpg','mqdefault.jpg'];const idx=parseInt(el.dataset.fallback);if(idx<fallbacks.length){el.dataset.fallback=idx+1;el.src='https://img.youtube.com/vi/'+el.dataset.id+'/'+fallbacks[idx];}else{el.onerror=null;el.onload=null;el.style.objectFit='contain';el.style.padding='20%';el.style.background='#000';el.src='assets/homepage/logo png.png';}}
-img.onerror=function(){tryNextFallback(this);};img.onload=function(){if(this.naturalWidth<=120)tryNextFallback(this);};const playIcon=document.createElement('div');playIcon.className='play-icon';const titleEl=document.createElement('div');titleEl.className='video-title';titleEl.textContent=v.title;thumb.appendChild(img);thumb.appendChild(playIcon);card.appendChild(thumb);card.appendChild(titleEl);grid.appendChild(card);});</script>
+img.onerror=function(){tryNextFallback(this);};img.onload=function(){if(this.naturalWidth<=120)tryNextFallback(this);};const playIcon=document.createElement('div');playIcon.className='play-icon';const titleEl=document.createElement('div');titleEl.className='video-title';titleEl.textContent=v.title;thumb.appendChild(img);thumb.appendChild(playIcon);card.appendChild(thumb);card.appendChild(titleEl);['vc-tl','vc-tr','vc-bl','vc-br'].forEach(function(cls){var s=document.createElement('span');s.className='vc-corner '+cls;s.textContent='\u2726';card.appendChild(s);});grid.appendChild(card);});</script>
 <div id="lightbox" class="lightbox" onclick="if(event.target===this)closeLightbox()"> <div class="lightbox-inner"> <button class="lightbox-close" onclick="closeLightbox()">&#x2715;</button> <div class="lightbox-frame" id="lb-frame"> <div id="lb-player"></div> </div> <div class="lb-error" id="lb-error"> <p>This video can't be played here</p> <a id="lb-yt-link" href="#" target="_blank" rel="noopener noreferrer">Watch on YouTube</a> </div> <div class="lightbox-title" id="lb-title"></div> </div> </div>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>var _ytReady=false;var _pendingId=null;var _pendingTitle=null;var _ytPlayer=null;var _currentVideoId=null;function onYouTubeIframeAPIReady(){_ytReady=true;if(_pendingId)_createPlayer(_pendingId,_pendingTitle);}
