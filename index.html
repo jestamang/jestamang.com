@@ -86,14 +86,16 @@
 .hp-album-card img{width:136px;height:136px;object-fit:cover;border:1px solid rgba(201,168,76,0.18);display:block;filter:brightness(0.82);transition:filter 0.3s,transform 0.3s}
 .hp-album-card:hover img{filter:brightness(1.05);transform:scale(1.02)}
 .hp-album-card span{display:block;font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-top:8px}
-.hp-lyric-card{background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.14);padding:40px 32px;position:relative}
-.hp-lyric-card::before{content:"✦";position:absolute;top:-11px;left:50%;transform:translateX(-50%);color:rgba(201,168,76,0.55);font-size:0.9rem}
-.hp-lyric-artists{display:flex;flex-direction:column;gap:0}
-.hp-lyric-row{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid rgba(201,168,76,0.08);padding:12px 0;font-size:0.7rem}
-.hp-lyric-row:first-child{padding-top:0}
-.hp-lyric-row:last-child{border-bottom:none;padding-bottom:0}
-.hp-lyric-artist{letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.65)}
-.hp-lyric-count{letter-spacing:0.15em;color:rgba(201,168,76,0.5);font-size:0.62rem}
+.hp-lyric-card{background:rgba(0,0,0,0.3);padding:40px 36px 32px;position:relative;box-shadow:inset 0 0 60px rgba(0,0,0,0.4);opacity:0;transition:opacity 1s ease}
+.hp-lyric-card.lyr-ready{opacity:1}
+.hp-lyric-quote-open{display:block;font-family:Georgia,serif;font-size:5rem;line-height:0.6;color:rgba(201,168,76,0.22);margin-bottom:18px;user-select:none}
+.hp-lyric-lines{margin:0;padding:0;list-style:none}
+.hp-lyric-lines li{font-family:'Luminari',serif;font-size:clamp(0.95rem,2.2vw,1.1rem);font-style:italic;color:#e8e0d0;line-height:1.9;letter-spacing:0.03em;text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 4px rgba(0,0,0,1)}
+.hp-lyric-quote-close{display:block;font-family:Georgia,serif;font-size:5rem;line-height:0.2;color:rgba(201,168,76,0.22);text-align:right;margin-top:14px;user-select:none}
+.hp-lyric-attr{margin-top:22px;border-top:1px solid rgba(201,168,76,0.1);padding-top:16px}
+.hp-lyric-track{display:block;font-size:0.78rem;letter-spacing:0.12em;color:rgba(201,168,76,0.75);margin-bottom:5px}
+.hp-lyric-meta{display:block;font-size:0.6rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.38)}
+.hp-lyric-rotate-note{margin-top:14px;font-size:0.52rem;letter-spacing:0.38em;text-transform:uppercase;color:rgba(201,168,76,0.22);text-align:center}
 .hp-comix-strip{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;width:100%}
 .hp-comix-strip::-webkit-scrollbar{display:none}
 .hp-comix-strip a{display:block;flex:0 0 auto;text-decoration:none}
@@ -420,17 +422,65 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         <a href="lyrics.html" class="hp-cta">Enter</a>
       </div>
       <div class="hp-visual">
-        <div class="hp-lyric-card">
-          <div class="hp-lyric-artists">
-            <div class="hp-lyric-row"><span class="hp-lyric-artist">The Ace of Chase</span><span class="hp-lyric-count">Archive</span></div>
-            <div class="hp-lyric-row"><span class="hp-lyric-artist">Alissa Orange</span><span class="hp-lyric-count">Archive</span></div>
-            <div class="hp-lyric-row"><span class="hp-lyric-artist">Atlas Is Alice-Lillenger</span><span class="hp-lyric-count">Archive</span></div>
-            <div class="hp-lyric-row"><span class="hp-lyric-artist">Caleb Mars Hickman</span><span class="hp-lyric-count">Archive</span></div>
-            <div class="hp-lyric-row"><span class="hp-lyric-artist">Mutt Tour</span><span class="hp-lyric-count">Archive</span></div>
-            <div class="hp-lyric-row"><span class="hp-lyric-artist">Perfect Trip</span><span class="hp-lyric-count">Archive</span></div>
+        <div class="hp-lyric-card" id="hp-lyric-card">
+          <span class="hp-lyric-quote-open">&ldquo;</span>
+          <ul class="hp-lyric-lines" id="hp-lyric-lines"></ul>
+          <span class="hp-lyric-quote-close">&rdquo;</span>
+          <div class="hp-lyric-attr">
+            <span class="hp-lyric-track" id="hp-lyric-track"></span>
+            <span class="hp-lyric-meta" id="hp-lyric-meta"></span>
           </div>
+          <p class="hp-lyric-rotate-note">Transmissions rotate every 24 hours</p>
         </div>
       </div>
+<script>
+(function(){
+  var LYRICS=[
+    {artist:"The Ace of Chase",track:"The Lovedove",album:"Jestawomang",lines:["My own head speaks to me and the lonely ones flee","You and I try to fly while the sky is panting","With the harsh flicking lights","It gets hard to be me"]},
+    {artist:"The Ace of Chase",track:"Kiss Abyss",album:"Jestawomang",lines:["As I wake into another slumber","My own has called in a rolling thunder","I dream of Christine","A dusted twirl from the demolition"]},
+    {artist:"The Ace of Chase",track:"Cyborg",album:"Niga Denots",lines:["Polygons and thermal hues","Shattering the crescent moon","Shaped and placed the cyborg's rune","We diffuse the many clues"]},
+    {artist:"The Ace of Chase",track:"Singin' the Hallelujah",album:"Jestawomang",lines:["Licking on the razor","Drinking with the savior","Take our liver, for I am a sinner","I don't know everything"]},
+    {artist:"The Ace of Chase",track:"A Heart for Alice",album:"Jestawomang",lines:["My mind has a heart for Alice","A red parade","A hair for me girl","My mind has a heart for Alice"]},
+    {artist:"The Ace of Chase",track:"Kin, Kin",album:"Niga Denots",lines:["In a meadow","Rose petals fall down","I don't make a sound","I'm not their kin"]},
+    {artist:"Alissa Orange",track:"Libra Season",album:"Alissa Orange",lines:["Colors shining","Violently in the sky","Above the sorcerer's key","She twiddles into"]},
+    {artist:"Alissa Orange",track:"Ghost Waltz",album:"Alissa Orange",lines:["Your word drifts through my heart","Imprint on my brain","We all held hands","And then we walked away"]},
+    {artist:"Alissa Orange",track:"Evol",album:"Alissa Orange",lines:["When we started","We were beautiful","Innocent animals","Learning their role"]},
+    {artist:"Alissa Orange",track:"No Face",album:"Alissa Orange",lines:["Didn't leave the light on","Didn't want you to come home","This time","But I heard you standing"]},
+    {artist:"Blue Jays",track:"It's All a Part of Me",album:"Covers the Taste",lines:["The ground is but the sea","The sea is but a tree","And the tree is but me","The tree is but me"]},
+    {artist:"Blue Jays",track:"Big Bayou",album:"Covers the Taste",lines:["Big bayou where did you go?","To the river that's running slow","To the Gulf of Mexico","Big bayou carry me home"]},
+    {artist:"Blue Jays",track:"All My Friends",album:"Covers the Taste",lines:["What is over me must glow","Sun is rising","I want you to know","How it was, and how it will be"]},
+    {artist:"Blue Jays",track:"Awaken John",album:"Covers the Taste",lines:["Lord am I dreaming?","Am I dreaming?","People are smiling","To each other"]},
+    {artist:"The Colours",track:"Green",album:"The Colours",lines:["Green is the colour of envy","A small stake planted in the grass","When we grow I wanted to be","What we can never ever be"]},
+    {artist:"Cricket Om",track:"Terrible Fright",album:"Jestress Melody",lines:["Terrible frights lurking out in the night","I can't sleep so I might take a walk to the store","Grab a bite and you pull up full throttle","In your hot rod convertible"]},
+    {artist:"Father P. Journee",track:"Psalm 91",album:"Peter Thy Godfather",lines:["He that dwelleth in the secret place of the most high","Shall abide under the shadow of the almighty","I will say of the lord my refuge my fortress","My God in him I will trust"]},
+    {artist:"Caleb Mars Hickman",track:"Gravy Baby Shoeshine Mgee",album:"Psycho Classical",lines:["A gravy baby shoeshine mgee","Why don't you schooch on over","Have some lemonade with me?","And when you're done melting in the sun"]},
+    {artist:"Mutt Tour",track:"Davie",album:"Hit!",lines:["Honest to the law, Davie","A big ol' fish in the cusp of home","Wheel lock gives me no hope","Honest to the law"]},
+    {artist:"Ode To Bonnie",track:"I Multiply",album:"8slush",lines:["People will crow when the sun is on the rise","What do they know when their vision's black and white","How will they glow when they only retreat","Ain't it a drag when you never get to be"]},
+    {artist:"You And The 7.5 Evils Of The World",track:"Joel Christ",album:"You and the 7.5 Evils of the World",lines:["The lines we created are turning into walls","Just look out your window, walls stacked up tall","The Earth belongs to everyone, and none of us alike","We can't divide, and let our pride keep us fighting the wrong fight"]},
+    {artist:"Blue Jays",track:"It's Not Time Now",album:"Covers the Taste",lines:["I'd like to tell you that it's fine but it's not time now","I can't seem to get a word in edgewise anyhow","Though the words are flying fast it just don't mean a thing","In a little while I could tell you everything"]}
+  ];
+  var now=Date.now(),h24=864e5;
+  var last=parseInt(localStorage.getItem('lyricLastChange')||'0');
+  var idx=parseInt(localStorage.getItem('lyricIndex')||'-1');
+  if(!last||(now-last)>h24||idx<0||idx>=LYRICS.length){
+    var newIdx;
+    do{newIdx=Math.floor(Math.random()*LYRICS.length);}while(newIdx===idx&&LYRICS.length>1);
+    idx=newIdx;
+    localStorage.setItem('lyricLastChange',now.toString());
+    localStorage.setItem('lyricIndex',idx.toString());
+  }
+  var entry=LYRICS[idx];
+  var ul=document.getElementById('hp-lyric-lines');
+  entry.lines.forEach(function(l){var li=document.createElement('li');li.textContent=l;ul.appendChild(li);});
+  document.getElementById('hp-lyric-track').textContent='\u2014 '+entry.track;
+  document.getElementById('hp-lyric-meta').textContent=entry.artist+' \u00b7 '+entry.album;
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      document.getElementById('hp-lyric-card').classList.add('lyr-ready');
+    });
+  });
+})();
+</script>
     </div>
   </div>
 
