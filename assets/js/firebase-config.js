@@ -60,7 +60,7 @@ window.jestaDB   = firebase.firestore();
 // 2. Under "Web configuration" click "Generate key pair"
 // 3. Copy the key and replace the placeholder below
 // ─────────────────────────────────────────────────────────────
-window.JESTA_VAPID_KEY = 'PASTE_YOUR_FCM_VAPID_KEY_HERE';
+window.JESTA_VAPID_KEY = 'BH9tGcRFeHW2MbKwkgXmkEhozQAIuflcEwEiNrsp9LObjKO6DOlnvEfcMCOA__x0SMfXxNkCyXY1kMbxVpiwQac';
 
 // Initialize FCM only if the browser supports it and the
 // firebase-messaging SDK has been loaded on this page.
