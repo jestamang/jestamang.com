@@ -3585,7 +3585,7 @@ var NC = (function(){
     var state = addr.state || addr.region || '';
     var country = addr.country || '';
     var parts = [city, state, country].filter(Boolean);
-    return parts.length > 0 ? parts.join(', ') : r.display_name;
+    return parts.length > 0 ? parts.join(', ') : '';
   }
   function _pobSelectResult(r){
     var cleanName = _pobCleanName(r);
@@ -3621,7 +3621,7 @@ var NC = (function(){
       var unique = [];
       data.forEach(function(r){
         var name = _pobCleanName(r);
-        if(seenNames[name]) return;
+        if(!name || seenNames[name]) return;
         var lat = parseFloat(r.lat), lng = parseFloat(r.lon);
         var tooClose = seenCoords.some(function(c){
           return Math.abs(c[0]-lat) < 0.1 && Math.abs(c[1]-lng) < 0.1;
