@@ -623,6 +623,20 @@ body::before{
 .fchat-msg-del:hover{color:rgba(251,56,56,0.75)!important}
 .fchat-msg-del.is-admin{color:rgba(251,56,56,0.25)}
 .chat-msg:hover .fchat-msg-del.is-admin{opacity:1}
+.chat-del-btn{position:absolute;top:4px;right:4px;background:none;border:none;color:rgba(251,56,56,0.35);font-size:0.78rem;cursor:pointer;padding:4px 6px;line-height:1;opacity:0;transition:opacity 0.2s,color 0.2s;font-family:sans-serif;min-height:0}
+.chat-msg--me:hover .chat-del-btn{opacity:1}
+.chat-del-btn:hover{color:rgba(251,56,56,0.85)}
+.chat-del-btn.admin-del{color:rgba(251,56,56,0.25)}
+.chat-msg:hover .chat-del-btn.admin-del{opacity:1}
+.chat-bubble{position:relative}
+.chat-del-confirm{display:none;align-items:center;gap:6px;margin-top:6px;font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.18em;color:rgba(240,230,210,0.55)}
+.chat-del-confirm.active{display:flex}
+.chat-del-yes,.chat-del-no{background:none;border:1px solid;font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;padding:2px 8px;min-height:0;transition:background 0.15s,color 0.15s}
+.chat-del-yes{border-color:rgba(251,56,56,0.5);color:rgba(251,56,56,0.7)}
+.chat-del-yes:hover{background:rgba(251,56,56,0.15)}
+.chat-del-no{border-color:rgba(201,168,76,0.3);color:rgba(201,168,76,0.5)}
+.chat-del-no:hover{background:rgba(201,168,76,0.08)}
+@media(max-width:768px){.chat-del-btn{opacity:1!important;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center}}
 .gb-entry{border:1px solid rgba(201,168,76,0.18);border-left:3px solid rgba(201,168,76,0.5);background:rgba(5,3,12,0.97);padding:24px 28px;margin-bottom:16px;position:relative;animation:forumFadeIn 0.3s ease}
 .gb-entry-own{border-left-color:#c9a84c;background:rgba(12,8,3,0.99);box-shadow:0 0 20px rgba(201,168,76,0.06)}
 .gb-own-label{font-size:0.6rem;letter-spacing:0.42em;text-transform:uppercase;color:rgba(201,168,76,0.55);margin-bottom:6px}
@@ -835,7 +849,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <!-- ── SECTION 4: CHAT ────────────────────────────────── -->
   <div class="section-header">
     <div class="section-eyebrow">◈ Live Transmissions · Inner Circle Only</div>
-    <h2 class="section-title">Inner Circle Chat</h2>
+    <h2 class="section-title">Chat</h2>
     <p class="section-sub">A live signal shared only among those who have entered. Speak freely.</p>
   </div>
   <div class="gold-rule-sm"></div>
@@ -857,7 +871,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <!-- ── SECTION 5: INNER CIRCLE FORUM ─────────────────────── -->
   <div class="forum-divider">✦</div>
   <div class="forum-header">
-    <h2 class="forum-title">The Inner Circle Forum</h2>
+    <h2 class="forum-title">Forum</h2>
     <p class="forum-sub">Speak freely. Only the initiated can hear you here.</p>
   </div>
 
@@ -1055,13 +1069,15 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       existingIds.add(el.getAttribute('data-id'));
     });
 
+    var isAdmin = currentUser && currentUser.email === 'andrewwace0319@gmail.com';
+
     snap.forEach(function(doc){
       if(existingIds.has(doc.id)) return; /* already rendered */
       var d   = doc.data();
       var isMe= currentUser && d.uid === currentUser.uid;
+      var canDel = isMe || isAdmin;
       var ts  = d.ts ? new Date(d.ts.toMillis()) : new Date();
       var timeStr = ts.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-      var initial = (d.name||'?').charAt(0).toUpperCase();
 
       var wrap = document.createElement('div');
       wrap.className  = 'chat-msg'+(isMe?' chat-msg--me':'');
@@ -1070,12 +1086,42 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       wrap.innerHTML  =
         '<div class="chat-avatar"><img src="'+esc(avSrc1)+'" onerror="this.onerror=null;this.src=\'/assets/homepage/jesta jr.jpg\'" alt=""></div>'+
         '<div class="chat-bubble">'+
+          (canDel ? '<button class="chat-del-btn'+(isAdmin&&!isMe?' admin-del':'')+'" title="Delete message" aria-label="Delete message">&#215;</button>' : '')+
           '<div class="chat-meta">'+
             '<span class="chat-name">'+esc(d.name||'Unknown')+'</span>'+
             '<span class="chat-time">'+timeStr+'</span>'+
           '</div>'+
           '<div class="chat-text">'+esc(d.text||'')+'</div>'+
+          (canDel && !isAdmin ? '<div class="chat-del-confirm"><span>Delete this?</span><button class="chat-del-yes">Yes</button><button class="chat-del-no">No</button></div>' : '')+
         '</div>';
+
+      /* Wire delete button */
+      if(canDel){
+        var delBtn = wrap.querySelector('.chat-del-btn');
+        if(delBtn){
+          delBtn.addEventListener('click', function(e){
+            e.stopPropagation();
+            if(isAdmin){
+              db.collection('innerCircleChat').doc(doc.id).delete();
+            } else {
+              var conf = wrap.querySelector('.chat-del-confirm');
+              if(conf) conf.classList.toggle('active');
+            }
+          });
+        }
+        var yesBtn = wrap.querySelector('.chat-del-yes');
+        var noBtn  = wrap.querySelector('.chat-del-no');
+        if(yesBtn) yesBtn.addEventListener('click', function(e){
+          e.stopPropagation();
+          db.collection('innerCircleChat').doc(doc.id).delete();
+        });
+        if(noBtn) noBtn.addEventListener('click', function(e){
+          e.stopPropagation();
+          var conf = wrap.querySelector('.chat-del-confirm');
+          if(conf) conf.classList.remove('active');
+        });
+      }
+
       container.appendChild(wrap);
     });
 
