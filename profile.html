@@ -543,24 +543,31 @@ body::before{
   border-top:none;
   z-index:500;
   display:none;
-  max-height:220px;
+  max-height:280px;
   overflow-y:auto;
+  overflow-x:hidden;
+  scroll-behavior:smooth;
+  scrollbar-width:thin;
+  scrollbar-color:#c9a84c #1a1a1a;
 }
+.nc-pob-suggestions::-webkit-scrollbar{width:6px;}
+.nc-pob-suggestions::-webkit-scrollbar-track{background:#1a1a1a;}
+.nc-pob-suggestions::-webkit-scrollbar-thumb{background:#c9a84c;border-radius:3px;}
 .nc-pob-suggestions.open{display:block;}
 .nc-pob-sug-item{
   font-family:'Luminari',serif;
-  font-size:0.72rem;
-  letter-spacing:0.04em;
-  color:rgba(240,228,195,0.85);
-  padding:10px 12px;
+  font-size:0.78rem;
+  letter-spacing:0.03em;
+  color:#e8e0d0;
+  padding:10px 16px;
   cursor:pointer;
-  border-bottom:1px solid rgba(201,168,76,0.08);
+  border-bottom:1px solid rgba(201,168,76,0.1);
   line-height:1.4;
   transition:background 0.12s,color 0.12s;
 }
 .nc-pob-sug-item:last-child{border-bottom:none;}
 .nc-pob-sug-item:hover,.nc-pob-sug-item.active{
-  background:rgba(201,168,76,0.1);
+  background:rgba(201,168,76,0.15);
   color:#c9a84c;
 }
 @media(max-width:768px){
@@ -1494,7 +1501,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
        NATAL CHART CALCULATOR
   ════════════════════════════════════════ -->
   <div class="dark-card profile-section" id="sec-chart" data-section="chart">
-    <div class="card-title-lg" style="margin-bottom:6px;">Celestial Chart</div>
+    <div class="card-title-lg" style="margin-bottom:6px;">Zodiac</div>
     <div style="font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.14em;color:rgba(255,255,255,0.3);font-style:italic;margin-bottom:20px;">Your natal chart, calculated from the stars</div>
     <div class="gold-rule-sm" style="margin-top:0;"></div>
 
@@ -3230,7 +3237,7 @@ var NC = (function(){
       .filter(Boolean).join('  ');
     var shareData = {
       title: userName.toUpperCase() + ' — Celestial Dossier',
-      text: (chartText ? chartText + '\n\n' : '') + 'My celestial chart on Jestamang ✦',
+      text: (chartText ? chartText + '\n\n' : '') + 'My Zodiac chart on Jestamang ✦',
       url: shareUrl
     };
     if(navigator.share && navigator.canShare && navigator.canShare(shareData)){
@@ -3566,8 +3573,14 @@ var NC = (function(){
   }
   function _pobCleanName(r){
     var addr = r.address || {};
-    // r.name is the place's own name (most reliable — always present)
-    var city = r.name || addr.city || addr.town || addr.village || addr.hamlet || addr.municipality || '';
+    // Skip administrative divisions — only use settlement-level names
+    var skipTypes = ['county','district','borough','suburb','neighbourhood','quarter','municipality'];
+    var city = '';
+    if(addr.city){ city = addr.city; }
+    else if(addr.town){ city = addr.town; }
+    else if(addr.village){ city = addr.village; }
+    else if(addr.hamlet){ city = addr.hamlet; }
+    else if(r.name && skipTypes.indexOf(r.type) === -1){ city = r.name; }
     var state = addr.state || addr.region || '';
     var country = addr.country || '';
     var parts = [city, state, country].filter(Boolean);
@@ -3589,7 +3602,7 @@ var NC = (function(){
     if(!query){ _pobCloseSuggestions(); _pobSetStatus('',''); return; }
     _pobSetStatus('locating','LOCATING\u2026');
     fetch('https://nominatim.openstreetmap.org/search?q=' +
-      encodeURIComponent(query) + '&format=json&limit=5&addressdetails=1', {
+      encodeURIComponent(query) + '&format=json&limit=20&dedupe=1&addressdetails=1', {
       headers:{ 'Accept-Language':'en', 'User-Agent':'Jestamang/1.0 (jestamang.com)' }
     })
     .then(function(r){ return r.json(); })
@@ -3601,10 +3614,26 @@ var NC = (function(){
         _pobSetStatus('not-found','LOCATION NOT FOUND \u2014 try being more specific (City, Country)');
         return;
       }
+      // Deduplicate: first by clean display name, then by lat/lng proximity (0.1°)
+      var seenNames = {};
+      var seenCoords = [];
+      var unique = [];
+      data.forEach(function(r){
+        var name = _pobCleanName(r);
+        if(seenNames[name]) return;
+        var lat = parseFloat(r.lat), lng = parseFloat(r.lon);
+        var tooClose = seenCoords.some(function(c){
+          return Math.abs(c[0]-lat) < 0.1 && Math.abs(c[1]-lng) < 0.1;
+        });
+        if(tooClose) return;
+        seenNames[name] = true;
+        seenCoords.push([lat, lng]);
+        unique.push(r);
+      });
       _pobSetStatus('','');
       box.innerHTML = '';
       _pobActiveIdx = -1;
-      data.forEach(function(r){
+      unique.slice(0, 10).forEach(function(r){
         var item = document.createElement('div');
         item.className = 'nc-pob-sug-item';
         item.setAttribute('role','option');
