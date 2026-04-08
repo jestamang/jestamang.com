@@ -1976,9 +1976,35 @@ var NC = (function(){
     return geo;
   }
 
-  // Chiron — mean heliocentric longitude (period ~50.75 yr; J2000 position ~264.4°)
+  // Chiron — Keplerian orbit with equation of center (e=0.38276, period ~50.76 yr)
   function chironLongitude(jd){
-    return mod360(264.4 + (jd - 2451545.0) * (360.0 / 18530.0));
+    var T = calcT(jd);
+    var D = jd - 2451545.0;
+
+    // Mean longitude (calibrated at J2000.0)
+    var L = mod360(300.0 + (360.0/18530.47)*D);
+
+    // Reference perihelion longitude (slowly precessing)
+    var varpi = mod360(339.5066 + 0.019*T);
+
+    // Effective mean anomaly
+    var M_rad = mod360(L - varpi) * DEG;
+
+    // Equation of center for e = 0.38276 (full 3-term series)
+    var e = 0.38276;
+    var C = (2*e - e*e*e/4)*Math.sin(M_rad)
+          + (5/4)*e*e*Math.sin(2*M_rad)
+          + (13/12)*e*e*e*Math.sin(3*M_rad);
+    var C_deg = C * RAD;
+
+    // Heliocentric ecliptic longitude
+    var lon_helio = mod360(L + C_deg);
+
+    // Geocentric correction (simplified parallax for ~13.6 AU)
+    var sun_lon = sunLongitude(jd);
+    var geo_correction = (1.0/13.6452)*Math.sin((sun_lon - lon_helio)*DEG)*RAD;
+
+    return mod360(lon_helio + geo_correction);
   }
 
   function northNodeLongitude(jd){
