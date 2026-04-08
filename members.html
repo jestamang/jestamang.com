@@ -954,10 +954,11 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   })();
 
   /* ── AUTH & PAGE LOGIC ── */
-  var currentUser = null;
-  var currentName = 'Member';
-  var unsubChat   = null;
-  var db          = null;
+  var currentUser      = null;
+  var currentName      = 'Member';
+  var currentUserPhoto = '/assets/homepage/jesta jr.jpg';
+  var unsubChat        = null;
+  var db               = null;
 
   firebase.auth().onAuthStateChanged(function(user){
     if(!user){ window.location.href='login.html'; return; }
@@ -977,19 +978,26 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     var fallback = user.displayName || user.email.split('@')[0];
     db.collection('users').doc(user.uid).get()
       .then(function(doc){
-        if(doc.exists && doc.data().username) fallback = doc.data().username;
+        if(doc.exists){
+          var data = doc.data();
+          if(data.username) fallback = data.username;
+          currentUserPhoto = data.avatarUrl || user.photoURL || '/assets/homepage/jesta jr.jpg';
+        } else {
+          currentUserPhoto = user.photoURL || '/assets/homepage/jesta jr.jpg';
+        }
         currentName = fallback;
         document.getElementById('hero-name').textContent =
           'Jestamang sees you, '+fallback+'.';
         initChat();
-        if(typeof initForum==='function') initForum(currentUser, currentName, db);
+        if(typeof initForum==='function') initForum(currentUser, currentName, db, currentUserPhoto);
       })
       .catch(function(){
+        currentUserPhoto = user.photoURL || '/assets/homepage/jesta jr.jpg';
         currentName = fallback;
         document.getElementById('hero-name').textContent =
           'Jestamang sees you, '+fallback+'.';
         initChat();
-        if(typeof initForum==='function') initForum(currentUser, currentName, db);
+        if(typeof initForum==='function') initForum(currentUser, currentName, db, currentUserPhoto);
       });
   });
 
@@ -1020,7 +1028,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       db.collection('innerCircleChat').add({
         uid:  currentUser.uid,
         name: currentName,
-        photo: currentUser.photoURL||null,
+        photo: currentUserPhoto,
         text: text,
         ts:   firebase.firestore.FieldValue.serverTimestamp()
       }).then(function(){
@@ -1082,7 +1090,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       var wrap = document.createElement('div');
       wrap.className  = 'chat-msg'+(isMe?' chat-msg--me':'');
       wrap.setAttribute('data-id', doc.id);
-      var avSrc1 = (isMe && currentUser.photoURL) ? currentUser.photoURL : (d.photo || '/assets/homepage/jesta jr.jpg');
+      var avSrc1 = isMe ? currentUserPhoto : (d.photo || '/assets/homepage/jesta jr.jpg');
       wrap.innerHTML  =
         '<div class="chat-avatar"><img src="'+esc(avSrc1)+'" onerror="this.onerror=null;this.src=\'/assets/homepage/jesta jr.jpg\'" alt=""></div>'+
         '<div class="chat-bubble">'+
@@ -1162,7 +1170,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
        }
 ═══════════════════════════════════════════════════════ -->
 <script>
-function initForum(user, uname, fdb) {
+function initForum(user, uname, fdb, currentPhoto) {
+  currentPhoto = currentPhoto || user.photoURL || '/assets/homepage/jesta jr.jpg';
   var isAdmin = (user.email === 'andrewwace0319@gmail.com');
 
   /* ── Helpers ── */
@@ -1233,7 +1242,7 @@ function initForum(user, uname, fdb) {
       fdb.collection('innerCircleChat').add({
         uid:       user.uid,
         name:      uname,
-        photo:     user.photoURL||null,
+        photo:     currentPhoto,
         message:   text,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       }).then(function(){
@@ -1287,7 +1296,7 @@ function initForum(user, uname, fdb) {
           var wrap = document.createElement('div');
           wrap.className = 'chat-msg'+(isMe?' chat-msg--me':'');
           wrap.setAttribute('data-fid', doc.id);
-          var avSrc2 = (isMe && user.photoURL) ? user.photoURL : (d.photo || '/assets/homepage/jesta jr.jpg');
+          var avSrc2 = isMe ? currentPhoto : (d.photo || '/assets/homepage/jesta jr.jpg');
           wrap.innerHTML =
             delHtml+
             '<div class="chat-avatar"><img src="'+esc(avSrc2)+'" onerror="this.onerror=null;this.src=\'/assets/homepage/jesta jr.jpg\'" alt=""></div>'+
@@ -1362,7 +1371,7 @@ function initForum(user, uname, fdb) {
       var card = document.createElement('div');
       card.className = 'gb-entry'+(isOwn?' gb-entry-own':'');
       card.setAttribute('data-gbid', doc.id);
-      var gbAv = (isOwn && user.photoURL) ? user.photoURL : (d.photo || '/assets/homepage/jesta jr.jpg');
+      var gbAv = isOwn ? currentPhoto : (d.photo || '/assets/homepage/jesta jr.jpg');
       card.innerHTML =
         (isOwn ? '<div class="gb-own-label">Your Sealed Entry</div>' : '')+
         (canDel ? '<button class="gb-entry-del" data-gbid="'+doc.id+'">Remove</button>' : '')+
@@ -1435,7 +1444,7 @@ function initForum(user, uname, fdb) {
         fdb.collection('guestbook').add({
           uid:       user.uid,
           name:      uname,
-          photo:     user.photoURL||null,
+          photo:     currentPhoto,
           entry:     text,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           approved:  true
