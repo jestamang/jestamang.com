@@ -1933,6 +1933,36 @@ var NC = (function(){
       }
     }
 
+    // Perturbation corrections (Meeus Ch.31) — heliocentric ecliptic longitude corrections
+    if(name==='Mercury'||name==='Venus'||name==='Mars'){
+      var pertArcs=0;
+      if(name==='Mercury'){
+        var pA1=(63.2801+151369.7736*T)*DEG, pA2=(123.4722+600351.8796*T)*DEG,
+            pA3=(141.1065+450103.9363*T)*DEG, pA4=(81.6143+392727.1129*T)*DEG,
+            pA5=(209.9941+543050.3654*T)*DEG, pA6=(227.3396+863996.0069*T)*DEG,
+            pA7=(195.2631+391712.4581*T)*DEG, pA8=(64.1503+125491.4737*T)*DEG,
+            pA9=(209.7070+380145.5866*T)*DEG;
+        pertArcs= 40.9*Math.cos(pA1)+28.2*Math.cos(pA2)-30.0*Math.cos(pA3)
+                +13.3*Math.cos(pA4)+22.2*Math.cos(pA5)-13.8*Math.cos(pA6)
+                +11.9*Math.cos(pA7)+10.3*Math.cos(pA8)-11.7*Math.cos(pA9);
+      } else if(name==='Venus'){
+        var pA1=(48.9360+212116.3780*T)*DEG, pA2=(221.1256+106734.6419*T)*DEG,
+            pA3=(186.1011+319481.3525*T)*DEG, pA4=(195.8489+6275.6118*T)*DEG;
+        pertArcs=-31.6*Math.cos(pA1)+32.0*Math.cos(pA2)-40.0*Math.cos(pA3)+12.2*Math.cos(pA4);
+      } else {
+        var pA1=(200.0320+84922.8379*T)*DEG,  pA2=(74.3739+141538.8662*T)*DEG,
+            pA3=(101.3196+56531.0637*T)*DEG,  pA4=(178.3399+113318.1524*T)*DEG,
+            pA5=(121.9218+170472.1218*T)*DEG, pA6=(178.3399+113318.1524*T)*DEG;
+        pertArcs=-62.3*Math.cos(pA1)-48.7*Math.cos(pA2)-32.0*Math.cos(pA3)
+                +22.0*Math.cos(pA4)-18.0*Math.cos(pA5)+12.0*Math.cos(pA6);
+      }
+      var pertDeg=pertArcs/3600;
+      var L_kep=mod360(Math.atan2(Y_p,X_p)*RAD);
+      var L_corr=(L_kep+pertDeg)*DEG;
+      X_p=r_p*Math.cos(L_corr);
+      Y_p=r_p*Math.sin(L_corr);
+    }
+
     // Earth heliocentric position (ecliptic plane, inclination ≈ 0 by definition)
     var Me_deg = mod360(357.52911 + 35999.05029*T - 0.0001537*T*T);
     var E_e    = solveKepler(Me_deg*DEG, 0.016709);
