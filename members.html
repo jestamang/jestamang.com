@@ -92,7 +92,7 @@ body::before{
   margin-bottom:26px;
 }
 .ic-title{
-  font-size:clamp(2rem,6vw,3.8rem);
+  font-size:clamp(1.2rem,3.5vw,2rem);
   letter-spacing:0.35em;
   text-transform:uppercase;
   color:#c9a84c;
@@ -753,11 +753,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
   <!-- ── HERO ─────────────────────────────────────────── -->
   <div class="ic-hero">
-    <div class="ic-eyebrow">✦ &nbsp; Inner Circle Access Granted &nbsp; ✦</div>
-    <h1 class="ic-title">Welcome to the<br>Inner Circle</h1>
-    <p class="ic-recognize" id="hero-name">The universe recognizes you.</p>
+    <h1 class="ic-title">Welcome to the Inner Circle</h1>
+    <p class="ic-recognize" id="hero-name">Jestamang sees you.</p>
     <p class="ic-since" id="member-since">Initiated: —</p>
-    <div class="ic-badge">Access Level &nbsp;·&nbsp; Inner Circle</div>
   </div>
 
   <div class="gold-rule"><span class="gold-rule-glyph">◈ &nbsp; ◈ &nbsp; ◈</span></div>
@@ -969,14 +967,14 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         if(doc.exists && doc.data().username) fallback = doc.data().username;
         currentName = fallback;
         document.getElementById('hero-name').textContent =
-          'The universe recognizes you, '+fallback+'.';
+          'Jestamang sees you, '+fallback+'.';
         initChat();
         if(typeof initForum==='function') initForum(currentUser, currentName, db);
       })
       .catch(function(){
         currentName = fallback;
         document.getElementById('hero-name').textContent =
-          'The universe recognizes you, '+fallback+'.';
+          'Jestamang sees you, '+fallback+'.';
         initChat();
         if(typeof initForum==='function') initForum(currentUser, currentName, db);
       });
