@@ -4,1169 +4,678 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rhythm Architect — Jestamang</title>
-<meta name="description" content="Rhythm Architect — decode and construct rhythmic patterns. Master the pulse that holds the universe together. A cosmic rhythm game from Jestamang.">
-<meta name="keywords" content="Jestamang, rhythm game, beat pattern, time signature, music education, rhythm training, psychedelic">
+<meta name="description" content="Rhythm Architect — listen to the pattern, then recreate it. A rhythm training game from Jestamang.">
+<meta name="keywords" content="Jestamang, rhythm game, beat pattern, time signature, music education, rhythm training">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://jestamang.com/games/rhythm-architect.html">
 <meta property="og:site_name" content="Jestamang">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Rhythm Architect — Jestamang">
-<meta property="og:description" content="Rhythm Architect — decode and construct rhythmic patterns. A cosmic rhythm game from Jestamang.">
+<meta property="og:description" content="Listen. Remember. Recreate. A rhythm training game from Jestamang.">
 <meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 <meta property="og:url" content="https://jestamang.com/games/rhythm-architect.html">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Rhythm Architect — Jestamang Games">
-<meta name="twitter:description" content="Decode and build rhythmic patterns in the Jestamang universe. Master the pulse that holds the cosmos together and seal your score.">
+<meta name="twitter:title" content="Rhythm Architect — Jestamang">
+<meta name="twitter:description" content="Listen. Remember. Recreate. A rhythm training game from Jestamang.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
-
 <style>
 @font-face{font-family:'Luminari';src:url('../assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{background:#000}
-body{font-family:'Luminari',serif;background:#000;color:#fff;min-height:100vh;overflow-x:hidden;user-select:none;-webkit-user-select:none}
+html,body{background:#000;height:100%}
+body{font-family:'Luminari',serif;color:#e8dcc8;min-height:100vh;overflow-x:hidden;user-select:none;-webkit-user-select:none}
 
-/* Screens */
-.scr{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center}
+/* ── Screens ── */
+.scr{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 20px;text-align:center;position:relative}
 .scr.active{display:flex}
 
-/* Shared text */
-.eyebrow{font-size:clamp(0.58rem,1.8vw,0.76rem);letter-spacing:0.65em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:18px}
-.big-title{font-size:clamp(2.5rem,10vw,6rem);letter-spacing:0.3em;color:#c9a84c;text-shadow:0 0 50px rgba(201,168,76,0.7),0 0 100px rgba(201,168,76,0.2);text-transform:uppercase;line-height:1.05;margin-bottom:16px}
-.sub{font-size:clamp(0.68rem,2vw,0.86rem);letter-spacing:0.3em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:44px;line-height:2.1}
-.btn{font-family:'Luminari',serif;font-size:clamp(0.78rem,2.5vw,0.93rem);letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:14px 46px;cursor:pointer;transition:all 0.3s;min-height:52px;margin:4px}
-.btn:hover,.btn:active{background:rgba(201,168,76,0.1);border-color:#c9a84c;box-shadow:0 0 24px rgba(201,168,76,0.2)}
+/* ── Back link ── */
+.back-link{position:fixed;top:14px;left:16px;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.5);text-decoration:none;z-index:100;transition:color 0.2s}
+.back-link:hover{color:#c9a84c}
 
-/* Game screen */
-#gs{justify-content:flex-start;padding:60px 20px 40px}
-#ra-header{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:580px;margin-bottom:14px}
-#ra-level-display{font-size:clamp(0.7rem,2vw,0.88rem);letter-spacing:0.5em;color:#c9a84c;text-transform:uppercase}
-#ra-sig{font-size:clamp(0.6rem,1.6vw,0.74rem);letter-spacing:0.35em;color:rgba(201,168,76,0.45);text-transform:uppercase}
-#ra-score-display{font-size:clamp(0.6rem,1.6vw,0.72rem);letter-spacing:0.35em;color:rgba(201,168,76,0.45);text-transform:uppercase}
-#ra-mode-badge{font-size:0.58rem;letter-spacing:0.5em;text-transform:uppercase;color:rgba(4,2,10,0.9);background:#c9a84c;padding:4px 14px;margin-bottom:10px;display:inline-block}
-#ra-instruct{font-size:clamp(0.6rem,1.8vw,0.72rem);letter-spacing:0.2em;color:rgba(240,230,210,0.5);text-transform:uppercase;line-height:1.9;margin-bottom:20px;max-width:580px;min-height:2.8em;text-align:center}
-#ra-desc{font-size:clamp(0.63rem,1.8vw,0.75rem);letter-spacing:0.15em;color:rgba(201,168,76,0.45);text-transform:uppercase;line-height:1.85;margin-bottom:16px;max-width:580px;min-height:2.2em;text-align:center;font-style:italic}
+/* ── Typography ── */
+.eyebrow{font-size:clamp(0.52rem,1.6vw,0.68rem);letter-spacing:0.7em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:14px}
+.game-title{font-size:clamp(2.4rem,9vw,5.5rem);letter-spacing:0.28em;color:#c9a84c;text-shadow:0 0 40px rgba(201,168,76,0.6),0 0 80px rgba(201,168,76,0.15);text-transform:uppercase;line-height:1.05;margin-bottom:12px}
+.game-sub{font-size:clamp(0.65rem,2vw,0.82rem);letter-spacing:0.5em;color:rgba(255,255,255,0.28);text-transform:uppercase;margin-bottom:10px;line-height:2}
+.game-hint{font-size:clamp(0.62rem,1.8vw,0.75rem);letter-spacing:0.18em;color:rgba(201,168,76,0.45);text-transform:uppercase;line-height:2.2;margin-bottom:40px;max-width:420px}
 
-/* Beat grid */
-#beat-grid-wrap{width:100%;max-width:580px;margin:0 auto 20px}
-.beat-row-outer{display:flex;align-items:center;margin-bottom:5px;gap:8px}
-.beat-label{font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.2em;color:rgba(201,168,76,0.28);text-transform:uppercase;width:20px;flex-shrink:0;text-align:right}
-.beat-row{display:flex;gap:4px;flex:1}
-.beat-cell{flex:1;height:54px;background:rgba(4,2,10,0.7);border:1.5px solid rgba(201,168,76,0.18);cursor:pointer;transition:background 0.12s,border-color 0.12s,box-shadow 0.12s;border-radius:2px;position:relative}
-.beat-cell.downbeat{border-color:rgba(201,168,76,0.38)}
-.beat-cell.cell-on{background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.65);box-shadow:0 0 10px rgba(201,168,76,0.2) inset}
-.beat-cell.cell-play{background:rgba(201,168,76,0.42);border-color:#c9a84c;box-shadow:0 0 18px rgba(201,168,76,0.55)}
-.beat-cell.cell-correct{background:rgba(201,168,76,0.2);border-color:#c9a84c;box-shadow:0 0 12px rgba(201,168,76,0.35)}
-.beat-cell.cell-missed{background:rgba(255,140,0,0.18);border-color:rgba(255,140,0,0.7)}
-.beat-cell.cell-extra{background:rgba(251,56,56,0.15);border-color:rgba(251,56,56,0.6)}
-.beat-cell.cell-ok{background:transparent;border-color:rgba(201,168,76,0.12)}
-.beat-cell:not(.disabled):hover{border-color:rgba(201,168,76,0.5);background:rgba(201,168,76,0.07)}
-.beat-cell.disabled{cursor:default;pointer-events:none}
+/* ── Difficulty selector ── */
+.diff-row{display:flex;gap:10px;margin-bottom:32px;flex-wrap:wrap;justify-content:center}
+.diff-btn{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.4em;text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;border:1px solid rgba(201,168,76,0.2);padding:10px 22px;cursor:pointer;transition:all 0.25s;min-height:44px}
+.diff-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
+.diff-btn.selected{color:#000;background:#c9a84c;border-color:#c9a84c}
 
-/* Controls */
-#ra-controls{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:16px}
-#ra-playback-btn{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.38em;text-transform:uppercase;color:rgba(201,168,76,0.7);background:none;border:1px solid rgba(201,168,76,0.3);padding:10px 22px;cursor:pointer;transition:all 0.2s;min-height:44px}
-#ra-playback-btn:hover{border-color:#c9a84c;color:#c9a84c}
-#ra-submit-btn{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.38em;text-transform:uppercase;color:#000;background:#c9a84c;border:1px solid #c9a84c;padding:10px 30px;cursor:pointer;transition:background 0.2s;min-height:44px}
-#ra-submit-btn:hover{background:#deb95c}
-#ra-submit-btn:disabled{opacity:0.4;cursor:default;pointer-events:none}
+/* ── Buttons ── */
+.btn-gold{font-family:'Luminari',serif;font-size:clamp(0.72rem,2.2vw,0.88rem);letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:14px 52px;cursor:pointer;transition:all 0.3s;min-height:52px;margin:4px}
+.btn-gold:hover,.btn-gold:active{background:rgba(201,168,76,0.1);border-color:#c9a84c;box-shadow:0 0 24px rgba(201,168,76,0.18)}
+.btn-ghost{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.4em;text-transform:uppercase;color:rgba(201,168,76,0.45);background:none;border:1px solid rgba(201,168,76,0.15);padding:11px 36px;cursor:pointer;transition:all 0.25s;min-height:44px;margin:4px}
+.btn-ghost:hover{color:#c9a84c;border-color:rgba(201,168,76,0.4)}
 
-/* Feedback */
-#ra-feedback{font-size:clamp(0.65rem,2vw,0.8rem);letter-spacing:0.4em;text-transform:uppercase;color:rgba(255,255,255,0.35);min-height:2.2em;text-align:center;line-height:1.9}
-#ra-accuracy{font-size:clamp(1.5rem,6vw,2.8rem);letter-spacing:0.3em;color:#c9a84c;text-shadow:0 0 24px rgba(201,168,76,0.5);min-height:1.3em}
+/* ── Game screen layout ── */
+#scr-game{justify-content:flex-start;padding-top:72px;padding-bottom:40px;gap:0}
 
-/* End screen */
-.score-big{font-size:clamp(3rem,12vw,6rem);letter-spacing:0.3em;color:#c9a84c;text-shadow:0 0 40px rgba(201,168,76,0.7);margin-bottom:4px}
-.score-lbl{font-size:clamp(0.62rem,1.8vw,0.76rem);letter-spacing:0.5em;color:rgba(255,255,255,0.28);text-transform:uppercase;margin-bottom:8px}
-#os-result{font-size:clamp(0.63rem,1.8vw,0.75rem);letter-spacing:0.28em;color:rgba(255,255,255,0.2);text-transform:uppercase;margin-bottom:38px;line-height:2}
+/* ── Phase badge ── */
+#phase-badge{font-size:clamp(0.55rem,1.6vw,0.7rem);letter-spacing:0.55em;text-transform:uppercase;color:rgba(4,2,10,0.95);background:#c9a84c;padding:5px 18px;margin-bottom:24px;display:inline-block;min-height:28px;line-height:18px;transition:opacity 0.3s}
 
-#back{position:fixed;top:12px;left:14px;z-index:30;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.2s}
-#back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
-@media(max-width:480px){.beat-cell{height:44px}.btn{padding:12px 28px}}
-.hp-footer{background:transparent;text-align:center;padding:32px 24px 56px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.55);position:relative;z-index:10}.hp-footer a{color:rgba(201,168,76,0.55);text-decoration:none;transition:color 0.2s}.hp-footer a:hover{color:#c9a84c}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4)}
-</style>
-<style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
-<style id="lb-styles">
-#lb-btn-hud{position:fixed;top:12px;right:62px;z-index:500;background:rgba(0,0,0,0.65);border:1px solid rgba(201,168,76,0.42);color:rgba(201,168,76,0.85);font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;padding:7px 12px;cursor:pointer;transition:background 0.2s,border-color 0.2s;display:none;min-height:36px;white-space:nowrap}
-#lb-btn-hud:hover{background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.7);color:#c9a84c}
-#lb-btn-over{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:11px 28px;cursor:pointer;transition:background 0.2s,border-color 0.2s;min-height:44px;display:none;margin-top:10px}
-#lb-btn-over:hover{background:rgba(201,168,76,0.1);border-color:#c9a84c}
-#lb-name-modal{display:none;position:fixed;inset:0;z-index:4000;background:rgba(4,2,10,0.96);align-items:center;justify-content:center}
-#lb-name-modal.lb-open{display:flex}
-#lb-name-card{background:rgba(4,2,10,0.99);border:1px solid rgba(201,168,76,0.55);padding:44px 40px;max-width:440px;width:90%;text-align:center;position:relative}
-#lb-name-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.65),transparent)}
-.lbnm-title{font-family:'Luminari',serif;font-size:1.1rem;letter-spacing:0.3em;color:#c9a84c;text-transform:uppercase;margin-bottom:8px}
-.lbnm-sub{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(240,230,210,0.42);text-transform:uppercase;margin-bottom:28px;line-height:1.7}
-#lb-name-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:'Luminari',serif;font-size:1rem;letter-spacing:0.15em;padding:10px 4px;outline:none;text-align:center;margin-bottom:24px;-webkit-appearance:none;caret-color:#c9a84c}
-#lb-name-input::placeholder{color:rgba(201,168,76,0.25)}
-#lb-name-submit{width:100%;background:#c9a84c;color:#000;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.42em;text-transform:uppercase;border:none;padding:15px 0;cursor:pointer;transition:background 0.2s;min-height:44px}
-#lb-name-submit:hover{background:#deb95c}
-#lb-name-skip{display:block;margin-top:16px;font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.2em;color:rgba(201,168,76,0.25);cursor:pointer;background:none;border:none;text-transform:uppercase;width:100%;transition:color 0.2s}
-#lb-name-skip:hover{color:rgba(201,168,76,0.55)}
-#lb-modal{display:none;position:fixed;inset:0;z-index:4000;background:rgba(4,2,10,0.96);align-items:center;justify-content:center}
-#lb-modal.lb-open{display:flex}
-#lb-modal-inner{background:rgba(4,2,10,0.99);border:1px solid rgba(201,168,76,0.55);padding:36px 32px;max-width:500px;width:95%;max-height:88vh;overflow-y:auto;position:relative}
-#lb-modal-inner::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.65),transparent)}
-#lb-modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(201,168,76,0.55);font-size:1.3rem;cursor:pointer;font-family:'Luminari',serif;min-width:36px;min-height:36px;line-height:1}
-#lb-modal-close:hover{color:#c9a84c}
-.lbm-header{text-align:center;margin-bottom:24px}
-.lbm-title{font-family:'Luminari',serif;font-size:1.2rem;letter-spacing:0.4em;color:#c9a84c;text-transform:uppercase;margin-bottom:5px}
-.lbm-game{font-family:'Luminari',serif;font-size:0.63rem;letter-spacing:0.45em;color:rgba(201,168,76,0.38);text-transform:uppercase}
-#lb-new-banner{font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.4em;text-transform:uppercase;color:#c9a84c;padding:10px;border:1px solid rgba(201,168,76,0.5);margin-bottom:20px;text-align:center;display:none;animation:lbFlash 0.9s ease-in-out infinite}
-@keyframes lbFlash{0%,100%{opacity:1;border-color:rgba(201,168,76,0.5)}50%{opacity:0.35;border-color:rgba(201,168,76,0.15)}}
-#lb-table{width:100%;border-collapse:collapse}
-#lb-table th{font-family:'Luminari',serif;font-size:0.57rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.38);padding:0 8px 12px;text-align:left;border-bottom:1px solid rgba(201,168,76,0.15)}
-#lb-table th:nth-child(3),#lb-table th:nth-child(4),#lb-table td:nth-child(3),#lb-table td:nth-child(4){text-align:right}
-#lb-table td{font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.05em;color:rgba(240,230,210,0.7);padding:10px 8px;border-bottom:1px solid rgba(201,168,76,0.07)}
-.lb-r1 td{color:#c9a84c}
-.lb-r23 td{color:rgba(201,168,76,0.78)}
-.lb-cur td{background:rgba(201,168,76,0.07);color:#c9a84c}
-.lb-loading-row td{text-align:center;padding:28px;font-family:'Luminari',serif;font-style:italic;color:rgba(201,168,76,0.32);letter-spacing:0.15em}
-.lb-av{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.4);background:#111;vertical-align:middle;margin-right:7px}
-@media(max-width:480px){#lb-name-card{padding:32px 22px}#lb-modal-inner{padding:28px 18px;max-height:92vh}}
-</style>
-<style id="jsearch-styles">
-#jsearch-btn{background:none;border:none;color:rgba(255,255,255,0.75);cursor:pointer;padding:0 10px;line-height:52px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:color 0.2s;min-width:40px;min-height:44px}
-#jsearch-btn:hover{color:#c9a84c}
-#jsearch-btn.jsearch-active{color:rgba(201,168,76,0.45)}
-#jsearch-btn svg{display:block;pointer-events:none}
-#jsearch-overlay{display:none;position:fixed;top:52px;left:0;right:0;bottom:auto;z-index:9998;background:rgba(0,0,0,0.95);border-bottom:1px solid #c9a84c;flex-direction:column;max-height:400px;overflow-y:auto}
-#jsearch-overlay.jsearch-open{display:flex}
-#jsearch-inner{width:100%;padding:20px 40px 24px;position:relative}
-#jsearch-close-row{position:absolute;top:12px;right:20px}
-#jsearch-close{background:none;border:none;color:rgba(201,168,76,0.6);font-size:20px;cursor:pointer;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;transition:color 0.2s;font-family:'Luminari',serif;line-height:1}
-#jsearch-close:hover{color:#c9a84c}
-#jsearch-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,0.65);color:#c9a84c;font-family:'Luminari',serif;font-size:18px;letter-spacing:0.18em;padding:10px 4px;outline:none;text-transform:uppercase;caret-color:#c9a84c;-webkit-appearance:none;border-radius:0}
-#jsearch-input::placeholder{color:rgba(201,168,76,0.32);letter-spacing:0.12em}
-#jsearch-results{margin-top:14px}
-.jsearch-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid rgba(201,168,76,0.08);cursor:pointer;transition:background 0.15s;text-decoration:none;color:inherit}
-.jsearch-item:hover{background:rgba(201,168,76,0.07)}
-.jsearch-item-icon{font-size:0.85rem;flex-shrink:0;opacity:0.6;width:18px;text-align:center;font-family:'Luminari',serif}
-.jsearch-item-name{font-family:'Luminari',serif;font-size:0.88rem;letter-spacing:0.1em;color:rgba(240,230,210,0.9);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.jsearch-item-name mark{background:none;color:#c9a84c;font-style:normal}
-.jsearch-item-cat{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.5);flex-shrink:0;margin-left:8px}
-.jsearch-empty{text-align:center;font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.3);padding:40px 0}
-.jsearch-hint{text-align:center;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.2);padding:28px 0}
-.jsearch-float-btn{position:fixed;top:14px;right:14px;z-index:9000;background:rgba(0,0,0,0.55);border:1px solid rgba(201,168,76,0.35);color:rgba(201,168,76,0.75);cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s}
-.jsearch-float-btn:hover{border-color:rgba(201,168,76,0.75);color:#c9a84c}
-.jsearch-float-btn svg{pointer-events:none}
-@media(max-width:767px){#jsearch-overlay{top:52px}#jsearch-inner{padding:16px 16px 20px}#jsearch-input{font-size:16px}#jsearch-close{min-width:44px;min-height:44px}}
-</style>
-<style id="jbtt-styles">
-#jbtt{position:fixed;bottom:24px;right:24px;z-index:998;width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.15);border:1px solid #c9a84c;color:#c9a84c;cursor:pointer;display:none;align-items:center;justify-content:center;font-family:'Luminari',serif;font-size:1.1rem;line-height:1;transition:background 0.2s,color 0.2s,box-shadow 0.2s,opacity 0.3s;opacity:0}
-#jbtt.jbtt-visible{display:flex;opacity:1}
-#jbtt:hover{background:rgba(201,168,76,0.85);color:#000;box-shadow:0 0 18px rgba(201,168,76,0.45)}
-@media(max-width:768px){#jbtt{bottom:80px;right:16px}}
-</style>
-<link rel="preload" as="font" type="font/ttf" href="../assets/fonts/Luminari.ttf" crossorigin>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#c9a84c">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Jestamang">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png">
-<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="../assets/js/firebase-config.js"></script>
-<script>(function(GID,GDISP,FLFLOAT){
-var _score=0,_docId=null;
-var MON=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
-var RD=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV','XXV','XXVI','XXVII','XXVIII','XXIX','XXX','XXXI'];
-function toRom(y){var t=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];var r='';t.forEach(function(p){while(y>=p[0]){r+=p[1];y-=p[0];}});return r;}
-function fmtD(ts){var d=ts&&ts.toDate?ts.toDate():new Date();return MON[d.getMonth()].slice(0,3)+' · '+RD[d.getDate()-1]+' · '+toRom(d.getFullYear());}
-function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-function fmtS(s){return FLFLOAT?parseFloat(s).toFixed(1)+'s':parseInt(s).toLocaleString();}
-function san(n){return n.replace(/[^a-zA-Z0-9 _\-\.!]/g,'').trim().slice(0,20);}
-function openLB(cur){
-var m=document.getElementById('lb-modal'),tb=document.getElementById('lb-tbody'),bn=document.getElementById('lb-new-banner');
-if(!m||!window.jestaDB)return;
-if(bn)bn.style.display='none';
-// Personal best from localStorage
-var _pbKey='lbBest_'+GID;
-var _pb=null;try{_pb=JSON.parse(localStorage.getItem(_pbKey)||'null');}catch(e){}
-var pbRow=document.getElementById('lb-pb-row');
-if(pbRow){
-  if(_pb&&_pb.score>0){
-    var _pbDate='';try{var _pbd=new Date(_pb.date);_pbDate=MON[_pbd.getMonth()].slice(0,3)+' '+_pbd.getFullYear();}catch(e){}
-    pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.15);"><span style="color:rgba(201,168,76,0.55);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;display:block;margin-bottom:4px;">Your Personal Best</span><span style="color:#c9a84c;font-size:0.9rem;">\u2605 '+fmtS(_pb.score)+'</span>'+(_pbDate?'<span style="color:rgba(201,168,76,0.4);font-size:0.6rem;margin-left:8px;">\u00b7 '+_pbDate+'</span>':'')+'</td>';
-  } else {
-    pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.06em;">No personal best yet \u2014 play to set one</td>';
-  }
-}
-tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr>';
-m.classList.add('lb-open');
-window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(10).get()
-.then(function(snap){
-var rows=[];snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp});});
-var isTop=cur>0&&(rows.length===0||cur>rows[0].score);
-if(isTop&&bn)bn.style.display='block';
-tb.innerHTML='';
-if(!rows.length){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">NO SCORES YET — BE THE FIRST</td></tr>';return;}
-rows.forEach(function(r,i){
-var tr=document.createElement('tr');
-var cls=i===0?'lb-r1':i<3?'lb-r23':'';
-if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
-tr.className=cls;
-var cr=i===0?'<span style="margin-right:5px">✦</span>':'';
-tr.innerHTML='<td>'+(i+1)+'</td><td><img class="lb-av" src="../assets/homepage/jesta jr.jpg" onerror="this.onerror=null;this.src=\'../assets/homepage/jesta jr.jpg\'" alt="">'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
-tb.appendChild(tr);
-});
-}).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">SIGNAL LOST</td></tr>';});
-}
-function saveScore(name,score){
-if(!score||score<=0||!window.jestaDB)return;
-var ps=FLFLOAT?parseFloat(score):parseInt(score);
-// Track personal best in localStorage
-var _pbKey='lbBest_'+GID;
-try{var _pb=JSON.parse(localStorage.getItem(_pbKey)||'null');if(!_pb||ps>_pb.score){localStorage.setItem(_pbKey,JSON.stringify({score:ps,date:new Date().toISOString()}));}}catch(e){}
-var uid=null;try{if(window.jestaAuth&&window.jestaAuth.currentUser)uid=window.jestaAuth.currentUser.uid;}catch(e){}
-window.jestaDB.collection('leaderboards').add({game:GID,name:san(name)||'Unknown',score:ps,uid:uid,timestamp:firebase.firestore.FieldValue.serverTimestamp()})
-.then(function(ref){_docId=ref.id;}).catch(function(e){console.warn('lb:',e);});
-}
-window.lbOnGameOver=function(score){
-_score=score;_docId=null;
-if(!score||score<=0)return;
-var ob=document.getElementById('lb-btn-over');if(ob)ob.style.display='inline-block';
-if(!window.jestaAuth)return;
-var user=window.jestaAuth.currentUser;
-if(user&&user.displayName){saveScore(user.displayName,score);}
-else{window.jestaAuth.signInAnonymously().catch(function(){}).then(function(){
-var m=document.getElementById('lb-name-modal');if(!m){openLB(score);return;}
-m.classList.add('lb-open');var inp=document.getElementById('lb-name-input');if(inp){inp.value='';setTimeout(function(){inp.focus();},120);};
-});}
-};
-document.addEventListener('DOMContentLoaded',function(){
-var gd=document.getElementById('lb-game-display');if(gd)gd.textContent=GDISP;
-var nm=document.getElementById('lb-name-modal'),ni=document.getElementById('lb-name-input'),ns=document.getElementById('lb-name-submit'),nsk=document.getElementById('lb-name-skip');
-var lm=document.getElementById('lb-modal'),lc=document.getElementById('lb-modal-close');
-var hb=document.getElementById('lb-btn-hud'),ob=document.getElementById('lb-btn-over');
-var sb=document.getElementById('startBtn'),rb=document.getElementById('restartBtn');
-function doSubmit(){var n=ni?san(ni.value):'';if(!n){if(ni)ni.focus();return;}if(nm)nm.classList.remove('lb-open');saveScore(n,_score);openLB(_score);}
-if(ns)ns.addEventListener('click',doSubmit);
-if(ni)ni.addEventListener('keydown',function(e){if(e.key==='Enter')doSubmit();});
-if(nsk)nsk.addEventListener('click',function(){if(nm)nm.classList.remove('lb-open');openLB(0);});
-if(lc)lc.addEventListener('click',function(){if(lm)lm.classList.remove('lb-open');});
-if(lm)lm.addEventListener('click',function(e){if(e.target===lm)lm.classList.remove('lb-open');});
-if(hb)hb.addEventListener('click',function(){openLB(0);});
-if(ob)ob.addEventListener('click',function(){openLB(_score);});
-if(sb&&hb)sb.addEventListener('click',function(){hb.style.display='block';});
-if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_score=0;_docId=null;});
-});
-})('rhythmArchitect','RHYTHM ARCHITECT',false);</script>
-<style id="ck-styles">
-#ck-banner{position:fixed;bottom:0;left:0;right:0;z-index:99998;background:rgba(0,0,0,0.85);border-top:1px solid #c9a84c;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-#ck-banner.ck-hidden{display:none!important}
-#ck-text{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.05em;color:rgba(240,230,210,0.85);line-height:1.7;flex:1;min-width:180px;margin:0}
-#ck-btns{display:flex;gap:10px;flex-shrink:0;align-items:center}
-#ck-accept,#ck-decline{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;cursor:pointer;padding:10px 18px;min-height:44px;transition:background 0.2s,color 0.2s,border-color 0.2s,box-shadow 0.2s;white-space:nowrap}
-#ck-accept{background:#c9a84c;color:#000;border:none}
-#ck-accept:hover{background:#dfc060;box-shadow:0 0 16px rgba(201,168,76,0.3)}
-#ck-decline{background:transparent;border:1px solid rgba(201,168,76,0.55);color:rgba(201,168,76,0.8)}
-#ck-decline:hover{border-color:#c9a84c;color:#c9a84c}
-@media(max-width:768px){#ck-banner{flex-direction:column;align-items:stretch;padding:14px 16px;gap:12px}#ck-btns{flex-direction:column}#ck-accept,#ck-decline{width:100%;text-align:center}}
+/* ── Beat pulse ── */
+#beat-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:28px;height:24px}
+.beat-dot{width:8px;height:8px;border-radius:50%;background:rgba(201,168,76,0.15);transition:background 0.05s,transform 0.05s}
+.beat-dot.active{background:#c9a84c;box-shadow:0 0 10px rgba(201,168,76,0.8);transform:scale(1.5)}
+.beat-dot.downbeat{width:10px;height:10px}
+
+/* ── Pads ── */
+#pad-area{display:flex;gap:14px;margin-bottom:30px;justify-content:center;flex-wrap:nowrap}
+.pad{width:clamp(68px,18vw,96px);height:clamp(68px,18vw,96px);border:1px solid rgba(201,168,76,0.3);background:rgba(201,168,76,0.04);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:background 0.08s,border-color 0.08s,box-shadow 0.08s,transform 0.06s;position:relative;border-radius:3px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.pad-numeral{font-size:clamp(1rem,4vw,1.5rem);color:rgba(201,168,76,0.4);letter-spacing:0.05em;transition:color 0.08s;pointer-events:none}
+.pad.lit{background:rgba(201,168,76,0.35);border-color:#c9a84c;box-shadow:0 0 28px rgba(201,168,76,0.5),inset 0 0 12px rgba(201,168,76,0.1);transform:scale(0.97)}
+.pad.lit .pad-numeral{color:#c9a84c}
+.pad.hit-perfect{background:rgba(201,168,76,0.55);border-color:#c9a84c;box-shadow:0 0 40px rgba(201,168,76,0.8),inset 0 0 16px rgba(201,168,76,0.2);transform:scale(0.95)}
+.pad.hit-perfect .pad-numeral{color:#c9a84c}
+.pad.hit-good{background:rgba(201,168,76,0.22);border-color:rgba(201,168,76,0.7);box-shadow:0 0 16px rgba(201,168,76,0.35);transform:scale(0.96)}
+.pad.hit-good .pad-numeral{color:rgba(201,168,76,0.8)}
+.pad.hit-miss{background:rgba(180,40,40,0.3);border-color:rgba(220,60,60,0.7);box-shadow:0 0 16px rgba(200,40,40,0.4);transform:scale(0.96)}
+.pad.hit-miss .pad-numeral{color:rgba(220,80,80,0.8)}
+.pad[data-interactive="true"]{border-color:rgba(201,168,76,0.45);background:rgba(201,168,76,0.07)}
+.pad[data-interactive="true"]:hover{background:rgba(201,168,76,0.13);border-color:rgba(201,168,76,0.65)}
+.pad[data-interactive="true"]:active{transform:scale(0.94)}
+
+/* ── Hit label on pad ── */
+.hit-label{position:absolute;bottom:6px;font-size:0.45rem;letter-spacing:0.3em;text-transform:uppercase;pointer-events:none;opacity:0;transition:opacity 0.2s}
+.pad.hit-perfect .hit-label{opacity:1;color:#c9a84c}
+.pad.hit-good .hit-label{opacity:1;color:rgba(201,168,76,0.7)}
+.pad.hit-miss .hit-label{opacity:1;color:rgba(220,80,80,0.9)}
+
+/* ── Instruction text ── */
+#game-instruct{font-size:clamp(0.6rem,1.8vw,0.72rem);letter-spacing:0.25em;color:rgba(240,230,210,0.4);text-transform:uppercase;line-height:2;margin-bottom:12px;max-width:500px;min-height:3em}
+
+/* ── Countdown ── */
+#countdown-display{font-size:clamp(2rem,10vw,5rem);color:rgba(201,168,76,0.8);letter-spacing:0.3em;min-height:1.4em;text-shadow:0 0 30px rgba(201,168,76,0.5)}
+
+/* ── Progress bar ── */
+#progress-wrap{width:100%;max-width:420px;height:3px;background:rgba(201,168,76,0.1);margin-top:8px;border-radius:2px;overflow:hidden;opacity:0;transition:opacity 0.3s}
+#progress-bar{height:100%;width:0%;background:#c9a84c;transition:width 0.05s linear;box-shadow:0 0 8px rgba(201,168,76,0.6)}
+
+/* ── Score tally chips ── */
+#tally-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+.tally-chip{text-align:center;border:1px solid rgba(201,168,76,0.18);padding:14px 24px;min-width:90px}
+.tally-chip .tally-val{font-size:clamp(1.6rem,6vw,2.6rem);color:#c9a84c;line-height:1}
+.tally-chip .tally-lab{font-size:0.52rem;letter-spacing:0.4em;color:rgba(201,168,76,0.4);text-transform:uppercase;margin-top:6px}
+.tally-chip.chip-perfect .tally-val{color:#c9a84c}
+.tally-chip.chip-good .tally-val{color:rgba(201,168,76,0.65)}
+.tally-chip.chip-miss .tally-val{color:rgba(220,80,80,0.7)}
+
+/* ── Score pct ── */
+#score-pct{font-size:clamp(3rem,12vw,6rem);color:#c9a84c;letter-spacing:0.2em;text-shadow:0 0 40px rgba(201,168,76,0.5);line-height:1;margin-bottom:6px}
+#score-label{font-size:clamp(0.6rem,1.8vw,0.76rem);letter-spacing:0.5em;color:rgba(201,168,76,0.4);text-transform:uppercase;margin-bottom:32px}
+
+/* ── Round / diff info ── */
+#round-info{font-size:0.6rem;letter-spacing:0.45em;color:rgba(201,168,76,0.3);text-transform:uppercase;margin-bottom:36px}
+
+/* ── Result buttons ── */
+#result-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* ── Divider ── */
+.gold-rule{width:120px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.4),transparent);margin:20px auto}
+
+/* ── Difficulty label ── */
+#diff-label{font-size:0.55rem;letter-spacing:0.5em;color:rgba(201,168,76,0.3);text-transform:uppercase;margin-bottom:18px}
+
+/* ── Best score ── */
+#best-display{font-size:0.58rem;letter-spacing:0.35em;color:rgba(201,168,76,0.25);text-transform:uppercase;margin-top:16px}
+
+/* ── Watch repeat indicator ── */
+#watch-rep{font-size:0.55rem;letter-spacing:0.4em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:8px;min-height:1.2em}
+
+/* Footer style */
+.hp-footer{background:transparent;text-align:center;padding:24px 24px 40px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.55);position:relative;z-index:10}
+.hp-footer a{color:rgba(201,168,76,0.55);text-decoration:none;transition:color 0.2s}.hp-footer a:hover{color:#c9a84c}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4)}
 </style>
 </head>
 <body>
-<a href="../arcade.html" id="back">← Games</a>
-<button id="lb-btn-hud">Scrolls</button>
 
-<!-- START SCREEN -->
-<div id="ss" class="scr active">
-  <div class="eyebrow">Jestamang Universe</div>
-  <div class="big-title">Rhythm<br>Architect</div>
-  <div class="sub">Decode and construct rhythmic patterns<br>Master the pulse that holds the universe together</div>
-  <button class="btn" id="startBtn">Begin Construction</button>
-  <div style="font-size:0.58rem;letter-spacing:0.25em;color:rgba(255,255,255,0.12);text-transform:uppercase;margin-top:20px;line-height:2">10 levels · decode & build modes · 4/4 · 3/4 · 6/8 · 5/4</div>
-</div>
+<a href="../arcade.html" class="back-link">← Games</a>
 
-<!-- GAME SCREEN -->
-<div id="gs" class="scr">
-  <div id="ra-header">
-    <div id="ra-level-display">LEVEL I</div>
-    <div id="ra-sig">4 / 4</div>
-    <div id="ra-score-display">COMPLETED 0</div>
+<!-- ══════════════════════════════════
+     SCREEN 1 — START
+════════════════════════════════════ -->
+<div id="scr-start" class="scr active">
+  <p class="eyebrow">Jestamang</p>
+  <h1 class="game-title">Rhythm<br>Architect</h1>
+  <p class="game-sub">Listen &nbsp;·&nbsp; Remember &nbsp;·&nbsp; Recreate</p>
+  <div class="gold-rule"></div>
+  <p class="game-hint">Watch the pattern light up — then tap it back in the same rhythm.</p>
+
+  <div class="diff-row">
+    <button class="diff-btn selected" data-diff="initiate" onclick="selectDiff('initiate')">Initiate</button>
+    <button class="diff-btn" data-diff="adept" onclick="selectDiff('adept')">Adept</button>
+    <button class="diff-btn" data-diff="master" onclick="selectDiff('master')">Master</button>
   </div>
-  <div id="ra-mode-badge">DECODE</div>
-  <div id="ra-instruct">LISTEN TO THE PATTERN — THEN TAP THE BEATS</div>
-  <div id="ra-desc"></div>
-  <div id="beat-grid-wrap"></div>
-  <div id="ra-controls">
-    <button id="ra-playback-btn">▶ PLAY PATTERN</button>
-    <button id="ra-submit-btn" disabled>SUBMIT PATTERN</button>
+
+  <button class="btn-gold" onclick="startGame()">Begin</button>
+
+  <div id="best-display"></div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 2 — GAME (watch + play)
+════════════════════════════════════ -->
+<div id="scr-game" class="scr">
+  <div id="phase-badge">Watch the Pattern</div>
+  <div id="diff-label"></div>
+
+  <!-- Beat pulse row — 4 dots (1 per beat) -->
+  <div id="beat-row">
+    <div class="beat-dot downbeat" id="bd0"></div>
+    <div class="beat-dot" id="bd1"></div>
+    <div class="beat-dot" id="bd2"></div>
+    <div class="beat-dot" id="bd3"></div>
   </div>
-  <div id="ra-accuracy"></div>
-  <div id="ra-feedback"></div>
+
+  <!-- 4 pads -->
+  <div id="pad-area">
+    <div class="pad" id="pad0" data-pad="0" data-interactive="false">
+      <span class="pad-numeral">I</span>
+      <span class="hit-label" id="hl0"></span>
+    </div>
+    <div class="pad" id="pad1" data-pad="1" data-interactive="false">
+      <span class="pad-numeral">II</span>
+      <span class="hit-label" id="hl1"></span>
+    </div>
+    <div class="pad" id="pad2" data-pad="2" data-interactive="false">
+      <span class="pad-numeral">III</span>
+      <span class="hit-label" id="hl2"></span>
+    </div>
+    <div class="pad" id="pad3" data-pad="3" data-interactive="false">
+      <span class="pad-numeral">IV</span>
+      <span class="hit-label" id="hl3"></span>
+    </div>
+  </div>
+
+  <div id="watch-rep"></div>
+  <div id="game-instruct"></div>
+  <div id="countdown-display"></div>
+
+  <!-- Play phase progress bar -->
+  <div id="progress-wrap">
+    <div id="progress-bar"></div>
+  </div>
 </div>
 
-<!-- END SCREEN -->
-<div id="os" class="scr">
-  <div class="eyebrow">Architecture complete</div>
-  <div class="score-big" id="finalScore">0</div>
-  <div class="score-lbl">levels mastered out of 10</div>
-  <div id="os-result"></div>
-  <button class="btn" id="restartBtn">Rebuild</button>
-  <button id="lb-btn-over">The Cosmic Scrolls</button>
+<!-- ══════════════════════════════════
+     SCREEN 3 — RESULTS
+════════════════════════════════════ -->
+<div id="scr-results" class="scr">
+  <p class="eyebrow">Result</p>
+  <div id="score-pct">—</div>
+  <div id="score-label">Score</div>
+
+  <div class="gold-rule"></div>
+
+  <div id="tally-row">
+    <div class="tally-chip chip-perfect">
+      <div class="tally-val" id="tally-perfect">0</div>
+      <div class="tally-lab">Perfect</div>
+    </div>
+    <div class="tally-chip chip-good">
+      <div class="tally-val" id="tally-good">0</div>
+      <div class="tally-lab">Good</div>
+    </div>
+    <div class="tally-chip chip-miss">
+      <div class="tally-val" id="tally-miss">0</div>
+      <div class="tally-lab">Miss</div>
+    </div>
+  </div>
+
+  <div id="round-info"></div>
+
+  <div id="result-btns">
+    <button class="btn-gold" onclick="nextPattern()">Next Pattern</button>
+    <button class="btn-ghost" onclick="retryPattern()">Try Again</button>
+    <button class="btn-ghost" onclick="goStart()">Menu</button>
+  </div>
+
+  <div id="best-display-results" style="font-size:0.55rem;letter-spacing:0.35em;color:rgba(201,168,76,0.25);text-transform:uppercase;margin-top:20px"></div>
 </div>
 
-<!-- LEADERBOARD MODALS -->
-<div id="lb-name-modal">
-<div id="lb-name-card">
-<p class="lbnm-title">MARK YOUR SCORE</p>
-<p class="lbnm-sub">ENTER YOUR NAME FOR<br>THE COSMIC SCROLLS</p>
-<input id="lb-name-input" type="text" maxlength="20" autocomplete="off" spellcheck="false" placeholder="YOUR NAME...">
-<button id="lb-name-submit">SEAL IT</button>
-<button id="lb-name-skip">ENTER WITHOUT SAVING</button>
-</div></div>
-<div id="lb-modal">
-<div id="lb-modal-inner">
-<button id="lb-modal-close">✦</button>
-<div id="lb-new-banner">✦ NEW HIGH SCORE ✦</div>
-<div class="lbm-header">
-  <p class="lbm-title">THE COSMIC SCROLLS</p>
-  <p class="lbm-game" id="lb-game-display"></p>
-</div>
-<table id="lb-table">
-<thead><tr><th>RANK</th><th>NAME</th><th>SCORE</th><th>DATE</th></tr></thead>
-<tbody><tr id="lb-pb-row"><td colspan="4"></td></tr></tbody><tbody id="lb-tbody"><tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr></tbody>
-</table>
-</div></div>
-
-<footer class="hp-footer"><a href="../privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span> Jestamang<span class="hp-footer-mark">·</span><a href="../terms.html">Terms of Service</a>
-</footer>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
-<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
-<script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
-
-<button class="jsearch-float-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button>
-<div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
-<div id="jsearch-inner">
-<div id="jsearch-close-row"><button id="jsearch-close" aria-label="Close search">✦</button></div>
-<input id="jsearch-input" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="SEARCH THE JESTAMANG UNIVERSE...">
-<div id="jsearch-results"><div class="jsearch-hint">ENTER A NAME &nbsp;·&nbsp; PAGE &nbsp;·&nbsp; ALBUM &nbsp;·&nbsp; ENTITY</div></div>
-</div>
-</div>
-<button id="jbtt" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-<script>(function(){var btn=document.getElementById('jbtt');if(!btn)return;window.addEventListener('scroll',function(){if(window.scrollY>300){btn.classList.add('jbtt-visible');}else{btn.classList.remove('jbtt-visible');}},{passive:true});})();</script>
-
-<script>(function(){
-var IDX=[
-{n:'Home',u:'/index.html',c:'Page',i:'⌂',t:'homepage start jestamang main'},
-{n:'Entities',u:'/entities.html',c:'Page',i:'✦',t:'characters cartoons children cosmos'},
-{n:'Albums',u:'/albums.html',c:'Page',i:'◈',t:'music releases discography records'},
-{n:'Lyrics',u:'/lyrics.html',c:'Page',i:'☽',t:'words songs text poetry'},
-{n:'Merch',u:'/merch.html',c:'Page',i:'◉',t:'shop buy store clothing'},
-{n:'Photos',u:'/photos.html',c:'Page',i:'◎',t:'images gallery visual photography'},
-{n:'Videos',u:'/videos.html',c:'Page',i:'▷',t:'film visual youtube watch'},
-{n:'Shows',u:'/shows.html',c:'Page',i:'✦',t:'events live tour concerts appearances'},
-{n:'Blog',u:'/blog.html',c:'Page',i:'◇',t:'posts writing press news'},
-{n:'Comix',u:'/comix.html',c:'Page',i:'◈',t:'comics art illustration graphic'},
-{n:'Games',u:'/arcade.html',c:'Page',i:'◉',t:'play interactive arcade'},
-{n:'Email',u:'/email.html',c:'Page',i:'✉',t:'contact subscribe mailing list'},
-{n:'Members',u:'/members.html',c:'Page',i:'✦',t:'inner circle forum guestbook community'},
-{n:'Profile',u:'/profile.html',c:'Page',i:'◉',t:'account user settings natal chart'},
-{n:'Login',u:'/login.html',c:'Page',i:'✦',t:'sign in invitation access'},
-{n:'Arcade',u:'/arcade.html',c:'Page',i:'◉',t:'games play interactive arcade'},
-{n:'Privacy Policy',u:'/privacy.html',c:'Page',i:'◉',t:'privacy policy data'},
-{n:'Accessibility',u:'/accessibility.html',c:'Page',i:'◉',t:'accessibility ada compliance'},
-{n:'Terms of Service',u:'/terms.html',c:'Page',i:'◉',t:'terms service legal'},
-{n:'Dossier',u:'/dossier.html',c:'Page',i:'◉',t:'bio biography press kit dossier'},
-{n:'Quarter Days',u:'/albums.html',c:'Album Series',i:'◈',t:'jestamang series quarter days'},
-{n:'2K2323',u:'/albums.html',c:'Album Series',i:'◈',t:'release 2023 series'},
-{n:'2K2123',u:'/albums.html',c:'Album Series',i:'◈',t:'release 2021 series'},
-{n:'NONS',u:'/albums.html',c:'Album Series',i:'◈',t:'release nons series'},
-{n:'Zodiac',u:'/albums.html',c:'Album',i:'◈',t:'astrology stars cosmic zodiac 12 signs'},
-{n:'Aries',u:'/lyrics.html',c:'Track – Zodiac',i:'♁',t:'aries zodiac song music'},
-{n:'Taurus',u:'/lyrics.html',c:'Track – Zodiac',i:'♁',t:'taurus zodiac song music'},
-{n:'Gemini',u:'/lyrics.html',c:'Track – Zodiac',i:'♁',t:'gemini zodiac song music'},
-{n:'Cancer',u:'/lyrics.html',c:'Track – Zodiac',i:'♁',t:'cancer zodiac song music'},
-{n:'Leo',u:'/lyrics.html',c:'Track – Zodiac',i:'♁',t:'leo zodiac song music'},
-{n:'Virgo',u:'/lyrics.html',c:'Track – Zodiac',i:'♁',t:'virgo zodiac song music'},
-{n:'Libra',u:'/lyrics.html',c:'Track – Zodiac',i:'♁',t:'libra zodiac song music'},
-{n:'Scorpio',u:'/lyrics.html',c:'Track – Zodiac',i:'♁',t:'scorpio zodiac song music'},
-{n:'Sagittarius',u:'/lyrics.html',c:'Track – Zodiac',i:'♁',t:'sagittarius zodiac song music'},
-{n:'Capricorn',u:'/lyrics.html',c:'Track – Zodiac',i:'♁',t:'capricorn zodiac song music'},
-{n:'Aquarius',u:'/lyrics.html',c:'Track – Zodiac',i:'♁',t:'aquarius zodiac song music'},
-{n:'Pisces',u:'/lyrics.html',c:'Track – Zodiac',i:'♁',t:'pisces zodiac song music'},
-{n:'New Æon',u:'/albums.html',c:'Album',i:'◈',t:'aeon new era cosmos'},
-{n:'Awoken Orb',u:'/lyrics.html',c:'Track – New Æon',i:'♁',t:'awoken orb new æon song music'},
-{n:'Constellated Harmony',u:'/lyrics.html',c:'Track – New Æon',i:'♁',t:'constellated harmony new æon song music'},
-{n:'The Oracle\'s Prophecy',u:'/lyrics.html',c:'Track – New Æon',i:'♁',t:'the oracle\'s prophecy new æon song music'},
-{n:'The Great Disruption of Balance',u:'/lyrics.html',c:'Track – New Æon',i:'♁',t:'the great disruption of balance new æon song music'},
-{n:'Ritual for the Lost',u:'/lyrics.html',c:'Track – New Æon',i:'♁',t:'ritual for the lost new æon song music'},
-{n:'Descent to Cruelty',u:'/lyrics.html',c:'Track – New Æon',i:'♁',t:'descent to cruelty new æon song music'},
-{n:'The New Æon',u:'/lyrics.html',c:'Track – New Æon',i:'♁',t:'the new æon new æon song music'},
-{n:'The Calling',u:'/lyrics.html',c:'Track – New Æon',i:'♁',t:'the calling new æon song music'},
-{n:'The Synthesis',u:'/lyrics.html',c:'Track – New Æon',i:'♁',t:'the synthesis new æon song music'},
-{n:'The Awakened',u:'/lyrics.html',c:'Track – New Æon',i:'♁',t:'the awakened new æon song music'},
-{n:'The New Dawn',u:'/lyrics.html',c:'Track – New Æon',i:'♁',t:'the new dawn new æon song music'},
-{n:'Niga Denots',u:'/albums.html',c:'Album',i:'◈',t:'niga denots'},
-{n:'Witch Pit',u:'/lyrics.html',c:'Track – Niga Denots',i:'♁',t:'witch pit niga denots song music'},
-{n:'Mist on Hill with War on Hill',u:'/lyrics.html',c:'Track – Niga Denots',i:'♁',t:'mist on hill with war on hill niga denots song music'},
-{n:'The Fatherland',u:'/lyrics.html',c:'Track – Niga Denots',i:'♁',t:'the fatherland niga denots song music'},
-{n:'Cherubs O\' Sacrifice',u:'/lyrics.html',c:'Track – Niga Denots',i:'♁',t:'cherubs o\' sacrifice niga denots song music'},
-{n:'Cyborg',u:'/lyrics.html',c:'Track – Niga Denots',i:'♁',t:'cyborg niga denots song music'},
-{n:'Kin, Kin',u:'/lyrics.html',c:'Track – Niga Denots',i:'♁',t:'kin, kin niga denots song music'},
-{n:'Village Fuse',u:'/lyrics.html',c:'Track – Niga Denots',i:'♁',t:'village fuse niga denots song music'},
-{n:'The Oracle\'s Prophecy',u:'/lyrics.html',c:'Track – Niga Denots',i:'♁',t:'the oracle\'s prophecy niga denots song music'},
-{n:'Niga Denots',u:'/lyrics.html',c:'Track – Niga Denots',i:'♁',t:'niga denots niga denots song music'},
-{n:'Jestress Melody',u:'/albums.html',c:'Album',i:'◈',t:'jestress melody jesta'},
-{n:'Jesta Jamboree',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'jesta jamboree jestress melody song music'},
-{n:'Red Shoes',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'red shoes jestress melody song music'},
-{n:'The Wired Mind',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'the wired mind jestress melody song music'},
-{n:'Debonair',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'debonair jestress melody song music'},
-{n:'Wake Up I Love You',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'wake up i love you jestress melody song music'},
-{n:'Wizard',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'wizard jestress melody song music'},
-{n:'Awkward Bird',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'awkward bird jestress melody song music'},
-{n:'Terrible Fright',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'terrible fright jestress melody song music'},
-{n:'Jestress Melody',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'jestress melody jestress melody song music'},
-{n:'Interlude',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'interlude jestress melody song music'},
-{n:'Mango Tango',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'mango tango jestress melody song music'},
-{n:'The End',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'the end jestress melody song music'},
-{n:'The Grand Finale',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'the grand finale jestress melody song music'},
-{n:'Reprise',u:'/lyrics.html',c:'Track – Jestress Melody',i:'♁',t:'reprise jestress melody song music'},
-{n:'The Naples Society of the Temple of Psychick Youth',u:'/albums.html',c:'Album',i:'◈',t:'topy naples psychick youth temple'},
-{n:'Words of Wayley',u:'/lyrics.html',c:'Track – The Naples Society of the Temple of Psychick Youth',i:'♁',t:'words of wayley the naples society of the temple of psychick youth song music'},
-{n:'Underworld',u:'/lyrics.html',c:'Track – The Naples Society of the Temple of Psychick Youth',i:'♁',t:'underworld the naples society of the temple of psychick youth song music'},
-{n:'Gas',u:'/lyrics.html',c:'Track – The Naples Society of the Temple of Psychick Youth',i:'♁',t:'gas the naples society of the temple of psychick youth song music'},
-{n:'Setting Up',u:'/lyrics.html',c:'Track – The Naples Society of the Temple of Psychick Youth',i:'♁',t:'setting up the naples society of the temple of psychick youth song music'},
-{n:'God Song',u:'/lyrics.html',c:'Track – The Naples Society of the Temple of Psychick Youth',i:'♁',t:'god song the naples society of the temple of psychick youth song music'},
-{n:'Barsi\'s Lullaby',u:'/lyrics.html',c:'Track – The Naples Society of the Temple of Psychick Youth',i:'♁',t:'barsi\'s lullaby the naples society of the temple of psychick youth song music'},
-{n:'Golden Gate Squallies',u:'/lyrics.html',c:'Track – The Naples Society of the Temple of Psychick Youth',i:'♁',t:'golden gate squallies the naples society of the temple of psychick youth song music'},
-{n:'Brainbuster',u:'/lyrics.html',c:'Track – The Naples Society of the Temple of Psychick Youth',i:'♁',t:'brainbuster the naples society of the temple of psychick youth song music'},
-{n:'No Mas Brainbuster',u:'/lyrics.html',c:'Track – The Naples Society of the Temple of Psychick Youth',i:'♁',t:'no mas brainbuster the naples society of the temple of psychick youth song music'},
-{n:'The Circle',u:'/lyrics.html',c:'Track – The Naples Society of the Temple of Psychick Youth',i:'♁',t:'the circle the naples society of the temple of psychick youth song music'},
-{n:'Conclusion',u:'/lyrics.html',c:'Track – The Naples Society of the Temple of Psychick Youth',i:'♁',t:'conclusion the naples society of the temple of psychick youth song music'},
-{n:'Peter Thy Godfather',u:'/albums.html',c:'Album',i:'◈',t:'peter godfather gospel religious'},
-{n:'Arise... Our Great God',u:'/lyrics.html',c:'Track – Peter Thy Godfather',i:'♁',t:'arise... our great god peter thy godfather song music'},
-{n:'Wild Heart',u:'/lyrics.html',c:'Track – Peter Thy Godfather',i:'♁',t:'wild heart peter thy godfather song music'},
-{n:'Jesus Come and Dwell',u:'/lyrics.html',c:'Track – Peter Thy Godfather',i:'♁',t:'jesus come and dwell peter thy godfather song music'},
-{n:'Not My Will',u:'/lyrics.html',c:'Track – Peter Thy Godfather',i:'♁',t:'not my will peter thy godfather song music'},
-{n:'Obedience',u:'/lyrics.html',c:'Track – Peter Thy Godfather',i:'♁',t:'obedience peter thy godfather song music'},
-{n:'A Glimpse of God',u:'/lyrics.html',c:'Track – Peter Thy Godfather',i:'♁',t:'a glimpse of god peter thy godfather song music'},
-{n:'Psalm 91',u:'/lyrics.html',c:'Track – Peter Thy Godfather',i:'♁',t:'psalm 91 peter thy godfather song music'},
-{n:'Something Beautiful',u:'/lyrics.html',c:'Track – Peter Thy Godfather',i:'♁',t:'something beautiful peter thy godfather song music'},
-{n:'Forever',u:'/lyrics.html',c:'Track – Peter Thy Godfather',i:'♁',t:'forever peter thy godfather song music'},
-{n:'Covers the Taste',u:'/albums.html',c:'Album',i:'◈',t:'covers taste'},
-{n:'Tandem Jump',u:'/lyrics.html',c:'Track – Covers the Taste',i:'♁',t:'tandem jump covers the taste song music'},
-{n:'Big Bayou',u:'/lyrics.html',c:'Track – Covers the Taste',i:'♁',t:'big bayou covers the taste song music'},
-{n:'Awaken John',u:'/lyrics.html',c:'Track – Covers the Taste',i:'♁',t:'awaken john covers the taste song music'},
-{n:'Daddy Longlegs',u:'/lyrics.html',c:'Track – Covers the Taste',i:'♁',t:'daddy longlegs covers the taste song music'},
-{n:'It\'s All a Part of Me',u:'/lyrics.html',c:'Track – Covers the Taste',i:'♁',t:'it\'s all a part of me covers the taste song music'},
-{n:'All My Friends',u:'/lyrics.html',c:'Track – Covers the Taste',i:'♁',t:'all my friends covers the taste song music'},
-{n:'First Day At Work',u:'/lyrics.html',c:'Track – Covers the Taste',i:'♁',t:'first day at work covers the taste song music'},
-{n:'The Night Is Still Young',u:'/lyrics.html',c:'Track – Covers the Taste',i:'♁',t:'the night is still young covers the taste song music'},
-{n:'Cowboy Shuffle',u:'/lyrics.html',c:'Track – Covers the Taste',i:'♁',t:'cowboy shuffle covers the taste song music'},
-{n:'On Broadway',u:'/lyrics.html',c:'Track – Covers the Taste',i:'♁',t:'on broadway covers the taste song music'},
-{n:'Sailing',u:'/lyrics.html',c:'Track – Covers the Taste',i:'♁',t:'sailing covers the taste song music'},
-{n:'Sleep Cycle',u:'/albums.html',c:'Album',i:'◈',t:'sleep dream cycle ambient rest'},
-{n:'Drift',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'drift sleep cycle song music'},
-{n:'Drop I',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'drop i sleep cycle song music'},
-{n:'Deep Sleep I',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'deep sleep i sleep cycle song music'},
-{n:'Drop II',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'drop ii sleep cycle song music'},
-{n:'REM I',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'rem i sleep cycle song music'},
-{n:'Drop III',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'drop iii sleep cycle song music'},
-{n:'Deep Sleep II',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'deep sleep ii sleep cycle song music'},
-{n:'Drop IV',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'drop iv sleep cycle song music'},
-{n:'REM II',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'rem ii sleep cycle song music'},
-{n:'Drop V',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'drop v sleep cycle song music'},
-{n:'Deep Sleep III',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'deep sleep iii sleep cycle song music'},
-{n:'Drop VI',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'drop vi sleep cycle song music'},
-{n:'REM III',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'rem iii sleep cycle song music'},
-{n:'Drop VII',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'drop vii sleep cycle song music'},
-{n:'Deep Sleep IV',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'deep sleep iv sleep cycle song music'},
-{n:'Drop VIII',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'drop viii sleep cycle song music'},
-{n:'REM IV',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'rem iv sleep cycle song music'},
-{n:'Awaken',u:'/lyrics.html',c:'Track – Sleep Cycle',i:'♁',t:'awaken sleep cycle song music'},
-{n:'The Ace of Chase',u:'/albums.html',c:'Album',i:'◈',t:'ace chase entity album'},
-{n:'Don\'t ID Jesus',u:'/lyrics.html',c:'Track – The Ace of Chase',i:'♁',t:'don\'t id jesus the ace of chase song music'},
-{n:'Pulmonary Cemetery',u:'/lyrics.html',c:'Track – The Ace of Chase',i:'♁',t:'pulmonary cemetery the ace of chase song music'},
-{n:'East Coast Platoon',u:'/lyrics.html',c:'Track – The Ace of Chase',i:'♁',t:'east coast platoon the ace of chase song music'},
-{n:'Lady Day USA',u:'/lyrics.html',c:'Track – The Ace of Chase',i:'♁',t:'lady day usa the ace of chase song music'},
-{n:'Chinese Scientists',u:'/lyrics.html',c:'Track – The Ace of Chase',i:'♁',t:'chinese scientists the ace of chase song music'},
-{n:'General Tsu',u:'/lyrics.html',c:'Track – The Ace of Chase',i:'♁',t:'general tsu the ace of chase song music'},
-{n:'Source',u:'/lyrics.html',c:'Track – The Ace of Chase',i:'♁',t:'source the ace of chase song music'},
-{n:'The Ace of Chase',u:'/lyrics.html',c:'Track – The Ace of Chase',i:'♁',t:'the ace of chase the ace of chase song music'},
-{n:'Big Boy, New Cat. Records',u:'/albums.html',c:'Album',i:'◈',t:'big boy new cat records label'},
-{n:'SEVEN DAYS',u:'/lyrics.html',c:'Track – Big Boy, New Cat. Records',i:'♁',t:'seven days big boy, new cat. records song music'},
-{n:'DOUBLE DECKER',u:'/lyrics.html',c:'Track – Big Boy, New Cat. Records',i:'♁',t:'double decker big boy, new cat. records song music'},
-{n:'TURF STRUGGLE',u:'/lyrics.html',c:'Track – Big Boy, New Cat. Records',i:'♁',t:'turf struggle big boy, new cat. records song music'},
-{n:'HUNT4VAMPS',u:'/lyrics.html',c:'Track – Big Boy, New Cat. Records',i:'♁',t:'hunt4vamps big boy, new cat. records song music'},
-{n:'WORLDBUILDING',u:'/lyrics.html',c:'Track – Big Boy, New Cat. Records',i:'♁',t:'worldbuilding big boy, new cat. records song music'},
-{n:'125 ON RODEO',u:'/lyrics.html',c:'Track – Big Boy, New Cat. Records',i:'♁',t:'125 on rodeo big boy, new cat. records song music'},
-{n:'STARBURZT PAQQ',u:'/lyrics.html',c:'Track – Big Boy, New Cat. Records',i:'♁',t:'starburzt paqq big boy, new cat. records song music'},
-{n:'BITCHES WANT THE BAD BOY',u:'/lyrics.html',c:'Track – Big Boy, New Cat. Records',i:'♁',t:'bitches want the bad boy big boy, new cat. records song music'},
-{n:'BAD BOY ANTHEM',u:'/lyrics.html',c:'Track – Big Boy, New Cat. Records',i:'♁',t:'bad boy anthem big boy, new cat. records song music'},
-{n:'BIG BOY SKIT',u:'/lyrics.html',c:'Track – Big Boy, New Cat. Records',i:'♁',t:'big boy skit big boy, new cat. records song music'},
-{n:'NEW CAT',u:'/lyrics.html',c:'Track – Big Boy, New Cat. Records',i:'♁',t:'new cat big boy, new cat. records song music'},
-{n:'Jonas Kyle Meets The Perfect Trip',u:'/albums.html',c:'Album',i:'◈',t:'jonas kyle perfect trip folk spoken word'},
-{n:'Intro',u:'/lyrics.html',c:'Track – Jonas Kyle Meets The Perfect Trip',i:'♁',t:'intro jonas kyle meets the perfect trip song music'},
-{n:'So What (Shit Out of Luck) [V1]',u:'/lyrics.html',c:'Track – Jonas Kyle Meets The Perfect Trip',i:'♁',t:'so what (shit out of luck) [v1] jonas kyle meets the perfect trip song music'},
-{n:'Billy',u:'/lyrics.html',c:'Track – Jonas Kyle Meets The Perfect Trip',i:'♁',t:'billy jonas kyle meets the perfect trip song music'},
-{n:'Id, Ego, Super Ego (Zomboid Embroidery)',u:'/lyrics.html',c:'Track – Jonas Kyle Meets The Perfect Trip',i:'♁',t:'id, ego, super ego (zomboid embroidery) jonas kyle meets the perfect trip song music'},
-{n:'Geronimo\'s Geranium',u:'/lyrics.html',c:'Track – Jonas Kyle Meets The Perfect Trip',i:'♁',t:'geronimo\'s geranium jonas kyle meets the perfect trip song music'},
-{n:'Time to Elope',u:'/lyrics.html',c:'Track – Jonas Kyle Meets The Perfect Trip',i:'♁',t:'time to elope jonas kyle meets the perfect trip song music'},
-{n:'So What (Shit Out of Luck) [V2]',u:'/lyrics.html',c:'Track – Jonas Kyle Meets The Perfect Trip',i:'♁',t:'so what (shit out of luck) [v2] jonas kyle meets the perfect trip song music'},
-{n:'California Screamin\'',u:'/lyrics.html',c:'Track – Jonas Kyle Meets The Perfect Trip',i:'♁',t:'california screamin\' jonas kyle meets the perfect trip song music'},
-{n:'Summer O\' Sahr',u:'/albums.html',c:'Album',i:'◈',t:'summer sahr'},
-{n:'Peterspoon\'s Toon',u:'/lyrics.html',c:'Track – Summer O\' Sahr',i:'♁',t:'peterspoon\'s toon summer o\' sahr song music'},
-{n:'Mania\'s Chester Teal',u:'/lyrics.html',c:'Track – Summer O\' Sahr',i:'♁',t:'mania\'s chester teal summer o\' sahr song music'},
-{n:'Die Ourselves Black',u:'/lyrics.html',c:'Track – Summer O\' Sahr',i:'♁',t:'die ourselves black summer o\' sahr song music'},
-{n:'Cave Gaga',u:'/lyrics.html',c:'Track – Summer O\' Sahr',i:'♁',t:'cave gaga summer o\' sahr song music'},
-{n:'Southpaw of the Apocalyptic Etowah',u:'/lyrics.html',c:'Track – Summer O\' Sahr',i:'♁',t:'southpaw of the apocalyptic etowah summer o\' sahr song music'},
-{n:'Ganja Stem',u:'/lyrics.html',c:'Track – Summer O\' Sahr',i:'♁',t:'ganja stem summer o\' sahr song music'},
-{n:'Know Like Actually',u:'/lyrics.html',c:'Track – Summer O\' Sahr',i:'♁',t:'know like actually summer o\' sahr song music'},
-{n:'Elephant Dew Pt. 3',u:'/lyrics.html',c:'Track – Summer O\' Sahr',i:'♁',t:'elephant dew pt. 3 summer o\' sahr song music'},
-{n:'Smoke the Dust Clover',u:'/lyrics.html',c:'Track – Summer O\' Sahr',i:'♁',t:'smoke the dust clover summer o\' sahr song music'},
-{n:'Lunch With the Autists',u:'/lyrics.html',c:'Track – Summer O\' Sahr',i:'♁',t:'lunch with the autists summer o\' sahr song music'},
-{n:'Wingcuff',u:'/lyrics.html',c:'Track – Summer O\' Sahr',i:'♁',t:'wingcuff summer o\' sahr song music'},
-{n:'Pump Heart Pump',u:'/lyrics.html',c:'Track – Summer O\' Sahr',i:'♁',t:'pump heart pump summer o\' sahr song music'},
-{n:'5 Week Orange',u:'/lyrics.html',c:'Track – Summer O\' Sahr',i:'♁',t:'5 week orange summer o\' sahr song music'},
-{n:'ꓘ',u:'/albums.html',c:'Album',i:'◈',t:'k kee mirror reverse'},
-{n:'Allɦȷon',u:'/lyrics.html',c:'Track – ꓘ',i:'♁',t:'allɦȷon ꓘ song music'},
-{n:'T⑁ɘ ፲onɘɦ You ፲ɿɘɒʊ',u:'/lyrics.html',c:'Track – ꓘ',i:'♁',t:'t⑁ɘ ፲onɘɦ you ፲ɿɘɒʊ ꓘ song music'},
-{n:'Ɇuduɿɡɒn',u:'/lyrics.html',c:'Track – ꓘ',i:'♁',t:'ɇuduɿɡɒn ꓘ song music'},
-{n:'ꓘɒȿ Ƭmqiɿɘ',u:'/lyrics.html',c:'Track – ꓘ',i:'♁',t:'ꓘɒȿ ƭmqiɿɘ ꓘ song music'},
-{n:'ɓɒzz',u:'/lyrics.html',c:'Track – ꓘ',i:'♁',t:'ɓɒzz ꓘ song music'},
-{n:'Iȿ ʍoɘɦ ɱounɡ Youɿ Hɘɒɡ',u:'/lyrics.html',c:'Track – ꓘ',i:'♁',t:'iȿ ʍoɘɦ ɱounɡ youɿ hɘɒɡ ꓘ song music'},
-{n:'⅁ɘɘɡɆ 23',u:'/lyrics.html',c:'Track – ꓘ',i:'♁',t:'⅁ɘɘɡɇ 23 ꓘ song music'},
-{n:'8slush',u:'/albums.html',c:'Album',i:'◈',t:'8slush slush'},
-{n:'Bloodhouse',u:'/lyrics.html',c:'Track – 8slush',i:'♁',t:'bloodhouse 8slush song music'},
-{n:'Goodbye Yesterday',u:'/lyrics.html',c:'Track – 8slush',i:'♁',t:'goodbye yesterday 8slush song music'},
-{n:'Jesta Joint',u:'/lyrics.html',c:'Track – 8slush',i:'♁',t:'jesta joint 8slush song music'},
-{n:'Cleverhead',u:'/lyrics.html',c:'Track – 8slush',i:'♁',t:'cleverhead 8slush song music'},
-{n:'Friends Till the End',u:'/lyrics.html',c:'Track – 8slush',i:'♁',t:'friends till the end 8slush song music'},
-{n:'I Multiply',u:'/lyrics.html',c:'Track – 8slush',i:'♁',t:'i multiply 8slush song music'},
-{n:'Cocaine',u:'/lyrics.html',c:'Track – 8slush',i:'♁',t:'cocaine 8slush song music'},
-{n:'Guru',u:'/lyrics.html',c:'Track – 8slush',i:'♁',t:'guru 8slush song music'},
-{n:'Jestawomang',u:'/albums.html',c:'Album',i:'◈',t:'jestawomang jesta womang'},
-{n:'Jestawomang',u:'/lyrics.html',c:'Track – Jestawomang',i:'♁',t:'jestawomang jestawomang song music'},
-{n:'1 & 2 & 1',u:'/lyrics.html',c:'Track – Jestawomang',i:'♁',t:'1 & 2 & 1 jestawomang song music'},
-{n:'Choke',u:'/lyrics.html',c:'Track – Jestawomang',i:'♁',t:'choke jestawomang song music'},
-{n:'Singin\' the Hallelujah',u:'/lyrics.html',c:'Track – Jestawomang',i:'♁',t:'singin\' the hallelujah jestawomang song music'},
-{n:'LSD City',u:'/lyrics.html',c:'Track – Jestawomang',i:'♁',t:'lsd city jestawomang song music'},
-{n:'Con Song',u:'/lyrics.html',c:'Track – Jestawomang',i:'♁',t:'con song jestawomang song music'},
-{n:'Partner In Crime',u:'/lyrics.html',c:'Track – Jestawomang',i:'♁',t:'partner in crime jestawomang song music'},
-{n:'A Heart for Alice',u:'/lyrics.html',c:'Track – Jestawomang',i:'♁',t:'a heart for alice jestawomang song music'},
-{n:'The Wired Mind (Reprise)',u:'/lyrics.html',c:'Track – Jestawomang',i:'♁',t:'the wired mind (reprise) jestawomang song music'},
-{n:'Ghost Train',u:'/lyrics.html',c:'Track – Jestawomang',i:'♁',t:'ghost train jestawomang song music'},
-{n:'Too Much',u:'/lyrics.html',c:'Track – Jestawomang',i:'♁',t:'too much jestawomang song music'},
-{n:'Outro',u:'/lyrics.html',c:'Track – Jestawomang',i:'♁',t:'outro jestawomang song music'},
-{n:'Xmas 23',u:'/albums.html',c:'Album',i:'◈',t:'christmas holiday xmas 2023'},
-{n:'Xmas 23',u:'/lyrics.html',c:'Track – Xmas 23',i:'♁',t:'xmas 23 xmas 23 song music'},
-{n:'Coke',u:'/lyrics.html',c:'Track – Xmas 23',i:'♁',t:'coke xmas 23 song music'},
-{n:'Get Up and Bar the Door (Jestalib)',u:'/lyrics.html',c:'Track – Xmas 23',i:'♁',t:'get up and bar the door (jestalib) xmas 23 song music'},
-{n:'Revolution Epilogue: 2K2321–2K2323',u:'/albums.html',c:'Album',i:'◈',t:'revolution epilogue 2k'},
-{n:'Prologue',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'prologue revolution epilogue: 2k2321–2k2323 song music'},
-{n:'First Year',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'first year revolution epilogue: 2k2321–2k2323 song music'},
-{n:'I Am the Genesis',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'i am the genesis revolution epilogue: 2k2321–2k2323 song music'},
-{n:'People In the 212',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'people in the 212 revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Stoogehead',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'stoogehead revolution epilogue: 2k2321–2k2323 song music'},
-{n:'A Girl Once Told Me',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'a girl once told me revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Funk Orient Express',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'funk orient express revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Anti-Masturbation Song',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'anti-masturbation song revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Anti-Christmas Song',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'anti-christmas song revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Organ Rant',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'organ rant revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Talkin\' Jesus',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'talkin\' jesus revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Who In Here Wants To Get Baptized?',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'who in here wants to get baptized? revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Tom\'s Cabin',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'tom\'s cabin revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Do the Dawg',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'do the dawg revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Spongebob',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'spongebob revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Crumb',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'crumb revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Thanksgiving Theme',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'thanksgiving theme revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Revolution Epilogue',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'revolution epilogue revolution epilogue: 2k2321–2k2323 song music'},
-{n:'First Year (Acoustic)',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'first year (acoustic) revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Cowboy Shuffle',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'cowboy shuffle revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Shwittas',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'shwittas revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Wet',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'wet revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Thee Psychick Anthem',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'thee psychick anthem revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Shitshow',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'shitshow revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Monster Town',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'monster town revolution epilogue: 2k2321–2k2323 song music'},
-{n:'Dreamer Hill',u:'/lyrics.html',c:'Track – Revolution Epilogue: 2K2321–2K2323',i:'♁',t:'dreamer hill revolution epilogue: 2k2321–2k2323 song music'},
-{n:'You and the 7.5 Evils of the World',u:'/albums.html',c:'Album',i:'◈',t:'evils 7.5 world'},
-{n:'Change',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'change you and the 7.5 evils of the world song music'},
-{n:'Poverty',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'poverty you and the 7.5 evils of the world song music'},
-{n:'Waste',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'waste you and the 7.5 evils of the world song music'},
-{n:'Top of the Pyramid',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'top of the pyramid you and the 7.5 evils of the world song music'},
-{n:'Disney Yes',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'disney yes you and the 7.5 evils of the world song music'},
-{n:'The Reptile',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'the reptile you and the 7.5 evils of the world song music'},
-{n:'Elephant Dew',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'elephant dew you and the 7.5 evils of the world song music'},
-{n:'Eating Souls',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'eating souls you and the 7.5 evils of the world song music'},
-{n:'Project 121',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'project 121 you and the 7.5 evils of the world song music'},
-{n:'@ Berklee Purgatory',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'@ berklee purgatory you and the 7.5 evils of the world song music'},
-{n:'Traveling Hut',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'traveling hut you and the 7.5 evils of the world song music'},
-{n:'ATTENCHUN!',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'attenchun! you and the 7.5 evils of the world song music'},
-{n:'Project 122',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'project 122 you and the 7.5 evils of the world song music'},
-{n:'I Can Touch the Revolution From My Home',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'i can touch the revolution from my home you and the 7.5 evils of the world song music'},
-{n:'Oiler',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'oiler you and the 7.5 evils of the world song music'},
-{n:'Image',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'image you and the 7.5 evils of the world song music'},
-{n:'Anti-Christmas Song',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'anti-christmas song you and the 7.5 evils of the world song music'},
-{n:'Barsi\'s Lullaby',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'barsi\'s lullaby you and the 7.5 evils of the world song music'},
-{n:'Mango Tango',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'mango tango you and the 7.5 evils of the world song music'},
-{n:'Debonair',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'debonair you and the 7.5 evils of the world song music'},
-{n:'Funk Orient Express',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'funk orient express you and the 7.5 evils of the world song music'},
-{n:'Bonus Track',u:'/lyrics.html',c:'Track – You and the 7.5 Evils of the World',i:'♁',t:'bonus track you and the 7.5 evils of the world song music'},
-{n:'El Santo De Gangster Volume II',u:'/albums.html',c:'Album',i:'◈',t:'santo gangster volume ii'},
-{n:'Eat Dat Question',u:'/lyrics.html',c:'Track – El Santo De Gangster Volume II',i:'♁',t:'eat dat question el santo de gangster volume ii song music'},
-{n:'Supa Smacked',u:'/lyrics.html',c:'Track – El Santo De Gangster Volume II',i:'♁',t:'supa smacked el santo de gangster volume ii song music'},
-{n:'People In the 212',u:'/lyrics.html',c:'Track – El Santo De Gangster Volume II',i:'♁',t:'people in the 212 el santo de gangster volume ii song music'},
-{n:'Moda Natecha',u:'/lyrics.html',c:'Track – El Santo De Gangster Volume II',i:'♁',t:'moda natecha el santo de gangster volume ii song music'},
-{n:'Jeff Davis',u:'/lyrics.html',c:'Track – El Santo De Gangster Volume II',i:'♁',t:'jeff davis el santo de gangster volume ii song music'},
-{n:'Nasty Pig',u:'/lyrics.html',c:'Track – El Santo De Gangster Volume II',i:'♁',t:'nasty pig el santo de gangster volume ii song music'},
-{n:'Donovan',u:'/lyrics.html',c:'Track – El Santo De Gangster Volume II',i:'♁',t:'donovan el santo de gangster volume ii song music'},
-{n:'Hippie Hippie',u:'/lyrics.html',c:'Track – El Santo De Gangster Volume II',i:'♁',t:'hippie hippie el santo de gangster volume ii song music'},
-{n:'Ode to Bonnie',u:'/albums.html',c:'Album',i:'◈',t:'bonnie ode tribute'},
-{n:'Si-Si',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'si-si ode to bonnie song music'},
-{n:'Billy Goat',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'billy goat ode to bonnie song music'},
-{n:'Stoogehead',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'stoogehead ode to bonnie song music'},
-{n:'Lick to Play',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'lick to play ode to bonnie song music'},
-{n:'True',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'true ode to bonnie song music'},
-{n:'Drop Sea Dive',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'drop sea dive ode to bonnie song music'},
-{n:'Up In the Lead',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'up in the lead ode to bonnie song music'},
-{n:'Why Are We Sleeping?',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'why are we sleeping? ode to bonnie song music'},
-{n:'Ode to Bonnie',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'ode to bonnie ode to bonnie song music'},
-{n:'Reprise',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'reprise ode to bonnie song music'},
-{n:'Goodbye Yesterday',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'goodbye yesterday ode to bonnie song music'},
-{n:'I Multiply',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'i multiply ode to bonnie song music'},
-{n:'Guru',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'guru ode to bonnie song music'},
-{n:'Cocaine',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'cocaine ode to bonnie song music'},
-{n:'Cleverhead',u:'/lyrics.html',c:'Track – Ode to Bonnie',i:'♁',t:'cleverhead ode to bonnie song music'},
-{n:'I Can Touch the Revolution From My Home',u:'/albums.html',c:'Album',i:'◈',t:'revolution home touch'},
-{n:'Traveling Hut',u:'/lyrics.html',c:'Track – I Can Touch the Revolution From My Home',i:'♁',t:'traveling hut i can touch the revolution from my home song music'},
-{n:'ATTENCHUN!',u:'/lyrics.html',c:'Track – I Can Touch the Revolution From My Home',i:'♁',t:'attenchun! i can touch the revolution from my home song music'},
-{n:'There\'s An Experiment Going On',u:'/lyrics.html',c:'Track – I Can Touch the Revolution From My Home',i:'♁',t:'there\'s an experiment going on i can touch the revolution from my home song music'},
-{n:'Red Shaydez',u:'/lyrics.html',c:'Track – I Can Touch the Revolution From My Home',i:'♁',t:'red shaydez i can touch the revolution from my home song music'},
-{n:'I Can Touch the Revolution From My Home',u:'/lyrics.html',c:'Track – I Can Touch the Revolution From My Home',i:'♁',t:'i can touch the revolution from my home i can touch the revolution from my home song music'},
-{n:'Oiler',u:'/lyrics.html',c:'Track – I Can Touch the Revolution From My Home',i:'♁',t:'oiler i can touch the revolution from my home song music'},
-{n:'Image',u:'/lyrics.html',c:'Track – I Can Touch the Revolution From My Home',i:'♁',t:'image i can touch the revolution from my home song music'},
-{n:'Anti-Christmas Song',u:'/lyrics.html',c:'Track – I Can Touch the Revolution From My Home',i:'♁',t:'anti-christmas song i can touch the revolution from my home song music'},
-{n:'Barsi\'s Lullaby',u:'/lyrics.html',c:'Track – I Can Touch the Revolution From My Home',i:'♁',t:'barsi\'s lullaby i can touch the revolution from my home song music'},
-{n:'Mango Tango',u:'/lyrics.html',c:'Track – I Can Touch the Revolution From My Home',i:'♁',t:'mango tango i can touch the revolution from my home song music'},
-{n:'Debonair',u:'/lyrics.html',c:'Track – I Can Touch the Revolution From My Home',i:'♁',t:'debonair i can touch the revolution from my home song music'},
-{n:'Funk Orient Express',u:'/lyrics.html',c:'Track – I Can Touch the Revolution From My Home',i:'♁',t:'funk orient express i can touch the revolution from my home song music'},
-{n:'Bonus Track',u:'/lyrics.html',c:'Track – I Can Touch the Revolution From My Home',i:'♁',t:'bonus track i can touch the revolution from my home song music'},
-{n:'Talkin\' Jesus',u:'/albums.html',c:'Album',i:'◈',t:'jesus talkin gospel church'},
-{n:'Talkin\' Jesus',u:'/lyrics.html',c:'Track – Talkin\' Jesus',i:'♁',t:'talkin\' jesus talkin\' jesus song music'},
-{n:'Who In Here Wants To Get Baptized?',u:'/lyrics.html',c:'Track – Talkin\' Jesus',i:'♁',t:'who in here wants to get baptized? talkin\' jesus song music'},
-{n:'Image',u:'/lyrics.html',c:'Track – Talkin\' Jesus',i:'♁',t:'image talkin\' jesus song music'},
-{n:'Organ Rant',u:'/lyrics.html',c:'Track – Talkin\' Jesus',i:'♁',t:'organ rant talkin\' jesus song music'},
-{n:'Funk Orient Express',u:'/lyrics.html',c:'Track – Talkin\' Jesus',i:'♁',t:'funk orient express talkin\' jesus song music'},
-{n:'Anti-Masturbation Song',u:'/lyrics.html',c:'Track – Talkin\' Jesus',i:'♁',t:'anti-masturbation song talkin\' jesus song music'},
-{n:'Anti-Christmas Song',u:'/lyrics.html',c:'Track – Talkin\' Jesus',i:'♁',t:'anti-christmas song talkin\' jesus song music'},
-{n:'Barsi\'s Lullaby',u:'/lyrics.html',c:'Track – Talkin\' Jesus',i:'♁',t:'barsi\'s lullaby talkin\' jesus song music'},
-{n:'Golden Gate Squallies',u:'/lyrics.html',c:'Track – Talkin\' Jesus',i:'♁',t:'golden gate squallies talkin\' jesus song music'},
-{n:'Brainbuster',u:'/lyrics.html',c:'Track – Talkin\' Jesus',i:'♁',t:'brainbuster talkin\' jesus song music'},
-{n:'Conclusion',u:'/lyrics.html',c:'Track – Talkin\' Jesus',i:'♁',t:'conclusion talkin\' jesus song music'},
-{n:'Green House',u:'/albums.html',c:'Album',i:'◈',t:'green house greenhouse'},
-{n:'Tom\'s Cabin',u:'/lyrics.html',c:'Track – Green House',i:'♁',t:'tom\'s cabin green house song music'},
-{n:'Do the Dawg',u:'/lyrics.html',c:'Track – Green House',i:'♁',t:'do the dawg green house song music'},
-{n:'Spongebob',u:'/lyrics.html',c:'Track – Green House',i:'♁',t:'spongebob green house song music'},
-{n:'Crumb',u:'/lyrics.html',c:'Track – Green House',i:'♁',t:'crumb green house song music'},
-{n:'Thanksgiving Theme',u:'/lyrics.html',c:'Track – Green House',i:'♁',t:'thanksgiving theme green house song music'},
-{n:'Revolution Epilogue',u:'/lyrics.html',c:'Track – Green House',i:'♁',t:'revolution epilogue green house song music'},
-{n:'First Year',u:'/lyrics.html',c:'Track – Green House',i:'♁',t:'first year green house song music'},
-{n:'Cowboy Shuffle',u:'/lyrics.html',c:'Track – Green House',i:'♁',t:'cowboy shuffle green house song music'},
-{n:'Shwittas',u:'/lyrics.html',c:'Track – Green House',i:'♁',t:'shwittas green house song music'},
-{n:'Wet',u:'/lyrics.html',c:'Track – Green House',i:'♁',t:'wet green house song music'},
-{n:'Thee Psychick Anthem',u:'/lyrics.html',c:'Track – Green House',i:'♁',t:'thee psychick anthem green house song music'},
-{n:'Shitshow',u:'/lyrics.html',c:'Track – Green House',i:'♁',t:'shitshow green house song music'},
-{n:'Monster Town',u:'/lyrics.html',c:'Track – Green House',i:'♁',t:'monster town green house song music'},
-{n:'The Boston Society of the Temple of Psychick Youth',u:'/albums.html',c:'Album',i:'◈',t:'topy boston psychick temple'},
-{n:'Shwittas',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'shwittas the boston society of the temple of psychick youth song music'},
-{n:'Wet',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'wet the boston society of the temple of psychick youth song music'},
-{n:'Thee Psychick Anthem',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'thee psychick anthem the boston society of the temple of psychick youth song music'},
-{n:'Shitshow',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'shitshow the boston society of the temple of psychick youth song music'},
-{n:'Monster Town',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'monster town the boston society of the temple of psychick youth song music'},
-{n:'Dreamer Hill',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'dreamer hill the boston society of the temple of psychick youth song music'},
-{n:'Project 121',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'project 121 the boston society of the temple of psychick youth song music'},
-{n:'@ Berklee Purgatory',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'@ berklee purgatory the boston society of the temple of psychick youth song music'},
-{n:'Traveling Hut',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'traveling hut the boston society of the temple of psychick youth song music'},
-{n:'ATTENCHUN!',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'attenchun! the boston society of the temple of psychick youth song music'},
-{n:'There\'s An Experiment Going On',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'there\'s an experiment going on the boston society of the temple of psychick youth song music'},
-{n:'Red Shaydez',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'red shaydez the boston society of the temple of psychick youth song music'},
-{n:'I Can Touch the Revolution From My Home',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'i can touch the revolution from my home the boston society of the temple of psychick youth song music'},
-{n:'Oiler',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'oiler the boston society of the temple of psychick youth song music'},
-{n:'Image',u:'/lyrics.html',c:'Track – The Boston Society of the Temple of Psychick Youth',i:'♁',t:'image the boston society of the temple of psychick youth song music'},
-{n:'Alissa Orange',u:'/albums.html',c:'Album',i:'◈',t:'alissa orange'},
-{n:'Love Without Sound',u:'/lyrics.html',c:'Track – Alissa Orange',i:'♁',t:'love without sound alissa orange song music'},
-{n:'Libra Season',u:'/lyrics.html',c:'Track – Alissa Orange',i:'♁',t:'libra season alissa orange song music'},
-{n:'No Face',u:'/lyrics.html',c:'Track – Alissa Orange',i:'♁',t:'no face alissa orange song music'},
-{n:'Ghost Waltz',u:'/lyrics.html',c:'Track – Alissa Orange',i:'♁',t:'ghost waltz alissa orange song music'},
-{n:'A Bed Eternally Empty and Red',u:'/lyrics.html',c:'Track – Alissa Orange',i:'♁',t:'a bed eternally empty and red alissa orange song music'},
-{n:'Evol',u:'/lyrics.html',c:'Track – Alissa Orange',i:'♁',t:'evol alissa orange song music'},
-{n:'The Woodland Singapore Orchestra',u:'/albums.html',c:'Album',i:'◈',t:'woodland singapore orchestra classical bach'},
-{n:'Bach Orchestra - BWV 20',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach orchestra - bwv 20 the woodland singapore orchestra song music'},
-{n:'Bach Piano Prelude - BWV 8',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach piano prelude - bwv 8 the woodland singapore orchestra song music'},
-{n:'When To Her Lute Corinna Sings - BWV 5',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'when to her lute corinna sings - bwv 5 the woodland singapore orchestra song music'},
-{n:'Bach Piano Minor Gigue - BWV',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach piano minor gigue - bwv the woodland singapore orchestra song music'},
-{n:'Bach Blues Bowed - BWV 16',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach blues bowed - bwv 16 the woodland singapore orchestra song music'},
-{n:'Bach Violin Sonata - BWV 1001',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach violin sonata - bwv 1001 the woodland singapore orchestra song music'},
-{n:'Bach Cello Suite - BWV 1007',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach cello suite - bwv 1007 the woodland singapore orchestra song music'},
-{n:'Bach Piano Invention - BWV 772',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach piano invention - bwv 772 the woodland singapore orchestra song music'},
-{n:'Bach Prelude in C - BWV 846',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach prelude in c - bwv 846 the woodland singapore orchestra song music'},
-{n:'Bach Air on G String - BWV 1068',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach air on g string - bwv 1068 the woodland singapore orchestra song music'},
-{n:'Bach Piano Fantasia - BWV 906',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach piano fantasia - bwv 906 the woodland singapore orchestra song music'},
-{n:'Bach Chaconne - BWV 1004',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach chaconne - bwv 1004 the woodland singapore orchestra song music'},
-{n:'Bach Toccata and Fugue - BWV 565',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach toccata and fugue - bwv 565 the woodland singapore orchestra song music'},
-{n:'Bach Piano Partita - BWV 825',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach piano partita - bwv 825 the woodland singapore orchestra song music'},
-{n:'Bach Brandenburg Concerto 3 - BWV 1048',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach brandenburg concerto 3 - bwv 1048 the woodland singapore orchestra song music'},
-{n:'Bach Jesu Joy - BWV 147',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach jesu joy - bwv 147 the woodland singapore orchestra song music'},
-{n:'Bach Well-Tempered Clavier - BWV 846',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach well-tempered clavier - bwv 846 the woodland singapore orchestra song music'},
-{n:'Bach Piano Sonata - BWV 963',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach piano sonata - bwv 963 the woodland singapore orchestra song music'},
-{n:'Bach Cantata - BWV 140',u:'/lyrics.html',c:'Track – The Woodland Singapore Orchestra',i:'♁',t:'bach cantata - bwv 140 the woodland singapore orchestra song music'},
-{n:'The Colours',u:'/albums.html',c:'Album',i:'◈',t:'colors colours spectrum'},
-{n:'Pink',u:'/lyrics.html',c:'Track – The Colours',i:'♁',t:'pink the colours song music'},
-{n:'Green',u:'/lyrics.html',c:'Track – The Colours',i:'♁',t:'green the colours song music'},
-{n:'Orange',u:'/lyrics.html',c:'Track – The Colours',i:'♁',t:'orange the colours song music'},
-{n:'Yellow',u:'/lyrics.html',c:'Track – The Colours',i:'♁',t:'yellow the colours song music'},
-{n:'Purple',u:'/lyrics.html',c:'Track – The Colours',i:'♁',t:'purple the colours song music'},
-{n:'Red',u:'/lyrics.html',c:'Track – The Colours',i:'♁',t:'red the colours song music'},
-{n:'Blue',u:'/lyrics.html',c:'Track – The Colours',i:'♁',t:'blue the colours song music'},
-{n:'Sounds Across the World',u:'/albums.html',c:'Album',i:'◈',t:'sounds world global'},
-{n:'North America',u:'/lyrics.html',c:'Track – Sounds Across the World',i:'♁',t:'north america sounds across the world song music'},
-{n:'South America',u:'/lyrics.html',c:'Track – Sounds Across the World',i:'♁',t:'south america sounds across the world song music'},
-{n:'Europe',u:'/lyrics.html',c:'Track – Sounds Across the World',i:'♁',t:'europe sounds across the world song music'},
-{n:'Asia',u:'/lyrics.html',c:'Track – Sounds Across the World',i:'♁',t:'asia sounds across the world song music'},
-{n:'Africa',u:'/lyrics.html',c:'Track – Sounds Across the World',i:'♁',t:'africa sounds across the world song music'},
-{n:'Oceania',u:'/lyrics.html',c:'Track – Sounds Across the World',i:'♁',t:'oceania sounds across the world song music'},
-{n:'Antarctica',u:'/lyrics.html',c:'Track – Sounds Across the World',i:'♁',t:'antarctica sounds across the world song music'},
-{n:'Former Countries',u:'/lyrics.html',c:'Track – Sounds Across the World',i:'♁',t:'former countries sounds across the world song music'},
-{n:'Ball of Energy',u:'/albums.html',c:'Album',i:'◈',t:'ball energy'},
-{n:'Five Feelings',u:'/lyrics.html',c:'Track – Ball of Energy',i:'♁',t:'five feelings ball of energy song music'},
-{n:'Phone Home In the Atlantic Ocean',u:'/lyrics.html',c:'Track – Ball of Energy',i:'♁',t:'phone home in the atlantic ocean ball of energy song music'},
-{n:'Ball of Energy',u:'/lyrics.html',c:'Track – Ball of Energy',i:'♁',t:'ball of energy ball of energy song music'},
-{n:'$40',u:'/lyrics.html',c:'Track – Ball of Energy',i:'♁',t:'$40 ball of energy song music'},
-{n:'Donald Trump Can Go Fuck Himself',u:'/lyrics.html',c:'Track – Ball of Energy',i:'♁',t:'donald trump can go fuck himself ball of energy song music'},
-{n:'Butter Song',u:'/lyrics.html',c:'Track – Ball of Energy',i:'♁',t:'butter song ball of energy song music'},
-{n:'I Bare My Heart',u:'/lyrics.html',c:'Track – Ball of Energy',i:'♁',t:'i bare my heart ball of energy song music'},
-{n:'Disco Fever',u:'/lyrics.html',c:'Track – Ball of Energy',i:'♁',t:'disco fever ball of energy song music'},
-{n:'Swampy Joe',u:'/lyrics.html',c:'Track – Ball of Energy',i:'♁',t:'swampy joe ball of energy song music'},
-{n:'One with the Universe',u:'/lyrics.html',c:'Track – Ball of Energy',i:'♁',t:'one with the universe ball of energy song music'},
-{n:'All Around the World',u:'/lyrics.html',c:'Track – Ball of Energy',i:'♁',t:'all around the world ball of energy song music'},
-{n:'Bounce',u:'/lyrics.html',c:'Track – Ball of Energy',i:'♁',t:'bounce ball of energy song music'},
-{n:'Finale',u:'/lyrics.html',c:'Track – Ball of Energy',i:'♁',t:'finale ball of energy song music'},
-{n:'Babylon\'s Final Hours',u:'/albums.html',c:'Album',i:'◈',t:'babylon final hours audiobook jr mason'},
-{n:'Prologue',u:'/lyrics.html',c:'Track – Babylon\'s Final Hours',i:'♁',t:'prologue babylon\'s final hours song music'},
-{n:'Chapter 1 (Delusions of Grandeur)',u:'/lyrics.html',c:'Track – Babylon\'s Final Hours',i:'♁',t:'chapter 1 (delusions of grandeur) babylon\'s final hours song music'},
-{n:'Chapter 2 (This Is Babylon)',u:'/lyrics.html',c:'Track – Babylon\'s Final Hours',i:'♁',t:'chapter 2 (this is babylon) babylon\'s final hours song music'},
-{n:'Chapter 3 (The Storm)',u:'/lyrics.html',c:'Track – Babylon\'s Final Hours',i:'♁',t:'chapter 3 (the storm) babylon\'s final hours song music'},
-{n:'Chapter 4 (San Francisco)',u:'/lyrics.html',c:'Track – Babylon\'s Final Hours',i:'♁',t:'chapter 4 (san francisco) babylon\'s final hours song music'},
-{n:'Chapter 5 (People)',u:'/lyrics.html',c:'Track – Babylon\'s Final Hours',i:'♁',t:'chapter 5 (people) babylon\'s final hours song music'},
-{n:'Chapter 6 (I Hear Voices)',u:'/lyrics.html',c:'Track – Babylon\'s Final Hours',i:'♁',t:'chapter 6 (i hear voices) babylon\'s final hours song music'},
-{n:'Chapter 7 (Who Will You Become?)',u:'/lyrics.html',c:'Track – Babylon\'s Final Hours',i:'♁',t:'chapter 7 (who will you become?) babylon\'s final hours song music'},
-{n:'Chapter 8 (The Babylonian War Part 1)',u:'/lyrics.html',c:'Track – Babylon\'s Final Hours',i:'♁',t:'chapter 8 (the babylonian war part 1) babylon\'s final hours song music'},
-{n:'Chapter 9 (The Babylonian War Part 2)',u:'/lyrics.html',c:'Track – Babylon\'s Final Hours',i:'♁',t:'chapter 9 (the babylonian war part 2) babylon\'s final hours song music'},
-{n:'Chapter 10 (Dogs, Pigs, and Sheep)',u:'/lyrics.html',c:'Track – Babylon\'s Final Hours',i:'♁',t:'chapter 10 (dogs, pigs, and sheep) babylon\'s final hours song music'},
-{n:'Venus and the Flytrap',u:'/albums.html',c:'Album',i:'◈',t:'venus flytrap'},
-{n:'Basic Bitch',u:'/lyrics.html',c:'Track – Venus and the Flytrap',i:'♁',t:'basic bitch venus and the flytrap song music'},
-{n:'Our Galaxy',u:'/lyrics.html',c:'Track – Venus and the Flytrap',i:'♁',t:'our galaxy venus and the flytrap song music'},
-{n:'Lady Day',u:'/lyrics.html',c:'Track – Venus and the Flytrap',i:'♁',t:'lady day venus and the flytrap song music'},
-{n:'I Am The Genesis',u:'/lyrics.html',c:'Track – Venus and the Flytrap',i:'♁',t:'i am the genesis venus and the flytrap song music'},
-{n:'Injeong Blues',u:'/lyrics.html',c:'Track – Venus and the Flytrap',i:'♁',t:'injeong blues venus and the flytrap song music'},
-{n:'Freak of Nature',u:'/lyrics.html',c:'Track – Venus and the Flytrap',i:'♁',t:'freak of nature venus and the flytrap song music'},
-{n:'Ocean Piano',u:'/lyrics.html',c:'Track – Venus and the Flytrap',i:'♁',t:'ocean piano venus and the flytrap song music'},
-{n:'Hard Candy',u:'/lyrics.html',c:'Track – Venus and the Flytrap',i:'♁',t:'hard candy venus and the flytrap song music'},
-{n:'Living Our Shameful Lives',u:'/lyrics.html',c:'Track – Venus and the Flytrap',i:'♁',t:'living our shameful lives venus and the flytrap song music'},
-{n:'Covers the Greats',u:'/albums.html',c:'Album',i:'◈',t:'covers greats'},
-{n:'Who In Here Wants To Get Hypnotized?',u:'/lyrics.html',c:'Track – Covers the Greats',i:'♁',t:'who in here wants to get hypnotized? covers the greats song music'},
-{n:'The Duke',u:'/lyrics.html',c:'Track – Covers the Greats',i:'♁',t:'the duke covers the greats song music'},
-{n:'Lady Day',u:'/lyrics.html',c:'Track – Covers the Greats',i:'♁',t:'lady day covers the greats song music'},
-{n:'Evol',u:'/lyrics.html',c:'Track – Covers the Greats',i:'♁',t:'evol covers the greats song music'},
-{n:'THEE PSYCHICK ANTHEM',u:'/lyrics.html',c:'Track – Covers the Greats',i:'♁',t:'thee psychick anthem covers the greats song music'},
-{n:'The Reptile/Dew Elephant',u:'/lyrics.html',c:'Track – Covers the Greats',i:'♁',t:'the reptile/dew elephant covers the greats song music'},
-{n:'Disrespect (Funk Orient Express)',u:'/lyrics.html',c:'Track – Covers the Greats',i:'♁',t:'disrespect (funk orient express) covers the greats song music'},
-{n:'Jesta Joint',u:'/lyrics.html',c:'Track – Covers the Greats',i:'♁',t:'jesta joint covers the greats song music'},
-{n:'Stoogehead',u:'/lyrics.html',c:'Track – Covers the Greats',i:'♁',t:'stoogehead covers the greats song music'},
-{n:'Spongebob',u:'/lyrics.html',c:'Track – Covers the Greats',i:'♁',t:'spongebob covers the greats song music'},
-{n:'Thee Psychick Anthem (Original)',u:'/lyrics.html',c:'Track – Covers the Greats',i:'♁',t:'thee psychick anthem (original) covers the greats song music'},
-{n:'Do the Dawg',u:'/lyrics.html',c:'Track – Covers the Greats',i:'♁',t:'do the dawg covers the greats song music'},
-{n:'Cowboy Shuffle',u:'/lyrics.html',c:'Track – Covers the Greats',i:'♁',t:'cowboy shuffle covers the greats song music'},
-{n:'Psycho Classical',u:'/albums.html',c:'Album',i:'◈',t:'psycho classical'},
-{n:'Prelude',u:'/lyrics.html',c:'Track – Psycho Classical',i:'♁',t:'prelude psycho classical song music'},
-{n:'Caterpillar Rider',u:'/lyrics.html',c:'Track – Psycho Classical',i:'♁',t:'caterpillar rider psycho classical song music'},
-{n:'The Forest of Eden',u:'/lyrics.html',c:'Track – Psycho Classical',i:'♁',t:'the forest of eden psycho classical song music'},
-{n:'Gravy Baby Shoeshine Mgee',u:'/lyrics.html',c:'Track – Psycho Classical',i:'♁',t:'gravy baby shoeshine mgee psycho classical song music'},
-{n:'Purple Sally',u:'/lyrics.html',c:'Track – Psycho Classical',i:'♁',t:'purple sally psycho classical song music'},
-{n:'Chief Man',u:'/lyrics.html',c:'Track – Psycho Classical',i:'♁',t:'chief man psycho classical song music'},
-{n:'Magnolias',u:'/lyrics.html',c:'Track – Psycho Classical',i:'♁',t:'magnolias psycho classical song music'},
-{n:'The Pied Piper',u:'/lyrics.html',c:'Track – Psycho Classical',i:'♁',t:'the pied piper psycho classical song music'},
-{n:'Psycho Classical Theme',u:'/lyrics.html',c:'Track – Psycho Classical',i:'♁',t:'psycho classical theme psycho classical song music'},
-{n:'The Grand Promenade',u:'/lyrics.html',c:'Track – Psycho Classical',i:'♁',t:'the grand promenade psycho classical song music'},
-{n:'The Village Festival',u:'/lyrics.html',c:'Track – Psycho Classical',i:'♁',t:'the village festival psycho classical song music'},
-{n:'The Witch\'s Dance',u:'/lyrics.html',c:'Track – Psycho Classical',i:'♁',t:'the witch\'s dance psycho classical song music'},
-{n:'Epilogue',u:'/lyrics.html',c:'Track – Psycho Classical',i:'♁',t:'epilogue psycho classical song music'},
-{n:'The Magic Eye',u:'/albums.html',c:'Album',i:'◈',t:'magic eye'},
-{n:'Welcome',u:'/lyrics.html',c:'Track – The Magic Eye',i:'♁',t:'welcome the magic eye song music'},
-{n:'The Magic Eye Parts I, II & III',u:'/lyrics.html',c:'Track – The Magic Eye',i:'♁',t:'the magic eye parts i, ii & iii the magic eye song music'},
-{n:'The Travels of Camel Master Johan',u:'/lyrics.html',c:'Track – The Magic Eye',i:'♁',t:'the travels of camel master johan the magic eye song music'},
-{n:'Can You Dream to This?',u:'/lyrics.html',c:'Track – The Magic Eye',i:'♁',t:'can you dream to this? the magic eye song music'},
-{n:'Cell Life',u:'/albums.html',c:'Album',i:'◈',t:'cell life biology'},
-{n:'II',u:'/lyrics.html',c:'Track – Cell Life',i:'♁',t:'ii cell life song music'},
-{n:'Atmosphere',u:'/lyrics.html',c:'Track – Cell Life',i:'♁',t:'atmosphere cell life song music'},
-{n:'Cypress',u:'/lyrics.html',c:'Track – Cell Life',i:'♁',t:'cypress cell life song music'},
-{n:'In the Waiting Room...',u:'/lyrics.html',c:'Track – Cell Life',i:'♁',t:'in the waiting room... cell life song music'},
-{n:'Cell Division',u:'/lyrics.html',c:'Track – Cell Life',i:'♁',t:'cell division cell life song music'},
-{n:'Hereditary Genes',u:'/lyrics.html',c:'Track – Cell Life',i:'♁',t:'hereditary genes cell life song music'},
-{n:'Boiling',u:'/lyrics.html',c:'Track – Cell Life',i:'♁',t:'boiling cell life song music'},
-{n:'Chopped Fox',u:'/lyrics.html',c:'Track – Cell Life',i:'♁',t:'chopped fox cell life song music'},
-{n:'The Perfect Trip',u:'/albums.html',c:'Album',i:'◈',t:'perfect trip psych'},
-{n:'DMT',u:'/lyrics.html',c:'Track – The Perfect Trip',i:'♁',t:'dmt the perfect trip song music'},
-{n:'Rubber Stem',u:'/lyrics.html',c:'Track – The Perfect Trip',i:'♁',t:'rubber stem the perfect trip song music'},
-{n:'Psych Blues',u:'/lyrics.html',c:'Track – The Perfect Trip',i:'♁',t:'psych blues the perfect trip song music'},
-{n:'Who Is The Paisley Boy?',u:'/lyrics.html',c:'Track – The Perfect Trip',i:'♁',t:'who is the paisley boy? the perfect trip song music'},
-{n:'Magician\'s Trick',u:'/lyrics.html',c:'Track – The Perfect Trip',i:'♁',t:'magician\'s trick the perfect trip song music'},
-{n:'Ode To The Pig',u:'/lyrics.html',c:'Track – The Perfect Trip',i:'♁',t:'ode to the pig the perfect trip song music'},
-{n:'U',u:'/lyrics.html',c:'Track – The Perfect Trip',i:'♁',t:'u the perfect trip song music'},
-{n:'What The Birds Know',u:'/lyrics.html',c:'Track – The Perfect Trip',i:'♁',t:'what the birds know the perfect trip song music'},
-{n:'The Perfect Trip',u:'/lyrics.html',c:'Track – The Perfect Trip',i:'♁',t:'the perfect trip the perfect trip song music'},
-{n:'Hit!',u:'/albums.html',c:'Album',i:'◈',t:'hit greatest'},
-{n:'Rottin\' Hee Haw',u:'/lyrics.html',c:'Track – Hit!',i:'♁',t:'rottin\' hee haw hit! song music'},
-{n:'Daemon',u:'/lyrics.html',c:'Track – Hit!',i:'♁',t:'daemon hit! song music'},
-{n:'Davie',u:'/lyrics.html',c:'Track – Hit!',i:'♁',t:'davie hit! song music'},
-{n:'Hurricane Backbeat',u:'/lyrics.html',c:'Track – Hit!',i:'♁',t:'hurricane backbeat hit! song music'},
-{n:'Anatomy/Dexterity',u:'/lyrics.html',c:'Track – Hit!',i:'♁',t:'anatomy/dexterity hit! song music'},
-{n:'Pensacola Buc',u:'/lyrics.html',c:'Track – Hit!',i:'♁',t:'pensacola buc hit! song music'},
-{n:'Solpunks',u:'/lyrics.html',c:'Track – Hit!',i:'♁',t:'solpunks hit! song music'},
-{n:'Prosthetic Horn',u:'/lyrics.html',c:'Track – Hit!',i:'♁',t:'prosthetic horn hit! song music'},
-{n:'The Hitter',u:'/lyrics.html',c:'Track – Hit!',i:'♁',t:'the hitter hit! song music'},
-{n:'Reprise I',u:'/lyrics.html',c:'Track – Hit!',i:'♁',t:'reprise i hit! song music'},
-{n:'Reprise II',u:'/lyrics.html',c:'Track – Hit!',i:'♁',t:'reprise ii hit! song music'},
-{n:'The Final Hit',u:'/lyrics.html',c:'Track – Hit!',i:'♁',t:'the final hit hit! song music'},
-{n:'The Ace of Chase',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon character ace chase entity'},
-{n:'Alissa Orange',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon alissa orange entity'},
-{n:'Atlas Is Alice-Lillenger',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon atlas alice lillenger entity'},
-{n:'Big Boy, New Cat. Records',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon big boy cat records entity'},
-{n:'Big Smoke, lil Skeez, DEW, Sno Bunni',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon smoke skeez dew bunni entity'},
-{n:'Blue Jays',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon birds blue jays entity'},
-{n:'The Boston Society of the Temple of Psychick Youth',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon topy boston psychick entity'},
-{n:'Caleb Mars',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon caleb mars planet entity'},
-{n:'The Colours',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon colours colors spectrum entity'},
-{n:'Father P. Journee',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon father journee priest entity'},
-{n:'Hodge',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon hodge entity'},
-{n:'J.R. Mason',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon jr mason entity'},
-{n:'Jonas Kyle',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon jonas kyle entity'},
-{n:'Mike 55',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon mike 55 entity'},
-{n:'Mutt Tour',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon mutt tour entity'},
-{n:'Ode to Bonnie',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon bonnie ode entity'},
-{n:'The Perfect Trip',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon perfect trip entity'},
-{n:'Sounds Across the World',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon sounds world entity'},
-{n:'Venus and the Flytrap',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon venus flytrap entity'},
-{n:'The Woodland Singapore Orchestra',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon woodland singapore orchestra entity'},
-{n:'You and the 7.5 Evils of the World',u:'/entities.html',c:'Cartoon Entity',i:'✶',t:'cartoon evils 7.5 world entity'},
-{n:'The Ace of Chase',u:'/entities.html',c:'One of the Children',i:'◉',t:'child ace chase core six'},
-{n:'Austinich',u:'/entities.html',c:'One of the Children',i:'◉',t:'child austinich core six'},
-{n:'Cricket Om',u:'/entities.html',c:'One of the Children',i:'◉',t:'child cricket om core six'},
-{n:'Israel',u:'/entities.html',c:'One of the Children',i:'◉',t:'child israel core six'},
-{n:'Kek-Buh',u:'/entities.html',c:'One of the Children',i:'◉',t:'child kek buh core six'},
-{n:'Porphigen',u:'/entities.html',c:'One of the Children',i:'◉',t:'child porphigen core six'},
-{n:'Memory Vault',u:'/game-memory.html',c:'Game',i:'◉',t:'card match memory album art recall pairs'},
-{n:'21',u:'/game-21.html',c:'Game',i:'♠',t:'blackjack 21 hit stand double dealer cards'},
-{n:'Texas Hold Em',u:'/game-texas.html',c:'Game',i:'♥',t:'poker texas holdem cards betting fold raise'},
-{n:'The Void',u:'/games/void.html',c:'Game',i:'◎',t:'void dodge shapes survive psychedelic'},
-{n:'Cosmic Conductor',u:'/games/cosmic-conductor.html',c:'Game',i:'♪',t:'rhythm reaction space orbs cosmic conductor'},
-{n:'Pitch Oracle',u:'/games/pitch-oracle.html',c:'Game',i:'◈',t:'ear training pitch note oracle music identify'},
-{n:'Rhythm Architect',u:'/games/rhythm-architect.html',c:'Game',i:'◉',t:'rhythm beat pattern time signature architect'},
-{n:'Chord Conjurer',u:'/games/chord-conjurer.html',c:'Game',i:'✶',t:'chord theory piano harmony conjurer music'},
-{n:'Oracle',u:'/game-oracle.html',c:'Game',i:'◈',t:'divination prophecy cosmic oracle fortune'},
-{n:'Jestamang T-Shirt',u:'/merch.html',c:'Merch',i:'◉',t:'shirt clothing apparel buy shop'},
-{n:'Jestamang Comix',u:'/merch.html',c:'Merch',i:'◉',t:'comics graphic novel art book buy'},
-{n:'Polyphonies',u:'/merch.html',c:'Merch',i:'◉',t:'book text writing polyphonies buy'},
-{n:'The Jestamang Puzzle',u:'/merch.html',c:'Merch',i:'◉',t:'puzzle game jigsaw buy'},
-{n:'The Jestamang Card Deck',u:'/merch.html',c:'Merch',i:'◉',t:'cards deck playing buy'},
-{n:'For the Jestagang',u:'/blog.html',c:'Blog Post',i:'◇',t:'blog post jestagang fans community'},
-{n:'Pagans in Fort Myers?',u:'/blog.html',c:'Blog Post',i:'◇',t:'blog pagans fort myers florida'},
-{n:'The Prickly Being',u:'/blog.html',c:'Blog Post',i:'◇',t:'blog prickly being prose'}
-];
-window.jSearchOpen=function(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.add('jsearch-open');var btn=document.getElementById('jsearch-btn');if(btn)btn.classList.add('jsearch-active');var inp=document.getElementById('jsearch-input');if(inp){inp.value='';inp.focus();jSearchRender('');}}};
-window.jSearchClose=function(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.remove('jsearch-open');var btn=document.getElementById('jsearch-btn');if(btn)btn.classList.remove('jsearch-active');}};
-function jHL(text,q){if(!q)return text.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});var safe=text.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);tokens.forEach(function(tok){var re=new RegExp('('+tok.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');safe=safe.replace(re,'<mark>$1</mark>');});return safe;}
-function jSearchRender(q){var box=document.getElementById('jsearch-results');if(!box)return;if(!q.trim()){box.innerHTML='<div class="jsearch-hint">ENTER A NAME \u00b7 PAGE \u00b7 ALBUM \u00b7 TRACK \u00b7 GAME</div>';return;}var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);var scored=[];IDX.forEach(function(e){var nl=e.n.toLowerCase();var tl=(e.t||'').toLowerCase();var score=0;tokens.forEach(function(tok){if(nl===tok)score+=100;else if(nl.startsWith(tok))score+=50;else if(nl.indexOf(tok)!==-1)score+=30;if(tl.indexOf(tok)!==-1)score+=10;});if(score>0)scored.push({e:e,s:score});});scored.sort(function(a,b){return b.s-a.s;});scored=scored.slice(0,10);if(!scored.length){box.innerHTML='<div class="jsearch-empty">NO TRANSMISSIONS FOUND</div>';return;}var html='';scored.forEach(function(r){var e=r.e;html+='<a class="jsearch-item" href="'+e.u+'" onclick="jSearchClose()"><span class="jsearch-item-icon">'+e.i+'</span><span class="jsearch-item-name">'+jHL(e.n,q)+'</span><span class="jsearch-item-cat">'+e.c+'</span></a>';});box.innerHTML=html;}
-document.addEventListener('DOMContentLoaded',function(){var inp=document.getElementById('jsearch-input');var closeBtn=document.getElementById('jsearch-close');if(inp)inp.addEventListener('input',function(){jSearchRender(this.value);});if(closeBtn)closeBtn.addEventListener('click',jSearchClose);document.addEventListener('click',function(e){var o=document.getElementById('jsearch-overlay');if(!o||!o.classList.contains('jsearch-open'))return;var btn=document.getElementById('jsearch-btn');var fbtn=document.querySelector('.jsearch-float-btn');if(o.contains(e.target))return;if(btn&&btn.contains(e.target))return;if(fbtn&&fbtn.contains(e.target))return;jSearchClose();});document.addEventListener('keydown',function(e){if(e.key==='Escape')jSearchClose();if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();jSearchOpen();}});});
-})();</script>
-
-<!-- GAME LOGIC -->
 <script>
-(function(){
-var ROM=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
-var CELL_MS=195;
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+let audioCtx = null;
+let difficulty = 'initiate';
+let pattern = [];       // [{slot, pad}] — slot is 0-15 (16th note grid)
+let roundNum = 0;
+let totalScore = 0;
+let playerTaps = [];    // [{pad, time}] recorded during play
+let patternPlayStartMs = 0;
+let playTimeout = null;
+let metronomeTimeouts = [];
+let progressInterval = null;
+let patternDurationMs = 0;
 
-var LEVELS=[
-  {n:1,sig:'4/4',cpb:4,beats:4,mode:'decode',
-   pattern:[1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0],
-   desc:'Four quarter notes — one strike on each beat'},
-  {n:2,sig:'4/4',cpb:4,beats:4,mode:'build',
-   pattern:[1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0],
-   desc:'4/4 time — eighth notes throughout · two per beat · click every other cell'},
-  {n:3,sig:'4/4',cpb:4,beats:4,mode:'decode',
-   pattern:[1,1,1,0, 0,0,1,0, 1,1,1,0, 0,0,1,0],
-   desc:'Syncopated feel — triplet-like start, off-beat accent'},
-  {n:4,sig:'4/4',cpb:4,beats:4,mode:'build',
-   pattern:[1,0,0,1, 0,1,0,0, 1,0,0,1, 0,1,0,0],
-   desc:'4/4 time — accent on beat 1, the "and" of 2, then beat 3 and the "and" of 3'},
-  {n:5,sig:'3/4',cpb:4,beats:3,mode:'decode',
-   pattern:[1,0,0,0, 1,0,0,0, 1,0,0,0],
-   desc:'Waltz time — three quarter notes, strong-weak-weak'},
-  {n:6,sig:'3/4',cpb:4,beats:3,mode:'build',
-   pattern:[1,0,1,0, 0,1,0,0, 1,0,1,0],
-   desc:'3/4 time — beat 1 strong, eighth note on the "and" of 1, beat 2 off-beat, beat 3 with eighth'},
-  {n:7,sig:'6/8',cpb:3,beats:4,mode:'decode',
-   pattern:[1,0,0,1,0,0, 1,0,0,1,0,0],
-   desc:'Compound duple — felt in two groups of three, accent on beat 1 of each group'},
-  {n:8,sig:'6/8',cpb:3,beats:4,mode:'build',
-   pattern:[1,1,0,1,0,0, 1,1,0,1,0,1],
-   desc:'6/8 time — compound feel with subdivisions · first of each triplet is strong'},
-  {n:9,sig:'5/4',cpb:4,beats:5,mode:'decode',
-   pattern:[1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,1,0, 0,0,0,0],
-   desc:'Five beats — quintuple meter · an asymmetric feel · grouped 3+2'},
-  {n:10,sig:'5/4',cpb:4,beats:5,mode:'build',
-   pattern:[1,1,0,1, 0,0,1,0, 1,1,0,1, 0,1,0,1, 1,0,0,0],
-   desc:'5/4 time — syncopated quintuple · grouped 3+2 · dense rhythmic texture'}
-];
+const DIFF_CONFIG = {
+  initiate: { bpm: 72,  slotsAllowed: [0,4,8,12],                              noteCount: 4,  label: 'Initiate — Quarter Notes' },
+  adept:    { bpm: 90,  slotsAllowed: [0,2,4,6,8,10,12,14],                    noteCount: 7,  label: 'Adept — Eighth Notes' },
+  master:   { bpm: 110, slotsAllowed: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],noteCount: 10, label: 'Master — Sixteenth Notes' }
+};
 
-var audioCtx=null;
-function getAudioCtx(){
-  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state==='suspended')audioCtx.resume();
-  return audioCtx;
-}
-function playClick(accent){
-  var c=getAudioCtx();
-  var dur=0.06;
-  var buf=c.createBuffer(1,Math.floor(c.sampleRate*dur),c.sampleRate);
-  var d=buf.getChannelData(0);
-  for(var i=0;i<d.length;i++){
-    d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,10);
-  }
-  var src=c.createBufferSource();
-  var g=c.createGain();
-  src.buffer=buf;
-  g.gain.value=accent?0.85:0.42;
-  src.connect(g);g.connect(c.destination);
-  src.start();
+const ROMAN = ['I', 'II', 'III', 'IV'];
+const PERFECT_MS = 50;
+const GOOD_MS = 160;
+
+// ══════════════════════════════════════════════════
+// AUDIO
+// ══════════════════════════════════════════════════
+function ensureAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
 }
 
-var lvlIdx=0,levelsCompleted=0,playerGrid=[],phase='idle',submitting=false;
-var cellEls=[];
+function schedClick(when, freq, gain, dur) {
+  const osc = audioCtx.createOscillator();
+  const g   = audioCtx.createGain();
+  osc.connect(g); g.connect(audioCtx.destination);
+  osc.type = 'sine';
+  osc.frequency.value = freq;
+  g.gain.setValueAtTime(gain, when);
+  g.gain.exponentialRampToValueAtTime(0.0001, when + dur);
+  osc.start(when); osc.stop(when + dur + 0.01);
+}
 
-function show(id){
-  ['ss','gs','os'].forEach(function(s){
-    document.getElementById(s).classList.remove('active');
-  });
+function schedNote(when) { schedClick(when, 880, 0.45, 0.055); }
+function schedMetro(when, down) { schedClick(when, down ? 1100 : 660, 0.12, 0.028); }
+
+function playTapSound() {
+  ensureAudio();
+  schedClick(audioCtx.currentTime, 820, 0.4, 0.055);
+}
+
+// ══════════════════════════════════════════════════
+// UTILITIES
+// ══════════════════════════════════════════════════
+function show(id) {
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-function renderGrid(L){
-  var wrap=document.getElementById('beat-grid-wrap');
-  wrap.innerHTML='';
-  cellEls=[];
-  var cells=L.beats*L.cpb;
-  for(var b=0;b<L.beats;b++){
-    var row=document.createElement('div');
-    row.className='beat-row-outer';
-    var label=document.createElement('div');
-    label.className='beat-label';
-    label.textContent=b+1;
-    row.appendChild(label);
-    var beatRow=document.createElement('div');
-    beatRow.className='beat-row';
-    for(var s=0;s<L.cpb;s++){
-      var idx=b*L.cpb+s;
-      var cell=document.createElement('div');
-      cell.className='beat-cell'+(s===0?' downbeat':'');
-      cell.dataset.idx=idx;
-      (function(i,el){
-        el.addEventListener('click',function(){
-          if(phase!=='listening'||submitting)return;
-          playerGrid[i]=1-playerGrid[i];
-          el.classList.toggle('cell-on',playerGrid[i]===1);
-          if(playerGrid[i]===1)playClick(i%LEVELS[lvlIdx].cpb===0);
-        });
-      })(idx,cell);
-      beatRow.appendChild(cell);
-      cellEls.push(cell);
+function slotToMs(slot, bpm) {
+  // 16th note dur = 60000 / bpm / 4
+  return slot * (60000 / bpm / 4);
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function generatePattern(diff) {
+  const cfg = DIFF_CONFIG[diff];
+  const slots = shuffle(cfg.slotsAllowed).slice(0, cfg.noteCount).sort((a,b)=>a-b);
+  // Ensure we have at least one of each pad — assign pads ensuring variety
+  const pads = shuffle([0,1,2,3]);
+  return slots.map((slot, i) => ({
+    slot,
+    pad: i < 4 ? pads[i] : Math.floor(Math.random() * 4)
+  }));
+}
+
+function padDurationMs(diff) {
+  const cfg = DIFF_CONFIG[diff];
+  // Full 4 beats + a little tail
+  return (60000 / cfg.bpm) * 4 + 200;
+}
+
+function clearAllTimeouts() {
+  metronomeTimeouts.forEach(clearTimeout);
+  metronomeTimeouts = [];
+  if (playTimeout) { clearTimeout(playTimeout); playTimeout = null; }
+  if (progressInterval) { clearInterval(progressInterval); progressInterval = null; }
+}
+
+// ══════════════════════════════════════════════════
+// PAD VISUALS
+// ══════════════════════════════════════════════════
+function setPadClass(padIdx, cls, label) {
+  const pad = document.getElementById('pad' + padIdx);
+  pad.className = 'pad ' + cls;
+  if (cls === 'hit-perfect') pad.setAttribute('data-interactive','true');
+  const hl = document.getElementById('hl' + padIdx);
+  hl.textContent = label || '';
+  if (cls && cls !== 'lit') {
+    setTimeout(() => {
+      pad.className = 'pad' + (pad.getAttribute('data-interactive')==='true' ? '' : '');
+      if (pad.getAttribute('data-interactive') === 'true') pad.className = 'pad';
+      hl.textContent = '';
+    }, 420);
+  }
+}
+
+function resetPads() {
+  for (let i = 0; i < 4; i++) {
+    const pad = document.getElementById('pad' + i);
+    pad.className = 'pad';
+    pad.setAttribute('data-interactive','false');
+    document.getElementById('hl' + i).textContent = '';
+  }
+}
+
+function enablePads() {
+  for (let i = 0; i < 4; i++) {
+    const pad = document.getElementById('pad' + i);
+    pad.setAttribute('data-interactive','true');
+    pad.className = 'pad';
+    pad.onclick = () => handleTap(i);
+    pad.ontouchstart = (e) => { e.preventDefault(); handleTap(i); };
+  }
+}
+
+function disablePads() {
+  for (let i = 0; i < 4; i++) {
+    const pad = document.getElementById('pad' + i);
+    pad.setAttribute('data-interactive','false');
+    pad.onclick = null;
+    pad.ontouchstart = null;
+  }
+}
+
+function lightPad(padIdx) {
+  const pad = document.getElementById('pad' + padIdx);
+  pad.classList.add('lit');
+  setTimeout(() => { if (pad.classList.contains('lit')) pad.classList.remove('lit'); }, 180);
+}
+
+// ══════════════════════════════════════════════════
+// BEAT DOTS
+// ══════════════════════════════════════════════════
+function flashBeat(beatIdx) {
+  for (let i = 0; i < 4; i++) document.getElementById('bd' + i).classList.remove('active');
+  document.getElementById('bd' + beatIdx).classList.add('active');
+  setTimeout(() => document.getElementById('bd' + beatIdx).classList.remove('active'), 120);
+}
+
+// ══════════════════════════════════════════════════
+// DIFFICULTY SELECT
+// ══════════════════════════════════════════════════
+function selectDiff(d) {
+  difficulty = d;
+  document.querySelectorAll('.diff-btn').forEach(b => {
+    b.classList.toggle('selected', b.getAttribute('data-diff') === d);
+  });
+  updateBestDisplay();
+}
+
+function updateBestDisplay() {
+  const best = localStorage.getItem('ra_best_' + difficulty) || null;
+  const el = document.getElementById('best-display');
+  el.textContent = best ? 'Best · ' + difficulty.toUpperCase() + ' · ' + best + '%' : '';
+}
+
+// ══════════════════════════════════════════════════
+// SCREENS
+// ══════════════════════════════════════════════════
+function goStart() {
+  clearAllTimeouts();
+  resetPads();
+  disablePads();
+  updateBestDisplay();
+  show('scr-start');
+}
+
+function startGame() {
+  ensureAudio();
+  roundNum = 0;
+  totalScore = 0;
+  newRound();
+}
+
+function newRound() {
+  clearAllTimeouts();
+  resetPads();
+  disablePads();
+  pattern = generatePattern(difficulty);
+  roundNum++;
+  show('scr-game');
+  document.getElementById('diff-label').textContent = DIFF_CONFIG[difficulty].label;
+  document.getElementById('progress-wrap').style.opacity = '0';
+  document.getElementById('progress-bar').style.width = '0%';
+  document.getElementById('countdown-display').textContent = '';
+  document.getElementById('game-instruct').textContent = '';
+  document.getElementById('watch-rep').textContent = 'Play 1 of 2';
+  setPhaseBadge('Watch the Pattern');
+  setTimeout(() => watchPhase(1), 400);
+}
+
+function watchPhase(rep) {
+  document.getElementById('watch-rep').textContent = 'Play ' + rep + ' of 2';
+  playPatternOnce(() => {
+    if (rep < 2) {
+      setTimeout(() => watchPhase(2), 500);
+    } else {
+      document.getElementById('watch-rep').textContent = '';
+      setTimeout(() => startCountdown(), 600);
     }
-    row.appendChild(beatRow);
-    wrap.appendChild(row);
-  }
-}
-
-function highlightCell(idx,lit){
-  if(!cellEls[idx])return;
-  if(lit){
-    cellEls[idx].classList.add('cell-play');
-    setTimeout(function(){cellEls[idx].classList.remove('cell-play');},CELL_MS*0.85);
-  }
-}
-
-function clearReveal(){
-  cellEls.forEach(function(el){
-    el.classList.remove('cell-on','cell-play','cell-correct','cell-missed','cell-extra','cell-ok','disabled');
   });
 }
 
-function playPattern(L,reps,onDone){
-  var cells=L.beats*L.cpb;
-  var rep=0;
-  document.getElementById('ra-submit-btn').disabled=true;
-  document.getElementById('ra-playback-btn').disabled=true;
-  function doRep(){
-    var i=0;
-    function doCell(){
-      if(i>=cells){
-        rep++;
-        if(rep>=reps){if(onDone)onDone();return;}
-        setTimeout(doRep,CELL_MS*1.5);
-        return;
-      }
-      highlightCell(i,L.pattern[i]===1);
-      if(L.pattern[i]===1)playClick(i%L.cpb===0);
-      i++;
-      setTimeout(doCell,CELL_MS);
+function startCountdown() {
+  setPhaseBadge('Now Recreate It');
+  document.getElementById('game-instruct').textContent = 'Tap the same pads in the same order';
+  let count = 3;
+  const cd = document.getElementById('countdown-display');
+  cd.textContent = count;
+  const tick = setInterval(() => {
+    count--;
+    if (count > 0) {
+      cd.textContent = count;
+    } else {
+      clearInterval(tick);
+      cd.textContent = '';
+      beginPlayPhase();
     }
-    doCell();
-  }
-  doRep();
+  }, 900);
 }
 
-function loadLevel(){
-  var L=LEVELS[lvlIdx];
-  var cells=L.beats*L.cpb;
-  playerGrid=new Array(cells).fill(0);
-  submitting=false;
-  phase='idle';
-  renderGrid(L);
-  clearReveal();
-  document.getElementById('ra-level-display').textContent='LEVEL '+ROM[lvlIdx];
-  var bpm=Math.round(60000/(CELL_MS*L.cpb));
-  document.getElementById('ra-sig').textContent=L.sig.replace('/',' / ')+' · '+bpm+' BPM';
-  document.getElementById('ra-score-display').textContent='COMPLETED '+levelsCompleted;
-  document.getElementById('ra-mode-badge').textContent=L.mode.toUpperCase();
-  document.getElementById('ra-accuracy').textContent='';
-  document.getElementById('ra-feedback').textContent='';
-  window.scrollTo(0,0);
+function setPhaseBadge(text) {
+  document.getElementById('phase-badge').textContent = text;
+}
 
-  var submitBtn=document.getElementById('ra-submit-btn');
-  var playBtn=document.getElementById('ra-playback-btn');
+// ══════════════════════════════════════════════════
+// WATCH PHASE PLAYBACK
+// ══════════════════════════════════════════════════
+function playPatternOnce(onDone) {
+  ensureAudio();
+  const cfg = DIFF_CONFIG[difficulty];
+  const beatDurMs = 60000 / cfg.bpm;
+  const startMs = audioCtx.currentTime * 1000 + 120; // ms from now
+  const startSec = startMs / 1000;
 
-  if(L.mode==='decode'){
-    document.getElementById('ra-instruct').textContent='LISTEN TO THE PATTERN — THEN TAP THE BEATS YOU HEARD';
-    document.getElementById('ra-desc').textContent='';
-    playBtn.style.display='inline-block';
-    submitBtn.disabled=true;
-    playPattern(L,3,function(){
-      phase='listening';
-      submitBtn.disabled=false;
-      document.getElementById('ra-instruct').textContent='TAP THE BEATS YOU HEARD · SUBMIT WHEN READY';
-      playBtn.disabled=false;
+  // Schedule note clicks and pad lights
+  pattern.forEach(note => {
+    const tMs = slotToMs(note.slot, cfg.bpm);
+    const absSec = startSec + tMs / 1000;
+    schedNote(absSec);
+    const delay = startMs - audioCtx.currentTime * 1000 + tMs;
+    const t = metronomeTimeouts.push(setTimeout(() => lightPad(note.pad), delay)) - 1;
+    void t;
+  });
+
+  // Metronome for 4 beats
+  for (let b = 0; b < 4; b++) {
+    const tMs = b * beatDurMs;
+    const absSec = startSec + tMs / 1000;
+    schedMetro(absSec, b === 0);
+    const delay = startMs - audioCtx.currentTime * 1000 + tMs;
+    const bi = b;
+    metronomeTimeouts.push(setTimeout(() => flashBeat(bi), delay));
+  }
+
+  // Duration = 4 beats + small tail
+  const dur = beatDurMs * 4 + 200;
+  const tot = startMs - audioCtx.currentTime * 1000 + dur;
+  metronomeTimeouts.push(setTimeout(onDone, tot));
+}
+
+// ══════════════════════════════════════════════════
+// PLAY PHASE
+// ══════════════════════════════════════════════════
+function beginPlayPhase() {
+  ensureAudio();
+  document.getElementById('game-instruct').textContent = 'Tap now — follow the pulse';
+  document.getElementById('countdown-display').textContent = '';
+  setPhaseBadge('Recreating');
+  enablePads();
+  playerTaps = [];
+
+  const cfg = DIFF_CONFIG[difficulty];
+  const beatDurMs = 60000 / cfg.bpm;
+  patternDurationMs = beatDurMs * 4 + 200;
+  patternPlayStartMs = performance.now();
+
+  // Quiet metronome during play
+  const playStartSec = audioCtx.currentTime + 0.05;
+  for (let b = 0; b < 4; b++) {
+    const tMs = b * beatDurMs;
+    schedMetro(playStartSec + tMs / 1000, b === 0);
+    const bi = b;
+    metronomeTimeouts.push(setTimeout(() => flashBeat(bi), 50 + tMs));
+  }
+
+  // Progress bar
+  document.getElementById('progress-wrap').style.opacity = '1';
+  document.getElementById('progress-bar').style.width = '0%';
+  const startProg = performance.now();
+  progressInterval = setInterval(() => {
+    const pct = Math.min(100, ((performance.now() - startProg) / patternDurationMs) * 100);
+    document.getElementById('progress-bar').style.width = pct + '%';
+    if (pct >= 100) {
+      clearInterval(progressInterval);
+      progressInterval = null;
+    }
+  }, 30);
+
+  // End play phase after one loop
+  playTimeout = setTimeout(() => endPlayPhase(), patternDurationMs);
+}
+
+function handleTap(padIdx) {
+  if (!playerTaps && !patternPlayStartMs) return;
+  const now = performance.now() - patternPlayStartMs;
+  playerTaps.push({ pad: padIdx, time: now });
+  playTapSound();
+  // Quick visual feedback — score is shown properly at end
+  const pad = document.getElementById('pad' + padIdx);
+  pad.classList.add('lit');
+  setTimeout(() => pad.classList.remove('lit'), 120);
+}
+
+// ══════════════════════════════════════════════════
+// SCORING
+// ══════════════════════════════════════════════════
+function endPlayPhase() {
+  clearAllTimeouts();
+  disablePads();
+  document.getElementById('progress-wrap').style.opacity = '0';
+
+  const cfg = DIFF_CONFIG[difficulty];
+  const results = scoreRound(cfg);
+
+  // Flash pad feedback
+  results.forEach(r => {
+    if (r.grade === 'perfect') {
+      document.getElementById('pad' + r.pad).classList.add('hit-perfect');
+      document.getElementById('hl' + r.pad).textContent = 'Perfect';
+    } else if (r.grade === 'good') {
+      document.getElementById('pad' + r.pad).classList.add('hit-good');
+      document.getElementById('hl' + r.pad).textContent = 'Good';
+    } else {
+      document.getElementById('pad' + r.pad).classList.add('hit-miss');
+      document.getElementById('hl' + r.pad).textContent = 'Miss';
+    }
+  });
+
+  const perfCount  = results.filter(r => r.grade === 'perfect').length;
+  const goodCount  = results.filter(r => r.grade === 'good').length;
+  const missCount  = results.filter(r => r.grade === 'miss').length;
+  const maxPoints  = pattern.length * 100;
+  const earned     = perfCount * 100 + goodCount * 50;
+  const pct        = Math.round((earned / maxPoints) * 100);
+
+  // Save best
+  const bestKey = 'ra_best_' + difficulty;
+  const prev = parseInt(localStorage.getItem(bestKey) || '0');
+  if (pct > prev) localStorage.setItem(bestKey, pct);
+
+  setTimeout(() => showResults(perfCount, goodCount, missCount, pct), 900);
+}
+
+function scoreRound(cfg) {
+  // For each note in pattern, find the best matching tap (same pad, closest time)
+  const expected = pattern.map(n => ({
+    pad: n.pad,
+    time: slotToMs(n.slot, cfg.bpm),
+    matched: false
+  }));
+
+  // Sort taps by time
+  const taps = [...playerTaps].sort((a,b) => a.time - b.time);
+  const usedTaps = new Array(taps.length).fill(false);
+
+  const results = expected.map(exp => {
+    // Find closest tap on same pad within 300ms
+    let best = null, bestDiff = Infinity;
+    taps.forEach((tap, i) => {
+      if (usedTaps[i] || tap.pad !== exp.pad) return;
+      const diff = Math.abs(tap.time - exp.time);
+      if (diff < bestDiff && diff < 350) { best = i; bestDiff = diff; }
     });
-  } else {
-    document.getElementById('ra-instruct').textContent='BUILD THE RHYTHM · CLICK CELLS TO TOGGLE BEATS ON';
-    document.getElementById('ra-desc').textContent=L.desc;
-    playBtn.style.display='none';
-    submitBtn.disabled=false;
-    phase='listening';
-  }
-}
 
-function submitPattern(){
-  if(submitting)return;
-  var L=LEVELS[lvlIdx];
-  var cells=L.beats*L.cpb;
-  submitting=true;
-  phase='reveal';
-  document.getElementById('ra-submit-btn').disabled=true;
-  document.getElementById('ra-playback-btn').disabled=true;
-
-  var correct=0,missed=0,extra=0;
-  for(var i=0;i<cells;i++){
-    var el=cellEls[i];
-    el.classList.add('disabled');
-    el.classList.remove('cell-on');
-    if(L.pattern[i]===1&&playerGrid[i]===1){correct++;el.classList.add('cell-correct');}
-    else if(L.pattern[i]===1&&playerGrid[i]===0){missed++;el.classList.add('cell-missed');}
-    else if(L.pattern[i]===0&&playerGrid[i]===1){extra++;el.classList.add('cell-extra');}
-    else{el.classList.add('cell-ok');}
-  }
-  var acc=Math.round(correct/cells*100);
-  var passed=acc>=70;
-  if(passed)levelsCompleted++;
-  document.getElementById('ra-score-display').textContent='COMPLETED '+levelsCompleted;
-  document.getElementById('ra-accuracy').textContent=acc+'%';
-  var fb=passed?'PATTERN MASTERED · ADVANCING':(missed>0&&extra>0)?missed+' MISSED · '+extra+' EXTRA':missed>0?missed+' BEATS MISSED':'STUDY THE RHYTHM · '+correct+' OF '+cells+' CORRECT';
-  document.getElementById('ra-feedback').textContent=fb;
-
-  /* For build mode: play correct pattern after brief pause */
-  if(L.mode==='build'){
-    setTimeout(function(){
-      playPattern(L,1,null);
-    },800);
-  }
-
-  setTimeout(function(){
-    lvlIdx++;
-    if(lvlIdx>=LEVELS.length){endGame();}
-    else{loadLevel();}
-  },L.mode==='build'?3200:2500);
-}
-
-function startGame(){
-  lvlIdx=0;levelsCompleted=0;submitting=false;
-  show('gs');
-  loadLevel();
-}
-
-function endGame(){
-  show('os');
-  document.getElementById('finalScore').textContent=levelsCompleted;
-  var msg;
-  if(levelsCompleted===10)msg='PERFECT RHYTHM · THE COSMOS PULSES WITH YOUR PRECISION';
-  else if(levelsCompleted>=7)msg='YOUR SENSE OF PULSE IS STRONG · THE UNIVERSE APPROVES';
-  else if(levelsCompleted>=4)msg='THE PATTERNS ARE BEGINNING TO REVEAL THEMSELVES';
-  else msg='THE RHYTHM ELUDES YOU STILL · LISTEN DEEPER';
-  document.getElementById('os-result').textContent=msg;
-  if(typeof lbOnGameOver==='function')lbOnGameOver(levelsCompleted);
-}
-
-document.addEventListener('DOMContentLoaded',function(){
-  document.getElementById('startBtn').addEventListener('click',startGame);
-  document.getElementById('restartBtn').addEventListener('click',function(){
-    document.getElementById('os').classList.remove('active');
-    startGame();
-  });
-  document.getElementById('ra-submit-btn').addEventListener('click',submitPattern);
-  document.getElementById('ra-playback-btn').addEventListener('click',function(){
-    if(phase==='idle'||phase==='listening'){
-      var L=LEVELS[lvlIdx];
-      clearReveal();
-      playerGrid=new Array(L.beats*L.cpb).fill(0);
-      playPattern(L,1,function(){
-        phase='listening';
-        document.getElementById('ra-submit-btn').disabled=false;
-        document.getElementById('ra-playback-btn').disabled=false;
-      });
+    let grade = 'miss';
+    if (best !== null) {
+      usedTaps[best] = true;
+      if (bestDiff <= PERFECT_MS) grade = 'perfect';
+      else if (bestDiff <= GOOD_MS) grade = 'good';
+      else grade = 'miss';
     }
+    return { pad: exp.pad, grade };
   });
-  document.addEventListener('keydown',function(e){
-    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
-    var playBtn=document.getElementById('ra-playback-btn');
-    var subBtn=document.getElementById('ra-submit-btn');
-    if(e.code==='Space'&&playBtn&&!playBtn.disabled&&playBtn.style.display!=='none'){
-      e.preventDefault();playBtn.click();
-    } else if((e.code==='Enter'||e.code==='NumpadEnter')&&subBtn&&!subBtn.disabled){
-      e.preventDefault();subBtn.click();
-    }
-  });
-});
-})();
+
+  return results;
+}
+
+function showResults(perf, good, miss, pct) {
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('tally-perfect').textContent = perf;
+  document.getElementById('tally-good').textContent = good;
+  document.getElementById('tally-miss').textContent = miss;
+  document.getElementById('round-info').textContent =
+    'Round ' + roundNum + '  ·  ' + DIFF_CONFIG[difficulty].label.split('—')[0].trim();
+
+  const best = localStorage.getItem('ra_best_' + difficulty) || pct;
+  const bEl = document.getElementById('best-display-results');
+  bEl.textContent = 'Personal Best · ' + difficulty.toUpperCase() + ' · ' + best + '%';
+
+  show('scr-results');
+}
+
+function nextPattern() {
+  newRound();
+}
+
+function retryPattern() {
+  roundNum = Math.max(1, roundNum - 1);
+  newRound();
+}
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+updateBestDisplay();
 </script>
-<div id="ck-banner" class="ck-hidden" role="dialog" aria-label="Cookie consent">
-<p id="ck-text">This site uses cookies for login and anonymous analytics. By continuing you accept this.</p>
-<div id="ck-btns">
-<button id="ck-accept" type="button">Accept</button>
-<button id="ck-decline" type="button">Decline</button>
-</div>
-</div>
-<script>(function(){var b=document.getElementById('ck-banner');if(!b)return;var v=localStorage.getItem('cookieAccepted');if(!v){b.classList.remove('ck-hidden');}document.getElementById('ck-accept').addEventListener('click',function(){localStorage.setItem('cookieAccepted','true');b.classList.add('ck-hidden');});document.getElementById('ck-decline').addEventListener('click',function(){localStorage.setItem('cookieAccepted','false');b.classList.add('ck-hidden');});})();</script>
+
+<footer class="hp-footer"><a href="../privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span> Jestamang<span class="hp-footer-mark">·</span><a href="../terms.html">Terms of Service</a></footer>
+<script>document.querySelectorAll('.jcyr').forEach(e=>e.textContent=new Date().getFullYear());</script>
 </body>
 </html>
