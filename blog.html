@@ -303,8 +303,7 @@ View Events &#8594;
 @media(max-width:768px){.press-grid{grid-template-columns:1fr}}
 .press-expand-btn{display:block;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.75);border:1px solid rgba(201,168,76,0.35);padding:12px 32px;background:rgba(0,0,0,0.4);cursor:pointer;margin:36px auto 0;transition:color 0.2s,border-color 0.2s,background 0.2s}
 .press-expand-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.7);background:rgba(201,168,76,0.08)}
-#press-overflow{max-height:0;overflow:hidden;transition:max-height 1.2s ease}
-#press-overflow.open{max-height:10000px}
+#press-overflow{max-height:0;overflow:hidden;transition:max-height 0.7s ease}
 </style>
 
 <!-- ✦ PRESS SECTION ✦ -->
@@ -360,7 +359,29 @@ View Events &#8594;
 </div>
 
 <!-- Expand button -->
-<button class="press-expand-btn" id="press-expand-btn" aria-expanded="false" onclick="(function(){var o=document.getElementById('press-overflow'),b=document.getElementById('press-expand-btn'),open=o.classList.toggle('open');b.textContent=open?'Collapse \u2191':'See All Transmissions from the Outer World \u2193';b.setAttribute('aria-expanded',open);if(open){var cards=o.querySelectorAll('.post');cards.forEach(function(c,i){setTimeout(function(){c.classList.add('visible');},i*120);});}})()">See All Transmissions from the Outer World ↓</button>
+<button class="press-expand-btn" id="press-expand-btn" aria-expanded="false" onclick="pressSectionToggle()">See All Transmissions from the Outer World ↓</button>
+<script>
+function pressSectionToggle(){
+  var o=document.getElementById('press-overflow');
+  var b=document.getElementById('press-expand-btn');
+  var isOpen=b.getAttribute('aria-expanded')==='true';
+  if(!isOpen){
+    // Expand: measure actual height, animate to it
+    o.style.maxHeight=o.scrollHeight+'px';
+    b.textContent='Collapse \u2191';
+    b.setAttribute('aria-expanded','true');
+    var cards=o.querySelectorAll('.post');
+    cards.forEach(function(c,i){setTimeout(function(){c.classList.add('visible');},i*120);});
+  } else {
+    // Collapse: pin to current height first, then animate to 0
+    o.style.maxHeight=o.scrollHeight+'px';
+    o.offsetHeight; // force reflow
+    o.style.maxHeight='0';
+    b.textContent='See All Transmissions from the Outer World \u2193';
+    b.setAttribute('aria-expanded','false');
+  }
+}
+</script>
 
 <!-- Hidden cards 4–11 -->
 <div id="press-overflow">
