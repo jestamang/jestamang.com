@@ -2359,11 +2359,16 @@ var NC = (function(){
       houseCusps=calcHouseCusps(ascLon,jd,lat,lng);
       var pks=Object.keys(planets);
       for(var pk=0;pk<pks.length;pk++) planets[pks[pk]].house=planetHouse(planets[pks[pk]].totalDeg,houseCusps);
-      // Part of Fortune: always use day formula (ASC + Moon - Sun)
-      var fortuneLon=mod360(ascLon + rawPos['Moon'] - rawPos['Sun']);
+      // Part of Fortune: day chart = Sun above horizon (houses 7-12); night = below (houses 1-6)
+      var sunHouse=planetHouse(rawPos['Sun'],houseCusps);
+      var isDayChart=sunHouse>=7;
+      var fortuneLon=isDayChart
+        ? mod360(ascLon + rawPos['Moon'] - rawPos['Sun'])   // day: ASC + Moon - Sun
+        : mod360(ascLon + rawPos['Sun'] - rawPos['Moon']);  // night: ASC + Sun - Moon
       var fortuneData=lonToSign(fortuneLon);
       fortuneData.house=planetHouse(fortuneLon,houseCusps);
       fortuneData.retrograde=false;
+      fortuneData.isDayChart=isDayChart;
       planets['Fortune']=fortuneData;
     }
 
@@ -2745,6 +2750,9 @@ var NC = (function(){
         var retroStr=p.retrograde?'<span style="color:rgba(201,168,76,0.55);font-size:0.75rem;">\u211E</span>':'';
         var dcan=getDecan(p.totalDeg);
         var decanSub='<div style="font-size:10px;color:rgba(201,168,76,0.6);font-style:italic;margin-top:2px;white-space:nowrap;">'+DECAN_ORDINALS[dcan.num-1]+' Decan \u00B7 '+dcan.ruler+'</div>';
+        if(rn==='Fortune'&&p.isDayChart!==undefined&&p.isDayChart!==null){
+          decanSub+='<div style="font-size:10px;color:rgba(201,168,76,0.45);margin-top:1px;white-space:nowrap;">'+(p.isDayChart?'Day Chart':'Night Chart')+'</div>';
+        }
         html+='<tr>'
             +'<td><span style="color:'+pi2.color+';font-size:1.05rem;">'+rsym+'</span> '+rn+decanSub+'</td>'
             +'<td><span class="sign-glyph">'+p.glyph+'</span>'+p.sign+'</td>'
