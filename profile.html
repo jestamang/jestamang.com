@@ -2125,38 +2125,11 @@ var NC = (function(){
     return mod360(Math.atan2(Y_p-Y_e,X_p-X_e)*RAD);
   }
 
-  // Neptune geocentric longitude — VSOP87 Meeus Table 34.a + Keplerian geocentric
-  function neptuneLongitude(jd){
-    var T=calcT(jd), tau=T/10;
-    var L0=_vsop([
-      [531188633.0,0,0],
-      [3934243.0,5.4799573,38.1330356],[75004.0,5.48903,76.2660713],
-      [1982.0,5.4891,114.3991069],[55.0,5.489,152.5321424],
-      [593.0,2.2802,1.4844727],[117.0,3.6076,2.9689454],
-      [52.0,3.675,36.6485829],[47.0,0.851,35.1640902],[40.0,3.764,37.6127015]
-    ],tau);
-    var L1=_vsop([
-      [3812678980.0,0,0],
-      [16241.0,4.12626,38.1330356],[6804.0,4.1243,76.2660713],
-      [272.0,4.124,114.3991069],[246.0,5.765,35.1640902]
-    ],tau);
-    var L2=_vsop([
-      [3795.0,3.6246,38.1330356],[301.0,3.625,76.2660713]
-    ],tau);
-    var L_helio=mod360((L0+L1*tau+L2*tau*tau)*1e-8*RAD);
-    var el=PLANET_ELEMENTS['Neptune'];
-    var varpi=mod360(el.omega0+el.omegaR*T);
-    var M_rad=mod360(el.L0+el.Lr*T-varpi)*DEG;
-    var E_p=solveKepler(M_rad,el.e);
-    var r_p=el.a*(1-el.e*Math.cos(E_p));
-    var X_p=r_p*Math.cos(L_helio*DEG), Y_p=r_p*Math.sin(L_helio*DEG);
-    var lon_e=mod360(sunLongitude(jd)+180);
-    var Me=mod360(357.52911+35999.05029*T-0.0001537*T*T);
-    var E_e=solveKepler(Me*DEG,0.016709);
-    var r_e=1.000001018*(1-0.016709*Math.cos(E_e));
-    var X_e=r_e*Math.cos(lon_e*DEG), Y_e=r_e*Math.sin(lon_e*DEG);
-    return mod360(Math.atan2(Y_p-Y_e,X_p-X_e)*RAD);
-  }
+  // Neptune geocentric longitude — Keplerian 3-D orbit (J2000 elements)
+  // The 10-term truncated VSOP87 was removed: it introduced 125' of heliocentric
+  // truncation error (consistently 100-190' too high for 2000-2020), which was
+  // far worse than the pure Keplerian (~35'). The same approach was used for Pluto.
+  function neptuneLongitude(jd){ return planetLongitude('Neptune', jd); }
 
   // Pluto geocentric longitude — Keplerian 3-D orbit (J2000 elements)
   // Note: the Meeus Ch.37 perturbation table was removed because its heliocentric
