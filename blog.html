@@ -301,6 +301,10 @@ View Events &#8594;
 .press-inquiry-link{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.5);text-decoration:none;transition:color 0.2s}
 .press-inquiry-link:hover{color:#c9a84c}
 @media(max-width:768px){.press-grid{grid-template-columns:1fr}}
+.press-expand-btn{display:block;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.75);border:1px solid rgba(201,168,76,0.35);padding:12px 32px;background:rgba(0,0,0,0.4);cursor:pointer;margin:36px auto 0;transition:color 0.2s,border-color 0.2s,background 0.2s}
+.press-expand-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.7);background:rgba(201,168,76,0.08)}
+#press-overflow{max-height:0;overflow:hidden;transition:max-height 1.2s ease}
+#press-overflow.open{max-height:10000px}
 </style>
 
 <!-- ✦ PRESS SECTION ✦ -->
@@ -311,42 +315,174 @@ View Events &#8594;
   <p class="press-section-sub">The universe has been noticed.</p>
 </div>
 
-<!-- Featured press card — IPB / Klemen feature -->
-<!-- NOTE: Klemen (IPB) will be publishing a full feature on Jestamang. Update href when live. -->
+<!-- Card 1 — AEA Fanzine (newest) -->
 <article class="post" style="background:rgba(74,124,89,0.5)">
   <span class="post-numeral">✦</span>
-  <span class="post-tag">Featured</span>
-  <p class="press-pub">IPB</p>
-  <p class="post-date">MMXXVI</p>
-  <h2 class="press-headline">Coming Soon</h2>
+  <span class="post-tag">Press</span>
+  <p class="press-pub">AEA Fanzine</p>
+  <p class="post-date">OCTOBER · XXV · MMXXV</p>
+  <h2 class="press-headline">Full Length Review: The Ace Of Chase &#8216;Niga Denots&#8217; (Independent)</h2>
   <div class="post-rule"></div>
-  <p class="press-excerpt">A full feature on the Jestamang universe is forthcoming. Stay tuned for the transmission from the outer world.</p>
-  <a href="#" class="press-read-btn">Read the Full Feature</a>
+  <p class="press-excerpt">An independent review of The Ace of Chase&#8217;s Niga Denots from AEA Fanzine, written by Dave Wolff.</p>
+  <a href="http://aeafanzine.blogspot.com/2025/10/full-length-review-ace-of-chase-niga.html" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
   <p class="post-closing">&middot; ✦ &middot;</p>
 </article>
 
-<!-- Two placeholder press cards -->
+<!-- Cards 2–3 grid -->
 <div class="press-grid">
 
-  <!-- Placeholder 1 — replace with real feature when available -->
+  <!-- Card 2 — Bored City interview -->
   <article class="post" style="background:rgba(107,74,124,0.5)">
-    <span class="post-numeral">·</span>
-    <p class="press-placeholder-tag">Press</p>
-    <h3 class="press-placeholder-headline">Feature Pending</h3>
+    <span class="post-numeral">✦</span>
+    <span class="post-tag">Press</span>
+    <p class="press-pub">Bored City</p>
+    <p class="post-date">DECEMBER · XIX · MMXXIII</p>
+    <h2 class="press-headline">Interview with Jestamang</h2>
     <div class="post-rule"></div>
-    <p class="press-placeholder-text">A transmission from the outer world is being prepared. More to follow.</p>
-    <p class="post-closing">&middot;</p>
+    <p class="press-excerpt">A full interview with Jestamang published by Bored City.</p>
+    <a href="https://boredcity.co/interview-with-jestamang/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
+    <p class="post-closing">&middot; ✦ &middot;</p>
   </article>
 
-  <!-- Placeholder 2 — replace with real feature when available -->
+  <!-- Card 3 — Pop-Cultr -->
   <article class="post" style="background:rgba(124,74,74,0.5)">
-    <span class="post-numeral">·</span>
-    <p class="press-placeholder-tag">Press</p>
-    <h3 class="press-placeholder-headline">Feature Pending</h3>
+    <span class="post-numeral">✦</span>
+    <span class="post-tag">Press</span>
+    <p class="press-pub">Pop-Cultr</p>
+    <p class="post-date">DECEMBER · VII · MMXXIII</p>
+    <h2 class="press-headline">Jestamang On Unleashing Creativity And Defying Conventions In &#8216;Zoo&#8217;</h2>
     <div class="post-rule"></div>
-    <p class="press-placeholder-text">A transmission from the outer world is being prepared. More to follow.</p>
-    <p class="post-closing">&middot;</p>
+    <p class="press-excerpt">Jestamang discusses the creative process and defying conventions in Zoo.</p>
+    <a href="https://pop-cultr.com/2023/12/07/jestamang-on-unleashing-creativity-and-defying-conventions-in-zoo/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
+    <p class="post-closing">&middot; ✦ &middot;</p>
   </article>
+
+</div>
+
+<!-- Expand button -->
+<button class="press-expand-btn" id="press-expand-btn" aria-expanded="false" onclick="(function(){var o=document.getElementById('press-overflow'),b=document.getElementById('press-expand-btn'),open=o.classList.toggle('open');b.textContent=open?'Collapse \u2191':'See All Transmissions from the Outer World \u2193';b.setAttribute('aria-expanded',open);if(open){var cards=o.querySelectorAll('.post');cards.forEach(function(c,i){setTimeout(function(){c.classList.add('visible');},i*120);});}})()">See All Transmissions from the Outer World ↓</button>
+
+<!-- Hidden cards 4–11 -->
+<div id="press-overflow">
+
+  <!-- Card 4 — Pinch of Sol -->
+  <article class="post" style="background:rgba(74,124,89,0.5);margin-top:24px">
+    <span class="post-numeral">✦</span>
+    <span class="post-tag">Press</span>
+    <p class="press-pub">Pinch of Sol</p>
+    <p class="post-date">DECEMBER · XXI · MMXXIII</p>
+    <h2 class="press-headline">A Candid Interview With Jestamang&#8217;s The Ace of Chase On 8slush (Ode to Bonnie)</h2>
+    <div class="post-rule"></div>
+    <p class="press-excerpt">A candid conversation diving into the world of The Ace of Chase and the making of 8slush (Ode to Bonnie).</p>
+    <a href="https://pinchofsol.com/2023/11/21/an-candid-interview-with-jestamangs-the-ace-of-chase-on-8slush-ode-to-bonnie/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
+    <p class="post-closing">&middot; ✦ &middot;</p>
+  </article>
+
+  <!-- Cards 5–6 grid -->
+  <div class="press-grid">
+
+    <!-- Card 5 — Just Bangers -->
+    <article class="post" style="background:rgba(107,74,124,0.5)">
+      <span class="post-numeral">✦</span>
+      <span class="post-tag">Press</span>
+      <p class="press-pub">Just Bangers</p>
+      <p class="post-date">DECEMBER · XIII · MMXXIII</p>
+      <h2 class="press-headline">A Psychedelic Escape: Diving Into Jestamang&#8217;s &#8216;Jestawomang&#8217;</h2>
+      <div class="post-rule"></div>
+      <p class="press-excerpt">Just Bangers dives deep into the psychedelic world of Jestawomang.</p>
+      <a href="https://justbangers.com/banger-music/a-psychedelic-escape-diving-into-jestamangs-jestawomang/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
+      <p class="post-closing">&middot; ✦ &middot;</p>
+    </article>
+
+    <!-- Card 6 — Pop Dose Magazine -->
+    <article class="post" style="background:rgba(124,74,74,0.5)">
+      <span class="post-numeral">✦</span>
+      <span class="post-tag">Press</span>
+      <p class="press-pub">Pop Dose Magazine</p>
+      <p class="post-date">DECEMBER · XI · MMXXIII</p>
+      <h2 class="press-headline">Jestamang&#8217;s Jestawomang: An Album Full of Emotions and Psychedelic Pop</h2>
+      <div class="post-rule"></div>
+      <p class="press-excerpt">Pop Dose Magazine explores the emotional depth and psychedelic textures of Jestawomang.</p>
+      <a href="https://popdosemagazine.co.uk/jestamangs-jestawomang-an-album-full-of-emotions-and-psychedelic-pop/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
+      <p class="post-closing">&middot; ✦ &middot;</p>
+    </article>
+
+  </div>
+
+  <!-- Card 7 — Funk and Play -->
+  <article class="post" style="background:rgba(74,124,89,0.5)">
+    <span class="post-numeral">✦</span>
+    <span class="post-tag">Press</span>
+    <p class="press-pub">Funk and Play</p>
+    <p class="post-date">NOVEMBER · II · MMXXIII</p>
+    <h2 class="press-headline">Jestamang&#8217;s &#8216;8slush (Ode to Bonnie)&#8217;: A Psychedelic Ode Breaking Boundaries &amp; Embracing Evolution</h2>
+    <div class="post-rule"></div>
+    <p class="press-excerpt">Funk and Play examines how 8slush (Ode to Bonnie) breaks sonic boundaries and marks a bold evolution.</p>
+    <a href="https://funkandplay.com/jestamangs-8slush-ode-to-bonnie-a-psychedelic-ode-breaking-boundaries-embracing-evolution/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
+    <p class="post-closing">&middot; ✦ &middot;</p>
+  </article>
+
+  <!-- Cards 8–9 grid -->
+  <div class="press-grid">
+
+    <!-- Card 8 — Stereo Saints -->
+    <article class="post" style="background:rgba(107,74,124,0.5)">
+      <span class="post-numeral">✦</span>
+      <span class="post-tag">Press</span>
+      <p class="press-pub">Stereo Saints</p>
+      <p class="post-date">NOVEMBER · II · MMXXIII</p>
+      <h2 class="press-headline">Jestamang&#8217;s &#8216;8slush&#8217;: An Ode To Bonnie&#8217;s Psychedelic Rhapsody</h2>
+      <div class="post-rule"></div>
+      <p class="press-excerpt">Stereo Saints unpacks the psychedelic rhapsody at the heart of 8slush (Ode to Bonnie).</p>
+      <a href="https://stereo-saints.com/2023/11/02/jestamangs-8slush-an-ode-to-bonnies-psychedelic-rhapsody/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
+      <p class="post-closing">&middot; ✦ &middot;</p>
+    </article>
+
+    <!-- Card 9 — Sweet N Sour Magazine -->
+    <article class="post" style="background:rgba(124,74,74,0.5)">
+      <span class="post-numeral">✦</span>
+      <span class="post-tag">Press</span>
+      <p class="press-pub">Sweet N Sour Magazine</p>
+      <p class="post-date">OCTOBER · XXVI · MMXXIII</p>
+      <h2 class="press-headline">Dissecting the Psychedelic Dimensions of Jestamang&#8217;s &#8216;8slush (Ode to Bonnie)&#8217;</h2>
+      <div class="post-rule"></div>
+      <p class="press-excerpt">Sweet N Sour Magazine dissects every psychedelic layer of 8slush (Ode to Bonnie).</p>
+      <a href="https://sweetnsourmagazine.com/dissecting-the-psychedelic-dimensions-of-jestamangs-8slush-ode-to-bonnie/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
+      <p class="post-closing">&middot; ✦ &middot;</p>
+    </article>
+
+  </div>
+
+  <!-- Cards 10–11 grid -->
+  <div class="press-grid">
+
+    <!-- Card 10 — Bored City Don't ID Jesus -->
+    <article class="post" style="background:rgba(74,124,89,0.5)">
+      <span class="post-numeral">✦</span>
+      <span class="post-tag">Press</span>
+      <p class="press-pub">Bored City</p>
+      <p class="post-date">JULY · XXIV · MMXXIII</p>
+      <h2 class="press-headline">Don&#8217;t ID Jesus &mdash; Jestamang</h2>
+      <div class="post-rule"></div>
+      <p class="press-excerpt">Bored City covers Don&#8217;t ID Jesus, a transmission from the Jestamang universe.</p>
+      <a href="https://boredcity.co/jestamang-dont-id-jesus/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
+      <p class="post-closing">&middot; ✦ &middot;</p>
+    </article>
+
+    <!-- Card 11 — Bored City Conversation -->
+    <article class="post" style="background:rgba(107,74,124,0.5)">
+      <span class="post-numeral">✦</span>
+      <span class="post-tag">Press</span>
+      <p class="press-pub">Bored City</p>
+      <p class="post-date">JULY · XXIV · MMXXIII</p>
+      <h2 class="press-headline">Conversation with Jestamang</h2>
+      <div class="post-rule"></div>
+      <p class="press-excerpt">Bored City sits down for a conversation with Jestamang.</p>
+      <a href="https://boredcity.co/conversation-with-jestamang/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
+      <p class="post-closing">&middot; ✦ &middot;</p>
+    </article>
+
+  </div>
 
 </div>
 
