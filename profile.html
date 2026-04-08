@@ -2430,6 +2430,28 @@ var NC = (function(){
     return result;
   }
 
+  function getDeltaT(year){
+    var t = year - 2000;
+    if(year >= 1986 && year <= 2005){
+      return 63.86 + 0.3345*t - 0.060374*t*t + 0.0017275*t*t*t
+           + 0.000651814*t*t*t*t + 0.00002373599*t*t*t*t*t;
+    }
+    if(year >= 2005 && year <= 2050){
+      return 62.92 + 0.32217*t + 0.005589*t*t;
+    }
+    if(year >= 1961 && year <= 1986){
+      var u1 = (year - 1975) / 100;
+      return 45.45 + 106.7*u1 - u1*u1/260 - u1*u1*u1/718;
+    }
+    if(year >= 1900 && year <= 1961){
+      var u2 = (year - 1900) / 100;
+      return -2.79 + 149.4119*u2 - 598.939*u2*u2 + 1537.320*u2*u2*u2
+           - 1677.060*u2*u2*u2*u2;
+    }
+    var u3 = (year - 1820) / 100;
+    return -20 + 32*u3*u3;
+  }
+
   function calculate(dateStr, timeStr, lat, lng, utcOffsetMinutes){
     var dp=dateStr.split('-').map(Number), yr=dp[0],mo=dp[1],dy=dp[2];
     var utcHour=12,utcMin=0;
@@ -2441,28 +2463,31 @@ var NC = (function(){
       utcMin=((totalUTCMins%60)+60)%60;
     }
     var jd=toJulianDate(yr,mo,dy,utcHour,utcMin,0);
+    // JD_TT: apply Delta T for planet positions (TT = UT + ΔT)
+    var jdTT=jd + getDeltaT(yr)/86400;
     var hasTime=!!(timeStr&&timeStr.length>=4);
 
     var rawPos={
-      Sun:sunLongitude(jd),Moon:moonLongitude(jd),
-      Mercury:planetLongitude('Mercury',jd),Venus:planetLongitude('Venus',jd),
-      Mars:planetLongitude('Mars',jd),Jupiter:planetLongitude('Jupiter',jd),
-      Saturn:planetLongitude('Saturn',jd),Uranus:uranusLongitude(jd),
-      Neptune:neptuneLongitude(jd),Pluto:plutoLongitude(jd),
-      'North Node':northNodeLongitude(jd),'South Node':mod360(northNodeLongitude(jd)+180),
-      Chiron:chironLongitude(jd),Lilith:lilithLongitude(jd),
+      Sun:sunLongitude(jdTT),Moon:moonLongitude(jdTT),
+      Mercury:planetLongitude('Mercury',jdTT),Venus:planetLongitude('Venus',jdTT),
+      Mars:planetLongitude('Mars',jdTT),Jupiter:planetLongitude('Jupiter',jdTT),
+      Saturn:planetLongitude('Saturn',jdTT),Uranus:uranusLongitude(jdTT),
+      Neptune:neptuneLongitude(jdTT),Pluto:plutoLongitude(jdTT),
+      'North Node':northNodeLongitude(jdTT),'South Node':mod360(northNodeLongitude(jdTT)+180),
+      Chiron:chironLongitude(jdTT),Lilith:lilithLongitude(jdTT),
     };
 
     var planets={};
     var pnames=Object.keys(rawPos);
     for(var pi=0;pi<pnames.length;pi++){
       var pn=pnames[pi],s=lonToSign(rawPos[pn]);
-      s.retrograde=isRetrograde(pn,jd);
+      s.retrograde=isRetrograde(pn,jdTT);
       planets[pn]=s;
     }
 
     var ascData=null,mcData=null,houseCusps=null;
     if(hasTime){
+      // Houses use JD_UT: GMST/RAMC is defined in terms of UT, not TT
       var ascLon=calcAscendant(jd,lat,lng),mcLon=calcMC(jd,lng);
       ascData=lonToSign(ascLon); mcData=lonToSign(mcLon);
       houseCusps=calcHouseCusps(ascLon,jd,lat,lng);
