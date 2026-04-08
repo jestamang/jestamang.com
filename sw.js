@@ -18,7 +18,6 @@ var PRECACHE_URLS = [
   '/email.html',
   '/comix.html',
   '/arcade.html',
-  '/arcade.html',
   '/blog.html',
   '/shows.html',
   '/login.html',
