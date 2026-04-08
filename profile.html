@@ -4,20 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jestamang</title>
-<meta name="description" content="Your Jestamang member profile and cosmic dossier. Manage your account and explore your natal chart within the inner circle.">
-<meta name="keywords" content="Jestamang, psychedelic music, experimental, indie collective, Quarter Days, NONS, 2K2123, Jestamang universe, psychedelic rock, profile, dossier, member profile, natal chart, inner circle account">
-<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Calculate your free natal chart with the Jestamang Celestial Calculator. Accurate Placidus houses, planetary positions, aspects, and cosmic interpretation.">
+<meta name="keywords" content="natal chart calculator, free birth chart, Placidus houses, astrology chart, sun moon rising, planetary positions, Jestamang, cosmic dossier">
+<meta name="robots" content="index, follow">
 <link rel="canonical" href="https://jestamang.com/profile.html">
 <meta property="og:site_name" content="Jestamang">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Jestamang">
-<meta property="og:description" content="Your Jestamang member profile and cosmic dossier. Manage your account and explore your natal chart within the inner circle.">
+<meta property="og:title" content="Jestamang Celestial Chart Calculator">
+<meta property="og:description" content="Free natal chart calculator. Sun, moon, rising, all planets, Placidus houses, aspects, and Jestamang cosmic interpretation.">
 <meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 <meta property="og:url" content="https://jestamang.com/profile.html">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Your Dossier — Jestamang">
-<meta name="twitter:description" content="Your Jestamang member profile and cosmic dossier. Manage your account and explore your natal chart within the inner circle.">
+<meta name="twitter:title" content="Jestamang Celestial Chart Calculator">
+<meta name="twitter:description" content="Free natal chart calculator. Sun, moon, rising, all planets, Placidus houses, aspects, and Jestamang cosmic interpretation.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Jestamang Natal Chart Calculator",
+  "url": "https://jestamang.com/profile.html",
+  "description": "Free astronomical natal chart calculator using Placidus house system. Calculate your sun, moon, rising sign and full planetary positions.",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "creator": { "@type": "Organization", "name": "Jestamang", "url": "https://jestamang.com" }
+}
+</script>
 
 
 <style>
@@ -1295,6 +1308,10 @@ body::before{
 .btn-notif-enable{background:transparent;border:1px solid rgba(201,168,76,0.55);color:#c9a84c;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.32em;text-transform:uppercase;padding:12px 28px;cursor:pointer;transition:border-color 0.25s,box-shadow 0.25s,background 0.25s;}
 .btn-notif-enable:hover{border-color:#c9a84c;box-shadow:0 0 20px rgba(201,168,76,0.25);background:rgba(201,168,76,0.06);}
 .btn-notif-enable:disabled{opacity:0.5;cursor:default;}
+.btn-notif-enable.notif-active{background:#c9a84c;color:#000;border-color:#c9a84c;}
+.btn-notif-enable.notif-active:hover{background:#dfc060;box-shadow:0 0 20px rgba(201,168,76,0.35);}
+.notif-disabled-confirm{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(240,230,210,0.5);margin-top:12px;opacity:0;transition:opacity 0.4s ease;pointer-events:none;}
+.notif-disabled-confirm.visible{opacity:1;}
 .notif-status{font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;margin-top:16px;min-height:22px;}
 .notif-status--ok{color:rgba(201,168,76,0.7);}
 .notif-status--blocked{color:rgba(251,56,56,0.65);}
@@ -1411,7 +1428,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <button class="btn-gold" id="username-save-btn">Save</button>
       <button class="btn-ghost" id="username-cancel-btn">Cancel</button>
     </div>
-    <div class="profile-subtitle">Member of the Inner Circle</div>
+    <div class="profile-subtitle">Welcome</div>
     <div class="profile-since" id="member-since"></div>
     <div class="gold-rule"></div>
   </div>
@@ -1678,10 +1695,11 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <!-- Notifications Opt-In -->
   <div class="dark-card profile-section" id="sec-notifications" data-section="notifications">
     <div class="notif-card">
-      <div class="notif-title">Receive Cosmic Transmissions</div>
-      <div class="notif-sub">Get notified when new albums and shows are announced</div>
+      <div class="notif-title">Receive Transmissions</div>
+      <div class="notif-sub" id="notif-sub">Get notified when new music and shows are announced</div>
       <button class="btn-notif-enable" id="notif-enable-btn">Enable Notifications</button>
       <div class="notif-status" id="notif-status"></div>
+      <div class="notif-disabled-confirm" id="notif-disabled-confirm">Transmissions Disabled</div>
       <div class="notif-ios-note">iOS support coming soon · Works on Android Chrome and desktop browsers</div>
     </div>
   </div>
@@ -3994,39 +4012,63 @@ var NC = (function(){
 (function () {
   'use strict';
 
-  var enableBtn  = document.getElementById('notif-enable-btn');
-  var statusEl   = document.getElementById('notif-status');
-  var LS_KEY     = 'notificationsEnabled';
+  var enableBtn   = document.getElementById('notif-enable-btn');
+  var statusEl    = document.getElementById('notif-status');
+  var subEl       = document.getElementById('notif-sub');
+  var confirmEl   = document.getElementById('notif-disabled-confirm');
+  var LS_KEY      = 'notificationsEnabled';
 
-  // ── Restore button state on load ────────────────────────────
-  function restoreState() {
-    var perm = Notification && Notification.permission;
-    if (localStorage.getItem(LS_KEY) === 'true' && perm === 'granted') {
-      setEnabled();
-    } else if (perm === 'denied') {
-      setBlocked();
-    }
+  // ── Hide section entirely if not supported ───────────────────
+  if (!('Notification' in window)) {
+    var section = document.getElementById('sec-notifications');
+    if (section) section.style.display = 'none';
+    return;
   }
 
+  // ── State setters ────────────────────────────────────────────
   function setEnabled() {
     if (!enableBtn) return;
-    enableBtn.textContent   = 'Transmissions Enabled ✦';
-    enableBtn.disabled      = true;
-    statusEl.textContent    = '';
-    statusEl.className      = 'notif-status notif-status--ok';
+    enableBtn.textContent = 'Disable Notifications ✦';
+    enableBtn.classList.add('notif-active');
+    enableBtn.disabled = false;
+    if (subEl) subEl.textContent = 'You are receiving transmissions';
+    statusEl.textContent = '';
+    statusEl.className = 'notif-status notif-status--ok';
     localStorage.setItem(LS_KEY, 'true');
+  }
+
+  function setDisabled() {
+    if (!enableBtn) return;
+    enableBtn.textContent = 'Enable Notifications';
+    enableBtn.classList.remove('notif-active');
+    enableBtn.disabled = false;
+    if (subEl) subEl.textContent = 'Get notified when new music and shows are announced';
+    statusEl.textContent = '';
+    statusEl.className = 'notif-status';
+    localStorage.setItem(LS_KEY, 'false');
   }
 
   function setBlocked() {
     if (!enableBtn) return;
-    enableBtn.textContent = 'Notifications Blocked';
-    enableBtn.disabled    = true;
-    statusEl.textContent  = 'Enable in browser settings to receive transmissions';
-    statusEl.className    = 'notif-status notif-status--blocked';
+    enableBtn.textContent = 'Enable Notifications';
+    enableBtn.classList.remove('notif-active');
+    enableBtn.disabled = false;
+    statusEl.textContent = 'Notifications blocked in browser — enable in your browser settings to receive transmissions';
+    statusEl.className = 'notif-status notif-status--blocked';
     localStorage.setItem(LS_KEY, 'false');
   }
 
-  // ── Save FCM token to Firestore ──────────────────────────────
+  function restoreState() {
+    var perm = Notification.permission;
+    if (perm === 'denied') { setBlocked(); return; }
+    if (localStorage.getItem(LS_KEY) === 'true' && perm === 'granted') {
+      setEnabled();
+    } else {
+      setDisabled();
+    }
+  }
+
+  // ── FCM helpers ──────────────────────────────────────────────
   function saveFcmToken(uid, token) {
     if (!window.jestaDB || !token) return;
     window.jestaDB.collection('users').doc(uid).set(
@@ -4035,86 +4077,84 @@ var NC = (function(){
     );
   }
 
-  // ── Request permission and get FCM token ─────────────────────
-  function enableNotifications(uid) {
-    if (!('Notification' in window)) {
-      statusEl.textContent = 'Notifications not supported in this browser';
-      statusEl.className   = 'notif-status notif-status--blocked';
-      return;
-    }
+  function removeFcmToken(uid) {
+    if (!window.jestaDB) return;
+    window.jestaDB.collection('users').doc(uid).update({
+      fcmToken: firebase.firestore.FieldValue.delete()
+    }).catch(function(){});
+  }
 
+  // ── Enable flow ──────────────────────────────────────────────
+  function doEnable(uid) {
     Notification.requestPermission().then(function (permission) {
-      if (permission !== 'granted') {
-        setBlocked();
-        return;
-      }
-
-      // Get FCM token if messaging was initialized
+      if (permission !== 'granted') { setBlocked(); return; }
       if (window.jestaMessaging && window.JESTA_VAPID_KEY &&
           window.JESTA_VAPID_KEY !== 'PASTE_YOUR_FCM_VAPID_KEY_HERE') {
         window.jestaMessaging.getToken({ vapidKey: window.JESTA_VAPID_KEY })
-          .then(function (token) {
-            if (token) saveFcmToken(uid, token);
-          })
-          .catch(function () { /* token fetch failed — still show enabled */ });
+          .then(function (token) { if (token) saveFcmToken(uid, token); })
+          .catch(function () {});
       }
-
       setEnabled();
       startFirestoreListener();
     });
   }
 
+  // ── Disable flow ─────────────────────────────────────────────
+  function doDisable(uid) {
+    removeFcmToken(uid);
+    if (window.jestaMessaging && window.jestaMessaging.deleteToken) {
+      window.jestaMessaging.deleteToken().catch(function(){});
+    }
+    setDisabled();
+    // Show brief confirmation
+    if (confirmEl) {
+      confirmEl.classList.add('visible');
+      setTimeout(function(){ confirmEl.classList.remove('visible'); }, 2000);
+    }
+  }
+
   // ── Firestore listener — free-tier fallback ──────────────────
-  // Watches notifications collection. When any logged-in tab is open
-  // and a new notification document (sent: false) appears, it shows
-  // the notification via the service worker and marks it sent: true.
-  // NOTE: True background delivery (when browser is closed) requires
-  // Firebase Cloud Functions (Blaze plan). This fallback works when
-  // a member has at least one tab open.
   var listenerAttached = false;
   function startFirestoreListener() {
     if (listenerAttached || !window.jestaDB || localStorage.getItem(LS_KEY) !== 'true') return;
     listenerAttached = true;
-
     window.jestaDB.collection('notifications')
       .where('sent', '==', false)
       .onSnapshot(function (snapshot) {
         snapshot.docChanges().forEach(function (change) {
           if (change.type !== 'added') return;
           var d = change.doc.data();
-
-          // Show notification via service worker
           if (navigator.serviceWorker && navigator.serviceWorker.controller) {
             navigator.serviceWorker.controller.postMessage({
-              type:  'SHOW_NOTIFICATION',
-              title: d.title || 'JESTAMANG',
-              body:  d.body  || '',
-              link:  d.link  || '/'
+              type: 'SHOW_NOTIFICATION', title: d.title || 'JESTAMANG',
+              body: d.body || '', link: d.link || '/'
             });
-          } else if ('Notification' in window && Notification.permission === 'granted') {
+          } else if (Notification.permission === 'granted') {
             new Notification(d.title || 'JESTAMANG', { body: d.body || '', icon: 'assets/icons/icon-192.png' });
           }
-
-          // Mark as sent so it doesn't fire again
           change.doc.ref.update({ sent: true });
         });
       });
   }
 
-  // ── Wire up button ───────────────────────────────────────────
+  // ── Button click ─────────────────────────────────────────────
   if (enableBtn) {
     enableBtn.addEventListener('click', function () {
       var user = window.jestaAuth && window.jestaAuth.currentUser;
       if (!user) {
-        statusEl.textContent = 'Sign in to enable notifications';
-        statusEl.className   = 'notif-status notif-status--blocked';
+        statusEl.textContent = 'Sign in to manage notifications';
+        statusEl.className = 'notif-status notif-status--blocked';
         return;
       }
-      enableNotifications(user.uid);
+      if (localStorage.getItem(LS_KEY) === 'true') {
+        doDisable(user.uid);
+      } else {
+        doEnable(user.uid);
+      }
     });
   }
 
-  // ── On auth ready: restore state + start listener if enabled ─
+  // ── On auth ready ────────────────────────────────────────────
   if (window.jestaAuth) {
     window.jestaAuth.onAuthStateChanged(function (user) {
       if (user) {
