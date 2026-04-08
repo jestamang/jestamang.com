@@ -104,6 +104,8 @@
 .hp-games-list li{font-size:0.72rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(255,255,255,0.6);border-bottom:1px solid rgba(201,168,76,0.1);padding:14px 0}
 .hp-games-list li:first-child{padding-top:0}
 .hp-games-list li:last-child{border-bottom:none}
+.hp-games-list li a{color:inherit;text-decoration:none;transition:color 0.2s}
+.hp-games-list li a:hover{color:#c9a84c}
 .hp-merch-strip{display:flex;gap:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:none}
 .hp-merch-strip::-webkit-scrollbar{display:none}
 .hp-merch-item{flex-shrink:0;width:120px;text-align:center}
@@ -330,7 +332,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <div class="hp-divider"></div>
 
   <!-- ENTITIES -->
-  <div class="hp-section hp-section--green">
+  <div class="hp-section hp-section--red">
     <div class="hp-inner">
       <div class="hp-text">
         
@@ -357,7 +359,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <div class="hp-divider"></div>
 
   <!-- ALBUMS -->
-  <div class="hp-section hp-section--purple">
+  <div class="hp-section hp-section--green">
     <div class="hp-inner">
       <div class="hp-text">
         
@@ -408,7 +410,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <div class="hp-divider"></div>
 
   <!-- LYRICS -->
-  <div class="hp-section hp-section--red">
+  <div class="hp-section hp-section--purple">
     <div class="hp-inner">
       <div class="hp-text">
         
@@ -435,7 +437,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <div class="hp-divider"></div>
 
   <!-- COMIX -->
-  <div class="hp-section hp-section--green">
+  <div class="hp-section hp-section--red">
     <div class="hp-inner">
       <div class="hp-text">
         
@@ -460,7 +462,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <div class="hp-divider"></div>
 
   <!-- GAMES -->
-  <div class="hp-section hp-section--purple">
+  <div class="hp-section hp-section--green">
     <div class="hp-inner">
       <div class="hp-text">
         
@@ -472,10 +474,15 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <div class="hp-visual">
         <div class="hp-games-card">
           <ul class="hp-games-list">
-            <li>Memory Vault</li>
-            <li>The Daily Sigil</li>
-            <li>21</li>
-            <li>Texas Hold Em</li>
+            <li><a href="games/void.html">The Void</a></li>
+            <li><a href="games/cosmic-conductor.html">Cosmic Conductor</a></li>
+            <li><a href="games/chord-conjurer.html">Chord Conjurer</a></li>
+            <li><a href="games/pitch-oracle.html">Pitch Oracle</a></li>
+            <li><a href="games/rhythm-architect.html">Rhythm Architect</a></li>
+            <li><a href="game-memory.html">Memory Vault</a></li>
+            <li><a href="game-oracle.html">The Daily Sigil</a></li>
+            <li><a href="game-21.html">21</a></li>
+            <li><a href="game-texas.html">Texas Hold Em</a></li>
           </ul>
         </div>
       </div>
@@ -485,7 +492,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <div class="hp-divider"></div>
 
   <!-- MERCH -->
-  <div class="hp-section hp-section--red">
+  <div class="hp-section hp-section--purple">
     <div class="hp-inner">
       <div class="hp-text">
         
@@ -529,7 +536,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <div class="hp-divider"></div>
 
   <!-- BLOG -->
-  <div class="hp-section hp-section--green">
+  <div class="hp-section hp-section--red">
     <div class="hp-inner">
       <div class="hp-text">
         
@@ -551,7 +558,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <div class="hp-divider"></div>
 
   <!-- PHOTOS -->
-  <div class="hp-section hp-section--purple">
+  <div class="hp-section hp-section--green">
     <div class="hp-inner">
       <div class="hp-text">
         
@@ -606,11 +613,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script>if(!localStorage.getItem('cookieAccepted'))document.getElementById('cookie-notice').style.display='flex';</script>
 
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span> Jestamang<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a>
-<div class="ml-signup-wrap" id="ml-signup-wrap-index">
-  <div class="ml-signup-title">Join the Jestagang</div>
-  <div class="ml-embedded" data-form="8EZtSf"></div>
-</div>
-<script>(function(){var w=document.getElementById('ml-signup-wrap-index');if(!w||!window.IntersectionObserver){if(w)w.classList.add('ml-visible');return;}new IntersectionObserver(function(e,o){e.forEach(function(en){if(en.isIntersecting){w.classList.add('ml-visible');o.disconnect();}});},{threshold:0.1}).observe(w);})();</script>
 </footer>
 </section><!-- /#hp-preview -->
 <script>
