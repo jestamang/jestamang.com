@@ -141,6 +141,7 @@ a:hover{color:#c9a84c;}
 /* jt-text-treatments */
 h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .page-sub,.section-heading{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.hp-footer{background:linear-gradient(to bottom,rgba(15,45,20,0.85),rgba(0,0,0,0.96));text-align:center;padding:32px 24px 56px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.55);position:relative;z-index:10}.hp-footer a{color:rgba(201,168,76,0.55);text-decoration:none;transition:color 0.2s}.hp-footer a:hover{color:#c9a84c}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4)}
 </style>
 <style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
 <link rel="preload" as="font" type="font/ttf" href="assets/fonts/Luminari.ttf" crossorigin>
@@ -238,12 +239,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <p class="updated">Copyright &#10022; <span class="jcyr"></span> Jestamang. All Rights Reserved.</p>
   <p class="updated" style="margin-top:16px;"><a href="accessibility.html" style="color:rgba(201,168,76,0.4);text-decoration:none;letter-spacing:0.18em;">View our Accessibility Statement</a></p>
 </div>
-<footer style="position:relative;z-index:1;text-align:center;padding:24px 20px 32px;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.3);border-top:1px solid rgba(201,168,76,0.12);margin-top:40px;">
-  <a href="privacy.html" style="color:rgba(201,168,76,0.45);text-decoration:none;">Privacy Policy</a>
-  <span style="margin:0 10px;opacity:0.4;">·</span>
-  <span>© <span class="jcyr"></span> Jestamang</span>
-  <span style="margin:0 10px;opacity:0.4;">·</span>
-  <a href="terms.html" style="color:rgba(201,168,76,0.45);text-decoration:none;">Terms of Service</a>
+<footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span> Jestamang<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a>
 </footer>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
