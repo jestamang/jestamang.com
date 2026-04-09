@@ -865,8 +865,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <button class="btn-ghost" data-bk-col="notifications" data-bk-file="notifications">BACKUP NOTIFICATIONS</button>
         <button class="btn-ghost" data-bk-col="inquiries"     data-bk-file="inquiries">BACKUP INQUIRIES</button>
         <button class="btn-ghost" data-bk-col="guestbook"     data-bk-file="guestbook">BACKUP GUESTBOOK</button>
-        <button class="btn-ghost" data-bk-col="videos"        data-bk-file="videos">BACKUP VIDEOS</button>
-        <button class="btn-ghost" data-bk-col="merch"         data-bk-file="merch">BACKUP MERCH</button>
+        <button class="btn-ghost" data-bk-col="videos"         data-bk-file="videos">BACKUP VIDEOS</button>
+        <button class="btn-ghost" data-bk-col="merch"          data-bk-file="merch">BACKUP MERCH</button>
+        <button class="btn-ghost" data-bk-col="leaderboards"   data-bk-file="leaderboards">BACKUP LEADERBOARDS</button>
+        <button class="btn-ghost" data-bk-col="navBadges"      data-bk-file="navbadges">BACKUP NAV BADGES</button>
+        <button class="btn-ghost" data-bk-col="emailCampaigns" data-bk-file="emailcampaigns">BACKUP EMAIL CAMPAIGNS</button>
       </div>
       <div class="status-msg" id="bk-ind-status" style="margin-top:10px;"></div>
     </div>
@@ -2766,7 +2769,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var allStatus = document.getElementById('bk-all-status');
     var ALL_COLS  = ['users','blogPosts','shows','pressArticles','releases',
                      'leaderboards','notifications','inquiries','guestbook',
-                     'navBadges','emailCampaigns','videos','merch'];
+                     'navBadges','emailCampaigns','videos','merch','sigilCards'];
 
     allBtn.addEventListener('click', function () {
       allBtn.disabled = true;
