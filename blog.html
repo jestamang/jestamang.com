@@ -314,68 +314,66 @@ View Events &#8594;
   <p class="press-section-sub">The universe has been noticed.</p>
 </div>
 
-<!-- Card 1 — AEA Fanzine (newest) -->
-<article class="post" style="background:rgba(74,124,89,0.5)">
-  <span class="post-numeral">✦</span>
-  <span class="post-tag">Press</span>
-  <p class="press-pub">AEA Fanzine</p>
-  <p class="post-date">OCTOBER · XXV · MMXXV</p>
-  <h2 class="press-headline">Full Length Review: The Ace Of Chase &#8216;Niga Denots&#8217; (Independent)</h2>
-  <div class="post-rule"></div>
-  <p class="press-excerpt">An independent review of The Ace of Chase&#8217;s Niga Denots from AEA Fanzine, written by Dave Wolff.</p>
-  <a href="http://aeafanzine.blogspot.com/2025/10/full-length-review-ace-of-chase-niga.html" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
-  <p class="post-closing">&middot; ✦ &middot;</p>
-</article>
+<!-- ══ DYNAMIC PRESS — loaded from Firestore pressArticles ══ -->
+<div id="press-loading" style="text-align:center;padding:32px 0 20px;font-family:'Luminari',serif;font-size:0.78rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.25);font-style:italic;">Receiving Transmissions from the Outer World...</div>
 
-<!-- Cards 2–3 grid -->
-<div class="press-grid">
+<!-- Featured articles (always visible) — filled by JS -->
+<div id="press-featured"></div>
 
-  <!-- Card 2 — Bored City interview -->
-  <article class="post" style="background:rgba(107,74,124,0.5)">
-    <span class="post-numeral">✦</span>
-    <span class="post-tag">Press</span>
-    <p class="press-pub">Bored City</p>
-    <p class="post-date">DECEMBER · XIX · MMXXIII</p>
-    <h2 class="press-headline">Interview with Jestamang</h2>
+<!-- Fallback: shown only if Firestore returns empty or fails -->
+<div id="press-fallback" style="display:none;">
+
+  <article class="post" style="background:rgba(74,124,89,0.5)">
+    <span class="post-numeral">✦</span><span class="post-tag">Press</span>
+    <p class="press-pub">AEA Fanzine</p>
+    <p class="post-date">OCTOBER · XXV · MMXXV</p>
+    <h2 class="press-headline">Full Length Review: The Ace Of Chase &#8216;Niga Denots&#8217; (Independent)</h2>
     <div class="post-rule"></div>
-    <p class="press-excerpt">A full interview with Jestamang published by Bored City.</p>
-    <a href="https://boredcity.co/interview-with-jestamang/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
+    <p class="press-excerpt">An independent review of The Ace of Chase&#8217;s Niga Denots from AEA Fanzine, written by Dave Wolff.</p>
+    <a href="http://aeafanzine.blogspot.com/2025/10/full-length-review-ace-of-chase-niga.html" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
     <p class="post-closing">&middot; ✦ &middot;</p>
   </article>
 
-  <!-- Card 3 — Pop-Cultr -->
-  <article class="post" style="background:rgba(124,74,74,0.5)">
-    <span class="post-numeral">✦</span>
-    <span class="post-tag">Press</span>
-    <p class="press-pub">Pop-Cultr</p>
-    <p class="post-date">DECEMBER · VII · MMXXIII</p>
-    <h2 class="press-headline">Jestamang On Unleashing Creativity And Defying Conventions In &#8216;Zoo&#8217;</h2>
-    <div class="post-rule"></div>
-    <p class="press-excerpt">Jestamang discusses the creative process and defying conventions in Zoo.</p>
-    <a href="https://pop-cultr.com/2023/12/07/jestamang-on-unleashing-creativity-and-defying-conventions-in-zoo/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
-    <p class="post-closing">&middot; ✦ &middot;</p>
-  </article>
+  <div class="press-grid">
+    <article class="post" style="background:rgba(107,74,124,0.5)">
+      <span class="post-numeral">✦</span><span class="post-tag">Press</span>
+      <p class="press-pub">Bored City</p>
+      <p class="post-date">DECEMBER · XIX · MMXXIII</p>
+      <h2 class="press-headline">Interview with Jestamang</h2>
+      <div class="post-rule"></div>
+      <p class="press-excerpt">A full interview with Jestamang published by Bored City.</p>
+      <a href="https://boredcity.co/interview-with-jestamang/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
+      <p class="post-closing">&middot; ✦ &middot;</p>
+    </article>
+    <article class="post" style="background:rgba(124,74,74,0.5)">
+      <span class="post-numeral">✦</span><span class="post-tag">Press</span>
+      <p class="press-pub">Pop-Cultr</p>
+      <p class="post-date">DECEMBER · VII · MMXXIII</p>
+      <h2 class="press-headline">Jestamang On Unleashing Creativity And Defying Conventions In &#8216;Zoo&#8217;</h2>
+      <div class="post-rule"></div>
+      <p class="press-excerpt">Jestamang discusses the creative process and defying conventions in Zoo.</p>
+      <a href="https://pop-cultr.com/2023/12/07/jestamang-on-unleashing-creativity-and-defying-conventions-in-zoo/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
+      <p class="post-closing">&middot; ✦ &middot;</p>
+    </article>
+  </div>
 
 </div>
 
-<!-- Expand button -->
-<button class="press-expand-btn" id="press-expand-btn" aria-expanded="false" onclick="pressSectionToggle()">See All Transmissions from the Outer World ↓</button>
+<!-- Expand button — hidden until JS confirms overflow articles exist -->
+<button class="press-expand-btn" id="press-expand-btn" aria-expanded="false" style="display:none;" onclick="pressSectionToggle()">See All Transmissions from the Outer World ↓</button>
 <script>
 function pressSectionToggle(){
   var o=document.getElementById('press-overflow');
   var b=document.getElementById('press-expand-btn');
   var isOpen=b.getAttribute('aria-expanded')==='true';
   if(!isOpen){
-    // Expand: measure actual height, animate to it
     o.style.maxHeight=o.scrollHeight+'px';
     b.textContent='Collapse \u2191';
     b.setAttribute('aria-expanded','true');
-    var cards=o.querySelectorAll('.post');
-    cards.forEach(function(c,i){setTimeout(function(){c.classList.add('visible');},i*120);});
+    o.querySelectorAll('.post').forEach(function(c,i){setTimeout(function(){c.classList.add('visible');},i*120);});
   } else {
-    // Collapse: pin to current height first, then animate to 0
     o.style.maxHeight=o.scrollHeight+'px';
-    o.offsetHeight; // force reflow
+    o.offsetHeight;
     o.style.maxHeight='0';
     b.textContent='See All Transmissions from the Outer World \u2193';
     b.setAttribute('aria-expanded','false');
@@ -383,129 +381,8 @@ function pressSectionToggle(){
 }
 </script>
 
-<!-- Hidden cards 4–11 -->
-<div id="press-overflow">
-
-  <!-- Card 4 — Pinch of Sol -->
-  <article class="post" style="background:rgba(74,124,89,0.5);margin-top:24px">
-    <span class="post-numeral">✦</span>
-    <span class="post-tag">Press</span>
-    <p class="press-pub">Pinch of Sol</p>
-    <p class="post-date">DECEMBER · XXI · MMXXIII</p>
-    <h2 class="press-headline">A Candid Interview With Jestamang&#8217;s The Ace of Chase On 8slush (Ode to Bonnie)</h2>
-    <div class="post-rule"></div>
-    <p class="press-excerpt">A candid conversation diving into the world of The Ace of Chase and the making of 8slush (Ode to Bonnie).</p>
-    <a href="https://pinchofsol.com/2023/11/21/an-candid-interview-with-jestamangs-the-ace-of-chase-on-8slush-ode-to-bonnie/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
-    <p class="post-closing">&middot; ✦ &middot;</p>
-  </article>
-
-  <!-- Cards 5–6 grid -->
-  <div class="press-grid">
-
-    <!-- Card 5 — Just Bangers -->
-    <article class="post" style="background:rgba(107,74,124,0.5)">
-      <span class="post-numeral">✦</span>
-      <span class="post-tag">Press</span>
-      <p class="press-pub">Just Bangers</p>
-      <p class="post-date">DECEMBER · XIII · MMXXIII</p>
-      <h2 class="press-headline">A Psychedelic Escape: Diving Into Jestamang&#8217;s &#8216;Jestawomang&#8217;</h2>
-      <div class="post-rule"></div>
-      <p class="press-excerpt">Just Bangers dives deep into the psychedelic world of Jestawomang.</p>
-      <a href="https://justbangers.com/banger-music/a-psychedelic-escape-diving-into-jestamangs-jestawomang/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
-      <p class="post-closing">&middot; ✦ &middot;</p>
-    </article>
-
-    <!-- Card 6 — Pop Dose Magazine -->
-    <article class="post" style="background:rgba(124,74,74,0.5)">
-      <span class="post-numeral">✦</span>
-      <span class="post-tag">Press</span>
-      <p class="press-pub">Pop Dose Magazine</p>
-      <p class="post-date">DECEMBER · XI · MMXXIII</p>
-      <h2 class="press-headline">Jestamang&#8217;s Jestawomang: An Album Full of Emotions and Psychedelic Pop</h2>
-      <div class="post-rule"></div>
-      <p class="press-excerpt">Pop Dose Magazine explores the emotional depth and psychedelic textures of Jestawomang.</p>
-      <a href="https://popdosemagazine.co.uk/jestamangs-jestawomang-an-album-full-of-emotions-and-psychedelic-pop/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
-      <p class="post-closing">&middot; ✦ &middot;</p>
-    </article>
-
-  </div>
-
-  <!-- Card 7 — Funk and Play -->
-  <article class="post" style="background:rgba(74,124,89,0.5)">
-    <span class="post-numeral">✦</span>
-    <span class="post-tag">Press</span>
-    <p class="press-pub">Funk and Play</p>
-    <p class="post-date">NOVEMBER · II · MMXXIII</p>
-    <h2 class="press-headline">Jestamang&#8217;s &#8216;8slush (Ode to Bonnie)&#8217;: A Psychedelic Ode Breaking Boundaries &amp; Embracing Evolution</h2>
-    <div class="post-rule"></div>
-    <p class="press-excerpt">Funk and Play examines how 8slush (Ode to Bonnie) breaks sonic boundaries and marks a bold evolution.</p>
-    <a href="https://funkandplay.com/jestamangs-8slush-ode-to-bonnie-a-psychedelic-ode-breaking-boundaries-embracing-evolution/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
-    <p class="post-closing">&middot; ✦ &middot;</p>
-  </article>
-
-  <!-- Cards 8–9 grid -->
-  <div class="press-grid">
-
-    <!-- Card 8 — Stereo Saints -->
-    <article class="post" style="background:rgba(107,74,124,0.5)">
-      <span class="post-numeral">✦</span>
-      <span class="post-tag">Press</span>
-      <p class="press-pub">Stereo Saints</p>
-      <p class="post-date">NOVEMBER · II · MMXXIII</p>
-      <h2 class="press-headline">Jestamang&#8217;s &#8216;8slush&#8217;: An Ode To Bonnie&#8217;s Psychedelic Rhapsody</h2>
-      <div class="post-rule"></div>
-      <p class="press-excerpt">Stereo Saints unpacks the psychedelic rhapsody at the heart of 8slush (Ode to Bonnie).</p>
-      <a href="https://stereo-saints.com/2023/11/02/jestamangs-8slush-an-ode-to-bonnies-psychedelic-rhapsody/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
-      <p class="post-closing">&middot; ✦ &middot;</p>
-    </article>
-
-    <!-- Card 9 — Sweet N Sour Magazine -->
-    <article class="post" style="background:rgba(124,74,74,0.5)">
-      <span class="post-numeral">✦</span>
-      <span class="post-tag">Press</span>
-      <p class="press-pub">Sweet N Sour Magazine</p>
-      <p class="post-date">OCTOBER · XXVI · MMXXIII</p>
-      <h2 class="press-headline">Dissecting the Psychedelic Dimensions of Jestamang&#8217;s &#8216;8slush (Ode to Bonnie)&#8217;</h2>
-      <div class="post-rule"></div>
-      <p class="press-excerpt">Sweet N Sour Magazine dissects every psychedelic layer of 8slush (Ode to Bonnie).</p>
-      <a href="https://sweetnsourmagazine.com/dissecting-the-psychedelic-dimensions-of-jestamangs-8slush-ode-to-bonnie/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
-      <p class="post-closing">&middot; ✦ &middot;</p>
-    </article>
-
-  </div>
-
-  <!-- Cards 10–11 grid -->
-  <div class="press-grid">
-
-    <!-- Card 10 — Bored City Don't ID Jesus -->
-    <article class="post" style="background:rgba(74,124,89,0.5)">
-      <span class="post-numeral">✦</span>
-      <span class="post-tag">Press</span>
-      <p class="press-pub">Bored City</p>
-      <p class="post-date">JULY · XXIV · MMXXIII</p>
-      <h2 class="press-headline">Don&#8217;t ID Jesus &mdash; Jestamang</h2>
-      <div class="post-rule"></div>
-      <p class="press-excerpt">Bored City covers Don&#8217;t ID Jesus, a transmission from the Jestamang universe.</p>
-      <a href="https://boredcity.co/jestamang-dont-id-jesus/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
-      <p class="post-closing">&middot; ✦ &middot;</p>
-    </article>
-
-    <!-- Card 11 — Bored City Conversation -->
-    <article class="post" style="background:rgba(107,74,124,0.5)">
-      <span class="post-numeral">✦</span>
-      <span class="post-tag">Press</span>
-      <p class="press-pub">Bored City</p>
-      <p class="post-date">JULY · XXIV · MMXXIII</p>
-      <h2 class="press-headline">Conversation with Jestamang</h2>
-      <div class="post-rule"></div>
-      <p class="press-excerpt">Bored City sits down for a conversation with Jestamang.</p>
-      <a href="https://boredcity.co/conversation-with-jestamang/" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>
-      <p class="post-closing">&middot; ✦ &middot;</p>
-    </article>
-
-  </div>
-
-</div>
+<!-- Overflow articles (behind expand) — filled by JS -->
+<div id="press-overflow"></div>
 
 
 </div>
@@ -516,6 +393,148 @@ function pressSectionToggle(){
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
+<script>
+/* ══ PRESS SECTION — Firestore loader ══ */
+(function () {
+  'use strict';
+
+  var COLORS = [
+    'rgba(74,124,89,0.5)',
+    'rgba(107,74,124,0.5)',
+    'rgba(124,74,74,0.5)'
+  ];
+
+  function esc(s) {
+    return String(s || '').replace(/[&<>"']/g, function (c) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function makeCard(article, colorIdx, extraStyle) {
+    var bg = COLORS[colorIdx % 3];
+    var st = 'background:' + bg + (extraStyle ? ';' + extraStyle : '');
+    return '<article class="post visible" style="' + st + '">'
+      + '<span class="post-numeral">\u2726</span>'
+      + '<span class="post-tag">Press</span>'
+      + '<p class="press-pub">' + esc(article.publication || '') + '</p>'
+      + '<p class="post-date">' + esc(article.dateFormatted || article.date || '') + '</p>'
+      + '<h2 class="press-headline">' + esc(article.title || '') + '</h2>'
+      + '<div class="post-rule"></div>'
+      + (article.excerpt ? '<p class="press-excerpt">' + esc(article.excerpt) + '</p>' : '')
+      + (article.url ? '<a href="' + esc(article.url) + '" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>' : '')
+      + '<p class="post-closing">&middot; \u2726 &middot;</p>'
+      + '</article>';
+  }
+
+  function buildFeaturedHtml(articles) {
+    if (!articles.length) return '';
+    // First card fullwidth, remaining (up to 2) in a press-grid
+    var html = makeCard(articles[0], 0);
+    if (articles.length > 1) {
+      html += '<div class="press-grid">';
+      for (var i = 1; i < articles.length && i < 3; i++) {
+        html += makeCard(articles[i], i);
+      }
+      html += '</div>';
+    }
+    return html;
+  }
+
+  function buildOverflowHtml(articles) {
+    if (!articles.length) return '';
+    var html = '<div style="margin-top:24px;">';
+    for (var i = 0; i < articles.length; i += 2) {
+      if (i + 1 < articles.length) {
+        html += '<div class="press-grid">';
+        html += makeCard(articles[i], i % 3);
+        html += makeCard(articles[i + 1], (i + 1) % 3);
+        html += '</div>';
+      } else {
+        html += makeCard(articles[i], i % 3);
+      }
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function renderPress(allArticles) {
+    var featured = [], rest = [];
+    allArticles.forEach(function (a) {
+      if (a.featured) featured.push(a);
+      else rest.push(a);
+    });
+
+    // If nothing is marked featured, promote the 3 most recent
+    if (!featured.length) {
+      featured = allArticles.slice(0, 3);
+      rest = allArticles.slice(3);
+    } else if (featured.length > 3) {
+      // More than 3 featured — keep first 3 visible, push extras to overflow
+      rest = featured.slice(3).concat(rest);
+      featured = featured.slice(0, 3);
+    }
+
+    var featuredEl = document.getElementById('press-featured');
+    var overflowEl = document.getElementById('press-overflow');
+    var expandBtn  = document.getElementById('press-expand-btn');
+    var loadingEl  = document.getElementById('press-loading');
+    var fallbackEl = document.getElementById('press-fallback');
+
+    loadingEl.style.display = 'none';
+
+    if (!allArticles.length) {
+      // Empty Firestore — show hardcoded fallback
+      fallbackEl.style.display = '';
+      expandBtn.style.display = 'block';
+      return;
+    }
+
+    featuredEl.innerHTML = buildFeaturedHtml(featured);
+
+    if (rest.length) {
+      overflowEl.innerHTML = buildOverflowHtml(rest);
+      expandBtn.style.display = 'block';
+    }
+  }
+
+  function loadPress() {
+    window.jestaDB.collection('pressArticles')
+      .orderBy('timestamp', 'desc')
+      .get()
+      .then(function (snap) {
+        var articles = [];
+        snap.forEach(function (doc) {
+          var d = doc.data();
+          d.id = doc.id;
+          articles.push(d);
+        });
+        renderPress(articles);
+      })
+      .catch(function () {
+        // On error show fallback
+        document.getElementById('press-loading').style.display = 'none';
+        document.getElementById('press-fallback').style.display = '';
+        document.getElementById('press-expand-btn').style.display = 'block';
+      });
+  }
+
+  var _tries = 0;
+  var _poll = setInterval(function () {
+    _tries++;
+    if (window.jestaDB || _tries > 50) {
+      clearInterval(_poll);
+      if (window.jestaDB) {
+        loadPress();
+      } else {
+        document.getElementById('press-loading').style.display = 'none';
+        document.getElementById('press-fallback').style.display = '';
+        document.getElementById('press-expand-btn').style.display = 'block';
+      }
+    }
+  }, 100);
+
+})();
+</script>
 <script>
 (function(){
   function pad(n){return n<10?'0'+n:n}
