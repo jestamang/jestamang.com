@@ -2649,56 +2649,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       // Wrap plain text in minimal HTML for MailerLite
       var htmlBody = '<html><body style="font-family:Georgia,serif;color:#1a1a1a;max-width:600px;margin:0 auto;padding:40px 20px;">'
         + '<p style="white-space:pre-wrap;">' + body.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}) + '</p>'
-        + '<script>
-(function(){
-  window.admNavTo = function(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 68, behavior: 'smooth' });
-  };
-  function countUp(el, target, dur) {
-    if (isNaN(target) || target <= 0) return;
-    var start = performance.now();
-    function step(now) {
-      var p = Math.min((now - start) / dur, 1);
-      el.textContent = Math.floor(target * p).toLocaleString();
-      if (p < 1) requestAnimationFrame(step);
-      else el.textContent = target.toLocaleString();
-    }
-    requestAnimationFrame(step);
-  }
-  function attachStatObs() {
-    document.querySelectorAll('.stat-num').forEach(function(el) {
-      var obs = new MutationObserver(function() {
-        var n = parseInt(el.textContent.trim().replace(/,/g,''));
-        if (!isNaN(n) && n > 0) { obs.disconnect(); countUp(el, n, 900); }
-      });
-      obs.observe(el, { childList: true, characterData: true, subtree: true });
-    });
-  }
-  var SEC_IDS = ['sec-1','sec-2','sec-3','sec-4','sec-5','sec-6','sec-7','sec-8','sec-10','sec-11','sec-12','sec-13','sec-14','sec-15','sec-16','sec-17','sec-18','sec-19','sec-20','sec-21','sec-22'];
-  function initScrollSpy() {
-    var secs = SEC_IDS.map(function(id){ return document.getElementById(id); }).filter(Boolean);
-    var links = document.querySelectorAll('.adm-sidenav-link,.adm-mobtab');
-    function onScroll() {
-      var sy = window.scrollY + 100, active = secs[0];
-      for (var i = secs.length - 1; i >= 0; i--) {
-        if (secs[i] && secs[i].offsetTop <= sy) { active = secs[i]; break; }
-      }
-      links.forEach(function(l){ l.classList.remove('snav-active'); });
-      if (active) links.forEach(function(l){
-        if ((l.getAttribute('onclick')||'').indexOf("'"+active.id+"'") !== -1) l.classList.add('snav-active');
-      });
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  }
-  function init() { attachStatObs(); setTimeout(initScrollSpy, 600); }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-})();
-</script>
-</body></html>';
+        + '</body></html>';
 
       var payload = {
         name: subject + ' — ' + new Date().toISOString().slice(0,10),
@@ -3255,6 +3206,53 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 })();
 </script>
 
+<script>(function(){
+  window.admNavTo = function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 68, behavior: 'smooth' });
+  };
+  function countUp(el, target, dur) {
+    if (isNaN(target) || target <= 0) return;
+    var start = performance.now();
+    function step(now) {
+      var p = Math.min((now - start) / dur, 1);
+      el.textContent = Math.floor(target * p).toLocaleString();
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = target.toLocaleString();
+    }
+    requestAnimationFrame(step);
+  }
+  function attachStatObs() {
+    document.querySelectorAll('.stat-num').forEach(function(el) {
+      var obs = new MutationObserver(function() {
+        var n = parseInt(el.textContent.trim().replace(/,/g,''));
+        if (!isNaN(n) && n > 0) { obs.disconnect(); countUp(el, n, 900); }
+      });
+      obs.observe(el, { childList: true, characterData: true, subtree: true });
+    });
+  }
+  var SEC_IDS = ['sec-1','sec-2','sec-3','sec-4','sec-5','sec-6','sec-7','sec-8','sec-10','sec-11','sec-12','sec-13','sec-14','sec-15','sec-16','sec-17','sec-18','sec-19','sec-20','sec-21','sec-22'];
+  function initScrollSpy() {
+    var secs = SEC_IDS.map(function(id){ return document.getElementById(id); }).filter(Boolean);
+    var links = document.querySelectorAll('.adm-sidenav-link,.adm-mobtab');
+    function onScroll() {
+      var sy = window.scrollY + 100, active = secs[0];
+      for (var i = secs.length - 1; i >= 0; i--) {
+        if (secs[i] && secs[i].offsetTop <= sy) { active = secs[i]; break; }
+      }
+      links.forEach(function(l){ l.classList.remove('snav-active'); });
+      if (active) links.forEach(function(l){
+        if ((l.getAttribute('onclick')||'').indexOf("'"+active.id+"'") !== -1) l.classList.add('snav-active');
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+  function init() { attachStatObs(); setTimeout(initScrollSpy, 600); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();</script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
 <div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
