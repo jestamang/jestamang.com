@@ -306,7 +306,7 @@ a.back-link:hover{color:#c9a84c}
 </div>
 
 <script>
-var CARDS = [
+var CARDS_DEFAULT = [
   {arcana:'I · The Jester',name:'The Jester',glyph:'Ψ',reading:'What is given freely multiplies. What is hoarded rots. The Jester sees your open hands and grins — this is the correct posture.'},
   {arcana:'II · Origin',name:'The Prickly Being',glyph:'✶',reading:'A small divine presence has left its marks on your chest. Do not wash them. They are proof of something most will never receive.'},
   {arcana:'III · Motion',name:'The Parade',glyph:'↯',reading:'Movement is the ritual. The direction matters less than the act of beginning. Set your feet in motion — the path reveals itself under moving feet.'},
@@ -455,7 +455,7 @@ function startNextSigilTimer(){
 
 /* ── Fill card ── */
 function fillCard(idx){
-  var c=CARDS[idx];
+  var c=ACTIVE_CARDS[idx];
   document.getElementById('c-arcana').textContent=c.arcana;
   document.getElementById('c-name').textContent=c.name;
   document.getElementById('c-glyph').textContent=c.glyph;
@@ -568,7 +568,7 @@ document.getElementById('draw-btn').addEventListener('click',function(){
   var btn=this;
   if(btn.disabled)return;
   btn.disabled=true;
-  var idx=Math.floor(Math.random()*CARDS.length);
+  var idx=Math.floor(Math.random()*ACTIVE_CARDS.length);
   fillCard(idx);
   // Play flip sound: low sweep 200→400Hz over 0.8s
   _playTone(200,400,0.8,'sine');
@@ -594,7 +594,7 @@ document.getElementById('draw-btn').addEventListener('click',function(){
 document.getElementById('share-btn').addEventListener('click',function(){
   var btn=this;
   if(_currentCardIdx===null)return;
-  var card=CARDS[_currentCardIdx];
+  var card=ACTIVE_CARDS[_currentCardIdx];
   var shortReading=card.reading.split('.')[0]+'.';
   var text='My Daily Sigil on jestamang.com: '+card.name+' — '+shortReading;
   if(navigator.clipboard&&navigator.clipboard.writeText){
@@ -620,8 +620,32 @@ function _shareFallback(text,btn){
   setTimeout(function(){btn.textContent=orig;},2000);
 }
 
+/* ── Load cards from Firestore, fall back to defaults ── */
+var ACTIVE_CARDS = null;
+
+function loadSigilCards(callback) {
+  var tries = 0;
+  var poll = setInterval(function() {
+    tries++;
+    if (window.jestaDB) {
+      clearInterval(poll);
+      window.jestaDB.collection('sigilCards').doc('cards').get()
+        .then(function(doc) {
+          if (doc.exists && doc.data().cards && doc.data().cards.length > 0) {
+            callback(doc.data().cards);
+          } else {
+            callback(CARDS_DEFAULT);
+          }
+        })
+        .catch(function() { callback(CARDS_DEFAULT); });
+      return;
+    }
+    if (tries > 80) { clearInterval(poll); callback(CARDS_DEFAULT); }
+  }, 100);
+}
+
 /* ── Init ── */
-(function init(){
+function initOracle() {
   var lastDraw=localStorage.getItem('sigilLastDraw');
   var lastCard=localStorage.getItem('sigilLastCard');
   if(lastDraw&&lastCard!==null&&(Date.now()-parseInt(lastDraw))<TWENTY_FOUR){
@@ -629,7 +653,12 @@ function _shareFallback(text,btn){
   }else{
     showDrawState();
   }
-})();
+}
+
+loadSigilCards(function(cards) {
+  ACTIVE_CARDS = cards;
+  initOracle();
+});
 
 /* ── Firestore sync ── */
 document.addEventListener('DOMContentLoaded',function(){
