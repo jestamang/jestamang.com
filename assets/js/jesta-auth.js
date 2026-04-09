@@ -115,6 +115,47 @@
     return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  // ── Maintenance mode ──────────────────────────────────────────
+  function checkMaintenance(user) {
+    var isAdmin = user && user.email === 'thejestamang@gmail.com';
+    if (isAdmin) return;
+    if (!window.jestaDB) {
+      var _t = 0, _iv = setInterval(function () {
+        if (window.jestaDB) { clearInterval(_iv); checkMaintenance(user); }
+        else if (++_t > 80) { clearInterval(_iv); }
+      }, 100);
+      return;
+    }
+    window.jestaDB.collection('siteConfig').doc('maintenance').onSnapshot(function (doc) {
+      if (!doc.exists || !doc.data().active) { hideMaintenanceOverlay(); return; }
+      showMaintenanceOverlay(doc.data().message || 'THE UNIVERSE IS BEING RECALIBRATED. RETURN SHORTLY.');
+    }, function () {});
+  }
+
+  function showMaintenanceOverlay(message) {
+    var existing = document.getElementById('j-maint-overlay');
+    if (existing) {
+      var msgEl = document.getElementById('j-maint-msg');
+      if (msgEl) msgEl.textContent = message;
+      return;
+    }
+    var overlay = document.createElement('div');
+    overlay.id = 'j-maint-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;';
+    var safeMsg = String(message || '').replace(/[&<>"]/g, function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});
+    overlay.innerHTML =
+      '<img src="/assets/icons/icon-192.png" alt="Jestamang" style="width:80px;height:80px;margin-bottom:32px;opacity:0.85;" onerror="this.style.display=\'none\'">' +
+      '<div id="j-maint-msg" style="font-family:Luminari,Georgia,serif;font-size:clamp(0.9rem,3vw,1.3rem);letter-spacing:0.3em;text-transform:uppercase;color:#c9a84c;text-align:center;max-width:480px;line-height:1.8;">' + safeMsg + '</div>' +
+      '<div style="margin-top:24px;font-size:0.65rem;letter-spacing:0.4em;text-transform:uppercase;color:rgba(201,168,76,0.4);">CHECK BACK SOON</div>';
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function hideMaintenanceOverlay() {
+    var overlay = document.getElementById('j-maint-overlay');
+    if (overlay) { overlay.remove(); document.body.style.overflow = ''; }
+  }
+
   window._jDismissNotif = function (id, uid) {
     localStorage.setItem('lastNotifCheck', String(Date.now()));
     if (window.jestaDB) {
@@ -158,6 +199,7 @@
       }
       if (mobLogin) { mobLogin.href = 'login.html'; mobLogin.textContent = 'Log In'; }
     }
+    checkMaintenance(user);
   }
 
   if (document.readyState === 'loading') {

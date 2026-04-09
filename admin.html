@@ -585,6 +585,165 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
 
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 13: ALBUM ANNOUNCEMENT ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Album Announcement</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:24px;">One click does everything.</div>
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="aa-artist">Artist Name</label>
+          <input class="field-input" id="aa-artist" type="text" placeholder="JESTAMANG" maxlength="120">
+        </div>
+        <div>
+          <label class="field-label" for="aa-title">Album Title</label>
+          <input class="field-input" id="aa-title" type="text" placeholder="ALBUM TITLE" maxlength="120">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="aa-catalog">Catalog</label>
+          <select class="field-input field-select" id="aa-catalog">
+            <option value="2K2123">2K2123</option>
+            <option value="2K2323">2K2323</option>
+            <option value="NONS">NONS</option>
+            <option value="QUARTER DAYS">QUARTER DAYS</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="aa-year">Release Year</label>
+          <input class="field-input" id="aa-year" type="number" placeholder="2025" min="2000" max="2099">
+        </div>
+      </div>
+
+      <label class="field-label" for="aa-genre">Genre</label>
+      <input class="field-input" id="aa-genre" type="text" placeholder="Experimental / Soul" maxlength="80">
+
+      <label class="field-label" for="aa-cover">Album Cover URL</label>
+      <input class="field-input" id="aa-cover" type="text" placeholder="https://..." maxlength="500">
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="aa-spotify">Spotify URL</label>
+          <input class="field-input" id="aa-spotify" type="text" placeholder="https://open.spotify.com/..." maxlength="500">
+        </div>
+        <div>
+          <label class="field-label" for="aa-youtube">YouTube URL</label>
+          <input class="field-input" id="aa-youtube" type="text" placeholder="https://youtube.com/..." maxlength="500">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="aa-apple">Apple Music URL</label>
+          <input class="field-input" id="aa-apple" type="text" placeholder="https://music.apple.com/..." maxlength="500">
+        </div>
+        <div>
+          <label class="field-label" for="aa-bandcamp">Bandcamp URL</label>
+          <input class="field-input" id="aa-bandcamp" type="text" placeholder="https://...bandcamp.com/..." maxlength="500">
+        </div>
+      </div>
+
+      <label class="field-label" for="aa-text">Announcement Text</label>
+      <textarea class="field-input field-textarea" id="aa-text" rows="4" maxlength="2000"></textarea>
+
+      <label class="radio-label" style="display:flex;align-items:center;gap:10px;margin:16px 0 24px;cursor:pointer;">
+        <input type="checkbox" id="aa-notify" checked style="accent-color:#c9a84c;width:14px;height:14px;">
+        <span>Notify members</span>
+      </label>
+
+      <button class="btn-gold btn-gold-full" id="aa-btn">ANNOUNCE THIS RELEASE ✦</button>
+      <div class="status-msg" id="aa-status"></div>
+      <div id="aa-checks" style="margin-top:14px;display:none;">
+        <div id="aa-check-release" style="font-size:0.68rem;letter-spacing:0.15em;color:rgba(201,168,76,0.35);padding:4px 0;">○ Saving to catalog...</div>
+        <div id="aa-check-blog"    style="font-size:0.68rem;letter-spacing:0.15em;color:rgba(201,168,76,0.35);padding:4px 0;">○ Publishing blog post...</div>
+        <div id="aa-check-notif"   style="font-size:0.68rem;letter-spacing:0.15em;color:rgba(201,168,76,0.35);padding:4px 0;">○ Notifying members...</div>
+      </div>
+    </div>
+
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 14: VIDEO MANAGER ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Video Manager</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:24px;">Add videos without touching code.</div>
+
+      <label class="field-label" for="vm-title">Video Title</label>
+      <input class="field-input" id="vm-title" type="text" placeholder="Title" maxlength="200">
+
+      <label class="field-label" for="vm-url">YouTube URL</label>
+      <input class="field-input" id="vm-url" type="text" placeholder="youtube.com/watch?v=... or youtu.be/..." maxlength="500">
+
+      <div id="vm-preview" style="margin:16px 0;display:none;">
+        <img id="vm-thumb" src="" alt="Thumbnail preview" style="width:160px;border:1px solid rgba(201,168,76,0.2);border-radius:2px;display:block;">
+        <div id="vm-ytid" style="font-size:0.62rem;color:rgba(201,168,76,0.4);margin-top:6px;letter-spacing:0.1em;"></div>
+      </div>
+
+      <button class="btn-gold btn-gold-full" id="vm-add-btn">ADD VIDEO ✦</button>
+      <div class="status-msg" id="vm-status"></div>
+
+      <div style="margin-top:32px;">
+        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Existing Videos</div>
+        <div id="vm-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
+      </div>
+    </div>
+
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 15: MERCH/ARTIFACT MANAGER ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Artifact Manager</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:24px;">Update products without touching code.</div>
+      <div id="merch-cards"></div>
+      <button class="btn-ghost" id="merch-add-btn" style="margin-top:16px;width:100%;padding:14px;letter-spacing:0.25em;">+ ADD NEW PRODUCT</button>
+    </div>
+
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 16: GAME ANALYTICS ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Arcade Analytics</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:24px;">See what the Jestagang plays.</div>
+
+      <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:12px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Most Played Games</div>
+      <div id="ga-most-played" style="margin-bottom:32px;"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
+
+      <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:12px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Top Players Overall</div>
+      <div id="ga-top-players" style="margin-bottom:32px;"></div>
+
+      <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:12px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Recent Activity</div>
+      <div id="ga-recent" style="margin-bottom:32px;"></div>
+
+      <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:12px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Game Health</div>
+      <div id="ga-health"></div>
+    </div>
+
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 17: MAINTENANCE MODE ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Maintenance Mode</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:24px;">Take the site offline safely.</div>
+
+      <div id="maint-warning" style="display:none;background:rgba(251,56,56,0.08);border:2px solid rgba(251,56,56,0.5);padding:16px 20px;border-radius:2px;margin-bottom:20px;text-align:center;font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;color:#FB3838;">&#9888; SITE IS CURRENTLY OFFLINE TO ALL VISITORS</div>
+
+      <div style="display:flex;align-items:center;gap:20px;margin:24px 0;">
+        <div id="maint-track" onclick="window._toggleMaintenance()" style="width:64px;height:32px;border-radius:16px;background:rgba(2,225,39,0.12);border:1px solid rgba(2,225,39,0.35);cursor:pointer;position:relative;flex-shrink:0;">
+          <div id="maint-knob" style="position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:50%;background:#02E127;transition:transform 0.3s,background 0.3s;"></div>
+        </div>
+        <span id="maint-live-label" style="font-family:'Luminari',Georgia,serif;font-size:0.82rem;letter-spacing:0.3em;text-transform:uppercase;color:#02E127;">&#9679; LIVE</span>
+      </div>
+
+      <div id="maint-msg-wrap" style="display:none;margin-top:8px;">
+        <label class="field-label" for="maint-msg">Custom Message</label>
+        <textarea class="field-input field-textarea" id="maint-msg" rows="3" maxlength="300">THE UNIVERSE IS BEING RECALIBRATED. RETURN SHORTLY.</textarea>
+        <button class="btn-gold btn-gold-full" id="maint-save-btn" style="margin-top:12px;">UPDATE MESSAGE ✦</button>
+      </div>
+
+      <div class="status-msg" id="maint-status"></div>
+    </div>
+
   </div><!-- /admin-content -->
 </div><!-- /adm-wrap -->
 
@@ -692,6 +851,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initAlbumManager();
     initLeaderboards();
     initCacheBust();
+    initAlbumAnnouncer();
+    initVideoManager();
+    initMerchManager();
+    initGameAnalytics();
+    initMaintenanceMode();
     initTabs();
     initQuickLinks();
   }
@@ -1609,6 +1773,471 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         statusEl.textContent='Error: '+e.message;
         statusEl.className='status-msg status-err';
         btn.disabled=false;
+      });
+    });
+  }
+
+  /* ══════════════ SECTION 13: ALBUM ANNOUNCER ══════════════ */
+  function initAlbumAnnouncer() {
+    var artistEl  = document.getElementById('aa-artist');
+    var titleEl   = document.getElementById('aa-title');
+    var textEl    = document.getElementById('aa-text');
+    var btn       = document.getElementById('aa-btn');
+    var statusEl  = document.getElementById('aa-status');
+    var checks    = document.getElementById('aa-checks');
+
+    function updateTemplate() {
+      var a = artistEl.value.trim() || '[ARTIST]';
+      var t = titleEl.value.trim()  || '[ALBUM TITLE]';
+      textEl.value = 'A new transmission has arrived from ' + a + '. ' + t + ' is available now across all platforms.';
+    }
+    artistEl.addEventListener('input', updateTemplate);
+    titleEl.addEventListener('input', updateTemplate);
+    updateTemplate();
+
+    function setCheck(id, done) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.style.color = done ? '#c9a84c' : 'rgba(201,168,76,0.35)';
+      el.textContent = (done ? '\u2746 ' : '\u25cb ') + el.textContent.replace(/^[\u2746\u25cb] /, '');
+    }
+
+    btn.addEventListener('click', function () {
+      var a  = artistEl.value.trim();
+      var t  = titleEl.value.trim();
+      var c  = document.getElementById('aa-catalog').value;
+      var yr = document.getElementById('aa-year').value;
+      var g  = document.getElementById('aa-genre').value.trim();
+      var cv = document.getElementById('aa-cover').value.trim();
+      var sp = document.getElementById('aa-spotify').value.trim();
+      var yt = document.getElementById('aa-youtube').value.trim();
+      var ap = document.getElementById('aa-apple').value.trim();
+      var bc = document.getElementById('aa-bandcamp').value.trim();
+      var tx = textEl.value.trim();
+      var doNotify = document.getElementById('aa-notify').checked;
+
+      if (!a) { statusEl.textContent='Artist required'; statusEl.className='status-msg status-err'; return; }
+      if (!t) { statusEl.textContent='Album title required'; statusEl.className='status-msg status-err'; return; }
+
+      btn.disabled = true;
+      statusEl.textContent = '';
+      checks.style.display = 'block';
+      ['aa-check-release','aa-check-blog','aa-check-notif'].forEach(function(id){
+        var el=document.getElementById(id);
+        if(el){el.style.color='rgba(201,168,76,0.35)';el.textContent='\u25cb '+el.textContent.replace(/^[\u2746\u25cb] /,'');}
+      });
+
+      var ts = firebase.firestore.FieldValue.serverTimestamp();
+
+      db.collection('releases').add({
+        catalog: c, artist: a, albumTitle: t,
+        year: yr ? parseInt(yr) : null,
+        genre: g, coverUrl: cv,
+        tracks: [{ title: t, spotify: sp, youtube: yt, bandcamp: bc, appleMusic: ap }],
+        published: true, timestamp: ts
+      }).then(function () {
+        setCheck('aa-check-release', true);
+        return db.collection('blogPosts').add({
+          title: a + ' \u2014 ' + t + ' OUT NOW',
+          content: tx, excerpt: tx.slice(0, 150),
+          category: 'NEW MUSIC', authorRole: 'admin',
+          published: true, timestamp: ts
+        });
+      }).then(function () {
+        setCheck('aa-check-blog', true);
+        if (!doNotify) { setCheck('aa-check-notif', true); return Promise.resolve(); }
+        return db.collection('notifications').add({
+          title: 'NEW RELEASE',
+          body: a + ' \u2014 ' + t + ' available now',
+          link: 'albums.html', timestamp: ts, seen: []
+        });
+      }).then(function () {
+        setCheck('aa-check-notif', true);
+        statusEl.textContent = 'RELEASE ANNOUNCED \u2726';
+        statusEl.className = 'status-msg status-ok';
+        btn.disabled = false;
+        ['aa-artist','aa-title','aa-year','aa-genre','aa-cover','aa-spotify','aa-youtube','aa-apple','aa-bandcamp'].forEach(function(id){
+          var el=document.getElementById(id); if(el) el.value='';
+        });
+        updateTemplate();
+      }).catch(function (e) {
+        statusEl.textContent = 'Error: ' + e.message;
+        statusEl.className = 'status-msg status-err';
+        btn.disabled = false;
+      });
+    });
+  }
+
+  /* ══════════════ SECTION 14: VIDEO MANAGER ══════════════ */
+  function initVideoManager() {
+    function extractYtId(url) {
+      var m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s?#]+)/);
+      return m ? m[1] : null;
+    }
+
+    var urlInput = document.getElementById('vm-url');
+    urlInput.addEventListener('input', function () {
+      var id = extractYtId(this.value.trim());
+      var preview = document.getElementById('vm-preview');
+      if (id) {
+        document.getElementById('vm-thumb').src = 'https://img.youtube.com/vi/' + id + '/hqdefault.jpg';
+        document.getElementById('vm-ytid').textContent = 'ID: ' + id;
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+    });
+
+    document.getElementById('vm-add-btn').addEventListener('click', function () {
+      var title    = (document.getElementById('vm-title').value || '').trim();
+      var url      = (urlInput.value || '').trim();
+      var id       = extractYtId(url);
+      var statusEl = document.getElementById('vm-status');
+      if (!title) { statusEl.textContent='Title required'; statusEl.className='status-msg status-err'; return; }
+      if (!id)    { statusEl.textContent='Invalid YouTube URL'; statusEl.className='status-msg status-err'; return; }
+      this.disabled = true;
+      db.collection('videos').add({
+        title: title, youtubeId: id, youtubeUrl: url,
+        published: true, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(function () {
+        document.getElementById('vm-status').textContent = 'VIDEO ADDED \u2726';
+        document.getElementById('vm-status').className = 'status-msg status-ok';
+        document.getElementById('vm-title').value = '';
+        urlInput.value = '';
+        document.getElementById('vm-preview').style.display = 'none';
+        document.getElementById('vm-add-btn').disabled = false;
+      }).catch(function (e) {
+        document.getElementById('vm-status').textContent = 'Error: ' + e.message;
+        document.getElementById('vm-status').className = 'status-msg status-err';
+        document.getElementById('vm-add-btn').disabled = false;
+      });
+    });
+
+    db.collection('videos').orderBy('timestamp','desc').onSnapshot(function (snap) {
+      var el = document.getElementById('vm-list');
+      if (snap.empty) { el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No videos yet.</div>'; return; }
+      var html = '';
+      snap.forEach(function (doc) {
+        var d = doc.data(); var eid = 'vm-' + doc.id;
+        html += '<div class="entry-row" id="row-' + eid + '" style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,0.06);">'
+          + '<img src="https://img.youtube.com/vi/' + esc(d.youtubeId) + '/default.jpg" style="width:80px;flex-shrink:0;border-radius:2px;border:1px solid rgba(201,168,76,0.15);" loading="lazy">'
+          + '<div class="entry-body" style="flex:1;">'
+          + '<div class="entry-name">' + esc(d.title) + '</div>'
+          + '<div class="entry-meta">' + esc(d.youtubeId) + ' &nbsp;\u00b7&nbsp; ' + fmtDate(d.timestamp) + '</div>'
+          + '<div class="entry-actions">'
+          + '<button class="btn-danger btn-sm" onclick="askDelete(\'' + eid + '\')">Remove</button>'
+          + makeDeleteRow('videos', doc.id, eid)
+          + '</div></div></div>';
+      });
+      el.innerHTML = html;
+    });
+  }
+
+  /* ══════════════ SECTION 15: MERCH MANAGER ══════════════ */
+  var MERCH_DEFAULTS = [
+    { name:'T-Shirt',     description:'Classic tee, exclusive artwork.', price:35, gumroadUrl:'', imageUrl:'', active:true },
+    { name:'Comix',       description:'Limited edition art comix.',       price:30, gumroadUrl:'', imageUrl:'', active:true },
+    { name:'Polyphonies', description:'Collected transmissions in print.',price:40, gumroadUrl:'', imageUrl:'', active:true },
+    { name:'Puzzle',      description:'Jestamang puzzle artifact.',       price:45, gumroadUrl:'', imageUrl:'', active:true },
+    { name:'Card Deck',   description:'Cosmic oracle card deck.',         price:60, gumroadUrl:'', imageUrl:'', active:true }
+  ];
+
+  function initMerchManager() {
+    var container = document.getElementById('merch-cards');
+
+    function renderMerchCard(docId, data) {
+      var card = document.createElement('div');
+      var safeId = docId || ('new-' + Date.now());
+      card.id = 'merch-card-' + safeId;
+      card.style.cssText = 'background:rgba(5,3,1,0.6);border:1px solid rgba(201,168,76,0.12);padding:20px;margin-bottom:16px;border-radius:2px;';
+      card.innerHTML =
+        '<div style="font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.35);margin-bottom:14px;">' + esc(data.name || 'New Product') + '</div>'
+        + '<div class="form-grid">'
+        + '<div><label class="field-label">Product Name</label><input class="field-input" data-field="name" value="' + esc(data.name||'') + '" maxlength="100"></div>'
+        + '<div><label class="field-label">Price ($)</label><input class="field-input" type="number" data-field="price" value="' + (data.price||'') + '" min="0" max="9999"></div>'
+        + '</div>'
+        + '<label class="field-label">Description</label><textarea class="field-input field-textarea" data-field="description" rows="2" maxlength="300">' + esc(data.description||'') + '</textarea>'
+        + '<label class="field-label">Gumroad URL</label><input class="field-input" data-field="gumroadUrl" value="' + esc(data.gumroadUrl||'') + '" maxlength="500">'
+        + '<label class="field-label">Image URL</label><input class="field-input" data-field="imageUrl" value="' + esc(data.imageUrl||'') + '" maxlength="500">'
+        + '<label class="radio-label" style="display:flex;align-items:center;gap:8px;margin:12px 0;cursor:pointer;"><input type="checkbox" data-field="active"' + (data.active ? ' checked' : '') + ' style="accent-color:#c9a84c;"><span>Active (visible on site)</span></label>'
+        + '<div style="display:flex;gap:10px;margin-top:12px;">'
+        + '<button class="btn-gold" onclick="window._saveMerchCard(\'' + safeId + '\',\'' + (docId||'') + '\',this)" style="padding:8px 20px;font-size:0.65rem;letter-spacing:0.2em;">SAVE CHANGES \u2726</button>'
+        + (docId ? '<button class="btn-danger btn-sm" onclick="window._removeMerchCard(\'' + docId + '\',this.closest(\'[id^=merch-card-]\'))">Remove</button>' : '')
+        + '</div>'
+        + '<div class="merch-card-status status-msg" style="margin-top:8px;"></div>';
+      container.appendChild(card);
+    }
+
+    db.collection('merch').orderBy('updatedAt','asc').get().then(function (snap) {
+      container.innerHTML = '';
+      if (snap.empty) {
+        MERCH_DEFAULTS.forEach(function (d) { renderMerchCard(null, d); });
+      } else {
+        snap.forEach(function (doc) { renderMerchCard(doc.id, doc.data()); });
+      }
+    }).catch(function () {
+      container.innerHTML = '';
+      MERCH_DEFAULTS.forEach(function (d) { renderMerchCard(null, d); });
+    });
+
+    document.getElementById('merch-add-btn').addEventListener('click', function () {
+      renderMerchCard(null, { name:'New Product', description:'', price:0, gumroadUrl:'', imageUrl:'', active:true });
+    });
+  }
+
+  window._saveMerchCard = function (safeId, docId, btn) {
+    var card = document.getElementById('merch-card-' + safeId);
+    if (!card) return;
+    var statusEl = card.querySelector('.merch-card-status');
+    var get = function (f) {
+      var el = card.querySelector('[data-field="' + f + '"]');
+      return el ? (el.type === 'checkbox' ? el.checked : el.value.trim()) : null;
+    };
+    var data = {
+      name: get('name') || '', description: get('description') || '',
+      price: parseFloat(get('price')) || 0,
+      gumroadUrl: get('gumroadUrl') || '', imageUrl: get('imageUrl') || '',
+      active: get('active'),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    if (!data.name) { statusEl.textContent='Name required'; statusEl.className='merch-card-status status-msg status-err'; return; }
+    btn.disabled = true;
+    var ref = (docId && docId.length) ? db.collection('merch').doc(docId) : db.collection('merch').doc();
+    ref.set(data, { merge: true }).then(function () {
+      statusEl.textContent = 'ARTIFACT UPDATED \u2726';
+      statusEl.className = 'merch-card-status status-msg status-ok';
+      btn.disabled = false;
+      // If it was a new doc, update the card's ID and wire remove button
+      if (!docId || !docId.length) {
+        card.id = 'merch-card-' + ref.id;
+        var btnWrap = card.querySelector('[style*="display:flex;gap"]');
+        if (btnWrap && !btnWrap.querySelector('.btn-danger')) {
+          var rb = document.createElement('button');
+          rb.className = 'btn-danger btn-sm';
+          rb.textContent = 'Remove';
+          rb.setAttribute('onclick', 'window._removeMerchCard(\'' + ref.id + '\',this.closest(\'[id^=merch-card-]\'))');
+          btnWrap.appendChild(rb);
+        }
+        btn.setAttribute('onclick', 'window._saveMerchCard(\'' + ref.id + '\',\'' + ref.id + '\',this)');
+      }
+      setTimeout(function () { if(statusEl.textContent.indexOf('UPDATED')!==-1){statusEl.textContent='';} }, 3000);
+    }).catch(function (e) {
+      statusEl.textContent = 'Error: ' + e.message;
+      statusEl.className = 'merch-card-status status-msg status-err';
+      btn.disabled = false;
+    });
+  };
+
+  window._removeMerchCard = function (docId, card) {
+    if (!confirm('Remove this product from the catalog?')) return;
+    db.collection('merch').doc(docId).delete().then(function () {
+      if (card) card.remove();
+    }).catch(function (e) { alert('Error: ' + e.message); });
+  };
+
+  /* ══════════════ SECTION 16: GAME ANALYTICS ══════════════ */
+  function initGameAnalytics() {
+    var LB_KEYS = Object.keys(LB_GAMES);
+    var allData = {};
+
+    function timeAgo(ts) {
+      if (!ts) return '\u2014';
+      var d = ts.toDate ? ts.toDate() : new Date(ts);
+      var sec = Math.floor((Date.now() - d.getTime()) / 1000);
+      if (sec < 60)    return sec + 's ago';
+      if (sec < 3600)  return Math.floor(sec / 60) + 'm ago';
+      if (sec < 86400) return Math.floor(sec / 3600) + 'h ago';
+      return Math.floor(sec / 86400) + 'd ago';
+    }
+
+    var promises = LB_KEYS.map(function (k) {
+      return db.collection('leaderboards').doc(k).collection('scores')
+        .orderBy('score','desc').limit(200).get()
+        .then(function (snap) {
+          allData[k] = [];
+          snap.forEach(function (doc) { allData[k].push({ id: doc.id, d: doc.data() }); });
+        }).catch(function () { allData[k] = []; });
+    });
+
+    Promise.all(promises).then(function () {
+      renderMostPlayed();
+      renderTopPlayers();
+      renderRecentActivity();
+      renderGameHealth();
+    });
+
+    function renderMostPlayed() {
+      var el = document.getElementById('ga-most-played');
+      var counts = LB_KEYS.map(function (k) { return { name: LB_GAMES[k], count: (allData[k]||[]).length }; });
+      counts.sort(function (a,b) { return b.count - a.count; });
+      var max = counts.length && counts[0].count > 0 ? counts[0].count : 1;
+      el.innerHTML = counts.map(function (g) {
+        var pct = Math.round((g.count / max) * 100);
+        return '<div style="margin-bottom:10px;">'
+          + '<div style="display:flex;justify-content:space-between;font-size:0.68rem;letter-spacing:0.1em;margin-bottom:4px;"><span>' + esc(g.name) + '</span><span style="color:#c9a84c;">' + g.count + ' plays</span></div>'
+          + '<div style="height:5px;background:rgba(201,168,76,0.08);border-radius:3px;overflow:hidden;">'
+          + '<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#c9a84c,rgba(201,168,76,0.35));border-radius:3px;"></div>'
+          + '</div></div>';
+      }).join('') || '<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No data yet.</div>';
+    }
+
+    function renderTopPlayers() {
+      var el = document.getElementById('ga-top-players');
+      var playerMap = {};
+      LB_KEYS.forEach(function (k) {
+        (allData[k]||[]).forEach(function (s) {
+          var name = s.d.name || s.d.displayName || s.d.username || 'Unknown';
+          var uid  = s.d.uid || name;
+          if (!playerMap[uid]) playerMap[uid] = { name: name, total: 0, games: {} };
+          playerMap[uid].total++;
+          playerMap[uid].games[k] = true;
+        });
+      });
+      var players = Object.keys(playerMap).map(function(k){return playerMap[k];})
+        .sort(function(a,b){return b.total - a.total;}).slice(0,10);
+      if (!players.length) { el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No data yet.</div>'; return; }
+      el.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:0.7rem;">'
+        + '<thead><tr style="color:rgba(201,168,76,0.4);text-align:left;">'
+        + '<th style="padding:6px 8px;font-weight:normal;letter-spacing:0.15em;">#</th>'
+        + '<th style="padding:6px 8px;font-weight:normal;letter-spacing:0.15em;">Player</th>'
+        + '<th style="padding:6px 8px;font-weight:normal;letter-spacing:0.15em;">Submissions</th>'
+        + '<th style="padding:6px 8px;font-weight:normal;letter-spacing:0.15em;">Games</th>'
+        + '</tr></thead><tbody>'
+        + players.map(function (p, i) {
+            return '<tr style="border-bottom:1px solid rgba(201,168,76,0.06);">'
+              + '<td style="padding:6px 8px;color:#c9a84c;">' + (i+1) + '</td>'
+              + '<td style="padding:6px 8px;">' + esc(p.name) + '</td>'
+              + '<td style="padding:6px 8px;">' + p.total + '</td>'
+              + '<td style="padding:6px 8px;">' + Object.keys(p.games).length + '</td>'
+              + '</tr>';
+          }).join('')
+        + '</tbody></table>';
+    }
+
+    function renderRecentActivity() {
+      var el = document.getElementById('ga-recent');
+      var all = [];
+      LB_KEYS.forEach(function (k) {
+        (allData[k]||[]).forEach(function (s) { all.push({ gameName: LB_GAMES[k], d: s.d }); });
+      });
+      all.sort(function (a,b) {
+        var ta = a.d.timestamp || a.d.date; var tb = b.d.timestamp || b.d.date;
+        return ((tb&&tb.seconds)||0) - ((ta&&ta.seconds)||0);
+      });
+      var recent = all.slice(0,10);
+      if (!recent.length) { el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No activity yet.</div>'; return; }
+      el.innerHTML = recent.map(function (r) {
+        var name = r.d.name || r.d.displayName || r.d.username || 'Unknown';
+        return '<div style="padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.06);font-size:0.7rem;">'
+          + '<span style="color:#c9a84c;">' + esc(name) + '</span>'
+          + ' scored <span style="color:#c9a84c;">' + (r.d.score || 0) + '</span>'
+          + ' in ' + esc(r.gameName)
+          + ' <span style="color:rgba(201,168,76,0.3);font-size:0.62rem;">' + timeAgo(r.d.timestamp || r.d.date) + '</span>'
+          + '</div>';
+      }).join('');
+    }
+
+    function renderGameHealth() {
+      var el = document.getElementById('ga-health');
+      el.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:0.7rem;">'
+        + '<thead><tr style="color:rgba(201,168,76,0.4);text-align:left;">'
+        + '<th style="padding:6px 8px;font-weight:normal;letter-spacing:0.15em;">Game</th>'
+        + '<th style="padding:6px 8px;font-weight:normal;letter-spacing:0.15em;">Plays</th>'
+        + '<th style="padding:6px 8px;font-weight:normal;letter-spacing:0.15em;">High Score</th>'
+        + '<th style="padding:6px 8px;font-weight:normal;letter-spacing:0.15em;">Avg</th>'
+        + '<th style="padding:6px 8px;font-weight:normal;letter-spacing:0.15em;">Last Played</th>'
+        + '</tr></thead><tbody>'
+        + LB_KEYS.map(function (k) {
+            var scores = (allData[k]||[]).map(function(s){return s.d.score||0;});
+            var count  = scores.length;
+            var high   = count ? Math.max.apply(null, scores) : '\u2014';
+            var avg    = count ? Math.round(scores.reduce(function(a,b){return a+b;},0)/count) : '\u2014';
+            var ts     = (allData[k]||[]).map(function(s){return s.d.timestamp||s.d.date;}).filter(Boolean)
+                          .sort(function(a,b){return((b&&b.seconds)||0)-((a&&a.seconds)||0);})[0];
+            return '<tr style="border-bottom:1px solid rgba(201,168,76,0.06);">'
+              + '<td style="padding:6px 8px;color:#c9a84c;">' + esc(LB_GAMES[k]) + '</td>'
+              + '<td style="padding:6px 8px;">' + count + '</td>'
+              + '<td style="padding:6px 8px;">' + high + '</td>'
+              + '<td style="padding:6px 8px;">' + avg + '</td>'
+              + '<td style="padding:6px 8px;font-size:0.62rem;">' + (ts ? fmtDate(ts) : '\u2014') + '</td>'
+              + '</tr>';
+          }).join('')
+        + '</tbody></table>';
+    }
+  }
+
+  /* ══════════════ SECTION 17: MAINTENANCE MODE ══════════════ */
+  var _maintActive = false;
+
+  function initMaintenanceMode() {
+    var statusEl = document.getElementById('maint-status');
+
+    function setMaintUI(active, message) {
+      _maintActive = active;
+      var track   = document.getElementById('maint-track');
+      var knob    = document.getElementById('maint-knob');
+      var label   = document.getElementById('maint-live-label');
+      var warning = document.getElementById('maint-warning');
+      var msgWrap = document.getElementById('maint-msg-wrap');
+      var msgEl   = document.getElementById('maint-msg');
+      if (active) {
+        track.style.background = 'rgba(251,56,56,0.12)';
+        track.style.borderColor = 'rgba(251,56,56,0.4)';
+        knob.style.transform = 'translateX(32px)';
+        knob.style.background = '#FB3838';
+        label.style.color = '#FB3838';
+        label.innerHTML = '&#9679; MAINTENANCE';
+        warning.style.display = 'block';
+        msgWrap.style.display = 'block';
+        if (message && msgEl) msgEl.value = message;
+      } else {
+        track.style.background = 'rgba(2,225,39,0.12)';
+        track.style.borderColor = 'rgba(2,225,39,0.35)';
+        knob.style.transform = 'translateX(0)';
+        knob.style.background = '#02E127';
+        label.style.color = '#02E127';
+        label.innerHTML = '&#9679; LIVE';
+        warning.style.display = 'none';
+        msgWrap.style.display = 'none';
+      }
+    }
+
+    db.collection('siteConfig').doc('maintenance').get().then(function (doc) {
+      if (doc.exists && doc.data().active) {
+        setMaintUI(true, doc.data().message || '');
+      } else {
+        setMaintUI(false, '');
+      }
+    }).catch(function () {});
+
+    window._toggleMaintenance = function () {
+      var newState = !_maintActive;
+      var msg = (document.getElementById('maint-msg').value || '').trim() || 'THE UNIVERSE IS BEING RECALIBRATED. RETURN SHORTLY.';
+      var data = newState
+        ? { active: true, message: msg, timestamp: firebase.firestore.FieldValue.serverTimestamp() }
+        : { active: false, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+      db.collection('siteConfig').doc('maintenance').set(data, { merge: true }).then(function () {
+        setMaintUI(newState, newState ? msg : '');
+        statusEl.textContent = newState ? 'MAINTENANCE MODE ON \u2726' : 'SITE RESTORED \u2726';
+        statusEl.className = 'status-msg ' + (newState ? 'status-err' : 'status-ok');
+        setTimeout(function () { statusEl.textContent = ''; }, 3000);
+      }).catch(function (e) {
+        statusEl.textContent = 'Error: ' + e.message;
+        statusEl.className = 'status-msg status-err';
+      });
+    };
+
+    document.getElementById('maint-save-btn').addEventListener('click', function () {
+      if (!_maintActive) return;
+      var msg = (document.getElementById('maint-msg').value || '').trim();
+      if (!msg) { statusEl.textContent='Message required'; statusEl.className='status-msg status-err'; return; }
+      db.collection('siteConfig').doc('maintenance').update({ message: msg }).then(function () {
+        statusEl.textContent = 'MESSAGE UPDATED \u2726';
+        statusEl.className = 'status-msg status-ok';
+        setTimeout(function () { statusEl.textContent = ''; }, 3000);
+      }).catch(function (e) {
+        statusEl.textContent = 'Error: ' + e.message;
+        statusEl.className = 'status-msg status-err';
       });
     });
   }
