@@ -115,6 +115,54 @@
     return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  // ── Nav badges ────────────────────────────────────────────────
+  var _badgeUnsub = null;
+
+  function checkNavBadges() {
+    if (!window.jestaDB) {
+      var _t = 0, _iv = setInterval(function () {
+        if (window.jestaDB) { clearInterval(_iv); checkNavBadges(); }
+        else if (++_t > 80) { clearInterval(_iv); }
+      }, 100);
+      return;
+    }
+    // Only attach once per page load
+    if (_badgeUnsub) return;
+    var now = firebase.firestore ? firebase.firestore.Timestamp.now() : new Date();
+    // Query badges that either have no expiresAt or haven't expired yet
+    // We fetch all and filter client-side to avoid a compound index requirement
+    _badgeUnsub = window.jestaDB.collection('navBadges').onSnapshot(function (snap) {
+      document.querySelectorAll('.nav-badge').forEach(function (b) { b.remove(); });
+      var nowMs = Date.now();
+      snap.forEach(function (doc) {
+        var d = doc.data();
+        // Skip expired badges
+        if (d.expiresAt && d.expiresAt.toMillis && d.expiresAt.toMillis() < nowMs) return;
+        // Find nav link — try both relative and absolute href patterns
+        var link = document.querySelector('a[href="' + d.page + '"]')
+          || document.querySelector('a[href*="/' + d.page + '"]');
+        if (!link) return;
+        var badge = document.createElement('span');
+        badge.className = 'nav-badge';
+        badge.textContent = d.type === 'dot' ? '' : (d.text || d.type);
+        badge.style.cssText = getBadgeStyle(d.type);
+        link.style.position = 'relative';
+        link.appendChild(badge);
+      });
+    }, function () {});
+  }
+
+  function getBadgeStyle(type) {
+    var base = 'position:absolute;top:-4px;right:-4px;border-radius:10px;'
+      + 'font-family:Georgia,serif;font-size:9px;letter-spacing:1px;'
+      + 'padding:2px 5px;z-index:999;line-height:1;pointer-events:none;';
+    if (type === 'dot') return base
+      + 'width:8px;height:8px;padding:0;background:#e53935;border-radius:50%;';
+    if (type === 'LIVE') return base + 'background:#e53935;color:#fff;';
+    if (type === 'HOT')  return base + 'background:#ff6d00;color:#fff;';
+    return base + 'background:#c9a84c;color:#000;';
+  }
+
   // ── Maintenance mode ──────────────────────────────────────────
   function checkMaintenance(user) {
     var isAdmin = user && user.email === 'thejestamang@gmail.com';
@@ -200,6 +248,7 @@
       if (mobLogin) { mobLogin.href = 'login.html'; mobLogin.textContent = 'Log In'; }
     }
     checkMaintenance(user);
+    checkNavBadges();
   }
 
   if (document.readyState === 'loading') {
