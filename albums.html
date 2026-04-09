@@ -577,15 +577,22 @@ window._albumPlayTrack=function(btn,idx,card){
     var loadingEl=document.getElementById('nr-loading');
     window.jestaDB.collection('releases')
       .where('published','==',true)
-      .orderBy('timestamp','desc')
       .get()
       .then(function(snap){
         if(loadingEl) loadingEl.style.display='none';
         if(snap.empty) return;
-        // Group by catalog, preserving Firestore order within each group
+        // Sort by timestamp desc client-side (avoids composite index requirement)
+        var docs=[];
+        snap.forEach(function(doc){docs.push({id:doc.id,data:doc.data()});});
+        docs.sort(function(a,b){
+          var ta=a.data.timestamp, tb=b.data.timestamp;
+          if(!ta) return 1; if(!tb) return -1;
+          return tb.seconds-ta.seconds;
+        });
+        // Group by catalog, preserving sorted order within each group
         var groups={},order=[];
-        snap.forEach(function(doc){
-          var r=doc.data();
+        docs.forEach(function(item){
+          var r=item.data;
           var cat=r.catalog||'NEW CATALOG';
           if(!groups[cat]){groups[cat]=[];order.push(cat);}
           groups[cat].push(r);

@@ -624,11 +624,15 @@ function pressSectionToggle(){
     var _bgC=['rgba(74,124,89,0.5)','rgba(107,74,124,0.5)','rgba(124,74,74,0.5)'];
     window.jestaDB.collection('blogPosts')
       .where('authorRole','==','admin')
-      .orderBy('timestamp','desc')
       .onSnapshot(function(snap){
         container.innerHTML='';
+        var sorted=snap.docs.slice().sort(function(a,b){
+          var ta=a.data().timestamp, tb=b.data().timestamp;
+          if(!ta) return 1; if(!tb) return -1;
+          return tb.seconds-ta.seconds;
+        });
         var idx=0;
-        snap.forEach(function(doc){
+        sorted.forEach(function(doc){
           var d=doc.data();
           if(!d.published) return;
           var postId='admin-'+doc.id;
