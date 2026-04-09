@@ -47,6 +47,22 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-ind
 .mem-front img{width:100%;height:100%;object-fit:cover;display:block}
 .mem-card.matched .mem-front{border-color:rgba(201,168,76,0.85);box-shadow:0 0 22px rgba(201,168,76,0.35),inset 0 0 14px rgba(201,168,76,0.07)}
 .mem-card.matched .mem-front::after{content:'✦';position:absolute;bottom:5px;right:7px;font-size:0.75rem;color:rgba(201,168,76,0.7)}
+/* Match pulse animation */
+@keyframes matchPulse{0%{transform:rotateY(180deg) scale(1)}40%{transform:rotateY(180deg) scale(1.15)}100%{transform:rotateY(180deg) scale(1)}}
+.mem-card.match-pulse .mem-card-inner{animation:matchPulse 0.3s ease-out forwards}
+/* Mismatch shake animation */
+@keyframes mismatchShake{0%{transform:rotateY(0deg) translateX(0)}20%{transform:rotateY(0deg) translateX(-6px)}40%{transform:rotateY(0deg) translateX(6px)}60%{transform:rotateY(0deg) translateX(-4px)}80%{transform:rotateY(0deg) translateX(4px)}100%{transform:rotateY(0deg) translateX(0)}}
+.mem-card.mismatch-shake .mem-card-inner{animation:mismatchShake 0.35s ease-out forwards}
+/* Gold glow on matched cards (permanent) */
+.mem-card.matched{filter:drop-shadow(0 0 8px rgba(201,168,76,0.55))}
+/* Flawless bonus text */
+#flawless-banner{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:800;font-family:'Luminari',serif;font-size:clamp(1.4rem,4vw,2.6rem);letter-spacing:0.35em;color:#c9a84c;text-transform:uppercase;text-align:center;text-shadow:0 0 40px rgba(201,168,76,0.9),0 0 80px rgba(201,168,76,0.4);pointer-events:none;animation:flawlessIn 0.5s ease-out forwards}
+@keyframes flawlessIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.7)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+/* Hint button */
+#hint-btn{display:none;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.6);background:none;border:1px solid rgba(201,168,76,0.35);padding:9px 22px;cursor:pointer;transition:all 0.2s;min-height:44px}
+#hint-btn:hover{border-color:rgba(201,168,76,0.7);color:#c9a84c;background:rgba(201,168,76,0.07)}
+/* Hint highlight */
+.mem-card.hint-flash .mem-front{box-shadow:0 0 20px rgba(201,168,76,0.9),inset 0 0 12px rgba(201,168,76,0.3);border-color:#c9a84c}
 .controls{margin-top:28px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
 .ctrl-btn{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.75);background:none;border:1px solid rgba(201,168,76,0.35);padding:9px 26px;cursor:pointer;transition:background 0.2s,color 0.2s,border-color 0.2s}
 .ctrl-btn:hover{background:rgba(201,168,76,0.12);border-color:#c9a84c;color:#c9a84c}
@@ -185,19 +201,22 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
   <div class="card-grid" id="grid"></div>
   <div class="controls">
     <button class="ctrl-btn primary" id="btn-restart">Shuffle & Restart</button>
-    <button class="ctrl-btn" onclick="openLB('memory-vault','Memory Vault',true)">Leaderboard</button>
+    <button id="hint-btn">♦ HINT (costs 1 life)</button>
+    <button class="ctrl-btn" onclick="openLB('memory-vault','Memory Vault',true)">✦ COSMIC SCROLLS</button>
     <a href="arcade.html" class="ctrl-btn">← Back to Vault</a>
   </div>
 </div>
+<div id="flawless-banner"></div>
 
 <div id="win-overlay">
   <div class="win-glyph">✦</div>
   <div class="win-title">The Vault Opens</div>
   <p class="win-sub">All pairs found</p>
   <p class="win-stats-txt" id="win-stat-txt"></p>
+  <p class="win-stats-txt" id="win-best-txt" style="color:rgba(201,168,76,0.5);font-size:0.7rem;letter-spacing:0.2em"></p>
   <div class="controls" style="margin-top:12px">
     <button class="ctrl-btn primary" id="btn-again">Play Again</button>
-    <button class="ctrl-btn" onclick="openLB('memory-vault','Memory Vault',true)">Leaderboard</button>
+    <button class="ctrl-btn" onclick="openLB('memory-vault','Memory Vault',true)">✦ COSMIC SCROLLS</button>
     <a href="arcade.html" class="ctrl-btn">Return to Vault</a>
   </div>
 </div>
@@ -234,7 +253,53 @@ var ALBUMS = [
   {title:'Sleep Cycle', src:'assets/albums/2K2323/mutt tour/2k2323apr.jpg'}
 ];
 
+/* ── Audio ── */
+var _ac=null;
+function getAC(){
+  if(!_ac)_ac=new(window.AudioContext||window.webkitAudioContext)();
+  if(_ac.state==='suspended')_ac.resume();
+  return _ac;
+}
+function playTone(freq,dur,type,vol,delay){
+  try{
+    var c=getAC();var now=c.currentTime+(delay||0);
+    var o=c.createOscillator();var g=c.createGain();
+    o.type=type||'sine';o.frequency.value=freq;
+    g.gain.setValueAtTime(0.001,now);
+    g.gain.linearRampToValueAtTime(vol||0.3,now+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,now+dur);
+    o.connect(g);g.connect(c.destination);
+    o.start(now);o.stop(now+dur+0.05);
+  }catch(e){}
+}
+function playFlipSound(){playTone(800,0.08,'sine',0.18);}
+function playMatchSound(){
+  playTone(440,0.12,'sine',0.22,0);
+  playTone(660,0.12,'sine',0.22,0.12);
+  playTone(880,0.14,'sine',0.22,0.24);
+}
+function playMismatchSound(){playTone(180,0.22,'triangle',0.28);}
+function playLevelCompleteSound(){
+  playTone(523,0.15,'sine',0.3,0);
+  playTone(659,0.15,'sine',0.3,0.15);
+  playTone(784,0.15,'sine',0.3,0.3);
+  playTone(1047,0.25,'sine',0.3,0.45);
+}
+function playGameOverSound(){
+  playTone(440,0.18,'sine',0.28,0);
+  playTone(330,0.18,'sine',0.28,0.18);
+  playTone(220,0.25,'sine',0.28,0.36);
+}
+function playHintSound(){
+  playTone(600,0.06,'sine',0.15,0);
+  playTone(750,0.06,'sine',0.12,0.07);
+}
+
+/* ── State ── */
 var moves=0,pairs=0,secs=0,started=false,locked=false,first=null,second=null,ticker=null;
+var mismatches=0,lives=3;
+var hintTimer=null,lastMatchTime=0,hintUsedThisInterval=false;
+var BEST_KEY='memoryBestTime';
 
 function pad(n){return n<10?'0'+n:n}
 function tick(){secs++;document.getElementById('s-time').textContent=Math.floor(secs/60)+':'+pad(secs%60)}
@@ -242,12 +307,52 @@ function upd(){document.getElementById('s-moves').textContent=moves;document.get
 
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 
+/* ── Hint system ── */
+function resetHintTimer(){
+  clearTimeout(hintTimer);
+  hintUsedThisInterval=false;
+  document.getElementById('hint-btn').style.display='none';
+  hintTimer=setTimeout(function(){
+    if(pairs<8&&started){document.getElementById('hint-btn').style.display='inline-block';}
+  },30000);
+}
+
+function doHint(){
+  if(lives<=0||locked)return;
+  var unmatched=[].slice.call(document.querySelectorAll('.mem-card:not(.matched)'));
+  if(!unmatched.length)return;
+  // Find a pair
+  var idMap={};
+  unmatched.forEach(function(c){
+    var id=c.dataset.id;
+    if(!idMap[id])idMap[id]=[];
+    idMap[id].push(c);
+  });
+  var pairCards=null;
+  Object.keys(idMap).forEach(function(id){if(idMap[id].length>=2&&!pairCards)pairCards=idMap[id].slice(0,2);});
+  if(!pairCards)return;
+  lives--;
+  document.getElementById('hint-btn').style.display='none';
+  hintUsedThisInterval=true;
+  playHintSound();
+  // Briefly flip both cards to show them
+  pairCards.forEach(function(c){c.classList.add('flipped','hint-flash');});
+  setTimeout(function(){
+    pairCards.forEach(function(c){
+      c.classList.remove('flipped','hint-flash');
+    });
+    resetHintTimer();
+  },700);
+}
+
 function build(){
-  clearInterval(ticker);
-  moves=0;pairs=0;secs=0;started=false;locked=false;first=null;second=null;
+  clearInterval(ticker);clearTimeout(hintTimer);
+  moves=0;pairs=0;secs=0;started=false;locked=false;first=null;second=null;mismatches=0;lives=3;
   document.getElementById('s-time').textContent='0:00';
   upd();
   document.getElementById('win-overlay').classList.remove('show');
+  document.getElementById('hint-btn').style.display='none';
+  var fb=document.getElementById('flawless-banner');if(fb)fb.style.display='none';
   var grid=document.getElementById('grid');
   grid.innerHTML='';
   var deck=shuffle(ALBUMS.concat(ALBUMS.map(function(a){return{title:a.title,src:a.src}})));
@@ -263,35 +368,92 @@ function build(){
 
 function flip(card){
   if(locked||card.classList.contains('flipped')||card.classList.contains('matched'))return;
-  if(!started){started=true;ticker=setInterval(tick,1000)}
+  if(!started){started=true;ticker=setInterval(tick,1000);resetHintTimer();}
+  playFlipSound();
   card.classList.add('flipped');
   if(!first){first=card;return}
   second=card;
   locked=true;
   moves++;upd();
   if(first.dataset.id===second.dataset.id){
-    first.classList.add('matched');second.classList.add('matched');
-    pairs++;upd();
-    first=null;second=null;locked=false;
-    if(pairs===8)setTimeout(win,600);
-  } else {
     var a=first,b=second;
     first=null;second=null;
-    setTimeout(function(){a.classList.remove('flipped');b.classList.remove('flipped');locked=false},950);
+    setTimeout(function(){
+      a.classList.add('matched','match-pulse');
+      b.classList.add('matched','match-pulse');
+      setTimeout(function(){a.classList.remove('match-pulse');b.classList.remove('match-pulse');},350);
+      playMatchSound();
+      pairs++;upd();
+      lastMatchTime=Date.now();
+      resetHintTimer();
+      locked=false;
+      if(pairs===8)setTimeout(win,600);
+    },200);
+  } else {
+    mismatches++;
+    var a=first,b=second;
+    first=null;second=null;
+    setTimeout(function(){
+      a.classList.add('mismatch-shake');
+      b.classList.add('mismatch-shake');
+      playMismatchSound();
+      setTimeout(function(){
+        a.classList.remove('mismatch-shake','flipped');
+        b.classList.remove('mismatch-shake','flipped');
+        playFlipSound();
+        locked=false;
+      },400);
+    },300);
   }
 }
 
 function win(){
-  clearInterval(ticker);
+  clearInterval(ticker);clearTimeout(hintTimer);
   var m=Math.floor(secs/60),s=secs%60;
-  document.getElementById('win-stat-txt').textContent=moves+' moves  ·  '+m+':'+pad(s);
-  document.getElementById('win-overlay').classList.add('show');
-  submitScore('memory-vault',moves,true,null);
+  var timeStr=m+':'+pad(s);
+  // Best time tracking
+  var bestTxt='';
+  try{
+    var prev=JSON.parse(localStorage.getItem(BEST_KEY)||'null');
+    if(!prev||secs<prev.secs){
+      localStorage.setItem(BEST_KEY,JSON.stringify({secs:secs,str:timeStr}));
+      bestTxt='NEW BEST TIME!';
+    } else {
+      bestTxt='BEST: '+prev.str;
+    }
+  }catch(e){}
+  document.getElementById('win-stat-txt').textContent=moves+' moves  ·  '+timeStr;
+  var bestEl=document.getElementById('win-best-txt');
+  if(bestEl)bestEl.textContent=bestTxt;
+  // Flawless bonus
+  if(mismatches===0){
+    showFlawless();
+    playLevelCompleteSound();
+    submitScore('memory-vault',moves+' (FLAWLESS +500)',true,null);
+  } else {
+    playLevelCompleteSound();
+    document.getElementById('win-overlay').classList.add('show');
+    submitScore('memory-vault',moves,true,null);
+  }
 }
 
-document.getElementById('btn-restart').addEventListener('click',build);
-document.getElementById('btn-again').addEventListener('click',build);
-build();
+function showFlawless(){
+  var fb=document.getElementById('flawless-banner');
+  if(!fb)return;
+  fb.textContent='FLAWLESS MEMORY \u2726';
+  fb.style.display='block';
+  setTimeout(function(){
+    fb.style.display='none';
+    document.getElementById('win-overlay').classList.add('show');
+  },2200);
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('btn-restart').addEventListener('click',build);
+  document.getElementById('btn-again').addEventListener('click',build);
+  document.getElementById('hint-btn').addEventListener('click',doHint);
+  build();
+});
 </script>
 
 <script>
@@ -306,13 +468,19 @@ window.openLB=function(game,title,lowerBetter){
   var modal=document.getElementById('lb-modal');
   var list=document.getElementById('lb-list');
   document.getElementById('lb-title').textContent=title+' · Leaderboard';
-  list.innerHTML='<div class="lb-loading">Loading...</div>';
+  list.innerHTML='<div class="lb-loading">CONSULTING THE STARS...</div>';
   modal.classList.add('open');
   var db=_getDb();
   if(!db){list.innerHTML='<div class="lb-empty">The scrolls are unavailable.</div>';return;}
+  // Personal best from localStorage
+  var pbKey='lbBest_memory-vault';
+  var pb=null;try{pb=JSON.parse(localStorage.getItem(pbKey)||'null');}catch(e){}
   db.collection('leaderboards').where('game','==',game).limit(50).get()
     .then(function(snap){
-      if(snap.empty){list.innerHTML='<div class="lb-empty">No entries yet. Be the first.</div>';return;}
+      if(snap.empty){
+        var pbHtml=pb?'<div class="lb-row lb-head-row" style="margin-bottom:8px"><span class="lb-name" colspan="4" style="color:rgba(201,168,76,0.5);font-size:0.6rem;letter-spacing:0.2em">YOUR BEST: '+pb.score+' MOVES</span></div>':'';
+        list.innerHTML=pbHtml+'<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;
+      }
       var docs=snap.docs.map(function(d){return d.data();});
       docs.sort(function(a,b){return lowerBetter?a.score-b.score:b.score-a.score;});
       docs=docs.slice(0,10);
