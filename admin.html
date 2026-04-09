@@ -840,6 +840,37 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
 
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 20: BACKUP DASHBOARD ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Data Backup</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:24px;">Export your data as a safety net.</div>
+
+      <div id="bk-reminder" style="display:none;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.3);padding:12px 16px;border-radius:2px;margin-bottom:20px;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:#c9a84c;">&#9888; Your last backup was over 30 days ago</div>
+
+      <div id="bk-last" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:24px;">NO BACKUP ON RECORD</div>
+
+      <button class="btn-gold btn-gold-full" id="bk-all-btn" style="font-size:0.85rem;letter-spacing:0.35em;padding:20px 24px;margin-bottom:24px;">BACKUP ENTIRE UNIVERSE ✦</button>
+      <div class="status-msg" id="bk-all-status"></div>
+
+      <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Individual Collections</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="bk-individual-grid">
+        <button class="btn-ghost" data-bk-col="users"         data-bk-file="members">BACKUP MEMBERS</button>
+        <button class="btn-ghost" data-bk-col="blogPosts"     data-bk-file="blog">BACKUP BLOG POSTS</button>
+        <button class="btn-ghost" data-bk-col="shows"         data-bk-file="shows">BACKUP SHOWS</button>
+        <button class="btn-ghost" data-bk-col="pressArticles" data-bk-file="press">BACKUP PRESS</button>
+        <button class="btn-ghost" data-bk-col="releases"      data-bk-file="releases">BACKUP RELEASES</button>
+        <button class="btn-ghost" data-bk-col="notifications" data-bk-file="notifications">BACKUP NOTIFICATIONS</button>
+        <button class="btn-ghost" data-bk-col="inquiries"     data-bk-file="inquiries">BACKUP INQUIRIES</button>
+        <button class="btn-ghost" data-bk-col="guestbook"     data-bk-file="guestbook">BACKUP GUESTBOOK</button>
+        <button class="btn-ghost" data-bk-col="videos"        data-bk-file="videos">BACKUP VIDEOS</button>
+        <button class="btn-ghost" data-bk-col="merch"         data-bk-file="merch">BACKUP MERCH</button>
+      </div>
+      <div class="status-msg" id="bk-ind-status" style="margin-top:10px;"></div>
+    </div>
+
   </div><!-- /admin-content -->
 </div><!-- /adm-wrap -->
 
@@ -960,6 +991,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initMaintenanceMode();
     initEmailCampaign();
     initNavBadgeManager();
+    initBackupDashboard();
     initTabs();
     initQuickLinks();
   }
@@ -2607,6 +2639,128 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   window._removeNavBadge = function (id) {
     db.collection('navBadges').doc(id).delete().catch(function (e) { alert('Error: ' + e.message); });
   };
+
+  /* ══════════════ SECTION 20: BACKUP DASHBOARD ══════════════ */
+  function initBackupDashboard() {
+    var MONTHS = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE',
+                  'JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+
+    function toRomanLocal(n) {
+      var v=[1000,900,500,400,100,90,50,40,10,9,5,4,1];
+      var s=['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
+      var r=''; for(var i=0;i<v.length;i++){while(n>=v[i]){r+=s[i];n-=v[i];}} return r;
+    }
+
+    function ritualDateLocal(d) {
+      return MONTHS[d.getMonth()] + ' \u00b7 ' + toRomanLocal(d.getDate()) + ' \u00b7 ' + toRomanLocal(d.getFullYear());
+    }
+
+    function updateLastBackupUI() {
+      var ts = localStorage.getItem('lastBackupDate');
+      var lastEl = document.getElementById('bk-last');
+      var reminderEl = document.getElementById('bk-reminder');
+      if (!ts) {
+        lastEl.textContent = 'NO BACKUP ON RECORD';
+        reminderEl.style.display = 'none';
+        return;
+      }
+      var d = new Date(parseInt(ts, 10));
+      lastEl.textContent = 'LAST BACKUP: ' + ritualDateLocal(d);
+      var daysSince = (Date.now() - d.getTime()) / 86400000;
+      reminderEl.style.display = daysSince > 30 ? 'block' : 'none';
+    }
+    updateLastBackupUI();
+
+    function downloadJSON(data, filename) {
+      var json = JSON.stringify(data, null, 2);
+      var blob = new Blob([json], { type: 'application/json' });
+      var url  = URL.createObjectURL(blob);
+      var a    = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+      localStorage.setItem('lastBackupDate', String(Date.now()));
+      updateLastBackupUI();
+      var mb = (json.length / 1048576).toFixed(2);
+      return mb;
+    }
+
+    function dateStamp() {
+      var d = new Date();
+      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    }
+
+    function readCollection(col) {
+      return db.collection(col).get().then(function (snap) {
+        var docs = [];
+        snap.forEach(function (doc) {
+          var raw = doc.data();
+          // Serialize Firestore Timestamps to ISO strings
+          var serialized = {};
+          Object.keys(raw).forEach(function (k) {
+            var v = raw[k];
+            serialized[k] = (v && v.toDate) ? v.toDate().toISOString() : v;
+          });
+          docs.push({ id: doc.id, data: serialized });
+        });
+        return docs;
+      });
+    }
+
+    // Individual collection buttons
+    document.getElementById('bk-individual-grid').querySelectorAll('[data-bk-col]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var col    = this.getAttribute('data-bk-col');
+        var file   = this.getAttribute('data-bk-file');
+        var statusEl = document.getElementById('bk-ind-status');
+        this.disabled = true;
+        statusEl.textContent = 'Archiving...';
+        statusEl.className = 'status-msg';
+        var self = this;
+        readCollection(col).then(function (docs) {
+          var mb = downloadJSON({ exportedAt: new Date().toISOString(), collection: col, docs: docs },
+            'jestamang-' + file + '-' + dateStamp() + '.json');
+          statusEl.textContent = 'BACKUP DOWNLOADED \u2726 ' + mb + ' MB';
+          statusEl.className = 'status-msg status-ok';
+          self.disabled = false;
+        }).catch(function (e) {
+          statusEl.textContent = 'Error: ' + e.message;
+          statusEl.className = 'status-msg status-err';
+          self.disabled = false;
+        });
+      });
+    });
+
+    // Full backup
+    var allBtn    = document.getElementById('bk-all-btn');
+    var allStatus = document.getElementById('bk-all-status');
+    var ALL_COLS  = ['users','blogPosts','shows','pressArticles','releases',
+                     'leaderboards','notifications','inquiries','guestbook',
+                     'navBadges','emailCampaigns','videos','merch'];
+
+    allBtn.addEventListener('click', function () {
+      allBtn.disabled = true;
+      allStatus.textContent = 'ARCHIVING THE UNIVERSE...';
+      allStatus.className = 'status-msg';
+
+      var promises = ALL_COLS.map(function (col) {
+        return readCollection(col).then(function (docs) { return { col: col, docs: docs }; })
+          .catch(function () { return { col: col, docs: [] }; });
+      });
+
+      Promise.all(promises).then(function (results) {
+        var payload = { exportedAt: new Date().toISOString(), collections: {} };
+        results.forEach(function (r) { payload.collections[r.col] = r.docs; });
+        var mb = downloadJSON(payload, 'jestamang-full-backup-' + dateStamp() + '.json');
+        allStatus.textContent = 'BACKUP DOWNLOADED \u2726 ' + mb + ' MB';
+        allStatus.className = 'status-msg status-ok';
+        allBtn.disabled = false;
+      }).catch(function (e) {
+        allStatus.textContent = 'Error: ' + e.message;
+        allStatus.className = 'status-msg status-err';
+        allBtn.disabled = false;
+      });
+    });
+  }
 
   /* ══════════════ UI: TABS ══════════════ */
   function initTabs() {
