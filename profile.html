@@ -728,9 +728,11 @@ body::before{
 .natal-result-sun {
   font-family:'Luminari',serif;
   font-size:1.1rem;
-  color:rgba(255,255,255,0.75);
+  color:#c9a84c;
   letter-spacing:0.12em;
   margin-bottom:6px;
+  flex-wrap:wrap;
+  justify-content:center;
 }
 .natal-result-badge {
   font-family:'Luminari',serif;
@@ -1626,7 +1628,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <div class="natal-result-header">
         <div class="natal-result-name" id="nr-name"></div>
         <div class="natal-result-sun" id="nr-sun-sub"></div>
-        <div class="natal-result-badge">Member of the Inner Circle</div>
       </div>
 
       <!-- Chart Wheel -->
@@ -2791,8 +2792,12 @@ var NC = (function(){
 
     if(container.nameEl) container.nameEl.textContent=userName.toUpperCase();
     if(container.sunSubEl){
-      var sun=planets['Sun'];
-      container.sunSubEl.textContent=sun.glyph+' Sun in '+sun.sign+(ascData?'  \u2022  '+ascData.glyph+' '+ascData.sign+' Rising':'');
+      var sun=planets['Sun'],moonPl=planets['Moon'];
+      var parts=[];
+      if(sun)    parts.push(sun.glyph+'\uFE0E Sun in '+sun.sign);
+      if(moonPl) parts.push(moonPl.glyph+'\uFE0E Moon in '+moonPl.sign);
+      if(ascData) parts.push(ascData.glyph+'\uFE0E '+ascData.sign+' Rising');
+      container.sunSubEl.textContent=parts.join('  \u00B7  ');
     }
 
     if(container.wheelEl){
