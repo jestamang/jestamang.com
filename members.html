@@ -1077,7 +1077,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       existingIds.add(el.getAttribute('data-id'));
     });
 
-    var isAdmin = currentUser && currentUser.email === 'andrewwace0319@gmail.com';
+    var isAdmin = currentUser && currentUser.email === 'thejestamang@gmail.com';
 
     snap.forEach(function(doc){
       if(existingIds.has(doc.id)) return; /* already rendered */
@@ -1172,7 +1172,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script>
 function initForum(user, uname, fdb, currentPhoto) {
   currentPhoto = currentPhoto || user.photoURL || '/assets/homepage/jesta jr.jpg';
-  var isAdmin = (user.email === 'andrewwace0319@gmail.com');
+  var isAdmin = (user.email === 'thejestamang@gmail.com');
 
   /* ── Helpers ── */
   function esc(s){
