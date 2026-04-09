@@ -172,6 +172,30 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
        Sold out:  <span class="show-sold-out">The Conjuring Is Full</span>
      ═══════════════════════════════════════════════════════════════════ -->
 
+<!-- ADD SHOW: copy this card block and paste above, fill in details -->
+<article class="show-card show-card--tba">
+  <span class="show-numeral">I</span>
+  <span class="show-status">Forthcoming</span>
+  <!-- DATE: use ritual format, e.g. "APRIL · XIV · MMXXVI" -->
+  <p class="show-date">To Be Announced</p>
+  <!-- VENUE: venue name -->
+  <h3 class="show-venue">Madhouse</h3>
+  <!-- CITY: city and state -->
+  <p class="show-city">Ft. Myers, FL</p>
+  <div class="show-rule"></div>
+  <!-- DETAILS: time, door price, or any other info -->
+  <p class="show-detail">The next event is being prepared in the dark. Watch the seasons. The calendar knows.</p>
+  <div class="show-ticket-wrap">
+    <!-- TICKETS: replace # with real ticket URL when available -->
+    <!-- Supports: Eventbrite, Dice.fm, Ticketmaster, direct venue links, or any URL -->
+    <a class="show-ticket-btn" href="#">Acquire Entry</a>
+    <!-- FREE ENTRY: replace above line with this if no tickets needed: -->
+    <!-- <span class="show-free-entry">Free Entry</span> -->
+    <!-- SOLD OUT: replace above line with this if sold out: -->
+    <!-- <span class="show-sold-out">The Conjuring Is Full</span> -->
+  </div>
+</article>
+
 <!-- ══ DYNAMIC SHOWS — loaded from Firestore shows collection ══ -->
 <div id="shows-loading" style="text-align:center;padding:60px 0 40px;font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.28);font-style:italic;">Consulting the Cosmic Calendar...</div>
 <div id="shows-upcoming"></div>
