@@ -988,8 +988,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   };
 
   /* ══════════════ SECTION 5: MODERATION ══════════════ */
-  var commentsPage = 0, commentsPageSize = 20;
-  var gbPage = 0, gbPageSize = 20;
+  var lastCommentDoc = null;
+  var lastGuestbookDoc = null;
 
   function initModeration() {
     loadComments();
@@ -997,11 +997,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     loadGuestbook();
 
     document.getElementById('comments-load-more').addEventListener('click', function(){
-      commentsPage++;
       loadComments(true);
     });
     document.getElementById('gb-load-more').addEventListener('click', function(){
-      gbPage++;
       loadGuestbook(true);
     });
   }
@@ -1031,14 +1029,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   function loadComments(append) {
     var el = document.getElementById('mod-comments-list');
     var lmb = document.getElementById('comments-load-more');
-    db.collection('comments').orderBy('timestamp','desc').limit((commentsPage + 1) * commentsPageSize).get().then(function(snap){
+    var query = db.collection('comments').orderBy('timestamp','desc').limit(20);
+    if (append && lastCommentDoc) {
+      query = query.startAfter(lastCommentDoc);
+    } else {
+      lastCommentDoc = null;
+    }
+    query.get().then(function(snap){
+      if (snap.empty && !append) { el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No comments.</div>'; lmb.style.display='none'; return; }
+      if (snap.empty) { lmb.style.display='none'; return; }
+      lastCommentDoc = snap.docs[snap.docs.length - 1];
       var html = '';
-      if (snap.empty) { el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No comments.</div>'; lmb.style.display='none'; return; }
-      var items = [];
-      snap.forEach(function(doc){ items.push({id:doc.id,d:doc.data()}); });
-      var slice = items.slice(commentsPage * commentsPageSize);
-      slice.forEach(function(item){
-        var d=item.d; var eid = 'cmt-'+item.id;
+      snap.forEach(function(doc){
+        var d=doc.data(); var eid='cmt-'+doc.id;
         html += '<div class="entry-row" id="row-' + eid + '">'
           + '<div class="entry-body">'
           + '<div class="entry-name">' + esc(d.username||d.name||'Anonymous') + '</div>'
@@ -1046,11 +1049,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           + '<div class="entry-text">' + esc(d.text||d.comment||d.body||'') + '</div>'
           + '<div class="entry-actions">'
           + '<button class="btn-danger btn-sm" onclick="askDelete(\'' + eid + '\')">Delete</button>'
-          + makeDeleteRow('comments', item.id, eid)
+          + makeDeleteRow('comments', doc.id, eid)
           + '</div></div></div>';
       });
       if (append) { el.innerHTML += html; } else { el.innerHTML = html; }
-      lmb.style.display = (items.length >= (commentsPage+1)*commentsPageSize) ? 'inline-block' : 'none';
+      lmb.style.display = snap.docs.length < 20 ? 'none' : 'inline-block';
     }).catch(function(e){ el.innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>'; });
   }
 
@@ -1079,14 +1082,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   function loadGuestbook(append) {
     var el = document.getElementById('mod-gb-list');
     var lmb = document.getElementById('gb-load-more');
-    db.collection('guestbook').orderBy('timestamp','desc').limit((gbPage+1)*gbPageSize).get().then(function(snap){
+    var query = db.collection('guestbook').orderBy('timestamp','desc').limit(20);
+    if (append && lastGuestbookDoc) {
+      query = query.startAfter(lastGuestbookDoc);
+    } else {
+      lastGuestbookDoc = null;
+    }
+    query.get().then(function(snap){
+      if(snap.empty&&!append){el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No entries.</div>';lmb.style.display='none';return;}
+      if(snap.empty){lmb.style.display='none';return;}
+      lastGuestbookDoc=snap.docs[snap.docs.length-1];
       var html='';
-      if(snap.empty){el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No entries.</div>';lmb.style.display='none';return;}
-      var items=[];
-      snap.forEach(function(doc){items.push({id:doc.id,d:doc.data()});});
-      var slice=items.slice(gbPage*gbPageSize);
-      slice.forEach(function(item){
-        var d=item.d; var eid='gb-'+item.id;
+      snap.forEach(function(doc){
+        var d=doc.data();var eid='gb-'+doc.id;
         html+='<div class="entry-row" id="row-'+eid+'">'
           +'<div class="entry-body">'
           +'<div class="entry-name">'+esc(d.displayName||d.username||'Anonymous')+'</div>'
@@ -1094,11 +1102,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           +'<div class="entry-text">'+esc(d.text||d.message||d.entry||'')+'</div>'
           +'<div class="entry-actions">'
           +'<button class="btn-danger btn-sm" onclick="askDelete(\''+eid+'\')">Delete</button>'
-          +makeDeleteRow('guestbook',item.id,eid)
+          +makeDeleteRow('guestbook',doc.id,eid)
           +'</div></div></div>';
       });
       if(append){el.innerHTML+=html;}else{el.innerHTML=html;}
-      lmb.style.display=(items.length>=(gbPage+1)*gbPageSize)?'inline-block':'none';
+      lmb.style.display=snap.docs.length<20?'none':'inline-block';
     }).catch(function(e){el.innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>';});
   }
 
@@ -1666,6 +1674,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         this.classList.add('active');
         var pane = document.getElementById(target);
         if(pane) pane.classList.add('active');
+        // Reset moderation pagination cursors on tab switch
+        if(target==='mod-comments'){lastCommentDoc=null;loadComments();}
+        if(target==='mod-guestbook'){lastGuestbookDoc=null;loadGuestbook();}
       });
     });
   }
