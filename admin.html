@@ -871,6 +871,35 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="status-msg" id="bk-ind-status" style="margin-top:10px;"></div>
     </div>
 
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 21: TOP MEMBERS ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Most Active Members</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">The most engaged of the Jestagang.</div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+        <div id="tm-last-calc" style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(201,168,76,0.3);">Not yet calculated</div>
+        <button class="btn-ghost" id="tm-refresh-btn" style="padding:8px 18px;letter-spacing:0.2em;font-size:0.65rem;">REFRESH ✦</button>
+      </div>
+
+      <div id="tm-loading" style="color:rgba(201,168,76,0.2);font-size:0.7rem;display:none;">Aggregating activity...</div>
+      <div id="tm-table"></div>
+    </div>
+
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 22: SIGIL CARD EDITOR ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Sigil Card Editor</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:24px;">Edit the oracle cards without touching code.</div>
+
+      <button class="btn-gold btn-gold-full" id="sc-save-all-btn">SAVE ALL CARDS ✦</button>
+      <div class="status-msg" id="sc-all-status"></div>
+
+      <div id="sc-cards" style="margin-top:24px;"></div>
+    </div>
+
   </div><!-- /admin-content -->
 </div><!-- /adm-wrap -->
 
@@ -992,6 +1021,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initEmailCampaign();
     initNavBadgeManager();
     initBackupDashboard();
+    initTopMembers();
+    initSigilCardEditor();
     initTabs();
     initQuickLinks();
   }
@@ -2758,6 +2789,272 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         allStatus.textContent = 'Error: ' + e.message;
         allStatus.className = 'status-msg status-err';
         allBtn.disabled = false;
+      });
+    });
+  }
+
+  /* ══════════════ SECTION 21: TOP MEMBERS ══════════════ */
+  function initTopMembers() {
+    var calcTime = null;
+
+    function timeAgoStr(d) {
+      if (!d) return '';
+      var sec = Math.floor((Date.now() - d.getTime()) / 1000);
+      if (sec < 60)    return 'just now';
+      if (sec < 3600)  return Math.floor(sec/60) + 'm ago';
+      if (sec < 86400) return Math.floor(sec/3600) + 'h ago';
+      return Math.floor(sec/86400) + 'd ago';
+    }
+
+    function updateCalcLabel() {
+      var el = document.getElementById('tm-last-calc');
+      el.textContent = calcTime ? ('LAST CALCULATED: ' + timeAgoStr(calcTime)) : 'Not yet calculated';
+    }
+
+    function runAggregation() {
+      var tableEl  = document.getElementById('tm-table');
+      var loadEl   = document.getElementById('tm-loading');
+      var refreshBtn = document.getElementById('tm-refresh-btn');
+      tableEl.innerHTML = '';
+      loadEl.style.display = 'block';
+      refreshBtn.disabled = true;
+
+      var playerMap = {};
+      function add(map, key, name, photo, field) {
+        if (!key) return;
+        if (!map[key]) map[key] = { uid: key, name: name || key, photo: photo || '', comments: 0, chat: 0, guestbook: 0, games: 0 };
+        map[key][field]++;
+        if (name && map[key].name === key) map[key].name = name;
+        if (photo && !map[key].photo) map[key].photo = photo;
+      }
+
+      var fetches = [
+        db.collection('comments').get().then(function(s){
+          s.forEach(function(d){ var v=d.data(); add(playerMap,v.uid||v.displayName,v.displayName||v.username,v.photoURL,'comments'); });
+        }).catch(function(){}),
+        db.collection('innerCircleChat').get().then(function(s){
+          s.forEach(function(d){ var v=d.data(); add(playerMap,v.uid||v.displayName,v.displayName||v.username,v.photoURL,'chat'); });
+        }).catch(function(){}),
+        db.collection('guestbook').get().then(function(s){
+          s.forEach(function(d){ var v=d.data(); add(playerMap,v.uid||v.displayName,v.displayName||v.username,v.photoURL,'guestbook'); });
+        }).catch(function(){})
+      ];
+
+      // Leaderboard scores across all games
+      Object.keys(LB_GAMES).forEach(function(gameKey) {
+        fetches.push(
+          db.collection('leaderboards').doc(gameKey).collection('scores').get().then(function(s){
+            s.forEach(function(d){ var v=d.data(); add(playerMap,v.uid||v.name,v.name||v.displayName||v.username,v.photoURL,'games'); });
+          }).catch(function(){})
+        );
+      });
+
+      Promise.all(fetches).then(function() {
+        var players = Object.keys(playerMap).map(function(k){ return playerMap[k]; });
+        players.forEach(function(p){ p.total = p.comments + p.chat + p.guestbook + p.games; });
+        players.sort(function(a,b){ return b.total - a.total; });
+        var top10 = players.slice(0,10);
+
+        // Enrich names/photos from users collection for firebase-style UIDs
+        var uidFetches = top10.map(function(p) {
+          if (!p.uid || p.uid.length < 10) return Promise.resolve();
+          return db.collection('users').doc(p.uid).get().then(function(doc){
+            if (!doc.exists) return;
+            var ud = doc.data();
+            if (ud.username)  p.name  = ud.username;
+            if (ud.photoURL)  p.photo = ud.photoURL;
+          }).catch(function(){});
+        });
+
+        return Promise.all(uidFetches).then(function() {
+          calcTime = new Date();
+          updateCalcLabel();
+          loadEl.style.display = 'none';
+          refreshBtn.disabled = false;
+          renderTable(top10);
+        });
+      }).catch(function(e){
+        loadEl.textContent = 'Error: ' + e.message;
+        refreshBtn.disabled = false;
+      });
+    }
+
+    function renderTable(players) {
+      var tableEl = document.getElementById('tm-table');
+      if (!players.length) {
+        tableEl.innerHTML = '<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No activity data yet.</div>';
+        return;
+      }
+      var rankColors = ['#c9a84c','rgba(180,180,180,0.8)','rgba(180,120,60,0.8)'];
+      var rankSymbols = ['\u2746','2','3'];
+      var html = '<div style="overflow-x:auto;">'
+        + '<table style="width:100%;border-collapse:collapse;font-size:0.7rem;min-width:400px;">'
+        + '<thead><tr style="color:rgba(201,168,76,0.4);text-align:left;border-bottom:1px solid rgba(201,168,76,0.1);">'
+        + '<th style="padding:8px 6px;font-weight:normal;letter-spacing:0.15em;">#</th>'
+        + '<th style="padding:8px 6px;font-weight:normal;letter-spacing:0.15em;" colspan="2">Member</th>'
+        + '<th style="padding:8px 6px;font-weight:normal;letter-spacing:0.15em;">Comments</th>'
+        + '<th style="padding:8px 6px;font-weight:normal;letter-spacing:0.15em;">Chat</th>'
+        + '<th style="padding:8px 6px;font-weight:normal;letter-spacing:0.15em;">Games</th>'
+        + '<th style="padding:8px 6px;font-weight:normal;letter-spacing:0.15em;color:#c9a84c;">Total</th>'
+        + '</tr></thead><tbody>';
+      players.forEach(function(p, i) {
+        var rankColor = i < 3 ? rankColors[i] : 'rgba(240,230,210,0.4)';
+        var rankLabel = i < 3 ? rankSymbols[i] : (i+1);
+        var avatar = p.photo
+          ? '<img src="' + esc(p.photo) + '" onerror="this.src=\'assets/homepage/jesta jr.jpg\'" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.2);" loading="lazy">'
+          : '<img src="assets/homepage/jesta jr.jpg" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.15);">';
+        html += '<tr style="border-bottom:1px solid rgba(201,168,76,0.05);">'
+          + '<td style="padding:8px 6px;color:' + rankColor + ';font-family:\'Luminari\',serif;font-size:' + (i<3?'1rem':'0.72rem') + ';">' + rankLabel + '</td>'
+          + '<td style="padding:8px 4px;width:36px;">' + avatar + '</td>'
+          + '<td style="padding:8px 6px;color:rgba(240,230,210,0.8);">' + esc(p.name) + '</td>'
+          + '<td style="padding:8px 6px;">' + p.comments + '</td>'
+          + '<td style="padding:8px 6px;">' + p.chat + '</td>'
+          + '<td style="padding:8px 6px;">' + p.games + '</td>'
+          + '<td style="padding:8px 6px;color:#c9a84c;font-family:\'Luminari\',serif;">' + p.total + '</td>'
+          + '</tr>';
+      });
+      html += '</tbody></table></div>';
+      tableEl.innerHTML = html;
+    }
+
+    document.getElementById('tm-refresh-btn').addEventListener('click', function() {
+      calcTime = null; updateCalcLabel(); runAggregation();
+    });
+    runAggregation();
+  }
+
+  /* ══════════════ SECTION 22: SIGIL CARD EDITOR ══════════════ */
+  var _sigilCards = [
+    {arcana:'I \u00b7 The Jester',       name:'The Jester',        glyph:'\u03a8', reading:'What is given freely multiplies. What is hoarded rots. The Jester sees your open hands and grins \u2014 this is the correct posture.'},
+    {arcana:'II \u00b7 Origin',           name:'The Prickly Being', glyph:'\u2736', reading:'A small divine presence has left its marks on your chest. Do not wash them. They are proof of something most will never receive.'},
+    {arcana:'III \u00b7 Motion',          name:'The Parade',        glyph:'\u21af', reading:'Movement is the ritual. The direction matters less than the act of beginning. Set your feet in motion \u2014 the path reveals itself under moving feet.'},
+    {arcana:'IV \u00b7 Season',           name:'The New \u00c6on',  glyph:'\u00c6', reading:'The old season does not argue with the new one. It simply yields. Something in you is ready to yield. Let it.'},
+    {arcana:'V \u00b7 Signal',            name:'The Metropolis',    glyph:'\u2318', reading:'The city speaks to those who have learned its dialect. What sounds like noise to others is transmission to you. Listen deeper.'},
+    {arcana:'VI \u00b7 Whole',            name:'The 600',           glyph:'\u229b', reading:'The number is not large \u2014 it is complete. One contains the whole. You already hold everything required for this moment.'},
+    {arcana:'VII \u00b7 Freedom',         name:'The Circus',        glyph:'\u03a9', reading:'Your cage was assembled from your own hesitation. The door was never locked. You simply forgot to check.'},
+    {arcana:'VIII \u00b7 Sleep',          name:'The Dream',         glyph:'\u224b', reading:'What visited you while you slept was not imaginary. The frenzied realm of dreams is where the real work is done.'},
+    {arcana:'IX \u00b7 Depth',            name:'The Swamp',         glyph:'\u223f', reading:'From the murk rise the most vivid creatures. The clarity you seek is not found in clean water \u2014 it is found in depth.'},
+    {arcana:'X \u00b7 Wheel',             name:'The Solstice',      glyph:'\u273a', reading:'The calendar is not neutral. Whoever controls the seasons controls the energy. Reclaim your place on the wheel.'},
+    {arcana:'XI \u00b7 Recognition',      name:'The Chosen Few',    glyph:'\u2042', reading:'To be chosen is not to be selected. It is to have always been. You were not called \u2014 you were recognized.'},
+    {arcana:'XII \u00b7 Threshold',       name:'The Portal',        glyph:'\u2295', reading:'A door appears only to those already standing before it. You would not sense the threshold if you were not meant to cross it.'},
+    {arcana:'XIII \u00b7 Time',           name:'The Rhythm',        glyph:'\u2341', reading:'Every soul moves in time whether it hears the music or not. The question is not whether you are dancing \u2014 it is whether you know it.'},
+    {arcana:'XIV \u00b7 Light',           name:'The Gold',          glyph:'\u25ca', reading:'Not all that shines asks to be spent. Some things are kept luminous simply by being witnessed. Bear witness today.'},
+    {arcana:'XV \u00b7 Mark',             name:'The Claws',         glyph:'\u2357', reading:'The small marks on your chest are not wounds \u2014 they are signatures. Something vast has signed its name into your skin.'},
+    {arcana:'XVI \u00b7 Unseen',          name:'The Veil',          glyph:'\u2240', reading:'What you cannot see is watching with tremendous interest. This is not threat. This is the most affectionate form of attention there is.'},
+    {arcana:'XVII \u00b7 Rite',           name:'The Pagan',         glyph:'\u2297', reading:'No institution owns your ceremony. No government holds the patent on your reverence. The rite you build yourself is the only holy one.'},
+    {arcana:'XVIII \u00b7 Memory',        name:'The Blood',         glyph:'\u2347', reading:'The wound remembers what the mind chooses to forget. What pulses in you is older than your name and wiser than your fear.'},
+    {arcana:'XIX \u00b7 Mirror',          name:'The Fat Head',      glyph:'\u2299', reading:'The jesting being grins when you call it deity. But you are right to call it so. Feed it no further flattery \u2014 it has quite enough already.'},
+    {arcana:'XX \u00b7 Witness',          name:'The Children',      glyph:'\u2055', reading:'Core 6. Chosen few. Born from the dew of a swampy imagination. They do not ask to be understood \u2014 only witnessed. Are you watching?'},
+    {arcana:'XXI \u00b7 Fire',            name:'The Circus Spits',  glyph:'\u2051', reading:'Free, free, FREE! Marvellous \u2014 miraculous \u2014 meticulous creations beyond the limits of those fussy gods. Today you are one of them. Create without a single shred of doubt.'},
+    {arcana:'XXII \u00b7 Void',           name:'The Drift',         glyph:'\u25cb', reading:'There is no floor here and that is the point. Stop searching for solid ground in a place that was never meant to hold weight. Float. The drift is not failure \u2014 it is the oldest form of navigation.'},
+    {arcana:'XXIII \u00b7 Return',        name:'The Coming Back',   glyph:'\u21ba', reading:'You have left this place before and returned changed. You will do it again. The leaving is not abandonment \u2014 it is how the self collects what it needs before walking back through the door.'}
+  ];
+
+  function initSigilCardEditor() {
+    var container = document.getElementById('sc-cards');
+    var allStatus = document.getElementById('sc-all-status');
+
+    // Load from Firestore if saved; otherwise use defaults
+    db.collection('sigilCards').doc('cards').get().then(function(doc) {
+      if (doc.exists && doc.data().cards && doc.data().cards.length) {
+        _sigilCards = doc.data().cards;
+      }
+      renderCards();
+    }).catch(function() { renderCards(); });
+
+    function renderCards() {
+      container.innerHTML = '';
+      _sigilCards.forEach(function(card, i) {
+        var wrap = document.createElement('div');
+        wrap.id = 'sc-card-' + i;
+        wrap.style.cssText = 'background:rgba(5,3,1,0.6);border:1px solid rgba(201,168,76,0.12);padding:18px;margin-bottom:14px;border-radius:2px;';
+        wrap.innerHTML =
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">'
+          // Left: edit fields
+          + '<div>'
+          + '<div style="font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.35);margin-bottom:12px;">Card ' + (i+1) + '</div>'
+          + '<label class="field-label">Arcana</label>'
+          + '<input class="field-input sc-arcana" data-idx="' + i + '" value="' + esc(card.arcana) + '" maxlength="60" style="margin-bottom:8px;">'
+          + '<label class="field-label">Name</label>'
+          + '<input class="field-input sc-name" data-idx="' + i + '" value="' + esc(card.name) + '" maxlength="60" style="margin-bottom:8px;">'
+          + '<label class="field-label">Glyph</label>'
+          + '<input class="field-input sc-glyph" data-idx="' + i + '" value="' + esc(card.glyph) + '" maxlength="2" style="width:60px;margin-bottom:8px;text-align:center;font-size:1.2rem;">'
+          + '<label class="field-label">Reading</label>'
+          + '<textarea class="field-input field-textarea sc-reading" data-idx="' + i + '" rows="3" maxlength="500" style="margin-bottom:12px;">' + esc(card.reading) + '</textarea>'
+          + '<button class="btn-ghost btn-sm sc-save-one" data-idx="' + i + '" style="letter-spacing:0.2em;">SAVE CARD \u2746</button>'
+          + '<div class="sc-card-status status-msg" style="margin-top:6px;font-size:0.65rem;"></div>'
+          + '</div>'
+          // Right: live preview
+          + '<div>'
+          + '<div style="font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.35);margin-bottom:12px;">Preview</div>'
+          + '<div class="sc-preview" data-idx="' + i + '" style="background:#0a0804;border:1px solid rgba(201,168,76,0.35);border-radius:4px;padding:20px;min-height:180px;text-align:center;">'
+          + '<div class="sc-prev-glyph" style="font-size:2rem;color:rgba(201,168,76,0.6);margin-bottom:8px;">' + esc(card.glyph) + '</div>'
+          + '<div class="sc-prev-arcana" style="font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.4);margin-bottom:4px;">' + esc(card.arcana) + '</div>'
+          + '<div class="sc-prev-name" style="font-family:\'Luminari\',Georgia,serif;font-size:0.85rem;letter-spacing:0.2em;color:#c9a84c;margin-bottom:12px;">' + esc(card.name) + '</div>'
+          + '<div class="sc-prev-reading" style="font-size:0.62rem;color:rgba(240,230,210,0.55);line-height:1.7;font-style:italic;">' + esc(card.reading) + '</div>'
+          + '</div>'
+          + '</div>'
+          + '</div>';
+        container.appendChild(wrap);
+      });
+
+      // Wire live preview updates
+      container.querySelectorAll('.sc-arcana,.sc-name,.sc-glyph,.sc-reading').forEach(function(inp) {
+        inp.addEventListener('input', function() {
+          var idx = parseInt(this.getAttribute('data-idx'), 10);
+          var wrap = document.getElementById('sc-card-' + idx);
+          var prev = wrap.querySelector('.sc-preview');
+          prev.querySelector('.sc-prev-arcana').textContent  = wrap.querySelector('.sc-arcana').value;
+          prev.querySelector('.sc-prev-name').textContent    = wrap.querySelector('.sc-name').value;
+          prev.querySelector('.sc-prev-glyph').textContent   = wrap.querySelector('.sc-glyph').value;
+          prev.querySelector('.sc-prev-reading').textContent = wrap.querySelector('.sc-reading').value;
+          // Keep _sigilCards in sync
+          _sigilCards[idx].arcana  = wrap.querySelector('.sc-arcana').value;
+          _sigilCards[idx].name    = wrap.querySelector('.sc-name').value;
+          _sigilCards[idx].glyph   = wrap.querySelector('.sc-glyph').value;
+          _sigilCards[idx].reading = wrap.querySelector('.sc-reading').value;
+        });
+      });
+
+      // Individual save buttons
+      container.querySelectorAll('.sc-save-one').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var idx = parseInt(this.getAttribute('data-idx'), 10);
+          var statusEl = document.getElementById('sc-card-' + idx).querySelector('.sc-card-status');
+          btn.disabled = true;
+          db.collection('sigilCards').doc('cards').set({
+            cards: _sigilCards,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }).then(function() {
+            statusEl.textContent = 'SAVED \u2726';
+            statusEl.className = 'sc-card-status status-msg status-ok';
+            btn.disabled = false;
+            setTimeout(function(){ statusEl.textContent=''; }, 2500);
+          }).catch(function(e) {
+            statusEl.textContent = 'Error: ' + e.message;
+            statusEl.className = 'sc-card-status status-msg status-err';
+            btn.disabled = false;
+          });
+        });
+      });
+    }
+
+    // Save All button
+    document.getElementById('sc-save-all-btn').addEventListener('click', function() {
+      this.disabled = true;
+      allStatus.textContent = 'Saving all cards...';
+      allStatus.className = 'status-msg';
+      db.collection('sigilCards').doc('cards').set({
+        cards: _sigilCards,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(function() {
+        allStatus.textContent = 'ALL CARDS SAVED \u2726';
+        allStatus.className = 'status-msg status-ok';
+        document.getElementById('sc-save-all-btn').disabled = false;
+      }).catch(function(e) {
+        allStatus.textContent = 'Error: ' + e.message;
+        allStatus.className = 'status-msg status-err';
+        document.getElementById('sc-save-all-btn').disabled = false;
       });
     });
   }
