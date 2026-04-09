@@ -171,29 +171,32 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
        Sold out:  <span class="show-sold-out">The Conjuring Is Full</span>
      ═══════════════════════════════════════════════════════════════════ -->
 
-<!-- ADD SHOW: copy this card block and paste above, fill in details -->
+<!-- ══ DYNAMIC SHOWS — loaded from Firestore shows collection ══ -->
+<div id="shows-loading" style="text-align:center;padding:60px 0 40px;font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.28);font-style:italic;">Consulting the Cosmic Calendar...</div>
+<div id="shows-upcoming"></div>
+
+<!-- Fallback: displayed only if Firestore fails -->
+<div id="shows-fallback" style="display:none;">
 <article class="show-card show-card--tba">
   <span class="show-numeral">I</span>
   <span class="show-status">Forthcoming</span>
-  <!-- DATE: use ritual format, e.g. "APRIL · XIV · MMXXVI" -->
   <p class="show-date">To Be Announced</p>
-  <!-- VENUE: venue name -->
   <h3 class="show-venue">Madhouse</h3>
-  <!-- CITY: city and state -->
   <p class="show-city">Ft. Myers, FL</p>
   <div class="show-rule"></div>
-  <!-- DETAILS: time, door price, or any other info -->
   <p class="show-detail">The next event is being prepared in the dark. Watch the seasons. The calendar knows.</p>
-  <div class="show-ticket-wrap">
-    <!-- TICKETS: replace # with real ticket URL when available -->
-    <!-- Supports: Eventbrite, Dice.fm, Ticketmaster, direct venue links, or any URL -->
-    <a class="show-ticket-btn" href="#">Acquire Entry</a>
-    <!-- FREE ENTRY: replace above line with this if no tickets needed: -->
-    <!-- <span class="show-free-entry">Free Entry</span> -->
-    <!-- SOLD OUT: replace above line with this if sold out: -->
-    <!-- <span class="show-sold-out">The Conjuring Is Full</span> -->
-  </div>
-</article> <section class="past-section"> <h2 class="section-heading">Past Events</h2> <ul class="past-list"> <li class="past-entry"> <span class="past-date">Feb 21, '26</span> <span class="past-venue">Prison Break</span> <span class="past-city">Immokalee, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 11, '25</span> <span class="past-venue">Kava Culture</span> <span class="past-city">Bonita Springs, FL</span> </li> <li class="past-entry"> <span class="past-date">Jul 23, '25</span> <span class="past-venue">529</span> <span class="past-city">Atlanta, GA</span> </li> <li class="past-entry"> <span class="past-date">Jun 20, '25</span> <span class="past-venue">Summer Solstice Parade</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">May 7, '25</span> <span class="past-venue">The Hanging Gardens</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Apr 15, '25</span> <span class="past-venue">WSLR 96.5</span> <span class="past-city">Sarasota, FL</span> </li> <li class="past-entry"> <span class="past-date">Feb 21, '25</span> <span class="past-venue">Soundgarden</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Jan 18, '25</span> <span class="past-venue">Beach Records</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Jan 17, '25</span> <span class="past-venue">Sidney Berne & Davis Art Center</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 7, '24</span> <span class="past-venue">Beach Records</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 3, '24</span> <span class="past-venue">WSLR 96.5</span> <span class="past-city">Sarasota, FL</span> </li> <li class="past-entry"> <span class="past-date">Oct 26, '24</span> <span class="past-venue">Lost World Books</span> <span class="past-city">Ft. Myers, FL</span> </li> </ul> </section> <section class="ml-signup-sect">
+</article>
+</div>
+
+<section id="shows-past-section" class="past-section" style="display:none;">
+  <h2 class="section-heading">Past Events</h2>
+  <ul id="shows-past-list" class="past-list"></ul>
+</section>
+
+<!-- Fallback past list: displayed only if Firestore fails -->
+<section id="shows-past-fallback" class="past-section" style="display:none;"> <h2 class="section-heading">Past Events</h2> <ul class="past-list"> <li class="past-entry"> <span class="past-date">Feb 21, '26</span> <span class="past-venue">Prison Break</span> <span class="past-city">Immokalee, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 11, '25</span> <span class="past-venue">Kava Culture</span> <span class="past-city">Bonita Springs, FL</span> </li> <li class="past-entry"> <span class="past-date">Jul 23, '25</span> <span class="past-venue">529</span> <span class="past-city">Atlanta, GA</span> </li> <li class="past-entry"> <span class="past-date">Jun 20, '25</span> <span class="past-venue">Summer Solstice Parade</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">May 7, '25</span> <span class="past-venue">The Hanging Gardens</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Apr 15, '25</span> <span class="past-venue">WSLR 96.5</span> <span class="past-city">Sarasota, FL</span> </li> <li class="past-entry"> <span class="past-date">Feb 21, '25</span> <span class="past-venue">Soundgarden</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Jan 18, '25</span> <span class="past-venue">Beach Records</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Jan 17, '25</span> <span class="past-venue">Sidney Berne &amp; Davis Art Center</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 7, '24</span> <span class="past-venue">Beach Records</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 3, '24</span> <span class="past-venue">WSLR 96.5</span> <span class="past-city">Sarasota, FL</span> </li> <li class="past-entry"> <span class="past-date">Oct 26, '24</span> <span class="past-venue">Lost World Books</span> <span class="past-city">Ft. Myers, FL</span> </li> </ul> </section>
+
+<section class="ml-signup-sect">
   <div class="ml-signup-box">
     <p class="ml-signup-title">STAY IN THE LOOP</p>
     <p class="ml-signup-sub">Get notified when the next conjuring is announced.</p>
@@ -201,13 +204,197 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   </div>
 </section>
 </div>
-<script>var cards=document.querySelectorAll('.show-card');var cardObserver=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add('visible');cardObserver.unobserve(entry.target);}});},{threshold:0.08});cards.forEach(function(card,i){card.style.transitionDelay=(i*0.12)+'s';cardObserver.observe(card);});var pastSection=document.querySelector('.past-section');if(pastSection){var pastObserver=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add('visible');pastObserver.unobserve(entry.target);}});},{threshold:0.05});pastObserver.observe(pastSection);}</script>
+<!-- card observers run inside the Firestore load callback below -->
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
+<script>
+(function () {
+  'use strict';
+
+  var MONTHS = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY',
+                'AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+  var ROMAN_DAYS = ['','I','II','III','IV','V','VI','VII','VIII','IX','X',
+    'XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX',
+    'XXI','XXII','XXIII','XXIV','XXV','XXVI','XXVII','XXVIII','XXIX','XXX','XXXI'];
+  var ROMAN_YEARS = {
+    2023:'MMXXIII',2024:'MMXXIV',2025:'MMXXV',2026:'MMXXVI',
+    2027:'MMXXVII',2028:'MMXXVIII',2029:'MMXXIX',2030:'MMXXX'
+  };
+
+  function toRitual(dateStr) {
+    var parts = dateStr.split('-');
+    var mo = parseInt(parts[1], 10) - 1;
+    var dy = parseInt(parts[2], 10);
+    var yr = parseInt(parts[0], 10);
+    return MONTHS[mo] + ' \u00b7 ' + ROMAN_DAYS[dy] + ' \u00b7 ' + (ROMAN_YEARS[yr] || String(yr));
+  }
+
+  function esc(s) {
+    return String(s || '').replace(/[&<>"']/g, function (c) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function fmtTime(t) {
+    if (!t) return '';
+    var parts = t.split(':');
+    var h = parseInt(parts[0], 10);
+    var m = parts[1] || '00';
+    var ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    return 'Doors ' + h + ':' + m + ' ' + ampm;
+  }
+
+  function initCardObservers() {
+    var cards = document.querySelectorAll('.show-card');
+    var cardObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          cardObs.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.08});
+    cards.forEach(function (card, i) {
+      card.style.transitionDelay = (i * 0.12) + 's';
+      cardObs.observe(card);
+    });
+
+    document.querySelectorAll('.past-section').forEach(function (sec) {
+      if (sec.style.display === 'none') return;
+      var po = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            po.unobserve(entry.target);
+          }
+        });
+      }, {threshold: 0.05});
+      po.observe(sec);
+    });
+  }
+
+  function renderUpcoming(upcoming) {
+    var container = document.getElementById('shows-upcoming');
+    if (!upcoming.length) {
+      var yr = ROMAN_YEARS[new Date().getFullYear()] || String(new Date().getFullYear());
+      container.innerHTML =
+        '<article class="show-card show-card--tba">' +
+        '<span class="show-numeral">I</span>' +
+        '<span class="show-status">Forthcoming</span>' +
+        '<p class="show-date">FORTHCOMING \u00b7 ' + yr + '</p>' +
+        '<h3 class="show-venue">The Next Conjuring Is Being Arranged</h3>' +
+        '<p class="show-city">Watch the Calendar</p>' +
+        '<div class="show-rule"></div>' +
+        '<p class="show-detail">The next event is being prepared in the dark. Watch the seasons. The calendar knows.</p>' +
+        '</article>';
+      return;
+    }
+    var html = '';
+    upcoming.forEach(function (show, i) {
+      var ritualDate = show.date ? toRitual(show.date) : 'DATE TBA';
+      var timeDetail = '';
+      if (show.time) {
+        timeDetail = fmtTime(show.time) + (show.price ? ' \u00b7 ' + esc(show.price) : '');
+      } else if (show.price) {
+        timeDetail = esc(show.price);
+      }
+      var ticketHtml = '';
+      if (show.ticketUrl && show.ticketUrl !== '#' && show.ticketUrl.trim()) {
+        ticketHtml = '<div class="show-ticket-wrap"><a class="show-ticket-btn" href="' + esc(show.ticketUrl) + '" target="_blank" rel="noopener noreferrer">Acquire Entry</a></div>';
+      } else if (show.price && show.price.toLowerCase().indexOf('free') !== -1) {
+        ticketHtml = '<div class="show-ticket-wrap"><span class="show-free-entry">Free Entry</span></div>';
+      }
+      html +=
+        '<article class="show-card">' +
+        '<span class="show-numeral">' + (ROMAN_DAYS[i + 1] || String(i + 1)) + '</span>' +
+        '<span class="show-status">Upcoming</span>' +
+        '<p class="show-date">' + esc(ritualDate) + '</p>' +
+        '<h3 class="show-venue">' + esc(show.venue || '') + '</h3>' +
+        '<p class="show-city">' + esc(show.city || '') + '</p>' +
+        '<div class="show-rule"></div>' +
+        (timeDetail ? '<p class="show-detail">' + timeDetail + '</p>' : '') +
+        ticketHtml +
+        '</article>';
+    });
+    container.innerHTML = html;
+  }
+
+  function renderPast(past) {
+    var section = document.getElementById('shows-past-section');
+    var list = document.getElementById('shows-past-list');
+    if (!past.length) {
+      section.style.display = 'none';
+      return;
+    }
+    past.sort(function (a, b) { return a.date > b.date ? -1 : 1; });
+    var html = '';
+    past.forEach(function (show) {
+      var d = new Date(show.date + 'T12:00:00');
+      var shortDate = d.toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) +
+                      ', \u2019' + String(d.getFullYear()).slice(2);
+      html += '<li class="past-entry">' +
+        '<span class="past-date">' + esc(shortDate) + '</span>' +
+        '<span class="past-venue">' + esc(show.venue || '') + '</span>' +
+        '<span class="past-city">' + esc(show.city || '') + '</span>' +
+        '</li>';
+    });
+    list.innerHTML = html;
+    section.style.display = '';
+  }
+
+  function showFallback() {
+    document.getElementById('shows-fallback').style.display = '';
+    document.getElementById('shows-past-fallback').style.display = '';
+  }
+
+  function loadShows() {
+    var todayStr = new Date().toISOString().slice(0, 10);
+    window.jestaDB.collection('shows').orderBy('date', 'asc').get()
+      .then(function (snap) {
+        document.getElementById('shows-loading').style.display = 'none';
+        var upcoming = [], past = [];
+        snap.forEach(function (doc) {
+          var d = doc.data();
+          d.id = doc.id;
+          if (d.date && d.date >= todayStr) {
+            upcoming.push(d);
+          } else {
+            past.push(d);
+          }
+        });
+        renderUpcoming(upcoming);
+        renderPast(past);
+        initCardObservers();
+      })
+      .catch(function () {
+        document.getElementById('shows-loading').style.display = 'none';
+        showFallback();
+        initCardObservers();
+      });
+  }
+
+  var _tries = 0;
+  var _poll = setInterval(function () {
+    _tries++;
+    if (window.jestaDB || _tries > 50) {
+      clearInterval(_poll);
+      if (window.jestaDB) {
+        loadShows();
+      } else {
+        document.getElementById('shows-loading').style.display = 'none';
+        showFallback();
+        initCardObservers();
+      }
+    }
+  }, 100);
+
+})();
+</script>
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span> Jestamang<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a>
 </footer>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
