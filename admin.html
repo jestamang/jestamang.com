@@ -781,6 +781,65 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
 
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 19: NAV BADGE MANAGER ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Nav Badge Manager</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:24px;">Highlight pages without touching code.</div>
+
+      <label class="field-label" for="nb-page">Page</label>
+      <select class="field-input field-select" id="nb-page">
+        <option value="albums.html">Albums</option>
+        <option value="entities.html">Entities</option>
+        <option value="lyrics.html">Lyrics</option>
+        <option value="merch.html">Merch</option>
+        <option value="photos.html">Photos</option>
+        <option value="videos.html">Videos</option>
+        <option value="shows.html">Shows</option>
+        <option value="blog.html">Blog</option>
+        <option value="comix.html">Comix</option>
+        <option value="arcade.html">Games</option>
+        <option value="email.html">Email</option>
+        <option value="members.html">Members</option>
+      </select>
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="nb-type">Badge Type</label>
+          <select class="field-input field-select" id="nb-type">
+            <option value="dot">Red dot</option>
+            <option value="NEW">NEW</option>
+            <option value="LIVE">LIVE</option>
+            <option value="HOT">HOT</option>
+            <option value="custom">Custom text</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="nb-duration">Duration</label>
+          <select class="field-input field-select" id="nb-duration">
+            <option value="0">Until I remove it</option>
+            <option value="86400000">24 hours</option>
+            <option value="172800000">48 hours</option>
+            <option value="604800000">1 week</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="nb-custom-wrap" style="display:none;">
+        <label class="field-label" for="nb-custom">Custom Text (max 6 chars)</label>
+        <input class="field-input" id="nb-custom" type="text" maxlength="6" placeholder="SALE">
+      </div>
+
+      <button class="btn-gold btn-gold-full" id="nb-add-btn" style="margin-top:8px;">ADD BADGE ✦</button>
+      <div class="status-msg" id="nb-status"></div>
+
+      <div style="margin-top:32px;">
+        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Active Badges</div>
+        <div id="nb-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
+      </div>
+    </div>
+
   </div><!-- /admin-content -->
 </div><!-- /adm-wrap -->
 
@@ -900,6 +959,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initGameAnalytics();
     initMaintenanceMode();
     initEmailCampaign();
+    initNavBadgeManager();
     initTabs();
     initQuickLinks();
   }
@@ -2464,6 +2524,89 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         });
     });
   }
+
+  /* ══════════════ SECTION 19: NAV BADGE MANAGER ══════════════ */
+  var PAGE_LABELS = {
+    'albums.html':'Albums','entities.html':'Entities','lyrics.html':'Lyrics',
+    'merch.html':'Merch','photos.html':'Photos','videos.html':'Videos',
+    'shows.html':'Shows','blog.html':'Blog','comix.html':'Comix',
+    'arcade.html':'Games','email.html':'Email','members.html':'Members'
+  };
+
+  function initNavBadgeManager() {
+    var typeEl    = document.getElementById('nb-type');
+    var customWrap= document.getElementById('nb-custom-wrap');
+    var addBtn    = document.getElementById('nb-add-btn');
+    var statusEl  = document.getElementById('nb-status');
+    var listEl    = document.getElementById('nb-list');
+
+    typeEl.addEventListener('change', function () {
+      customWrap.style.display = this.value === 'custom' ? 'block' : 'none';
+    });
+
+    // Live active badges list
+    db.collection('navBadges').orderBy('createdAt','desc').onSnapshot(function (snap) {
+      if (snap.empty) { listEl.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No active badges.</div>'; return; }
+      var now = Date.now();
+      var html = '';
+      snap.forEach(function (doc) {
+        var d = doc.data();
+        var expired = d.expiresAt && d.expiresAt.toMillis && d.expiresAt.toMillis() < now;
+        var expiresStr = d.expiresAt
+          ? (expired ? 'Expired' : 'Until ' + fmtDate(d.expiresAt))
+          : 'Manual removal';
+        var typeLabel = d.type === 'dot' ? '● Red dot' : esc(d.text || d.type);
+        var pageLabel = esc(PAGE_LABELS[d.page] || d.page);
+        html += '<div class="entry-row" id="nb-row-' + doc.id + '" style="opacity:' + (expired ? '0.4' : '1') + ';">'
+          + '<div class="entry-body">'
+          + '<div class="entry-name">' + pageLabel + ' &nbsp;<span style="font-size:0.68rem;color:#c9a84c;">' + typeLabel + '</span></div>'
+          + '<div class="entry-meta">' + expiresStr + (expired ? ' &nbsp;<span style="color:rgba(251,56,56,0.6);">· expired</span>' : '') + '</div>'
+          + '<div class="entry-actions">'
+          + '<button class="btn-danger btn-sm" onclick="window._removeNavBadge(\'' + doc.id + '\')">Remove</button>'
+          + '</div></div></div>';
+      });
+      listEl.innerHTML = html;
+    });
+
+    addBtn.addEventListener('click', function () {
+      var page     = document.getElementById('nb-page').value;
+      var typeVal  = typeEl.value;
+      var customTx = (document.getElementById('nb-custom').value || '').trim().toUpperCase().slice(0,6);
+      var durMs    = parseInt(document.getElementById('nb-duration').value, 10);
+      var text     = typeVal === 'custom' ? customTx : typeVal;
+
+      if (typeVal === 'custom' && !customTx) {
+        statusEl.textContent = 'Custom text required'; statusEl.className = 'status-msg status-err'; return;
+      }
+
+      var now = new Date();
+      var expiresAt = durMs > 0
+        ? firebase.firestore.Timestamp.fromDate(new Date(now.getTime() + durMs))
+        : null;
+
+      addBtn.disabled = true;
+      var payload = {
+        page: page, type: typeVal, text: text,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      if (expiresAt) payload.expiresAt = expiresAt;
+
+      db.collection('navBadges').add(payload).then(function () {
+        statusEl.textContent = 'BADGE ADDED \u2726';
+        statusEl.className = 'status-msg status-ok';
+        addBtn.disabled = false;
+        document.getElementById('nb-custom').value = '';
+      }).catch(function (e) {
+        statusEl.textContent = 'Error: ' + e.message;
+        statusEl.className = 'status-msg status-err';
+        addBtn.disabled = false;
+      });
+    });
+  }
+
+  window._removeNavBadge = function (id) {
+    db.collection('navBadges').doc(id).delete().catch(function (e) { alert('Error: ' + e.message); });
+  };
 
   /* ══════════════ UI: TABS ══════════════ */
   function initTabs() {
