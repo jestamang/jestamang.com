@@ -925,7 +925,55 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
 <!-- ── PRODUCT DATA & CARD RENDER ── -->
 <script>
-var products = [
+var _mGrid = document.getElementById('merch-grid');
+var _mBgColors = [
+  'rgba(74,124,89,0.5)',
+  'rgba(107,74,124,0.5)',
+  'rgba(124,74,74,0.5)'
+];
+
+// Loading state
+var _mLoadEl = document.createElement('div');
+_mLoadEl.id = 'merch-loading';
+_mLoadEl.style.cssText = 'grid-column:1/-1;text-align:center;font-family:Luminari,Georgia,serif;font-size:0.85rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.4);font-style:italic;padding:60px 20px;';
+_mLoadEl.textContent = 'THE ARTIFACTS ARE BEING PREPARED...';
+_mGrid.appendChild(_mLoadEl);
+
+function _mEsc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderMerchCards(docs) {
+  _mGrid.innerHTML = '';
+  docs.forEach(function(item, i) {
+    var d = item.data;
+    var priceStr = d.price !== undefined ? 'Offering: $' + d.price : '';
+    var card = document.createElement('div');
+    card.className = 'product-card';
+    card.style.background = _mBgColors[i % 3];
+    card.innerHTML =
+      '<div class="product-image-wrap">' +
+        '<img src="' + _mEsc(d.imageUrl || '') + '" alt="' + _mEsc(d.name || '') + '" loading="lazy">' +
+      '</div>' +
+      '<div class="merch-card-content">' +
+        '<div class="product-name">' + _mEsc(d.name || '') + '</div>' +
+        '<div class="product-price">' + _mEsc(priceStr) + '</div>' +
+        '<div class="product-desc">' + _mEsc(d.description || '') + '</div>' +
+        '<div class="btn-container">' +
+          (d.gumroadUrl ? '<a class="acquire-btn" href="' + _mEsc(d.gumroadUrl) + '" target="_blank" rel="noopener noreferrer">Acquire This Artifact</a>' : '') +
+          '<button class="ask-link" data-product="' + _mEsc(d.name || '') + '">Ask a Question</button>' +
+          '<div class="inner-circle-line">JOIN THE <a href="login.html">INNER CIRCLE</a> for member pricing</div>' +
+        '</div>' +
+      '</div>';
+    card.querySelector('.ask-link').addEventListener('click', function() {
+      openModal(this.getAttribute('data-product'));
+    });
+    _mGrid.appendChild(card);
+  });
+}
+
+// FALLBACK: pre-Firestore products — Update products via admin.html
+var _mFallback = [
   {
     title: 'Jestamang T-Shirt',
     subtitle: 'Wear the Mythology',
@@ -973,45 +1021,56 @@ var products = [
   }
 ];
 
-var bgColors = [
-  'rgba(74,124,89,0.5)',
-  'rgba(107,74,124,0.5)',
-  'rgba(124,74,74,0.5)',
-  'rgba(74,124,89,0.5)',
-  'rgba(107,74,124,0.5)'
-];
-
-var grid = document.getElementById('merch-grid');
-
-products.forEach(function (p, i) {
-  var card = document.createElement('div');
-  card.className = 'product-card';
-  card.style.background = bgColors[i % bgColors.length];
-
-  card.innerHTML =
-    '<div class="product-image-wrap">' +
-      '<img src="' + p.image + '" alt="' + p.title + '" loading="lazy">' +
-    '</div>' +
-    '<div class="merch-card-content">' +
-      '<div class="product-name">' + p.title + '</div>' +
-      '<div class="product-subtitle">' + p.subtitle + '</div>' +
-      '<div class="product-price">' + p.price + '</div>' +
-      '<div class="product-desc">' + p.desc + '</div>' +
-      '<div class="product-tagline">' + p.tagline + '</div>' +
-      '<div class="btn-container">' +
-        '<a class="acquire-btn" href="' + p.gumroadUrl + '" target="_blank" rel="noopener noreferrer">Acquire This Artifact</a>' +
-        '<button class="ask-link" data-product="' + p.title + '">Ask a Question</button>' +
-        '<div class="inner-circle-line">JOIN THE <a href="login.html">INNER CIRCLE</a> for member pricing</div>' +
+function showFallback() {
+  _mGrid.innerHTML = '';
+  _mFallback.forEach(function(p, i) {
+    var card = document.createElement('div');
+    card.className = 'product-card';
+    card.style.background = _mBgColors[i % 3];
+    card.innerHTML =
+      '<div class="product-image-wrap">' +
+        '<img src="' + p.image + '" alt="' + p.title + '" loading="lazy">' +
       '</div>' +
-    '</div>';
-
-  // Ask a question
-  card.querySelector('.ask-link').addEventListener('click', function () {
-    openModal(this.getAttribute('data-product'));
+      '<div class="merch-card-content">' +
+        '<div class="product-name">' + p.title + '</div>' +
+        '<div class="product-subtitle">' + p.subtitle + '</div>' +
+        '<div class="product-price">' + p.price + '</div>' +
+        '<div class="product-desc">' + p.desc + '</div>' +
+        '<div class="product-tagline">' + p.tagline + '</div>' +
+        '<div class="btn-container">' +
+          '<a class="acquire-btn" href="' + p.gumroadUrl + '" target="_blank" rel="noopener noreferrer">Acquire This Artifact</a>' +
+          '<button class="ask-link" data-product="' + p.title + '">Ask a Question</button>' +
+          '<div class="inner-circle-line">JOIN THE <a href="login.html">INNER CIRCLE</a> for member pricing</div>' +
+        '</div>' +
+      '</div>';
+    card.querySelector('.ask-link').addEventListener('click', function() {
+      openModal(this.getAttribute('data-product'));
+    });
+    _mGrid.appendChild(card);
   });
+}
 
-  grid.appendChild(card);
-});
+var _mTries = 0, _mIv = setInterval(function() {
+  _mTries++;
+  if (window.jestaDB) {
+    clearInterval(_mIv);
+    window.jestaDB.collection('merch').get()
+      .then(function(snap) {
+        if (snap.empty) { showFallback(); return; }
+        var docs = [];
+        snap.forEach(function(doc) {
+          var d = doc.data();
+          if (d.active !== false) docs.push({ id: doc.id, data: d });
+        });
+        if (docs.length === 0) { showFallback(); return; }
+        renderMerchCards(docs);
+      })
+      .catch(function() { showFallback(); });
+  } else if (_mTries > 80) {
+    clearInterval(_mIv);
+    showFallback();
+  }
+}, 100);
 </script>
 
 <!-- ── MODAL LOGIC ── -->
