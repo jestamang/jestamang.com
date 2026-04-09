@@ -406,6 +406,235 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
 
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 8: PRESS MANAGER ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Press Manager</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Add coverage without touching code.</div>
+
+      <label class="field-label" for="pm-title">Article Title</label>
+      <input class="field-input" id="pm-title" type="text" placeholder="Jestamang Defies Genre on New Release" maxlength="160">
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="pm-pub">Publication</label>
+          <input class="field-input" id="pm-pub" type="text" placeholder="Pitchfork" maxlength="80">
+        </div>
+        <div>
+          <label class="field-label" for="pm-author">Author (optional)</label>
+          <input class="field-input" id="pm-author" type="text" placeholder="Author name" maxlength="80">
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="pm-date">Date</label>
+          <input class="field-input" id="pm-date" type="date">
+        </div>
+        <div>
+          <label class="field-label" for="pm-url">Article URL</label>
+          <input class="field-input" id="pm-url" type="url" placeholder="https://..." maxlength="500">
+        </div>
+      </div>
+
+      <label class="field-label" for="pm-excerpt">Excerpt</label>
+      <textarea class="field-input field-textarea" id="pm-excerpt" placeholder="2–3 sentence excerpt from the article..." maxlength="400" style="min-height:80px;"></textarea>
+
+      <label class="radio-label" style="margin-top:16px;gap:10px;">
+        <input type="checkbox" id="pm-featured" style="accent-color:#c9a84c;width:15px;height:15px;">
+        <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.6);">Featured — show as one of the top 3 articles</span>
+      </label>
+
+      <button class="btn-gold btn-gold-full" id="pm-add-btn">Add Article</button>
+      <div class="status-msg" id="pm-status"></div>
+
+      <div style="margin-top:32px;">
+        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Press Articles</div>
+        <div id="pm-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
+      </div>
+    </div>
+
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 9: SHOW ANNOUNCER ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Conjuring Announcer</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Add a show and notify members in one step.</div>
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="sa-venue">Venue Name</label>
+          <input class="field-input" id="sa-venue" type="text" placeholder="Venue name" maxlength="80">
+        </div>
+        <div>
+          <label class="field-label" for="sa-date">Date</label>
+          <input class="field-input" id="sa-date" type="date">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="sa-city">City, State</label>
+          <input class="field-input" id="sa-city" type="text" placeholder="Boston, MA" maxlength="60">
+        </div>
+        <div>
+          <label class="field-label" for="sa-time">Time</label>
+          <input class="field-input" id="sa-time" type="time">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="sa-tickets">Ticket URL</label>
+          <input class="field-input" id="sa-tickets" type="url" placeholder="https://..." maxlength="300">
+        </div>
+        <div>
+          <label class="field-label" for="sa-price">Ticket Price</label>
+          <input class="field-input" id="sa-price" type="text" placeholder="$15" maxlength="20">
+        </div>
+      </div>
+
+      <label class="radio-label" style="margin-top:16px;gap:10px;">
+        <input type="checkbox" id="sa-autonotify" checked style="accent-color:#c9a84c;width:15px;height:15px;">
+        <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.6);">Auto-notify all members when this show is added</span>
+      </label>
+
+      <button class="btn-gold btn-gold-full" id="sa-add-btn">Add Conjuring + Notify</button>
+      <div class="status-msg" id="sa-status"></div>
+
+      <div style="margin-top:32px;">
+        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Shows — Manual Notify</div>
+        <div class="shows-table-wrap">
+          <table class="shows-table">
+            <thead><tr><th>Venue</th><th>Date</th><th>City</th><th>Notify</th><th></th></tr></thead>
+            <tbody id="sa-list"><tr><td colspan="5" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 10: ALBUM MANAGER ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Catalog Manager</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Add new releases without touching code.</div>
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="am-catalog">Catalog</label>
+          <select class="field-input field-select" id="am-catalog">
+            <option value="2K2123">2K2123</option>
+            <option value="2K2323">2K2323</option>
+            <option value="NONS">NONS</option>
+            <option value="QUARTER DAYS">QUARTER DAYS</option>
+            <option value="NEW CATALOG">NEW CATALOG</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="am-year">Release Year</label>
+          <input class="field-input" id="am-year" type="number" placeholder="2024" min="1900" max="2100">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="am-artist">Artist Name</label>
+          <input class="field-input" id="am-artist" type="text" placeholder="Jestamang" maxlength="100">
+        </div>
+        <div>
+          <label class="field-label" for="am-genre">Genre</label>
+          <input class="field-input" id="am-genre" type="text" placeholder="Experimental Hip-Hop" maxlength="60">
+        </div>
+      </div>
+
+      <label class="field-label" for="am-album">Album Title</label>
+      <input class="field-input" id="am-album" type="text" placeholder="Album title" maxlength="120">
+
+      <label class="field-label" for="am-cover">Album Cover URL</label>
+      <input class="field-input" id="am-cover" type="text" placeholder="assets/albums/cover.jpg or https://..." maxlength="500">
+
+      <div style="margin-top:24px;">
+        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:12px;">Tracklist</div>
+        <div id="am-tracks"></div>
+        <button class="btn-ghost" id="am-add-track-btn" style="margin-top:10px;">+ Add Track</button>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-gold" id="am-publish-btn">Add Release</button>
+        <button class="btn-ghost" id="am-draft-btn">Save Draft</button>
+      </div>
+      <div class="status-msg" id="am-status"></div>
+
+      <div style="margin-top:32px;">
+        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Existing Releases</div>
+        <div id="am-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
+      </div>
+    </div>
+
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 11: LEADERBOARD MANAGER ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Cosmic Scrolls Manager</div>
+
+      <div class="tab-bar" id="lb-tab-bar">
+        <button class="tab-btn active" data-lbtab="void">The Void</button>
+        <button class="tab-btn" data-lbtab="cosmic-conductor">Conductor</button>
+        <button class="tab-btn" data-lbtab="pitch-oracle">Pitch</button>
+        <button class="tab-btn" data-lbtab="rhythm-architect">Rhythm</button>
+        <button class="tab-btn" data-lbtab="chord-conjurer">Chord</button>
+        <button class="tab-btn" data-lbtab="memory">Memory</button>
+        <button class="tab-btn" data-lbtab="blackjack">21</button>
+        <button class="tab-btn" data-lbtab="texas">Texas</button>
+      </div>
+
+      <div class="search-wrap">
+        <input class="search-input" id="lb-search" type="text" placeholder="Filter by player name..." autocomplete="off">
+      </div>
+
+      <div id="lb-stats" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;"></div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
+        <label class="radio-label" style="gap:8px;">
+          <input type="checkbox" id="lb-select-all" style="accent-color:#c9a84c;width:14px;height:14px;">
+          <span style="font-size:0.65rem;letter-spacing:0.1em;color:rgba(240,230,210,0.5);">Select All</span>
+        </label>
+        <button class="btn-danger btn-sm" id="lb-delete-selected">Delete Selected</button>
+      </div>
+
+      <div class="shows-table-wrap">
+        <table class="shows-table">
+          <thead><tr><th><input type="checkbox" id="lb-th-check" style="accent-color:#c9a84c;width:13px;height:13px;"></th><th>Rank</th><th>Name</th><th>Score</th><th>Date</th><th></th></tr></thead>
+          <tbody id="lb-table-body"><tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">Select a game tab above.</td></tr></tbody>
+        </table>
+      </div>
+      <div class="status-msg" id="lb-status"></div>
+    </div>
+
+    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ SECTION 12: CACHE BUST ══ -->
+    <div class="adm-section">
+      <div class="adm-section-title">✦ Force Site Update</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Push latest changes to all visitors instantly.</div>
+
+      <div id="cb-current" style="font-size:0.72rem;color:rgba(201,168,76,0.4);margin-bottom:20px;letter-spacing:0.08em;">Reading current cache version...</div>
+
+      <button class="btn-gold btn-gold-full" id="cb-bust-btn" style="font-size:0.85rem;letter-spacing:0.35em;padding:20px 24px;">BUST THE CACHE ✦</button>
+      <div class="status-msg" id="cb-status"></div>
+
+      <div style="margin-top:20px;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.1);padding:16px;border-radius:2px;">
+        <div style="font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.35);margin-bottom:8px;">How it works</div>
+        <div style="font-size:0.7rem;color:rgba(240,230,210,0.45);line-height:1.7;">
+          Clicking the button writes a new timestamp to Firestore → <code style="color:rgba(201,168,76,0.5);">siteConfig/cacheVersion</code>. The service worker checks this value on activation and clears all caches when it changes, forcing every visitor to load the latest version of the site.
+        </div>
+      </div>
+
+      <div style="margin-top:18px;">
+        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:10px;">Version History</div>
+        <div id="cb-history" style="font-size:0.7rem;color:rgba(240,230,210,0.4);line-height:2;">Loading...</div>
+      </div>
+    </div>
+
   </div><!-- /admin-content -->
 </div><!-- /adm-wrap -->
 
@@ -490,6 +719,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initModeration();
     initInquiries();
     initShows();
+    initPressManager();
+    initShowAnnouncer();
+    initAlbumManager();
+    initLeaderboards();
+    initCacheBust();
     initTabs();
     initQuickLinks();
   }
@@ -961,6 +1195,464 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     if(!confirm('Remove this show?')) return;
     db.collection('shows').doc(id).delete().catch(function(){});
   };
+
+  /* ══════════════ SECTION 8: PRESS MANAGER ══════════════ */
+  function initPressManager() {
+    var today = new Date().toISOString().slice(0,10);
+    document.getElementById('pm-date').value = today;
+
+    document.getElementById('pm-add-btn').addEventListener('click', function(){
+      var title    = (document.getElementById('pm-title').value   ||'').trim();
+      var pub      = (document.getElementById('pm-pub').value     ||'').trim();
+      var author   = (document.getElementById('pm-author').value  ||'').trim();
+      var date     = (document.getElementById('pm-date').value    ||'').trim();
+      var excerpt  = (document.getElementById('pm-excerpt').value ||'').trim();
+      var url      = (document.getElementById('pm-url').value     ||'').trim();
+      var featured = document.getElementById('pm-featured').checked;
+      var statusEl = document.getElementById('pm-status');
+      if(!title){statusEl.textContent='Title required';statusEl.className='status-msg status-err';return;}
+      if(!pub)  {statusEl.textContent='Publication required';statusEl.className='status-msg status-err';return;}
+      this.disabled=true; statusEl.textContent='';
+      var self=this;
+      db.collection('pressArticles').get().then(function(snap){
+        var order = snap.size + 1;
+        return db.collection('pressArticles').add({
+          title:title, publication:pub, author:author,
+          date:date, dateFormatted:date?ritualDate(date):'',
+          excerpt:excerpt, url:url, featured:featured,
+          order:order,
+          timestamp:firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }).then(function(){
+        statusEl.textContent='ARTICLE ADDED \u2726';
+        statusEl.className='status-msg status-ok';
+        ['pm-title','pm-pub','pm-author','pm-excerpt','pm-url'].forEach(function(id){document.getElementById(id).value='';});
+        document.getElementById('pm-featured').checked=false;
+        document.getElementById('pm-date').value=new Date().toISOString().slice(0,10);
+        self.disabled=false;
+      }).catch(function(e){
+        statusEl.textContent='Error: '+e.message;
+        statusEl.className='status-msg status-err';
+        self.disabled=false;
+      });
+    });
+
+    db.collection('pressArticles').orderBy('order','asc').onSnapshot(function(snap){
+      var el=document.getElementById('pm-list');
+      if(snap.empty){el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No press articles yet.</div>';return;}
+      var html='';
+      snap.forEach(function(doc){
+        var d=doc.data(); var eid='pm-'+doc.id;
+        html+='<div class="entry-row" id="row-'+eid+'">'
+          +'<div class="entry-body">'
+          +'<div class="entry-name">'+esc(d.title)+'</div>'
+          +'<div class="entry-meta">'+esc(d.publication)+(d.author?' · '+esc(d.author):'')+(d.date?' · '+esc(d.date):'')+'</div>'
+          +(d.excerpt?'<div class="entry-text" style="margin-top:4px;">'+esc(d.excerpt)+'</div>':'')
+          +'<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">'
+          +(d.featured?'<span class="badge badge-gold">Featured</span>':'')
+          +(d.url?'<a href="'+esc(d.url)+'" target="_blank" rel="noopener" style="font-size:0.6rem;color:rgba(201,168,76,0.4);letter-spacing:0.1em;">View Article ↗</a>':'')
+          +'</div>'
+          +'<div class="entry-actions">'
+          +'<button class="btn-ghost btn-sm" onclick="toggleFeatured(\''+doc.id+'\','+d.featured+')">'+(d.featured?'Unfeature':'Feature')+'</button>'
+          +'<button class="btn-danger btn-sm" onclick="askDelete(\''+eid+'\')">Delete</button>'
+          +makeDeleteRow('pressArticles',doc.id,eid)
+          +'</div></div></div>';
+      });
+      el.innerHTML=html;
+    },function(e){document.getElementById('pm-list').innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>';});
+  }
+
+  window.toggleFeatured = function(id, current){
+    db.collection('pressArticles').doc(id).update({featured:!current}).catch(function(){});
+  };
+
+  /* ══════════════ SECTION 9: SHOW ANNOUNCER ══════════════ */
+  function initShowAnnouncer() {
+    var today = new Date().toISOString().slice(0,10);
+    document.getElementById('sa-date').value = today;
+
+    document.getElementById('sa-add-btn').addEventListener('click', function(){
+      var venue    = (document.getElementById('sa-venue').value   ||'').trim();
+      var date     = (document.getElementById('sa-date').value    ||'').trim();
+      var city     = (document.getElementById('sa-city').value    ||'').trim();
+      var time     = (document.getElementById('sa-time').value    ||'').trim();
+      var tickets  = (document.getElementById('sa-tickets').value ||'').trim();
+      var price    = (document.getElementById('sa-price').value   ||'').trim();
+      var autoNotify = document.getElementById('sa-autonotify').checked;
+      var statusEl = document.getElementById('sa-status');
+      if(!venue){statusEl.textContent='Venue required';statusEl.className='status-msg status-err';return;}
+      if(!date) {statusEl.textContent='Date required'; statusEl.className='status-msg status-err';return;}
+      this.disabled=true; statusEl.textContent='';
+      var self=this;
+      var showData={venue:venue,date:date,city:city,time:time,ticketUrl:tickets,price:price,
+                    timestamp:firebase.firestore.FieldValue.serverTimestamp()};
+      db.collection('shows').add(showData).then(function(){
+        var chain = Promise.resolve();
+        if(autoNotify){
+          chain = db.collection('notifications').add({
+            title:'NEW CONJURING ANNOUNCED',
+            body:venue+(city?' \u00b7 '+city:'')+(date?' \u00b7 '+date:''),
+            link:'shows.html',
+            sendTo:'all',
+            timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+            sent:false, sentBy:ADMIN_EMAIL
+          });
+        }
+        return chain;
+      }).then(function(){
+        statusEl.textContent= autoNotify ? 'CONJURING ADDED + MEMBERS NOTIFIED \u2726' : 'CONJURING ADDED \u2726';
+        statusEl.className='status-msg status-ok';
+        ['sa-venue','sa-city','sa-time','sa-tickets','sa-price'].forEach(function(id){document.getElementById(id).value='';});
+        document.getElementById('sa-date').value=new Date().toISOString().slice(0,10);
+        self.disabled=false;
+      }).catch(function(e){
+        statusEl.textContent='Error: '+e.message;
+        statusEl.className='status-msg status-err';
+        self.disabled=false;
+      });
+    });
+
+    db.collection('shows').orderBy('date','asc').onSnapshot(function(snap){
+      var tbody=document.getElementById('sa-list');
+      if(snap.empty){tbody.innerHTML='<tr><td colspan="5" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">No shows yet.</td></tr>';return;}
+      var html='';
+      snap.forEach(function(doc){
+        var d=doc.data();
+        html+='<tr>'
+          +'<td>'+esc(d.venue)+'</td>'
+          +'<td>'+esc(d.date)+'</td>'
+          +'<td>'+esc(d.city||'—')+'</td>'
+          +'<td><button class="btn-ghost btn-sm" onclick="notifyShow(\''+esc(d.venue)+'\',\''+esc(d.city||'')+'\',\''+esc(d.date||'')+'\')">Notify</button></td>'
+          +'<td><button class="btn-danger btn-sm" onclick="removeShow(\''+doc.id+'\')">Remove</button></td>'
+          +'</tr>';
+      });
+      tbody.innerHTML=html;
+    },function(){});
+  }
+
+  window.notifyShow = function(venue, city, date){
+    db.collection('notifications').add({
+      title:'NEW CONJURING ANNOUNCED',
+      body:venue+(city?' \u00b7 '+city:'')+(date?' \u00b7 '+date:''),
+      link:'shows.html',
+      sendTo:'all',
+      timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+      sent:false, sentBy:ADMIN_EMAIL
+    }).then(function(){
+      alert('Notification sent \u2726');
+    }).catch(function(e){ alert('Error: '+e.message); });
+  };
+
+  /* ══════════════ SECTION 10: ALBUM MANAGER ══════════════ */
+  var amTrackCount = 0;
+
+  function initAlbumManager() {
+    addTrackRow();
+    document.getElementById('am-add-track-btn').addEventListener('click', addTrackRow);
+    document.getElementById('am-publish-btn').addEventListener('click', function(){ saveRelease(true); });
+    document.getElementById('am-draft-btn').addEventListener('click', function(){ saveRelease(false); });
+    loadReleases();
+  }
+
+  function addTrackRow() {
+    amTrackCount++;
+    var n = amTrackCount;
+    var wrap = document.getElementById('am-tracks');
+    var div = document.createElement('div');
+    div.className = 'am-track-row';
+    div.id = 'am-track-'+n;
+    div.style.cssText = 'background:rgba(5,3,1,0.6);border:1px solid rgba(201,168,76,0.1);padding:14px;margin-bottom:10px;border-radius:2px;position:relative;';
+    div.innerHTML = '<div style="font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;color:rgba(201,168,76,0.4);margin-bottom:10px;">Track '+n+'</div>'
+      +'<div class="form-grid">'
+      +'<div><input class="field-input" placeholder="Track title" data-track="'+n+'" data-field="title" maxlength="120"></div>'
+      +'<div><input class="field-input" placeholder="Spotify URL" data-track="'+n+'" data-field="spotify" maxlength="300"></div>'
+      +'</div>'
+      +'<div class="form-grid" style="margin-top:8px;">'
+      +'<div><input class="field-input" placeholder="YouTube URL" data-track="'+n+'" data-field="youtube" maxlength="300"></div>'
+      +'<div><input class="field-input" placeholder="Bandcamp URL" data-track="'+n+'" data-field="bandcamp" maxlength="300"></div>'
+      +'</div>'
+      +'<button onclick="removeTrackRow('+n+')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:rgba(201,168,76,0.3);cursor:pointer;font-size:0.8rem;">✕</button>';
+    wrap.appendChild(div);
+  }
+
+  window.removeTrackRow = function(n){
+    var el=document.getElementById('am-track-'+n);
+    if(el) el.remove();
+  };
+
+  function saveRelease(publish) {
+    var statusEl=document.getElementById('am-status');
+    var catalog  =(document.getElementById('am-catalog').value ||'').trim();
+    var artist   =(document.getElementById('am-artist').value  ||'').trim();
+    var album    =(document.getElementById('am-album').value   ||'').trim();
+    var year     =(document.getElementById('am-year').value    ||'').trim();
+    var genre    =(document.getElementById('am-genre').value   ||'').trim();
+    var cover    =(document.getElementById('am-cover').value   ||'').trim();
+    if(!artist){statusEl.textContent='Artist required';statusEl.className='status-msg status-err';return;}
+    if(!album) {statusEl.textContent='Album title required';statusEl.className='status-msg status-err';return;}
+    var tracks=[];
+    document.querySelectorAll('.am-track-row').forEach(function(row,i){
+      var inputs=row.querySelectorAll('[data-field]');
+      var t={number:i+1,title:'',spotify:'',youtube:'',bandcamp:''};
+      inputs.forEach(function(inp){t[inp.getAttribute('data-field')]=inp.value.trim();});
+      if(t.title) tracks.push(t);
+    });
+    document.getElementById('am-publish-btn').disabled=true;
+    document.getElementById('am-draft-btn').disabled=true;
+    statusEl.textContent='';
+    db.collection('releases').add({
+      catalog:catalog, artist:artist, albumTitle:album,
+      year:year?parseInt(year):null, genre:genre, coverUrl:cover,
+      tracks:tracks,
+      timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+      published:publish
+    }).then(function(){
+      statusEl.textContent=publish?'RELEASE PUBLISHED \u2726':'DRAFT SAVED \u2726';
+      statusEl.className='status-msg status-ok';
+      ['am-artist','am-album','am-year','am-genre','am-cover'].forEach(function(id){document.getElementById(id).value='';});
+      document.getElementById('am-tracks').innerHTML=''; amTrackCount=0; addTrackRow();
+      document.getElementById('am-publish-btn').disabled=false;
+      document.getElementById('am-draft-btn').disabled=false;
+      loadReleases();
+    }).catch(function(e){
+      statusEl.textContent='Error: '+e.message;
+      statusEl.className='status-msg status-err';
+      document.getElementById('am-publish-btn').disabled=false;
+      document.getElementById('am-draft-btn').disabled=false;
+    });
+  }
+
+  function loadReleases() {
+    var el=document.getElementById('am-list');
+    db.collection('releases').orderBy('timestamp','desc').limit(20).get().then(function(snap){
+      if(snap.empty){el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No releases yet.</div>';return;}
+      var html='';
+      snap.forEach(function(doc){
+        var d=doc.data(); var eid='am-'+doc.id;
+        var pub=d.published?'<span class="badge badge-green">Published</span>':'<span class="badge badge-dim">Draft</span>';
+        html+='<div class="entry-row" id="row-'+eid+'">'
+          +'<div class="entry-body">'
+          +'<div class="entry-name">'+esc(d.albumTitle)+'</div>'
+          +'<div class="entry-meta">'+esc(d.artist)+(d.year?' · '+d.year:'')+(d.catalog?' · '+esc(d.catalog):'')+' '+pub+'</div>'
+          +'<div style="font-size:0.62rem;color:rgba(201,168,76,0.3);margin-top:3px;">'+(d.tracks?d.tracks.length+' tracks':'')+'</div>'
+          +'<div class="entry-actions">'
+          +(d.published?'<button class="btn-ghost btn-sm" onclick="unpublishRelease(\''+doc.id+'\')">Unpublish</button>':'<button class="btn-success btn-sm" onclick="publishRelease(\''+doc.id+'\')">Publish</button>')
+          +'<button class="btn-danger btn-sm" onclick="askDelete(\''+eid+'\')">Delete</button>'
+          +makeDeleteRow('releases',doc.id,eid)
+          +'</div></div></div>';
+      });
+      el.innerHTML=html;
+    }).catch(function(e){el.innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>';});
+  }
+
+  window.unpublishRelease=function(id){db.collection('releases').doc(id).update({published:false}).then(loadReleases).catch(function(){});};
+  window.publishRelease  =function(id){db.collection('releases').doc(id).update({published:true}).then(loadReleases).catch(function(){});};
+
+  /* ══════════════ SECTION 11: LEADERBOARD MANAGER ══════════════ */
+  var lbCurrentGame = 'void';
+  var lbAllScores   = [];
+  var lbFilter      = '';
+
+  var LB_GAMES = {
+    'void':             'The Void',
+    'cosmic-conductor': 'Cosmic Conductor',
+    'pitch-oracle':     'Pitch Oracle',
+    'rhythm-architect': 'Rhythm Architect',
+    'chord-conjurer':   'Chord Conjurer',
+    'memory':           'Memory Vault',
+    'blackjack':        '21 Blackjack',
+    'texas':            'Texas Hold Em'
+  };
+
+  function initLeaderboards() {
+    document.getElementById('lb-tab-bar').querySelectorAll('.tab-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        document.getElementById('lb-tab-bar').querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+        this.classList.add('active');
+        lbCurrentGame = this.getAttribute('data-lbtab');
+        lbFilter = document.getElementById('lb-search').value.toLowerCase();
+        loadLbScores();
+      });
+    });
+    document.getElementById('lb-search').addEventListener('input', function(){
+      lbFilter = this.value.toLowerCase();
+      renderLbTable();
+    });
+    document.getElementById('lb-select-all').addEventListener('change', function(){
+      document.querySelectorAll('.lb-row-check').forEach(function(cb){cb.checked=this.checked;},this);
+    });
+    document.getElementById('lb-th-check').addEventListener('change', function(){
+      document.querySelectorAll('.lb-row-check').forEach(function(cb){cb.checked=this.checked;},this);
+    });
+    document.getElementById('lb-delete-selected').addEventListener('click', function(){
+      var checked = Array.from(document.querySelectorAll('.lb-row-check:checked'));
+      if(!checked.length){document.getElementById('lb-status').textContent='None selected.';return;}
+      if(!confirm('Delete '+checked.length+' selected score(s)?')) return;
+      var batch = db.batch();
+      checked.forEach(function(cb){
+        batch.delete(db.collection('leaderboards').doc(lbCurrentGame).collection('scores').doc(cb.value));
+      });
+      batch.commit().then(function(){
+        document.getElementById('lb-status').textContent='Deleted '+checked.length+' score(s) \u2726';
+        document.getElementById('lb-status').className='status-msg status-ok';
+        loadLbScores();
+      }).catch(function(e){
+        document.getElementById('lb-status').textContent='Error: '+e.message;
+        document.getElementById('lb-status').className='status-msg status-err';
+      });
+    });
+    loadLbScores();
+  }
+
+  function loadLbScores() {
+    var tbody = document.getElementById('lb-table-body');
+    tbody.innerHTML='<tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">Loading...</td></tr>';
+    document.getElementById('lb-stats').innerHTML='';
+    // Try nested scores sub-collection first
+    db.collection('leaderboards').doc(lbCurrentGame).collection('scores')
+      .orderBy('score','desc').limit(100).get()
+      .then(function(snap){
+        lbAllScores=[];
+        snap.forEach(function(doc){ lbAllScores.push({id:doc.id,d:doc.data()}); });
+        if(!lbAllScores.length){
+          // Fallback: flat collection keyed by game
+          return db.collection('leaderboards').where('game','==',lbCurrentGame).orderBy('score','desc').limit(100).get()
+            .then(function(s2){ s2.forEach(function(doc){ lbAllScores.push({id:doc.id,d:doc.data()}); }); });
+        }
+      }).catch(function(){
+        return db.collection('leaderboards').where('game','==',lbCurrentGame).orderBy('score','desc').limit(100).get()
+          .catch(function(){});
+      }).finally(function(){
+        renderLbTable();
+        renderLbStats();
+      });
+  }
+
+  function renderLbTable() {
+    var filtered = lbAllScores.filter(function(s){
+      if(!lbFilter) return true;
+      return (s.d.name||s.d.displayName||'').toLowerCase().includes(lbFilter)
+          || (s.d.username||'').toLowerCase().includes(lbFilter);
+    });
+    var tbody = document.getElementById('lb-table-body');
+    if(!filtered.length){tbody.innerHTML='<tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">No scores found.</td></tr>';return;}
+    var html='';
+    filtered.forEach(function(s,i){
+      var d=s.d;
+      var name=esc(d.name||d.displayName||d.username||'Unknown');
+      var score=esc(String(d.score||0));
+      var date=fmtDate(d.timestamp||d.date);
+      html+='<tr id="lb-row-'+s.id+'">'
+        +'<td><input type="checkbox" class="lb-row-check" value="'+s.id+'" style="accent-color:#c9a84c;width:13px;height:13px;"></td>'
+        +'<td style="color:#c9a84c;">'+(i+1)+'</td>'
+        +'<td>'+name+'</td>'
+        +'<td>'+score+'</td>'
+        +'<td style="font-size:0.65rem;">'+date+'</td>'
+        +'<td><button class="btn-danger btn-sm" onclick="deleteLbScore(\''+s.id+'\')">Delete</button></td>'
+        +'</tr>';
+    });
+    tbody.innerHTML=html;
+  }
+
+  function renderLbStats() {
+    var el=document.getElementById('lb-stats');
+    if(!lbAllScores.length){el.innerHTML='';return;}
+    var scores=lbAllScores.map(function(s){return s.d.score||0;});
+    var highest=Math.max.apply(null,scores);
+    var playerCounts={};
+    lbAllScores.forEach(function(s){
+      var n=s.d.name||s.d.displayName||s.d.username||'Unknown';
+      playerCounts[n]=(playerCounts[n]||0)+1;
+    });
+    var topPlayer=Object.keys(playerCounts).sort(function(a,b){return playerCounts[b]-playerCounts[a];})[0]||'—';
+    var latest=lbAllScores[0]?fmtDate(lbAllScores[0].d.timestamp||lbAllScores[0].d.date):'—';
+    el.innerHTML=[
+      ['Total Scores',lbAllScores.length],
+      ['Highest',highest],
+      ['Most Active',topPlayer],
+      ['Latest',latest]
+    ].map(function(s){
+      return '<div class="stat-card" style="min-width:100px;padding:12px 10px;">'
+        +'<div class="stat-num" style="font-size:1.1rem;">'+esc(String(s[1]))+'</div>'
+        +'<div class="stat-label">'+s[0]+'</div></div>';
+    }).join('');
+  }
+
+  window.deleteLbScore = function(id){
+    if(!confirm('Delete this score from the scrolls?')) return;
+    var ref = db.collection('leaderboards').doc(lbCurrentGame).collection('scores').doc(id);
+    ref.delete().then(function(){
+      var row=document.getElementById('lb-row-'+id);
+      if(row) row.remove();
+      lbAllScores=lbAllScores.filter(function(s){return s.id!==id;});
+      renderLbStats();
+    }).catch(function(){
+      // Fallback flat delete
+      db.collection('leaderboards').doc(id).delete().then(function(){
+        var row=document.getElementById('lb-row-'+id);
+        if(row) row.remove();
+        lbAllScores=lbAllScores.filter(function(s){return s.id!==id;});
+        renderLbStats();
+      }).catch(function(e){ alert('Error: '+e.message); });
+    });
+  };
+
+  /* ══════════════ SECTION 12: CACHE BUST ══════════════ */
+  function initCacheBust() {
+    // Show current cache version from Firestore
+    db.collection('siteConfig').doc('cacheVersion').get().then(function(doc){
+      var el=document.getElementById('cb-current');
+      if(doc.exists && doc.data().version){
+        el.textContent='Current cache version: '+doc.data().version+' · last busted '+fmtTime(doc.data().timestamp);
+      } else {
+        el.textContent='No cache version set yet — click to initialise.';
+      }
+    }).catch(function(){ document.getElementById('cb-current').textContent='Could not read cache version.'; });
+
+    // Version history
+    db.collection('siteConfig').doc('cacheVersion').collection('history')
+      .orderBy('timestamp','desc').limit(8).get()
+      .then(function(snap){
+        var el=document.getElementById('cb-history');
+        if(snap.empty){el.textContent='No history yet.';return;}
+        var html='';
+        snap.forEach(function(doc){
+          var d=doc.data();
+          html+='<div>'+esc(String(d.version||'—'))+' &nbsp;·&nbsp; '+fmtTime(d.timestamp)+'</div>';
+        });
+        el.innerHTML=html;
+      }).catch(function(){document.getElementById('cb-history').textContent='—';});
+
+    document.getElementById('cb-bust-btn').addEventListener('click', function(){
+      var btn=this;
+      var statusEl=document.getElementById('cb-status');
+      btn.disabled=true;
+      statusEl.textContent='';
+      var version='jestamang-'+Date.now();
+      var ts=firebase.firestore.FieldValue.serverTimestamp();
+      var batch=db.batch();
+      batch.set(db.collection('siteConfig').doc('cacheVersion'),{version:version,timestamp:ts});
+      batch.set(db.collection('siteConfig').doc('cacheVersion').collection('history').doc(),{version:version,timestamp:ts});
+      batch.commit().then(function(){
+        statusEl.textContent='CACHE BUSTED \u2726 Version: '+version;
+        statusEl.className='status-msg status-ok';
+        document.getElementById('cb-current').textContent='Current cache version: '+version;
+        btn.disabled=false;
+        // Reload history
+        db.collection('siteConfig').doc('cacheVersion').collection('history')
+          .orderBy('timestamp','desc').limit(8).get()
+          .then(function(snap){
+            var el=document.getElementById('cb-history'); var html='';
+            snap.forEach(function(doc){var d=doc.data();html+='<div>'+esc(String(d.version||'—'))+' &nbsp;·&nbsp; '+fmtTime(d.timestamp)+'</div>';});
+            el.innerHTML=html||'No history.';
+          }).catch(function(){});
+      }).catch(function(e){
+        statusEl.textContent='Error: '+e.message;
+        statusEl.className='status-msg status-err';
+        btn.disabled=false;
+      });
+    });
+  }
 
   /* ══════════════ UI: TABS ══════════════ */
   function initTabs() {
