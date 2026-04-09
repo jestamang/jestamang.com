@@ -151,6 +151,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .entry-row{flex-direction:column;gap:8px;}
   .entry-avatar{width:28px;height:28px;}
   .modal-box{padding:22px 16px;}
+  .field-input,.field-textarea,.field-select,.search-input{font-size:16px;}
 }
 
 /* Footer */
@@ -392,6 +393,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
 
+      <label class="radio-label" style="margin-top:16px;gap:10px;">
+        <input type="checkbox" id="sh-autonotify" style="accent-color:#c9a84c;width:15px;height:15px;">
+        <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.6);">Auto-notify all members when this show is added</span>
+      </label>
+
       <button class="btn-gold btn-gold-full" id="sh-add-btn">Add Conjuring</button>
       <div class="status-msg" id="sh-status"></div>
 
@@ -399,8 +405,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Upcoming Conjurings</div>
         <div class="shows-table-wrap">
           <table class="shows-table">
-            <thead><tr><th>Venue</th><th>Date</th><th>City</th><th>Price</th><th></th></tr></thead>
-            <tbody id="sh-list"><tr><td colspan="5" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">Loading...</td></tr></tbody>
+            <thead><tr><th>Venue</th><th>Date</th><th>City</th><th>Price</th><th>Notify</th><th></th></tr></thead>
+            <tbody id="sh-list"><tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">Loading...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -452,63 +458,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div style="margin-top:32px;">
         <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Press Articles</div>
         <div id="pm-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
-      </div>
-    </div>
-
-    <div class="adm-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
-
-    <!-- ══ SECTION 9: SHOW ANNOUNCER ══ -->
-    <div class="adm-section">
-      <div class="adm-section-title">✦ Conjuring Announcer</div>
-      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Add a show and notify members in one step.</div>
-
-      <div class="form-grid">
-        <div>
-          <label class="field-label" for="sa-venue">Venue Name</label>
-          <input class="field-input" id="sa-venue" type="text" placeholder="Venue name" maxlength="80">
-        </div>
-        <div>
-          <label class="field-label" for="sa-date">Date</label>
-          <input class="field-input" id="sa-date" type="date">
-        </div>
-      </div>
-      <div class="form-grid">
-        <div>
-          <label class="field-label" for="sa-city">City, State</label>
-          <input class="field-input" id="sa-city" type="text" placeholder="Boston, MA" maxlength="60">
-        </div>
-        <div>
-          <label class="field-label" for="sa-time">Time</label>
-          <input class="field-input" id="sa-time" type="time">
-        </div>
-      </div>
-      <div class="form-grid">
-        <div>
-          <label class="field-label" for="sa-tickets">Ticket URL</label>
-          <input class="field-input" id="sa-tickets" type="url" placeholder="https://..." maxlength="300">
-        </div>
-        <div>
-          <label class="field-label" for="sa-price">Ticket Price</label>
-          <input class="field-input" id="sa-price" type="text" placeholder="$15" maxlength="20">
-        </div>
-      </div>
-
-      <label class="radio-label" style="margin-top:16px;gap:10px;">
-        <input type="checkbox" id="sa-autonotify" checked style="accent-color:#c9a84c;width:15px;height:15px;">
-        <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.6);">Auto-notify all members when this show is added</span>
-      </label>
-
-      <button class="btn-gold btn-gold-full" id="sa-add-btn">Add Conjuring + Notify</button>
-      <div class="status-msg" id="sa-status"></div>
-
-      <div style="margin-top:32px;">
-        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Shows — Manual Notify</div>
-        <div class="shows-table-wrap">
-          <table class="shows-table">
-            <thead><tr><th>Venue</th><th>Date</th><th>City</th><th>Notify</th><th></th></tr></thead>
-            <tbody id="sa-list"><tr><td colspan="5" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">Loading...</td></tr></tbody>
-          </table>
-        </div>
       </div>
     </div>
 
@@ -576,7 +525,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="adm-section">
       <div class="adm-section-title">✦ Cosmic Scrolls Manager</div>
 
-      <div class="tab-bar" id="lb-tab-bar">
+      <div class="tab-bar" id="lb-tab-bar" style="overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap;">
         <button class="tab-btn active" data-lbtab="void">The Void</button>
         <button class="tab-btn" data-lbtab="cosmic-conductor">Conductor</button>
         <button class="tab-btn" data-lbtab="pitch-oracle">Pitch</button>
@@ -692,7 +641,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   /* ══════════════ AUTH GATE ══════════════ */
   function waitForAuth() {
-    var tries = 0, max = 40;
+    var tries = 0, max = 80;
     var t = setInterval(function () {
       tries++;
       if (window.jestaAuth || tries > max) {
@@ -720,7 +669,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initInquiries();
     initShows();
     initPressManager();
-    initShowAnnouncer();
     initAlbumManager();
     initLeaderboards();
     initCacheBust();
@@ -971,11 +919,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var html = '';
       snap.forEach(function (doc) {
         var d = doc.data();
+        var eid = 'bp-'+doc.id;
         var pub = d.published ? '<span class="badge badge-green">Published</span>' : '<span class="badge badge-dim">Draft</span>';
-        html += '<div class="post-row">'
+        html += '<div class="post-row" id="row-'+eid+'">'
           + '<div class="post-row-title">' + esc(d.title) + ' ' + pub + '</div>'
           + '<div class="post-row-meta">' + esc(d.dateFormatted || d.date || '—') + (d.category ? ' &nbsp;·&nbsp; ' + esc(d.category) : '') + '</div>'
-          + (d.published ? '<button class="btn-danger btn-sm" style="margin-top:6px;" onclick="unpublishPost(\'' + doc.id + '\')">Unpublish</button>' : '')
+          + '<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">'
+          + (d.published ? '<button class="btn-danger btn-sm" onclick="unpublishPost(\'' + doc.id + '\')">Unpublish</button>' : '')
+          + '<button class="btn-danger btn-sm" onclick="askDelete(\'' + eid + '\')">Delete</button>'
+          + makeDeleteRow('blogPosts', doc.id, eid)
+          + '</div>'
           + '</div>';
       });
       el.innerHTML = html;
@@ -1153,13 +1106,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     document.getElementById('sh-date').value = today;
 
     document.getElementById('sh-add-btn').addEventListener('click', function(){
-      var venue   = (document.getElementById('sh-venue').value   ||'').trim();
-      var date    = (document.getElementById('sh-date').value    ||'').trim();
-      var city    = (document.getElementById('sh-city').value    ||'').trim();
-      var time    = (document.getElementById('sh-time').value    ||'').trim();
-      var tickets = (document.getElementById('sh-tickets').value ||'').trim();
-      var price   = (document.getElementById('sh-price').value   ||'').trim();
-      var statusEl = document.getElementById('sh-status');
+      var venue      = (document.getElementById('sh-venue').value   ||'').trim();
+      var date       = (document.getElementById('sh-date').value    ||'').trim();
+      var city       = (document.getElementById('sh-city').value    ||'').trim();
+      var time       = (document.getElementById('sh-time').value    ||'').trim();
+      var tickets    = (document.getElementById('sh-tickets').value ||'').trim();
+      var price      = (document.getElementById('sh-price').value   ||'').trim();
+      var autoNotify = document.getElementById('sh-autonotify').checked;
+      var statusEl   = document.getElementById('sh-status');
       if(!venue){statusEl.textContent='Venue required';statusEl.className='status-msg status-err';return;}
       if(!date) {statusEl.textContent='Date required'; statusEl.className='status-msg status-err';return;}
       this.disabled=true; statusEl.textContent='';
@@ -1169,7 +1123,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         ticketUrl:tickets, price:price,
         timestamp:firebase.firestore.FieldValue.serverTimestamp()
       }).then(function(){
-        statusEl.textContent='CONJURING ADDED \u2726';
+        var chain = Promise.resolve();
+        if(autoNotify){
+          chain = db.collection('notifications').add({
+            title:'NEW CONJURING ANNOUNCED',
+            body:venue+(city?' \u00b7 '+city:'')+(date?' \u00b7 '+date:''),
+            link:'shows.html', sendTo:'all',
+            timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+            sent:false, sentBy:ADMIN_EMAIL
+          });
+        }
+        return chain;
+      }).then(function(){
+        statusEl.textContent = autoNotify ? 'CONJURING ADDED + MEMBERS NOTIFIED \u2726' : 'CONJURING ADDED \u2726';
         statusEl.className='status-msg status-ok';
         ['sh-venue','sh-city','sh-time','sh-tickets','sh-price'].forEach(function(id){document.getElementById(id).value='';});
         document.getElementById('sh-date').value=new Date().toISOString().slice(0,10);
@@ -1184,25 +1150,51 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     // Live list
     db.collection('shows').orderBy('date','asc').onSnapshot(function(snap){
       var tbody = document.getElementById('sh-list');
-      if(snap.empty){tbody.innerHTML='<tr><td colspan="5" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">No shows added yet.</td></tr>';return;}
+      if(snap.empty){tbody.innerHTML='<tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">No shows added yet.</td></tr>';return;}
       var html='';
       snap.forEach(function(doc){
         var d=doc.data();
-        html+='<tr>'
+        var vid=esc(d.venue); var ci=esc(d.city||''); var dt=esc(d.date||'');
+        html+='<tr id="sh-row-'+doc.id+'">'
           +'<td>'+esc(d.venue)+'</td>'
           +'<td>'+esc(d.date)+'</td>'
           +'<td>'+esc(d.city||'—')+'</td>'
           +'<td>'+esc(d.price||'—')+'</td>'
-          +'<td><button class="btn-danger btn-sm" onclick="removeShow(\''+doc.id+'\')">Remove</button></td>'
+          +'<td><button class="btn-ghost btn-sm" onclick="notifyShow(\''+vid+'\',\''+ci+'\',\''+dt+'\')">Notify</button></td>'
+          +'<td id="sh-action-'+doc.id+'"><button class="btn-danger btn-sm" onclick="askRemoveShow(\''+doc.id+'\')">Remove</button></td>'
           +'</tr>';
       });
       tbody.innerHTML=html;
     },function(){});
   }
 
-  window.removeShow = function(id){
-    if(!confirm('Remove this show?')) return;
+  window.notifyShow = function(venue, city, date){
+    db.collection('notifications').add({
+      title:'NEW CONJURING ANNOUNCED',
+      body:venue+(city?' \u00b7 '+city:'')+(date?' \u00b7 '+date:''),
+      link:'shows.html', sendTo:'all',
+      timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+      sent:false, sentBy:ADMIN_EMAIL
+    }).then(function(){
+      alert('Notification sent \u2726');
+    }).catch(function(e){ alert('Error: '+e.message); });
+  };
+
+  window.askRemoveShow = function(id){
+    var cell = document.getElementById('sh-action-'+id);
+    if(!cell) return;
+    cell.innerHTML='<span style="font-size:0.6rem;letter-spacing:0.1em;color:rgba(201,168,76,0.6);margin-right:6px;">REMOVE?</span>'
+      +'<button class="btn-danger btn-sm" onclick="confirmRemoveShow(\''+id+'\')">YES</button>'
+      +' <button class="btn-ghost btn-sm" onclick="cancelRemoveShow(\''+id+'\')">NO</button>';
+  };
+
+  window.confirmRemoveShow = function(id){
     db.collection('shows').doc(id).delete().catch(function(){});
+  };
+
+  window.cancelRemoveShow = function(id){
+    var cell = document.getElementById('sh-action-'+id);
+    if(cell) cell.innerHTML='<button class="btn-danger btn-sm" onclick="askRemoveShow(\''+id+'\')">Remove</button>';
   };
 
   /* ══════════════ SECTION 8: PRESS MANAGER ══════════════ */
@@ -1273,83 +1265,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   window.toggleFeatured = function(id, current){
     db.collection('pressArticles').doc(id).update({featured:!current}).catch(function(){});
-  };
-
-  /* ══════════════ SECTION 9: SHOW ANNOUNCER ══════════════ */
-  function initShowAnnouncer() {
-    var today = new Date().toISOString().slice(0,10);
-    document.getElementById('sa-date').value = today;
-
-    document.getElementById('sa-add-btn').addEventListener('click', function(){
-      var venue    = (document.getElementById('sa-venue').value   ||'').trim();
-      var date     = (document.getElementById('sa-date').value    ||'').trim();
-      var city     = (document.getElementById('sa-city').value    ||'').trim();
-      var time     = (document.getElementById('sa-time').value    ||'').trim();
-      var tickets  = (document.getElementById('sa-tickets').value ||'').trim();
-      var price    = (document.getElementById('sa-price').value   ||'').trim();
-      var autoNotify = document.getElementById('sa-autonotify').checked;
-      var statusEl = document.getElementById('sa-status');
-      if(!venue){statusEl.textContent='Venue required';statusEl.className='status-msg status-err';return;}
-      if(!date) {statusEl.textContent='Date required'; statusEl.className='status-msg status-err';return;}
-      this.disabled=true; statusEl.textContent='';
-      var self=this;
-      var showData={venue:venue,date:date,city:city,time:time,ticketUrl:tickets,price:price,
-                    timestamp:firebase.firestore.FieldValue.serverTimestamp()};
-      db.collection('shows').add(showData).then(function(){
-        var chain = Promise.resolve();
-        if(autoNotify){
-          chain = db.collection('notifications').add({
-            title:'NEW CONJURING ANNOUNCED',
-            body:venue+(city?' \u00b7 '+city:'')+(date?' \u00b7 '+date:''),
-            link:'shows.html',
-            sendTo:'all',
-            timestamp:firebase.firestore.FieldValue.serverTimestamp(),
-            sent:false, sentBy:ADMIN_EMAIL
-          });
-        }
-        return chain;
-      }).then(function(){
-        statusEl.textContent= autoNotify ? 'CONJURING ADDED + MEMBERS NOTIFIED \u2726' : 'CONJURING ADDED \u2726';
-        statusEl.className='status-msg status-ok';
-        ['sa-venue','sa-city','sa-time','sa-tickets','sa-price'].forEach(function(id){document.getElementById(id).value='';});
-        document.getElementById('sa-date').value=new Date().toISOString().slice(0,10);
-        self.disabled=false;
-      }).catch(function(e){
-        statusEl.textContent='Error: '+e.message;
-        statusEl.className='status-msg status-err';
-        self.disabled=false;
-      });
-    });
-
-    db.collection('shows').orderBy('date','asc').onSnapshot(function(snap){
-      var tbody=document.getElementById('sa-list');
-      if(snap.empty){tbody.innerHTML='<tr><td colspan="5" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">No shows yet.</td></tr>';return;}
-      var html='';
-      snap.forEach(function(doc){
-        var d=doc.data();
-        html+='<tr>'
-          +'<td>'+esc(d.venue)+'</td>'
-          +'<td>'+esc(d.date)+'</td>'
-          +'<td>'+esc(d.city||'—')+'</td>'
-          +'<td><button class="btn-ghost btn-sm" onclick="notifyShow(\''+esc(d.venue)+'\',\''+esc(d.city||'')+'\',\''+esc(d.date||'')+'\')">Notify</button></td>'
-          +'<td><button class="btn-danger btn-sm" onclick="removeShow(\''+doc.id+'\')">Remove</button></td>'
-          +'</tr>';
-      });
-      tbody.innerHTML=html;
-    },function(){});
-  }
-
-  window.notifyShow = function(venue, city, date){
-    db.collection('notifications').add({
-      title:'NEW CONJURING ANNOUNCED',
-      body:venue+(city?' \u00b7 '+city:'')+(date?' \u00b7 '+date:''),
-      link:'shows.html',
-      sendTo:'all',
-      timestamp:firebase.firestore.FieldValue.serverTimestamp(),
-      sent:false, sentBy:ADMIN_EMAIL
-    }).then(function(){
-      alert('Notification sent \u2726');
-    }).catch(function(e){ alert('Error: '+e.message); });
   };
 
   /* ══════════════ SECTION 10: ALBUM MANAGER ══════════════ */
