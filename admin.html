@@ -943,7 +943,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       content:       content,
       excerpt:       excerpt,
       timestamp:     firebase.firestore.FieldValue.serverTimestamp(),
-      published:     publish
+      published:     publish,
+      authorRole:    'admin'
     }).then(function () {
       statusEl.textContent = publish ? 'PUBLISHED \u2726' : 'DRAFT SAVED \u2726';
       statusEl.className   = 'status-msg status-ok';
