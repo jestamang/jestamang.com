@@ -1768,7 +1768,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <!-- Account Actions -->
   <div class="dark-card profile-section" id="sec-account" data-section="account" style="text-align:center;">
     <div class="card-title" style="margin-bottom:28px;">Account</div>
-    <div class="circ-actions">
+    <div class="circ-actions" id="circ-actions-row">
 
       <!-- HOME -->
       <a class="circ-btn" href="index.html" aria-label="Home">
@@ -2967,6 +2967,25 @@ var NC = (function(){
     currentUser = user;
     db = firebase.firestore();
     showPage(user);
+    if(user.email === 'thejestamang@gmail.com'){
+      var row = document.getElementById('circ-actions-row');
+      if(row && !document.getElementById('circ-btn-admin')){
+        var a = document.createElement('a');
+        a.className = 'circ-btn';
+        a.id = 'circ-btn-admin';
+        a.href = 'admin.html';
+        a.setAttribute('aria-label','Admin');
+        a.innerHTML = '<svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">'
+          +'<defs><path id="arc-admin" d="M 11,45 A 34,34 0 0 0 79,45"/></defs>'
+          +'<circle cx="45" cy="45" r="43" class="circ-face" fill="rgba(5,3,1,0.97)" stroke="#c9a84c" stroke-width="2"/>'
+          +'<text font-family="Luminari,serif" font-size="8" letter-spacing="3.5" fill="rgba(201,168,76,0.85)">'
+          +'<textPath href="#arc-admin" startOffset="50%" text-anchor="middle">ADMIN</textPath>'
+          +'</text>'
+          +'<text x="45" y="60" text-anchor="middle" font-family="Luminari,serif" font-size="18" fill="rgba(201,168,76,0.5)">⚙</text>'
+          +'</svg>';
+        row.appendChild(a);
+      }
+    }
   });
 
   // ── Avatar load helpers ──
