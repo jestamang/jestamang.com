@@ -68,6 +68,64 @@
     }
   }
 
+  // ── In-app notification banner ────────────────────────────────
+  function checkNotifications(user) {
+    if (!window.jestaDB) {
+      var _t = 0, _iv = setInterval(function () {
+        if (window.jestaDB) { clearInterval(_iv); checkNotifications(user); }
+        else if (++_t > 80) { clearInterval(_iv); }
+      }, 100);
+      return;
+    }
+    var lastCheck = parseInt(localStorage.getItem('lastNotifCheck') || '0', 10);
+    window.jestaDB.collection('notifications')
+      .orderBy('timestamp', 'desc')
+      .limit(1)
+      .get()
+      .then(function (snap) {
+        if (snap.empty) return;
+        var doc = snap.docs[0];
+        var data = doc.data();
+        var seen = data.seen || [];
+        if (seen.indexOf(user.uid) !== -1) return;
+        var notifTime = data.timestamp ? data.timestamp.seconds * 1000 : 0;
+        if (notifTime <= lastCheck) return;
+        showNotifBanner(doc.id, data, user);
+      })
+      .catch(function () {});
+  }
+
+  function showNotifBanner(id, data, user) {
+    if (document.getElementById('j-notif-banner')) return;
+    var banner = document.createElement('div');
+    banner.id = 'j-notif-banner';
+    banner.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:99998;background:rgba(0,0,0,0.95);border:1px solid #c9a84c;padding:16px 48px 16px 20px;max-width:500px;width:90%;font-family:Luminari,Georgia,serif;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,0.6);';
+    var linkHtml = (data.link && data.link !== '/')
+      ? '<a href="' + data.link + '" style="color:#c9a84c;display:block;margin-top:6px;font-size:11px;letter-spacing:2px;">VIEW \u2192</a>'
+      : '';
+    banner.innerHTML =
+      '<div style="color:#c9a84c;font-size:13px;letter-spacing:3px;text-transform:uppercase;">' + esc(data.title) + '</div>' +
+      '<div style="color:#e8e0d0;font-size:12px;margin-top:4px;">' + esc(data.body) + '</div>' +
+      linkHtml +
+      '<button onclick="window._jDismissNotif(\'' + id + '\',\'' + user.uid + '\')" style="position:absolute;top:8px;right:12px;background:none;border:none;color:#c9a84c;font-size:18px;cursor:pointer;">\u00d7</button>';
+    document.body.appendChild(banner);
+  }
+
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  window._jDismissNotif = function (id, uid) {
+    localStorage.setItem('lastNotifCheck', String(Date.now()));
+    if (window.jestaDB) {
+      window.jestaDB.collection('notifications').doc(id).update({
+        seen: firebase.firestore.FieldValue.arrayUnion(uid)
+      }).catch(function () {});
+    }
+    var banner = document.getElementById('j-notif-banner');
+    if (banner) banner.remove();
+  };
+
   // ── Update nav based on auth state ───────────────────────────
   function updateNav(user) {
     var wrap = document.getElementById('jtnav-auth');
@@ -79,6 +137,7 @@
       var fallback = (user.displayName || user.email || '').split('@')[0];
       renderAuthNav(wrap, mobWrap, fallback);
       if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = fallback.length > 10 ? fallback.slice(0,9)+'\u2026' : fallback; }
+      checkNotifications(user);
       if (window.jestaDB) {
         window.jestaDB.collection('users').doc(user.uid).get()
           .then(function (doc) {
