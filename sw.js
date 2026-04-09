@@ -192,9 +192,11 @@ self.addEventListener('notificationclick', function (event) {
   );
 });
 
-// ── Message from client (show local notification) ────────────
+// ── Message from client (skip waiting or show local notification) ───
 self.addEventListener('message', function (event) {
-  if (!event.data || event.data.type !== 'SHOW_NOTIFICATION') return;
+  if (!event.data) return;
+  if (event.data.type === 'SKIP_WAITING') { self.skipWaiting(); return; }
+  if (event.data.type !== 'SHOW_NOTIFICATION') return;
 
   var d = event.data;
   var options = {

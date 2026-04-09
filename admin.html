@@ -574,7 +574,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div style="margin-top:20px;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.1);padding:16px;border-radius:2px;">
         <div style="font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.35);margin-bottom:8px;">How it works</div>
         <div style="font-size:0.7rem;color:rgba(240,230,210,0.45);line-height:1.7;">
-          Clicking the button writes a new timestamp to Firestore → <code style="color:rgba(201,168,76,0.5);">siteConfig/cacheVersion</code>. The service worker checks this value on activation and clears all caches when it changes, forcing every visitor to load the latest version of the site.
+          Clicking the button writes a new version to Firestore → <code style="color:rgba(201,168,76,0.5);">siteConfig/cacheVersion</code>. All visitors with the site open see a gold banner prompting them to refresh. This device's service worker also activates immediately via SKIP_WAITING.
         </div>
       </div>
 
@@ -593,6 +593,25 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <button class="modal-close" id="modal-close-btn">✦</button>
     <div class="modal-title" id="modal-title">Member Profile</div>
     <div id="modal-body"></div>
+  </div>
+</div>
+
+<div id="cb-modal" role="dialog" aria-modal="true" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.88);align-items:center;justify-content:center;padding:20px;">
+  <div class="modal-box" style="max-width:520px;">
+    <button class="modal-close" id="cb-modal-close">✦</button>
+    <div class="modal-title">CACHE BUSTED ✦</div>
+    <div style="font-size:0.72rem;color:rgba(201,168,76,0.6);letter-spacing:0.08em;line-height:1.9;">
+      <p style="margin-bottom:14px;color:rgba(240,230,210,0.7);">This device has been updated. All other visitors will see a gold banner prompting them to refresh.</p>
+      <p style="margin-bottom:8px;color:rgba(201,168,76,0.45);letter-spacing:0.28em;font-size:0.62rem;text-transform:uppercase;">To force all devices to update permanently:</p>
+      <p style="margin-bottom:6px;">In Claude Code, run:</p>
+      <div style="background:rgba(0,0,0,0.6);border:1px solid rgba(201,168,76,0.2);padding:14px 16px;font-family:monospace;font-size:0.78rem;color:#c9a84c;line-height:2;border-radius:2px;letter-spacing:0.04em;">
+        In sw.js change CACHE_NAME to:<br>
+        'jestamang-<span id="cb-modal-version"></span>'<br><br>
+        git add sw.js<br>
+        git commit -m "pwa: cache busted"<br>
+        git push
+      </div>
+    </div>
   </div>
 </div>
 
@@ -858,6 +877,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   });
   document.getElementById('member-modal').addEventListener('click', function (e) {
     if (e.target === this) this.classList.remove('open');
+  });
+
+  document.getElementById('cb-modal-close').addEventListener('click', function () {
+    document.getElementById('cb-modal').style.display='none';
+  });
+  document.getElementById('cb-modal').addEventListener('click', function (e) {
+    if (e.target === this) this.style.display='none';
   });
 
   /* ══════════════ SECTION 4: BLOG PUBLISHER ══════════════ */
@@ -1558,10 +1584,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       batch.set(db.collection('siteConfig').doc('cacheVersion'),{version:version,timestamp:ts});
       batch.set(db.collection('siteConfig').doc('cacheVersion').collection('history').doc(),{version:version,timestamp:ts});
       batch.commit().then(function(){
-        statusEl.textContent='CACHE BUSTED \u2726 Version: '+version;
+        statusEl.textContent='CACHE BUSTED \u2726 Notifying visitors...';
         statusEl.className='status-msg status-ok';
         document.getElementById('cb-current').textContent='Current cache version: '+version;
         btn.disabled=false;
+        // Tell the active service worker to skip waiting and activate immediately
+        if(navigator.serviceWorker&&navigator.serviceWorker.controller){
+          navigator.serviceWorker.controller.postMessage({type:'SKIP_WAITING'});
+        }
+        // Show instructions modal with the new version string
+        document.getElementById('cb-modal-version').textContent=version.replace('jestamang-','');
+        var modal=document.getElementById('cb-modal');
+        modal.style.display='flex';
         // Reload history
         db.collection('siteConfig').doc('cacheVersion').collection('history')
           .orderBy('timestamp','desc').limit(8).get()
