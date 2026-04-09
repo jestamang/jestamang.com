@@ -812,6 +812,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   </div>
 </div>
 
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>emailjs.init('xJfBxMIcVCTgYvQr9');</script>
+
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
@@ -1319,19 +1323,37 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var isRead=!!d.read;
         if(!isRead) unread++;
         var cardClass='inq-card'+(isRead?' read':' unread');
+        var product=esc(d.product||'your inquiry');
+        var defaultMsg='Thank you for reaching out about '+product+'. We have received your inquiry and will follow up with you shortly.\n\n\u2014 Jestamang';
         html+='<div class="'+cardClass+'" id="inq-'+doc.id+'">'
           +'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">'
           +'<div>'
           +'<div style="font-size:0.8rem;color:#c9a84c;letter-spacing:0.08em;">'+esc(d.name||'Unknown')+'</div>'
           +'<div style="font-size:0.62rem;color:rgba(201,168,76,0.4);margin-top:2px;">'+fmtDate(d.timestamp)+(d.product?' &nbsp;·&nbsp; '+esc(d.product):'')+'</div>'
           +'</div>'
-          +'<div style="display:flex;gap:8px;align-items:center;">'
+          +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">'
           +(isRead?'<span class="badge badge-dim">Responded</span>':'<span class="badge badge-red">Unread</span>')
           +(isRead?'':'<button class="btn-success btn-sm" onclick="markRead(\''+doc.id+'\')">Mark Read</button>')
+          +(d.email?'<button class="btn-ghost btn-sm" style="border-color:rgba(201,168,76,0.4);color:#c9a84c;font-family:\'Luminari\',serif;letter-spacing:0.15em;" onclick="openReply(\''+doc.id+'\',\''+esc(d.email||'')+'\',\''+defaultMsg.replace(/'/g,"\\'").replace(/\n/g,'\\n')+'\')">REPLY \u2746</button>':'')
           +'</div>'
           +'</div>'
-          +(d.email?'<div style="font-size:0.72rem;margin-bottom:6px;"><a href="mailto:'+esc(d.email)+'" style="color:rgba(201,168,76,0.55);text-decoration:none;">'+esc(d.email)+'</a></div>':'')
-          +'<div style="font-size:0.75rem;color:rgba(240,230,210,0.65);line-height:1.5;">'+esc(d.message||d.text||'')+'</div>'
+          +(d.email?'<div style="font-size:0.72rem;margin-bottom:6px;color:rgba(201,168,76,0.55);">'+esc(d.email)+'</div>':'')
+          +'<div style="font-size:0.75rem;color:rgba(240,230,210,0.65);line-height:1.5;margin-bottom:8px;">'+esc(d.message||d.text||'')+'</div>'
+          +(d.repliedAt?'<div style="font-size:0.6rem;color:rgba(201,168,76,0.3);letter-spacing:0.1em;">REPLIED \u2726 '+fmtDate(d.repliedAt)+'</div>':'')
+          +'<div id="reply-panel-'+doc.id+'" style="display:none;margin-top:14px;padding:14px;background:rgba(0,0,0,0.4);border:1px solid rgba(201,168,76,0.15);border-radius:2px;">'
+          +'<div style="font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;color:rgba(201,168,76,0.4);margin-bottom:12px;">Reply</div>'
+          +'<label class="field-label">To</label>'
+          +'<input class="field-input" id="reply-to-'+doc.id+'" value="'+esc(d.email||'')+'" readonly style="opacity:0.5;">'
+          +'<label class="field-label" style="margin-top:10px;">Subject</label>'
+          +'<input class="field-input" id="reply-subj-'+doc.id+'" value="Re: Your Jestamang inquiry" maxlength="200">'
+          +'<label class="field-label" style="margin-top:10px;">Message</label>'
+          +'<textarea class="field-input field-textarea" id="reply-msg-'+doc.id+'" rows="5" maxlength="2000">'+esc(defaultMsg)+'</textarea>'
+          +'<div style="display:flex;gap:10px;margin-top:12px;">'
+          +'<button class="btn-gold" onclick="sendReply(\''+doc.id+'\',\''+esc(d.email||'')+'\',\''+esc(d.name||'')+'\')" style="padding:9px 20px;font-size:0.65rem;letter-spacing:0.2em;">SEND REPLY \u2746</button>'
+          +'<button class="btn-ghost btn-sm" onclick="cancelReply(\''+doc.id+'\')">Cancel</button>'
+          +'</div>'
+          +'<div class="status-msg" id="reply-status-'+doc.id+'" style="margin-top:8px;"></div>'
+          +'</div>'
           +'</div>';
       });
       el.innerHTML=html;
@@ -1341,6 +1363,57 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   window.markRead = function(id){
     db.collection('inquiries').doc(id).update({read:true}).catch(function(){});
+  };
+
+  window.openReply = function(id, email, defaultMsg) {
+    // Close any other open panels first
+    document.querySelectorAll('[id^="reply-panel-"]').forEach(function(p){ p.style.display='none'; });
+    var panel = document.getElementById('reply-panel-'+id);
+    if (!panel) return;
+    // Restore default message if textarea was cleared
+    var msgEl = document.getElementById('reply-msg-'+id);
+    if (msgEl && !msgEl.value.trim()) msgEl.value = defaultMsg.replace(/\\n/g,'\n');
+    panel.style.display = 'block';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+
+  window.cancelReply = function(id) {
+    var panel = document.getElementById('reply-panel-'+id);
+    if (panel) panel.style.display = 'none';
+  };
+
+  window.sendReply = function(id, toEmail, toName) {
+    var subjEl   = document.getElementById('reply-subj-'+id);
+    var msgEl    = document.getElementById('reply-msg-'+id);
+    var statusEl = document.getElementById('reply-status-'+id);
+    var subject  = (subjEl  && subjEl.value.trim())  || 'Re: Your Jestamang inquiry';
+    var message  = (msgEl   && msgEl.value.trim())   || '';
+    if (!toEmail) { statusEl.textContent='No email address on this inquiry.'; statusEl.className='status-msg status-err'; return; }
+    if (!message) { statusEl.textContent='Message required.'; statusEl.className='status-msg status-err'; return; }
+    statusEl.textContent = 'Sending...';
+    statusEl.className = 'status-msg';
+    emailjs.send('jestamang', 'template_5l4a1lk', {
+      to_email:  toEmail,
+      to_name:   toName || toEmail,
+      subject:   subject,
+      message:   message,
+      from_name: 'Jestamang'
+    }).then(function () {
+      statusEl.textContent = 'REPLY SENT \u2726';
+      statusEl.className = 'status-msg status-ok';
+      db.collection('inquiries').doc(id).update({
+        read: true,
+        repliedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).catch(function(){});
+      setTimeout(function () {
+        var panel = document.getElementById('reply-panel-'+id);
+        if (panel) panel.style.display = 'none';
+      }, 1800);
+    }).catch(function (err) {
+      var msg = (err && err.text) ? err.text : (err && err.message ? err.message : 'check EmailJS config');
+      statusEl.textContent = 'SEND FAILED \u2014 ' + msg;
+      statusEl.className = 'status-msg status-err';
+    });
   };
 
   /* ══════════════ SECTION 7: SHOWS ══════════════ */
