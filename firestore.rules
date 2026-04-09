@@ -3,10 +3,10 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── HELPER ──────────────────────────────────────────────────────────────
+    // ── HELPERS ─────────────────────────────────────────────────────────────
     function isAdmin() {
       return request.auth != null
-          && request.auth.token.email == 'andrewwace0319@gmail.com';
+          && request.auth.token.email == 'thejestamang@gmail.com';
     }
 
     function isSignedIn() {
@@ -17,20 +17,22 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == uid;
     }
 
+    // ── ADMIN WILDCARD — full access to everything ────────────────────────
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+
 
     // ── LEADERBOARDS ─────────────────────────────────────────────────────────
-    // Public read. Authenticated create. No updates or deletes (scores are permanent).
     match /leaderboards/{entryId} {
       allow read:   if true;
       allow create: if isSignedIn();
       allow update: if false;
-      allow delete: if false;
+      allow delete: if isAdmin();
     }
 
 
     // ── COMMENTS ─────────────────────────────────────────────────────────────
-    // Public read. Authenticated create.
-    // Delete: own document or admin only.
     match /comments/{commentId} {
       allow read:   if true;
       allow create: if isSignedIn();
@@ -40,64 +42,66 @@ service cloud.firestore {
 
 
     // ── INNER CIRCLE CHAT ────────────────────────────────────────────────────
-    // Authenticated read and create.
-    // Delete: own message or admin only.
     match /innerCircleChat/{messageId} {
       allow read:   if isSignedIn();
       allow create: if isSignedIn();
       allow update: if false;
-      allow delete: if isOwner(resource.data.userId) || isAdmin();
+      allow delete: if isOwner(resource.data.uid) || isAdmin();
     }
 
 
     // ── GUESTBOOK ────────────────────────────────────────────────────────────
-    // Public read. Authenticated create (one entry per user — keyed by uid).
-    // Users can update their own entry. Admin can delete any entry.
     match /guestbook/{userId} {
       allow read:   if true;
       allow create: if isSignedIn()
                     && request.auth.uid == userId
                     && !exists(/databases/$(database)/documents/guestbook/$(request.auth.uid));
-      allow update: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
       allow delete: if isAdmin();
     }
 
 
     // ── USERS ────────────────────────────────────────────────────────────────
-    // Users can read and write only their own document.
-    // Admin can read any user document.
     match /users/{userId} {
       allow read:  if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) || isAdmin();
     }
 
 
     // ── FAVORITES ────────────────────────────────────────────────────────────
-    // Users can only read and write their own favorites subcollection.
     match /favorites/{userId} {
-      allow read, write: if isOwner(userId);
+      allow read, write: if isOwner(userId) || isAdmin();
 
       match /{item=**} {
-        allow read, write: if isOwner(userId);
+        allow read, write: if isOwner(userId) || isAdmin();
       }
     }
 
 
     // ── INQUIRIES ────────────────────────────────────────────────────────────
-    // Anyone can create (merch inquiries from public visitors).
-    // Only admin can read. No updates or deletes.
     match /inquiries/{inquiryId} {
-      allow read:   if isAdmin();
-      allow create: if true;
-      allow update: if false;
-      allow delete: if false;
+      allow read, write: if isAdmin();
+      allow create:      if true;
     }
 
 
     // ── NOTIFICATIONS ────────────────────────────────────────────────────────
-    // Only admin can read and write.
     match /notifications/{notifId} {
       allow read, write: if isAdmin();
+    }
+
+
+    // ── BLOG POSTS ───────────────────────────────────────────────────────────
+    match /blogPosts/{postId} {
+      allow read:  if true;
+      allow write: if isAdmin();
+    }
+
+
+    // ── SHOWS ────────────────────────────────────────────────────────────────
+    match /shows/{showId} {
+      allow read:  if true;
+      allow write: if isAdmin();
     }
 
   }
