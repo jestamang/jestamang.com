@@ -26,14 +26,14 @@ html{min-height:100%}
 body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh;padding-top:20px;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:0;pointer-events:none}
 .game-wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:40px 20px 80px;text-align:center}
-.game-title{font-size:clamp(1.6rem,5vw,3rem);letter-spacing:0.35em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.6),0 0 80px rgba(201,168,76,0.2);margin-bottom:6px}
-.game-sub{font-size:0.75rem;letter-spacing:0.4em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:10px}
-.game-lore{font-style:italic;font-size:0.82rem;letter-spacing:0.1em;color:rgba(255,255,255,0.45);line-height:1.8;margin-bottom:28px}
+.game-title{font-size:clamp(1.6rem,5vw,3rem);letter-spacing:0.35em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.6),0 0 80px rgba(201,168,76,0.2);margin-bottom:6px;font-family:'Luminari',serif}
+.game-sub{font-size:0.75rem;letter-spacing:0.4em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:10px;font-family:'Luminari',serif}
+.game-lore{font-style:italic;font-size:0.82rem;letter-spacing:0.1em;color:rgba(255,255,255,0.45);line-height:1.8;margin-bottom:28px;font-family:'Luminari',serif}
 .gold-rule{width:100px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.6),transparent);margin:0 auto 28px}
 /* GAME AREA */
 .game-area{background:rgba(4,2,1,0.85);border:1px solid rgba(201,168,76,0.2);padding:24px;border-radius:4px;text-align:left;margin-bottom:20px}
 /* CARDS */
-.card{width:60px;height:84px;background:rgba(8,4,2,0.97);border:1px solid rgba(201,168,76,0.4);border-radius:5px;position:relative;display:inline-flex;flex-direction:column;padding:5px;color:rgba(201,168,76,0.9);box-shadow:0 2px 10px rgba(0,0,0,0.8);vertical-align:top;flex-shrink:0}
+.card{width:60px;height:84px;background:rgba(8,4,2,0.97);border:1px solid rgba(201,168,76,0.4);border-radius:5px;position:relative;display:inline-flex;flex-direction:column;padding:5px;color:rgba(201,168,76,0.9);box-shadow:0 2px 10px rgba(0,0,0,0.8);vertical-align:top;flex-shrink:0;font-family:'Luminari',serif;transition:opacity 0.3s ease,transform 0.3s ease}
 .card.red{color:#e05555}
 .card .ct{font-size:0.7rem;line-height:1}
 .card .ct small{font-size:0.75rem;display:block}
@@ -45,31 +45,47 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-ind
 /* HAND DISPLAY */
 .hand-area{display:flex;flex-wrap:wrap;gap:6px;min-height:80px;align-items:flex-end;padding:4px 0}
 /* POKER SPECIFIC */
-.pk-pot-row{text-align:center;font-size:0.8rem;letter-spacing:0.25em;color:rgba(201,168,76,0.7);padding:8px 0}
+.pk-pot-row{text-align:center;font-size:0.8rem;letter-spacing:0.25em;color:rgba(201,168,76,0.7);padding:8px 0;font-family:'Luminari',serif}
 .pk-pot-row span{color:#c9a84c}
+.pk-pot-odds{text-align:center;font-size:0.62rem;letter-spacing:0.2em;color:rgba(201,168,76,0.4);padding-bottom:4px;font-family:'Luminari',serif;min-height:1.2em;transition:opacity 0.3s ease}
 .pk-community{display:flex;gap:6px;flex-wrap:wrap;min-height:100px;padding:8px 0;align-items:center;justify-content:center}
 .pk-players{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
-.pk-player{background:rgba(8,4,2,0.8);border:1px solid rgba(201,168,76,0.2);padding:10px;border-radius:4px;font-size:0.72rem}
+.pk-player{background:rgba(8,4,2,0.8);border:1px solid rgba(201,168,76,0.2);padding:10px;border-radius:4px;font-size:0.72rem;transition:border-color 0.3s ease,box-shadow 0.3s ease}
 .pk-player.pk-active{border-color:rgba(201,168,76,0.7);box-shadow:0 0 12px rgba(201,168,76,0.15)}
 .pk-player.pk-folded{opacity:0.4}
-.pk-player-name{letter-spacing:0.2em;color:#c9a84c;margin-bottom:5px;font-size:0.75rem}
-.pk-player-chips{color:rgba(255,255,255,0.5);margin-bottom:5px;font-size:0.72rem}
-.pk-player-bet{color:rgba(201,168,76,0.6);font-size:0.72rem}
-.pk-status{display:inline-block;font-size:0.72rem;letter-spacing:0.15em;padding:2px 8px;border:1px solid rgba(201,168,76,0.3);color:rgba(201,168,76,0.6);margin-top:4px}
+.pk-player.pk-winner-highlight{border-color:#c9a84c;box-shadow:0 0 20px rgba(201,168,76,0.4);animation:winnerPulse 0.8s ease 2}
+@keyframes winnerPulse{0%,100%{box-shadow:0 0 12px rgba(201,168,76,0.2)}50%{box-shadow:0 0 30px rgba(201,168,76,0.6)}}
+.pk-player-name{letter-spacing:0.2em;color:#c9a84c;margin-bottom:2px;font-size:0.75rem;font-family:'Luminari',serif}
+.pk-player-persona{font-size:0.55rem;letter-spacing:0.18em;color:rgba(201,168,76,0.35);margin-bottom:5px;font-style:italic;font-family:'Luminari',serif}
+.pk-player-chips{color:rgba(255,255,255,0.5);margin-bottom:5px;font-size:0.72rem;font-family:'Luminari',serif}
+.pk-player-bet{color:rgba(201,168,76,0.6);font-size:0.72rem;font-family:'Luminari',serif}
+.pk-thinking{font-size:0.65rem;color:rgba(201,168,76,0.5);letter-spacing:0.2em;min-height:1.1em;font-style:italic;font-family:'Luminari',serif;animation:thinkPulse 0.8s ease-in-out infinite}
+@keyframes thinkPulse{0%,100%{opacity:0.3}50%{opacity:1}}
+.pk-status{display:inline-block;font-size:0.72rem;letter-spacing:0.15em;padding:2px 8px;border:1px solid rgba(201,168,76,0.3);color:rgba(201,168,76,0.6);margin-top:4px;font-family:'Luminari',serif;transition:all 0.3s ease}
 .pk-status.fold{border-color:rgba(255,80,80,0.4);color:rgba(255,80,80,0.6)}
 .pk-status.win{border-color:rgba(80,255,80,0.4);color:rgba(80,255,80,0.7)}
 .pk-actions{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0;justify-content:center}
+/* Current hand display */
+.pk-your-hand{text-align:center;font-size:0.72rem;letter-spacing:0.28em;color:#c9a84c;padding:6px 0 4px;text-transform:uppercase;font-family:'Luminari',serif;min-height:1.8em;transition:opacity 0.3s ease}
 /* BUTTONS */
-.gbtn{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.8);background:none;border:1px solid rgba(201,168,76,0.35);padding:8px 20px;cursor:pointer;transition:all 0.2s;min-height:44px}
+.gbtn{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.8);background:none;border:1px solid rgba(201,168,76,0.35);padding:8px 20px;cursor:pointer;transition:all 0.3s;min-height:44px}
 .gbtn:hover{background:rgba(201,168,76,0.15);border-color:#c9a84c}
 .gbtn.primary{background:#c9a84c;color:#000;border-color:#c9a84c}
 .gbtn.primary:hover{background:#e0be6a}
 .gbtn:disabled{opacity:0.3;cursor:default;pointer-events:none}
 /* MESSAGE */
-.game-msg{text-align:center;min-height:2em;font-size:1rem;color:#c9a84c;letter-spacing:0.1em;padding:8px 0}
+.game-msg{text-align:center;min-height:2em;font-size:1rem;color:#c9a84c;letter-spacing:0.1em;padding:8px 0;font-family:'Luminari',serif;transition:opacity 0.3s ease}
+/* Hand history */
+.pk-history{margin-top:12px;border-top:1px solid rgba(201,168,76,0.1);padding-top:8px}
+.pk-history-label{font-size:0.55rem;letter-spacing:0.4em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:6px;font-family:'Luminari',serif}
+.pk-history-entry{font-size:0.62rem;letter-spacing:0.05em;color:rgba(255,255,255,0.4);line-height:1.6;padding:3px 0;border-bottom:1px solid rgba(201,168,76,0.05);font-family:'Luminari',serif;transition:opacity 0.3s ease}
+.pk-history-entry .win-amt{color:rgba(120,255,120,0.7)}
+.pk-history-entry .lose-amt{color:rgba(255,100,100,0.7)}
+/* Win particle */
+.pk-win-coin{position:fixed;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle,#f0d060,#c9a84c);pointer-events:none;z-index:1500}
 /* INSTRUCTIONS */
 .instr-box{margin-top:20px;border:1px solid rgba(201,168,76,0.18);background:rgba(0,0,0,0.35);text-align:left}
-.instr-toggle{width:100%;font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.5);background:none;border:none;padding:12px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:color 0.2s;min-height:44px}
+.instr-toggle{width:100%;font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.5);background:none;border:none;padding:12px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:color 0.3s;min-height:44px}
 .instr-toggle:hover,.instr-toggle.open{color:#c9a84c;background:rgba(201,168,76,0.04)}
 .instr-arrow{display:inline-block;transition:transform 0.3s;font-style:normal}
 .instr-toggle.open .instr-arrow{transform:rotate(180deg)}
@@ -81,22 +97,22 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-ind
 .lb-modal-wrap{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:16px}
 .lb-modal-wrap.open{display:flex}
 .lb-box{background:#0a0604;border:1px solid rgba(201,168,76,0.7);max-width:460px;width:100%;max-height:80vh;overflow-y:auto;padding:28px 22px;position:relative;box-shadow:0 0 60px rgba(201,168,76,0.12)}
-.lb-close{position:absolute;top:10px;right:14px;background:none;border:none;color:rgba(201,168,76,0.7);font-size:1.1rem;cursor:pointer;font-family:sans-serif;line-height:1;padding:4px 8px;min-height:unset}
+.lb-close{position:absolute;top:10px;right:14px;background:none;border:none;color:rgba(201,168,76,0.7);font-size:1.1rem;cursor:pointer;font-family:'Luminari',serif;line-height:1;padding:4px 8px;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center}
 .lb-close:hover{color:#c9a84c}
-.lb-head{font-size:0.62rem;letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;margin-bottom:22px;text-align:center}
-.lb-row{display:grid;grid-template-columns:36px 1fr 80px 54px;gap:4px;align-items:center;border-bottom:1px solid rgba(201,168,76,0.07);padding:7px 0;font-size:0.72rem}
+.lb-head{font-size:0.62rem;letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;margin-bottom:22px;text-align:center;font-family:'Luminari',serif}
+.lb-row{display:grid;grid-template-columns:36px 1fr 80px 54px;gap:4px;align-items:center;border-bottom:1px solid rgba(201,168,76,0.07);padding:7px 0;font-size:0.72rem;font-family:'Luminari',serif}
 .lb-row.lb-head-row{font-size:0.52rem;letter-spacing:0.3em;color:rgba(201,168,76,0.4);text-transform:uppercase;border-bottom:1px solid rgba(201,168,76,0.18);padding-bottom:8px;margin-bottom:2px}
 .lb-rank{color:rgba(201,168,76,0.55);text-align:center}
 .lb-name{color:rgba(255,255,255,0.75);letter-spacing:0.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lb-score{color:#c9a84c;letter-spacing:0.1em;text-align:right}
 .lb-date{color:rgba(201,168,76,0.32);font-size:0.58rem;text-align:right}
-.lb-empty{text-align:center;color:rgba(201,168,76,0.35);font-size:0.72rem;letter-spacing:0.2em;padding:24px 0}
-.lb-loading{text-align:center;color:rgba(201,168,76,0.35);font-size:0.65rem;letter-spacing:0.22em;padding:24px 0;animation:lbpulse 1.4s ease-in-out infinite}
+.lb-empty{text-align:center;color:rgba(201,168,76,0.35);font-size:0.72rem;letter-spacing:0.2em;padding:24px 0;font-family:'Luminari',serif}
+.lb-loading{text-align:center;color:rgba(201,168,76,0.35);font-size:0.65rem;letter-spacing:0.22em;padding:24px 0;animation:lbpulse 1.4s ease-in-out infinite;font-family:'Luminari',serif}
 @keyframes lbpulse{0%,100%{opacity:0.4}50%{opacity:1}}
 .lb-name-wrap{display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,0.96);align-items:center;justify-content:center;padding:16px}
 .lb-name-wrap.open{display:flex}
 .lb-name-box{background:#0a0604;border:1px solid rgba(201,168,76,0.6);max-width:340px;width:100%;padding:26px 22px}
-.lb-name-prompt{font-size:0.58rem;letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;margin-bottom:18px;text-align:center;line-height:1.8}
+.lb-name-prompt{font-size:0.58rem;letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;margin-bottom:18px;text-align:center;line-height:1.8;font-family:'Luminari',serif}
 .lb-name-inp{width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:'Luminari',serif;font-size:0.9rem;padding:10px 14px;letter-spacing:0.1em;outline:none;margin-bottom:14px;box-sizing:border-box}
 .lb-name-inp:focus{border-color:rgba(201,168,76,0.8)}
 .lb-name-btns{display:flex;gap:10px}
@@ -105,7 +121,7 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-ind
 .lb-name-confirm:hover{background:#e0be6a}
 /* CONTROLS */
 .controls{margin-top:24px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
-.ctrl-btn{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;color:rgba(201,168,76,0.75);background:none;border:1px solid rgba(201,168,76,0.35);padding:10px 24px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;transition:all 0.2s;min-height:44px}
+.ctrl-btn{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;color:rgba(201,168,76,0.75);background:none;border:1px solid rgba(201,168,76,0.35);padding:10px 24px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;transition:all 0.3s;min-height:44px}
 .ctrl-btn:hover{background:#c9a84c;color:#000;border-color:#c9a84c}
 /* MOBILE */
 @media(max-width:600px){
@@ -120,7 +136,7 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-ind
   .pk-actions{flex-direction:column;gap:5px}
   .pk-actions .gbtn{width:100%!important;margin-left:0!important}
 }
-@media(max-width:768px){body{background-attachment:scroll!important}input,textarea,select{font-size:16px!important}}
+@media(max-width:768px){body{background-attachment:scroll!important}input,textarea,select{font-size:16px!important}button,a,[role="button"]{min-height:44px}}
 h1,h2{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important}
 .hp-footer{background:transparent;text-align:center;padding:32px 24px 56px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.55);position:relative;z-index:10}.hp-footer a{color:rgba(201,168,76,0.55);text-decoration:none;transition:color 0.2s}.hp-footer a:hover{color:#c9a84c}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4)}
 </style>
@@ -157,38 +173,60 @@ h1,h2{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgb
 
   <div class="game-area">
     <div class="pk-pot-row">POT: <span id="pk-pot">0</span> &nbsp;|&nbsp; <span id="pk-phase-label" style="font-size:0.7rem;color:rgba(201,168,76,0.5)">—</span></div>
+    <div class="pk-pot-odds" id="pk-pot-odds">&nbsp;</div>
+    <div class="pk-your-hand" id="pk-your-hand">&nbsp;</div>
     <div>
-      <div style="font-size:0.7rem;letter-spacing:0.25em;color:rgba(201,168,76,0.5);text-align:center;margin-bottom:4px;text-transform:uppercase">Community Cards</div>
+      <div style="font-size:0.7rem;letter-spacing:0.25em;color:rgba(201,168,76,0.5);text-align:center;margin-bottom:4px;text-transform:uppercase;font-family:'Luminari',serif">Community Cards</div>
       <div class="pk-community" id="pk-community"></div>
     </div>
     <div class="pk-players" id="pk-players">
       <div class="pk-player" id="pk-p0">
         <div class="pk-player-name">YOU</div>
+        <div class="pk-player-persona">Human · Your Wits</div>
         <div class="pk-player-chips">Chips: <span class="pchips">1000</span></div>
         <div class="hand-area" id="pk-h0"></div>
         <div class="pk-player-bet">Bet: <span class="pbet">0</span></div>
         <div class="pk-status" id="pk-s0">—</div>
       </div>
       <div class="pk-player" id="pk-p1">
-        <div class="pk-player-name">NICO</div>
+        <div class="pk-player-name">VEGA</div>
+        <div class="pk-player-persona">Aggressive Bluffer</div>
         <div class="pk-player-chips">Chips: <span class="pchips">1000</span></div>
         <div class="hand-area" id="pk-h1"></div>
         <div class="pk-player-bet">Bet: <span class="pbet">0</span></div>
+        <div class="pk-thinking" id="pk-think1"></div>
         <div class="pk-status" id="pk-s1">—</div>
       </div>
       <div class="pk-player" id="pk-p2">
-        <div class="pk-player-name">MARS</div>
+        <div class="pk-player-name">SIRIUS</div>
+        <div class="pk-player-persona">Tight Conservative</div>
         <div class="pk-player-chips">Chips: <span class="pchips">1000</span></div>
         <div class="hand-area" id="pk-h2"></div>
         <div class="pk-player-bet">Bet: <span class="pbet">0</span></div>
+        <div class="pk-thinking" id="pk-think2"></div>
         <div class="pk-status" id="pk-s2">—</div>
       </div>
       <div class="pk-player" id="pk-p3">
-        <div class="pk-player-name">ASH</div>
+        <div class="pk-player-name">NEBULA</div>
+        <div class="pk-player-persona">Unpredictable Wild</div>
         <div class="pk-player-chips">Chips: <span class="pchips">1000</span></div>
         <div class="hand-area" id="pk-h3"></div>
         <div class="pk-player-bet">Bet: <span class="pbet">0</span></div>
+        <div class="pk-thinking" id="pk-think3"></div>
         <div class="pk-status" id="pk-s3">—</div>
+      </div>
+    </div>
+    <!-- 4th AI opponent MERIDIAN shown as a 5th slot if needed — we have 4 slots, so we assign Meridian to index 4 below in code as player[4] when dealing with 5 players, but the spec says 4 AI opponents + player = 5 total. Adjusted: we use 5 players total. Adding a 5th panel here. -->
+    <!-- Actually spec: "rename the 4 AI opponents" meaning there are 4 AIs + the player = 5 players total. Adding MERIDIAN. -->
+    <div class="pk-players" id="pk-players-extra" style="grid-template-columns:1fr;margin-top:0;margin-bottom:0">
+      <div class="pk-player" id="pk-p4" style="max-width:50%;margin:0 auto">
+        <div class="pk-player-name">MERIDIAN</div>
+        <div class="pk-player-persona">Mathematical</div>
+        <div class="pk-player-chips">Chips: <span class="pchips">1000</span></div>
+        <div class="hand-area" id="pk-h4"></div>
+        <div class="pk-player-bet">Bet: <span class="pbet">0</span></div>
+        <div class="pk-thinking" id="pk-think4"></div>
+        <div class="pk-status" id="pk-s4">—</div>
       </div>
     </div>
     <div class="pk-actions">
@@ -198,6 +236,11 @@ h1,h2{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgb
       <button class="gbtn" id="pk-new" style="margin-left:auto">New Hand</button>
     </div>
     <div class="game-msg" id="pk-msg">Press New Hand to begin.</div>
+    <!-- Hand history -->
+    <div class="pk-history" id="pk-history" style="display:none">
+      <div class="pk-history-label">Hand History</div>
+      <div id="pk-history-entries"></div>
+    </div>
   </div>
 
   <div class="instr-box">
@@ -210,13 +253,13 @@ h1,h2{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgb
         <li>Bet, call, raise, or fold each round</li>
         <li>Best 5-card hand from your 2 cards + the 5 community cards wins the pot</li>
         <li>Hand ranks: Royal Flush › Str. Flush › Quads › Full House › Flush › Straight › Trips › Two Pair › Pair › High Card</li>
-        <li>You play against 3 AI opponents</li>
+        <li>VEGA bluffs aggressively · SIRIUS plays only strong hands · NEBULA is unpredictable · MERIDIAN plays by the odds</li>
       </ul>
     </div>
   </div>
 
   <div style="text-align:center;margin-top:16px">
-    <button class="gbtn" style="font-size:0.7rem;letter-spacing:0.28em" onclick="openLB('poker','Texas Hold Em',false)">Leaderboard ✦</button>
+    <button class="gbtn" style="font-size:0.7rem;letter-spacing:0.28em;min-height:44px" onclick="openLB('poker','Texas Hold Em',false)">✦ COSMIC SCROLLS</button>
   </div>
 
   <div class="controls">
@@ -230,7 +273,7 @@ h1,h2{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgb
     <button class="lb-close" onclick="closeLB()">✕</button>
     <div class="lb-head" id="lb-title">Leaderboard</div>
     <div id="lb-personal-best"></div>
-    <div id="lb-list"><div class="lb-loading">Loading scrolls...</div></div>
+    <div id="lb-list"><div class="lb-loading">CONSULTING THE STARS...</div></div>
   </div>
 </div>
 <!-- NAME ENTRY MODAL -->
@@ -246,6 +289,59 @@ h1,h2{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgb
 </div>
 
 <script>
+/* ── Web Audio ── */
+var _audioCtx=null;
+function _getAC(){if(!_audioCtx){try{_audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}return _audioCtx;}
+function _beep(freq,dur,type,vol){
+  var ctx=_getAC();if(!ctx)return;
+  try{
+    var o=ctx.createOscillator();var g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    o.type=type||'sine';o.frequency.value=freq;
+    g.gain.setValueAtTime(vol||0.12,ctx.currentTime);
+    g.gain.linearRampToValueAtTime(0,ctx.currentTime+dur);
+    o.start(ctx.currentTime);o.stop(ctx.currentTime+dur);
+  }catch(e){}
+}
+function _sfxDeal(){_beep(600,0.06,'sine',0.12);}
+function _sfxChip(){_beep(400,0.08,'sine',0.1);}
+function _sfxWin(){
+  var ctx=_getAC();if(!ctx)return;
+  [523,659,784,1047].forEach(function(f,i){setTimeout(function(){_beep(f,0.18,'sine',0.1);},i*70);});
+}
+function _sfxLose(){_beep(180,0.3,'sine',0.1);}
+function _sfxAllin(){
+  var ctx=_getAC();if(!ctx)return;
+  var o=ctx.createOscillator();var g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);
+  o.type='sine';
+  o.frequency.setValueAtTime(200,ctx.currentTime);
+  o.frequency.linearRampToValueAtTime(600,ctx.currentTime+0.6);
+  g.gain.setValueAtTime(0.15,ctx.currentTime);
+  g.gain.linearRampToValueAtTime(0,ctx.currentTime+0.6);
+  o.start(ctx.currentTime);o.stop(ctx.currentTime+0.6);
+}
+
+/* ── Win coins ── */
+function scatterWinCoins(){
+  for(var i=0;i<12;i++){
+    (function(i){
+      var c=document.createElement('div');
+      c.className='pk-win-coin';
+      var startX=window.innerWidth/2+(Math.random()-0.5)*300;
+      c.style.cssText='left:'+startX+'px;top:-20px;position:fixed;z-index:1500;transition:transform 1s ease '+(Math.random()*0.3)+'s,opacity 0.8s ease '+(0.2+Math.random()*0.3)+'s;opacity:1';
+      document.body.appendChild(c);
+      var tx=(Math.random()-0.5)*window.innerWidth*0.7;
+      var ty=window.innerHeight*0.3+Math.random()*200;
+      requestAnimationFrame(function(){requestAnimationFrame(function(){
+        c.style.transform='translate('+tx+'px,'+ty+'px)';
+        c.style.opacity='0';
+      });});
+      setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c);},1500);
+    })(i);
+  }
+}
+
 /* SHARED CARD UTILITIES */
 const _SUITS=['♠','♥','♦','♣'];
 const _VALS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
@@ -298,23 +394,65 @@ function _bestHand(cards){
 
 /* TEXAS HOLD EM */
 (function pkGame(){
-  const NAMES=['You','Nico','Mars','Ash'];
+  // Player 0=Human, 1=VEGA, 2=SIRIUS, 3=NEBULA, 4=MERIDIAN
+  const NAMES=['You','VEGA','SIRIUS','NEBULA','MERIDIAN'];
+  const PERSONAS=['human','vega','sirius','nebula','meridian'];
   let players=[],deck=[],community=[],pot=0,phase='',dealer=0,currentBet=0,actionIdx=0,pkBusy=false;
+  let handNumber=0,handHistory=[];
 
   function initPlayers(){
-    players=NAMES.map((name,i)=>({name,chips:1000,hand:[],bet:0,folded:false,isHuman:i===0,allIn:false}));
+    players=NAMES.map((name,i)=>({name,chips:1000,hand:[],bet:0,folded:false,isHuman:i===0,allIn:false,persona:PERSONAS[i]}));
   }
   function pkMsg(t){document.getElementById('pk-msg').textContent=t;}
+
+  /* ── Your current hand display ── */
+  function updateYourHand(){
+    var el=document.getElementById('pk-your-hand');
+    if(!el)return;
+    var allCards=[...players[0].hand,...community];
+    if(allCards.length<2){el.innerHTML='&nbsp;';return;}
+    var result=allCards.length>=5?_bestHand(allCards):null;
+    if(result){
+      el.textContent='YOUR HAND: '+result.name;
+    } else if(players[0].hand.length>=2){
+      // show preflop hand type
+      var h=players[0].hand;
+      var isPair=h[0].v===h[1].v;
+      el.textContent=isPair?'YOUR HAND: Pocket Pair':'YOUR HAND: '+h[0].v+' '+h[1].v+' (Hole Cards)';
+    } else {
+      el.innerHTML='&nbsp;';
+    }
+  }
+
+  /* ── Pot odds display ── */
+  function updatePotOdds(){
+    var el=document.getElementById('pk-pot-odds');
+    if(!el)return;
+    var isHumanTurn=(actionIdx===0&&!players[0].folded&&phase!=='showdown'&&phase!=='');
+    if(!isHumanTurn||pot===0){el.innerHTML='&nbsp;';return;}
+    var toCall=currentBet-players[0].bet;
+    if(toCall<=0){el.innerHTML='&nbsp;';return;}
+    var ratio=Math.round(pot/toCall);
+    el.textContent='Pot odds: '+ratio+':1';
+  }
+
   function renderAll(){
     document.getElementById('pk-pot').textContent=pot;
     document.getElementById('pk-phase-label').textContent=phase.toUpperCase();
     const comm=document.getElementById('pk-community');comm.innerHTML='';
     for(let i=0;i<5;i++){
-      if(i<community.length){comm.appendChild(_makeCardEl(community[i].v,community[i].s,false));}
-      else{const ph=document.createElement('div');ph.className='card fd';ph.innerHTML='<div class="card-back-pat" style="opacity:0.2">?</div>';comm.appendChild(ph);}
+      if(i<community.length){
+        var cardEl=_makeCardEl(community[i].v,community[i].s,false);
+        cardEl.style.opacity='0';
+        comm.appendChild(cardEl);
+        (function(el,delay){setTimeout(function(){el.style.opacity='1';},delay);})(cardEl,i*100);
+      }else{
+        const ph=document.createElement('div');ph.className='card fd';ph.innerHTML='<div class="card-back-pat" style="opacity:0.2">?</div>';comm.appendChild(ph);
+      }
     }
     players.forEach((p,i)=>{
       const panel=document.getElementById('pk-p'+i);
+      if(!panel)return;
       panel.className='pk-player'+(p.folded?' pk-folded':'')+(i===actionIdx&&phase!=='showdown'&&phase!==''?' pk-active':'');
       panel.querySelector('.pchips').textContent=p.chips;
       panel.querySelector('.pbet').textContent=p.bet;
@@ -330,22 +468,89 @@ function _bestHand(cards){
     document.getElementById('pk-fold').disabled=!isHumanTurn;
     document.getElementById('pk-call').disabled=!isHumanTurn;
     document.getElementById('pk-raise').disabled=!isHumanTurn;
+    updateYourHand();
+    updatePotOdds();
   }
+
+  /* ── Thinking indicator ── */
+  function showThinking(i){
+    var el=document.getElementById('pk-think'+i);
+    if(el)el.textContent='...';
+  }
+  function hideThinking(i){
+    var el=document.getElementById('pk-think'+i);
+    if(el)el.textContent='';
+  }
+
   function newHand(){
     if(pkBusy)return;
     players.forEach(p=>{if(p.chips<=0&&!p.isHuman)p.chips=1000;});
     if(players[0].chips<=0){players[0].chips=1000;pkMsg('You were out of chips — reloaded 1000.');}
-    deck=_newDeck();community=[];pot=0;currentBet=0;
+    deck=_newDeck();community=[];pot=0;currentBet=0;handNumber++;
     players.forEach(p=>{p.hand=[];p.bet=0;p.folded=false;p.allIn=false;});
-    players.forEach(p=>{p.hand=[deck.pop(),deck.pop()];});
-    const sb=(dealer+1)%4,bb=(dealer+2)%4;
+    players.forEach((p,i)=>{p.hand=[deck.pop(),deck.pop()];_sfxDeal();});
+    const sb=(dealer+1)%5,bb=(dealer+2)%5;
     postBlind(sb,10);postBlind(bb,20);
-    currentBet=20;phase='preflop';actionIdx=(dealer+3)%4;
+    currentBet=20;phase='preflop';actionIdx=(dealer+3)%5;
+    while(players[actionIdx].folded)actionIdx=(actionIdx+1)%5;
     renderAll();
     pkMsg(`Blinds posted. ${players[actionIdx].isHuman?'Your turn.':players[actionIdx].name+' to act.'}`);
-    if(!players[actionIdx].isHuman)setTimeout(aiAct,700);
+    if(!players[actionIdx].isHuman){showThinking(actionIdx);setTimeout(function(){hideThinking(actionIdx);aiAct();},700+Math.random()*800);}
   }
+
   function postBlind(i,amt){const a=Math.min(amt,players[i].chips);players[i].chips-=a;players[i].bet+=a;pot+=a;}
+
+  /* ── AI behaviors by persona ── */
+  function aiDecide(p,phase,handRank,toCall,currentBet){
+    const persona=p.persona;
+    if(persona==='vega'){
+      // Aggressive bluffer: raises 40% of time, bluffs with weak hands
+      if(Math.random()<0.4)return'raise';
+      if(toCall===0)return'call';
+      if(handRank>=2||Math.random()<0.35)return'call';
+      return Math.random()<0.4?'call':'fold';
+    }
+    if(persona==='sirius'){
+      // Tight conservative: only bets strong hands, folds marginal
+      if(phase==='preflop'){
+        const h=[...p.hand].sort((a,b)=>_numVal(b.v)-_numVal(a.v));
+        const isPair=h[0].v===h[1].v;const highVal=_numVal(h[0].v);
+        const bigPair=isPair&&highVal>=11;
+        const hasAK=(h[0].v==='A'&&h[1].v==='K')||(h[1].v==='A'&&h[0].v==='K');
+        if(bigPair||hasAK)return'raise';
+        if(isPair&&highVal>=8)return'call';
+        if(toCall===0)return'call';
+        return'fold';
+      }
+      if(handRank>=4)return'raise';
+      if(handRank>=2)return'call';
+      if(toCall===0)return'call';
+      return'fold';
+    }
+    if(persona==='nebula'){
+      // Unpredictable: random aggressive/passive behavior
+      var r=Math.random();
+      if(r<0.25)return'raise';
+      if(r<0.55)return'call';
+      if(toCall===0)return'call';
+      return'fold';
+    }
+    if(persona==='meridian'){
+      // Mathematical: bet proportionally to hand strength, calculate pot odds
+      var potOdds=toCall>0?pot/toCall:Infinity;
+      if(handRank>=5)return'raise';
+      if(handRank>=3){return toCall<p.chips*0.3?'call':'raise';}
+      if(handRank>=2&&(toCall===0||potOdds>3))return'call';
+      if(toCall===0)return'call';
+      if(handRank>=1&&potOdds>5)return'call';
+      return'fold';
+    }
+    // fallback
+    if(handRank>=3)return'raise';
+    if(handRank>=1||toCall===0)return'call';
+    return'fold';
+  }
+
   function aiAct(){
     if(pkBusy)return;
     const p=players[actionIdx];
@@ -353,31 +558,19 @@ function _bestHand(cards){
     const allCards=[...p.hand,...community];
     const handRank=allCards.length>=5?_bestHand(allCards).rank:(allCards.length>=2?preflopRank(p.hand):0);
     const toCall=currentBet-p.bet;
-    let action='fold';
-    if(phase==='preflop'){
-      const h=[...p.hand].sort((a,b)=>_numVal(b.v)-_numVal(a.v));
-      const isPair=h[0].v===h[1].v;const highVal=_numVal(h[0].v);
-      const hasAK=(h[0].v==='A'&&h[1].v==='K')||(h[1].v==='A'&&h[0].v==='K');
-      const hasAQ=(h[0].v==='A'||h[1].v==='A')&&(h[0].v==='Q'||h[1].v==='Q');
-      const bigPair=isPair&&_numVal(h[0].v)>=11;
-      if(bigPair||hasAK||hasAQ){action='raise';}
-      else if(isPair||highVal>=10||Math.random()<0.3){action='call';}
-      else{action='fold';}
-    }else{
-      if(handRank>=3){action='raise';}
-      else if(handRank>=1||toCall===0){action='call';}
-      else if(Math.random()<0.25){action='call';}
-      else{action='fold';}
-    }
+    const action=aiDecide(p,phase,handRank,toCall,currentBet);
+    _sfxChip();
     if(action==='fold'){p.folded=true;pkMsg(`${p.name} folds.`);}
     else if(action==='call'){const a=Math.min(toCall,p.chips);p.chips-=a;p.bet+=a;pot+=a;pkMsg(`${p.name} calls ${a}.`);}
     else{const raise=Math.min(currentBet*2,p.chips+p.bet);const extra=Math.min(raise-p.bet,p.chips);p.chips-=extra;p.bet+=extra;pot+=extra;currentBet=p.bet;pkMsg(`${p.name} raises to ${p.bet}.`);}
     renderAll();setTimeout(advanceAction,600);
   }
+
   function preflopRank(hand){const v0=_numVal(hand[0].v),v1=_numVal(hand[1].v);if(v0===v1)return 1;if(Math.max(v0,v1)>=12)return 0.5;return 0;}
+
   function advanceAction(){
     let checked=0;
-    do{actionIdx=(actionIdx+1)%4;checked++;if(checked>4)break;}
+    do{actionIdx=(actionIdx+1)%5;checked++;if(checked>5)break;}
     while(players[actionIdx].folded||players[actionIdx].allIn);
     const active=players.filter(p=>!p.folded);
     if(active.length<=1){doShowdown();return;}
@@ -388,43 +581,117 @@ function _bestHand(cards){
     }
     renderAll();
     if(players[actionIdx].isHuman){pkMsg('Your turn — Fold, Call, or Raise.');}
-    else{setTimeout(aiAct,700);}
+    else{
+      showThinking(actionIdx);
+      var thinkTime=700+Math.random()*800;
+      setTimeout(function(){hideThinking(actionIdx);aiAct();},thinkTime);
+    }
   }
+
   function nextPhase(){
     players.forEach(p=>p.bet=0);currentBet=0;
-    actionIdx=(dealer+1)%4;
-    while(players[actionIdx].folded)actionIdx=(actionIdx+1)%4;
-    if(phase==='preflop'){phase='flop';community=[deck.pop(),deck.pop(),deck.pop()];pkMsg('Flop dealt.');}
-    else if(phase==='flop'){phase='turn';community.push(deck.pop());pkMsg('Turn dealt.');}
-    else if(phase==='turn'){phase='river';community.push(deck.pop());pkMsg('River dealt.');}
-    else if(phase==='river'){doShowdown();return;}
+    actionIdx=(dealer+1)%5;
+    while(players[actionIdx].folded)actionIdx=(actionIdx+1)%5;
+    if(phase==='preflop'){
+      phase='flop';
+      community=[deck.pop(),deck.pop(),deck.pop()];
+      [0,100,200].forEach(function(d){setTimeout(_sfxDeal,d);});
+      pkMsg('Flop dealt.');
+    }else if(phase==='flop'){
+      phase='turn';community.push(deck.pop());_sfxDeal();pkMsg('Turn dealt.');
+    }else if(phase==='turn'){
+      phase='river';community.push(deck.pop());_sfxDeal();pkMsg('River dealt.');
+    }else if(phase==='river'){doShowdown();return;}
     renderAll();
-    if(!players[actionIdx].isHuman)setTimeout(aiAct,700);
-    else pkMsg('Your turn.');
+    if(!players[actionIdx].isHuman){
+      showThinking(actionIdx);
+      setTimeout(function(){hideThinking(actionIdx);aiAct();},700+Math.random()*800);
+    }else pkMsg('Your turn.');
   }
+
+  /* ── Showdown with dramatic reveal ── */
   function doShowdown(){
     phase='showdown';
     const active=players.filter(p=>!p.folded);
-    if(active.length===1){
-      active[0].chips+=pot;pkMsg(`${active[0].name} wins ${pot} chips (everyone folded)!`);
-      const wi=players.indexOf(active[0]);document.getElementById('pk-s'+wi).textContent='WINNER';document.getElementById('pk-s'+wi).className='pk-status win';
-      pot=0;dealer=(dealer+1)%4;renderAll();return;
-    }
-    const results=active.map(p=>({p,best:_bestHand([...p.hand,...community])}));
-    results.sort((a,b)=>a.best.rank!==b.best.rank?b.best.rank-a.best.rank:_compareTB(b.best.tb,a.best.tb));
-    const winner=results[0];winner.p.chips+=pot;
-    const wi=players.indexOf(winner.p);document.getElementById('pk-s'+wi).textContent='WINNER';document.getElementById('pk-s'+wi).className='pk-status win';
-    results.forEach(r=>{const idx=players.indexOf(r.p);if(r!==winner){document.getElementById('pk-s'+idx).textContent=r.best.name;document.getElementById('pk-s'+idx).className='pk-status';}});
-    pkMsg(`${winner.p.name} wins with ${winner.best.name}!`);pot=0;dealer=(dealer+1)%4;renderAll();
+    // Reveal opponent cards one by one with 0.3s gaps
+    var delay=0;
+    active.forEach(function(p){
+      if(p.isHuman)return;
+      var idx=players.indexOf(p);
+      delay+=300;
+      setTimeout(function(){
+        var hDiv=document.getElementById('pk-h'+idx);
+        hDiv.innerHTML='';
+        p.hand.forEach(function(c){
+          var el=_makeCardEl(c.v,c.s,false);
+          el.style.opacity='0';
+          hDiv.appendChild(el);
+          setTimeout(function(){el.style.opacity='1';},50);
+        });
+        _sfxFlip();
+      },delay);
+    });
+    // Wait 1s more before announcing winner
+    setTimeout(function(){
+      if(active.length===1){
+        active[0].chips+=pot;
+        var wi=players.indexOf(active[0]);
+        document.getElementById('pk-s'+wi).textContent='WINNER';
+        document.getElementById('pk-s'+wi).className='pk-status win';
+        var panel=document.getElementById('pk-p'+wi);
+        if(panel)panel.classList.add('pk-winner-highlight');
+        pkMsg(`${active[0].name} wins ${pot} chips (everyone folded)!`);
+        if(wi===0)scatterWinCoins(),_sfxWin();
+        else _sfxLose();
+        addHandHistory(active[0].name,'everyone folded',wi===0,pot);
+        pot=0;dealer=(dealer+1)%5;renderAll();return;
+      }
+      const results=active.map(p=>({p,best:_bestHand([...p.hand,...community])}));
+      results.sort((a,b)=>a.best.rank!==b.best.rank?b.best.rank-a.best.rank:_compareTB(b.best.tb,a.best.tb));
+      const winner=results[0];winner.p.chips+=pot;
+      const wi=players.indexOf(winner.p);
+      document.getElementById('pk-s'+wi).textContent='WINNER';
+      document.getElementById('pk-s'+wi).className='pk-status win';
+      var panel=document.getElementById('pk-p'+wi);
+      if(panel)panel.classList.add('pk-winner-highlight');
+      results.forEach(r=>{const idx=players.indexOf(r.p);if(r!==winner){document.getElementById('pk-s'+idx).textContent=r.best.name;document.getElementById('pk-s'+idx).className='pk-status';}});
+      pkMsg(`${winner.p.name} wins with ${winner.best.name}!`);
+      if(wi===0){scatterWinCoins();_sfxWin();}else{_sfxLose();}
+      var playerHand=results.find(r=>r.p.isHuman);
+      addHandHistory(winner.p.name,winner.best.name,wi===0,pot,playerHand?playerHand.best.name:'');
+      pot=0;dealer=(dealer+1)%5;renderAll();
+    },delay+1000);
   }
+
+  /* ── Hand history ── */
+  function addHandHistory(winnerName,handName,playerWon,potAmt,playerHandName){
+    handHistory.unshift({n:handNumber,winner:winnerName,hand:handName,playerWon:playerWon,pot:potAmt,playerHand:playerHandName||''});
+    if(handHistory.length>3)handHistory=handHistory.slice(0,3);
+    var hist=document.getElementById('pk-history');
+    var entries=document.getElementById('pk-history-entries');
+    if(!hist||!entries)return;
+    hist.style.display='block';
+    entries.innerHTML=handHistory.map(function(h){
+      var amtStr=h.playerWon?'<span class="win-amt">+'+h.pot+'</span>':'<span class="lose-amt">−'+h.pot+'</span>';
+      return'<div class="pk-history-entry">Hand #'+h.n+': '+
+        (h.playerHand?h.playerHand+' vs ':'')+
+        h.hand+' ('+h.winner+') — '+amtStr+'</div>';
+    }).join('');
+  }
+
+  /* ── Human action ── */
   function humanAct(type){
     if(pkBusy||actionIdx!==0||players[0].folded)return;
     const p=players[0];const toCall=currentBet-p.bet;
+    _sfxChip();
     if(type==='fold'){p.folded=true;pkMsg('You fold.');}
     else if(type==='call'){const a=Math.min(toCall,p.chips);p.chips-=a;p.bet+=a;pot+=a;pkMsg(`You call ${a}.`);}
     else if(type==='raise'){const raiseAmt=currentBet+20;const extra=Math.min(raiseAmt-p.bet,p.chips);p.chips-=extra;p.bet+=extra;pot+=extra;currentBet=p.bet;pkMsg(`You raise to ${p.bet}.`);}
     renderAll();setTimeout(advanceAction,400);
   }
+
+  function _sfxFlip(){_beep(700,0.08,'sine',0.1);}
+
   initPlayers();renderAll();
   document.getElementById('pk-fold').onclick=()=>humanAct('fold');
   document.getElementById('pk-call').onclick=()=>humanAct('call');
@@ -462,8 +729,8 @@ function _fmtDate(ts){try{var d=ts&&ts.toDate?ts.toDate():new Date(ts);return(d.
 function _getDb(){try{return window.jestaDB||(window.firebase&&window.firebase.apps&&window.firebase.apps.length&&window.firebase.firestore())||null;}catch(e){return null;}}
 window.openLB=function(game,title,lowerBetter){
   var modal=document.getElementById('lb-modal');var list=document.getElementById('lb-list');
-  document.getElementById('lb-title').textContent=title+' · Leaderboard';
-  list.innerHTML='<div class="lb-loading">Loading...</div>';modal.classList.add('open');
+  document.getElementById('lb-title').textContent=title+' · Cosmic Scrolls';
+  list.innerHTML='<div class="lb-loading">CONSULTING THE STARS...</div>';modal.classList.add('open');
   var db=_getDb();if(!db){list.innerHTML='<div class="lb-empty">The scrolls are unavailable.</div>';return;}
   // Personal best from localStorage
   var _pbKey='lbBest_'+game;
@@ -472,14 +739,14 @@ window.openLB=function(game,title,lowerBetter){
   if(pbEl){
     if(_pb&&_pb.score!==undefined){
       var _pbDate='';try{var _pbd=new Date(_pb.date);_pbDate=(_pbd.getMonth()+1)+'/'+_pbd.getDate()+'/'+String(_pbd.getFullYear()).slice(2);}catch(e){}
-      pbEl.innerHTML='<div class="lb-row" style="justify-content:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.18);"><span style="color:rgba(201,168,76,0.55);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;margin-right:10px;">Your Best</span><span style="color:#c9a84c;">★ '+_pb.score+'</span>'+(_pbDate?'<span style="color:rgba(201,168,76,0.4);font-size:0.6rem;margin-left:8px;">· '+_pbDate+'</span>':'')+'</div>';
+      pbEl.innerHTML='<div class="lb-row" style="justify-content:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.18);"><span style="color:rgba(201,168,76,0.55);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;margin-right:10px;font-family:\'Luminari\',serif;">Your Best</span><span style="color:#c9a84c;font-family:\'Luminari\',serif;">★ '+_pb.score+'</span>'+(_pbDate?'<span style="color:rgba(201,168,76,0.4);font-size:0.6rem;margin-left:8px;font-family:\'Luminari\',serif;">· '+_pbDate+'</span>':'')+'</div>';
     } else {
-      pbEl.innerHTML='<div style="text-align:center;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.05em;">No personal best yet — play to set one</div>';
+      pbEl.innerHTML='<div style="text-align:center;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.05em;font-family:\'Luminari\',serif;">BE THE FIRST TO MARK YOUR SCORE</div>';
     }
   }
   db.collection('leaderboards').where('game','==',game).orderBy('score','desc').limit(10).get()
     .then(function(snap){
-      if(snap.empty){list.innerHTML='<div class="lb-empty">No entries yet. Be the first.</div>';return;}
+      if(snap.empty){list.innerHTML='<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;}
       var docs=snap.docs.map(function(d){return d.data();});
       var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Score</span><span class="lb-date">Date</span></div>';
       docs.forEach(function(d,i){var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">✦</span>':(i+1);html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+_esc(d.name)+'</span><span class="lb-score">'+d.score+'</span><span class="lb-date">'+_fmtDate(d.timestamp)+'</span></div>';});
@@ -532,7 +799,7 @@ window.submitScore=function(game,score,lowerBetter,cb){
     _b.innerHTML='<span>SITE UPDATED · REFRESH FOR THE LATEST TRANSMISSIONS</span>'
       +'<span style="display:flex;gap:10px;align-items:center;">'
       +'<button onclick="location.reload()" style="background:#0a0702;color:#c9a84c;border:none;padding:5px 14px;font-size:12px;font-weight:700;letter-spacing:0.06em;cursor:pointer;border-radius:2px;">REFRESH</button>'
-      +'<button onclick="(function(b){b.style.transform='translateY(-100%)';setTimeout(function(){b.style.opacity='0';b.style.pointerEvents='none';},400);})(document.getElementById('sw-update-banner'))" style="background:none;border:none;color:#0a0702;font-size:20px;line-height:1;cursor:pointer;padding:0 4px;">×</button>'
+      +'<button onclick="(function(b){b.style.transform=\'translateY(-100%)\';setTimeout(function(){b.style.opacity=\'0\';b.style.pointerEvents=\'none\';},400);})(document.getElementById(\'sw-update-banner\'))" style="background:none;border:none;color:#0a0702;font-size:20px;line-height:1;cursor:pointer;padding:0 4px;">×</button>'
       +'</span>';
   }
   if('serviceWorker' in navigator){
@@ -545,7 +812,7 @@ window.submitScore=function(game,score,lowerBetter,cb){
   }
 })();
 </script>
-<!-- mobile-audit-fixes --><style>@media(max-width:768px){.game-wrap{padding:60px 12px 40px;overflow-x:hidden}.pk-players{grid-template-columns:1fr!important;gap:8px}.pk-player{padding:12px!important}.pk-community{flex-wrap:wrap;gap:4px;min-height:auto}.pk-actions{flex-direction:column;gap:6px}.pk-actions .gbtn{min-height:44px;width:100%}.pk-pot-row{font-size:0.8rem;text-align:center}.hand-area{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}}</style>
+<!-- mobile-audit-fixes --><style>@media(max-width:768px){.game-wrap{padding:60px 12px 40px;overflow-x:hidden}.pk-players{grid-template-columns:1fr!important;gap:8px}.pk-player{padding:12px!important}.pk-community{flex-wrap:wrap;gap:4px;min-height:auto}.pk-actions{flex-direction:column;gap:6px}.pk-actions .gbtn{min-height:44px;width:100%}.pk-pot-row{font-size:0.8rem;text-align:center}.hand-area{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}#pk-players-extra .pk-player{max-width:100%!important}}</style>
 <!-- footer-single-line-mobile -->
 <style>@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important}.hp-footer-mark{margin:0 5px!important}}</style>
 </body>

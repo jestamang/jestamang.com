@@ -255,9 +255,20 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
   <div class="score-lbl">Final Score</div>
   <div class="best-lbl" id="bestLbl"></div>
   <div class="rank-lbl" id="rankLbl"></div>
+  <div id="statsLbl" style="font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.2em;color:rgba(201,168,76,0.55);text-transform:uppercase;margin-bottom:8px;line-height:2;"></div>
+  <div id="gradeLbl" style="font-family:'Luminari',serif;font-size:2.5rem;letter-spacing:0.3em;color:#c9a84c;text-shadow:0 0 30px rgba(201,168,76,0.7);margin-bottom:32px;"></div>
   <button class="btn" id="restartBtn">Conduct Again</button>
 <button id="lb-btn-over">The Cosmic Scrolls</button>
 </div>
+
+<!-- Fever mode announcement overlay -->
+<div id="fever-overlay" style="display:none;position:fixed;inset:0;z-index:8;pointer-events:none;align-items:center;justify-content:center;">
+  <div id="fever-text" style="font-family:'Luminari',serif;font-size:clamp(2rem,8vw,5rem);letter-spacing:0.4em;color:#FFD700;text-shadow:0 0 60px rgba(255,215,0,0.9),0 0 120px rgba(255,215,0,0.4);text-transform:uppercase;animation:feverPulse 0.5s ease-in-out infinite alternate;">✦ FEVER ✦</div>
+</div>
+<style>
+@keyframes feverPulse{from{transform:scale(1);opacity:1}to{transform:scale(1.08);opacity:0.7}}
+@keyframes orbBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+</style>
 
 <script>
 const C = document.getElementById('c'), X = C.getContext('2d');
@@ -267,48 +278,71 @@ resize();
 window.addEventListener('resize', resize);
 
 // ─── Constants ───────────────────────────
-const PERFECT_WINDOW = 18; // px from target line
+const PERFECT_WINDOW = 18;
 const GOOD_WINDOW    = 36;
 const LANE_KEYS = ['a','s','d','f'];
 const LANE_COLORS = ['#8800FF','#0099FF','#39FF14','#FF1493'];
+// Lane tint colors (subtle background per column)
+const LANE_TINTS = [
+  'rgba(201,168,76,0.08)',   // gold
+  'rgba(120,0,222,0.08)',    // purple
+  'rgba(251,56,56,0.08)',    // red
+  'rgba(2,225,39,0.08)'      // green
+];
 const ORB_R = 18;
 
 // ─── State ───────────────────────────────
 let ST = 'start';
 let score, combo, maxCombo, health, orbs, effects, stars, nebulaHue;
-let t0, nextOrbTime, orbSpeed, orbs_per_beat, beatInterval;
+let streak, maxStreak, totalPerfect, totalHits, totalMisses;
+let feverActive, feverTimer;
+let t0, nextOrbTime, orbSpeed, beatInterval;
 let laneActive = [false,false,false,false];
 let laneFlash = [0,0,0,0];
+let laneExplosion = [null,null,null,null]; // hit explosion rings
 let keyDown = {};
+let orbPulse = 0; // global pulse phase for orb breathing
 
 // ─── Audio ───────────────────────────────
 let _AC = null;
 function getAC(){if(!_AC){try{_AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}return _AC;}
-function playTone(freq,type,vol,dur,delay){
+function playTone(freq,endFreq,type,vol,dur,delay){
   try{
     const ac=getAC();if(!ac)return;
     if(ac.state==='suspended')ac.resume();
     const t=ac.currentTime+(delay||0);
     const o=ac.createOscillator(),g=ac.createGain();
     o.connect(g);g.connect(ac.destination);
-    o.type=type||'sine';o.frequency.value=freq;
+    o.type=type||'sine';
+    o.frequency.setValueAtTime(freq,t);
+    if(endFreq&&endFreq!==freq)o.frequency.exponentialRampToValueAtTime(endFreq,t+dur);
     g.gain.setValueAtTime(vol||0.3,t);
     g.gain.exponentialRampToValueAtTime(0.001,t+dur);
-    o.start(t);o.stop(t+dur+0.01);
+    o.start(t);o.stop(t+dur+0.05);
   }catch(e){}
 }
-function playHit(type,cmb){
+function playHit(type,strk){
   if(type==='perfect'){
-    playTone(880,'sine',0.32,0.22);
-    playTone(1320,'sine',0.14,0.14);
-    if(cmb&&cmb%10===0){playTone(440+cmb*4,'triangle',0.18,0.3,0.05);}
+    playTone(880,880,'sine',0.32,0.15);
+    playTone(1320,1320,'sine',0.14,0.10,0.04);
+    if(strk&&strk>0&&strk%10===0){
+      // Streak milestone ding
+      playTone(1000,1000,'sine',0.22,0.2,0.05);
+    }
   }else if(type==='good'){
-    playTone(660,'sine',0.22,0.16);
+    playTone(660,660,'sine',0.22,0.15);
   }else if(type==='miss'){
-    playTone(80,'sawtooth',0.22,0.18);
-    playTone(55,'sine',0.12,0.22,0.04);
+    playTone(150,150,'sawtooth',0.25,0.2);
   }else if(type==='beat'){
-    playTone(50,'sine',0.07,0.09);
+    playTone(50,50,'sine',0.07,0.09);
+  }else if(type==='fever'){
+    playTone(440,550,'sine',0.2,0.12,0);
+    playTone(550,660,'sine',0.2,0.12,0.13);
+    playTone(660,880,'sine',0.25,0.18,0.26);
+  }else if(type==='gameover'){
+    playTone(440,220,'sine',0.25,0.3,0);
+    playTone(330,165,'sine',0.2,0.3,0.32);
+    playTone(220,110,'sine',0.18,0.4,0.64);
   }
 }
 
@@ -318,11 +352,15 @@ function targetY() { return H * 0.80; }
 // ─── Init ────────────────────────────────
 function init() {
   score = 0; combo = 0; maxCombo = 0; health = 5;
+  streak = 0; maxStreak = 0; totalPerfect = 0; totalHits = 0; totalMisses = 0;
+  feverActive = false; feverTimer = 0;
   orbs = []; effects = []; laneFlash = [0,0,0,0]; laneActive = [false,false,false,false];
-  nebulaHue = 260;
+  laneExplosion = [null,null,null,null];
+  nebulaHue = 260; orbPulse = 0;
   t0 = performance.now();
   nextOrbTime = t0 + 1200;
   beatInterval = 640; orbSpeed = H * 0.0034;
+  document.getElementById('fever-overlay').style.display = 'none';
   initStars();
 }
 
@@ -363,10 +401,8 @@ function scheduleOrb() {
   const now = performance.now();
   if (now < nextOrbTime) return;
   const elapsed = (now - t0) / 1000;
-  // Scale difficulty
   beatInterval = Math.max(260, 640 - Math.floor(elapsed / 20) * 55);
   orbSpeed = H * (0.0034 + Math.floor(elapsed / 30) * 0.0006);
-  // Spawn 1 orb, chance of 2 after 30s, chance of 3 after 60s
   const lanePool = [0,1,2,3];
   const count = elapsed > 60 && Math.random() < 0.25 ? 3 :
                 elapsed > 30 && Math.random() < 0.3 ? 2 : 1;
@@ -384,20 +420,41 @@ function pressLane(li) {
   laneFlash[li] = 12;
   const laneOrbs = orbs.filter(o => o.lane === li && !o.hit);
   if (!laneOrbs.length) return;
-  // Find closest to target line
   const tY = targetY();
   const closest = laneOrbs.reduce((a, b) => Math.abs(a.y - tY) < Math.abs(b.y - tY) ? a : b);
   const dist = Math.abs(closest.y - tY);
+
   if (dist <= PERFECT_WINDOW) {
     closest.hit = 'perfect';
+    totalPerfect++; totalHits++;
+    streak++; maxStreak = Math.max(maxStreak, streak);
     combo++; maxCombo = Math.max(maxCombo, combo);
-    const mult = Math.min(8, 1 + Math.floor(combo / 5));
-    score += 100 * mult;
-    spawnEffect(closest.lane, 'PERFECT', '#c9a84c', combo >= 5 ? '✦ x'+mult : '');
+
+    // Fever mode check
+    if (streak === 30 && !feverActive) {
+      feverActive = true; feverTimer = 5.0;
+      document.getElementById('fever-overlay').style.display = 'flex';
+      playHit('fever');
+    }
+
+    // Scoring: base × fever × streak multiplier
+    const streakMult = streak >= 20 ? 3 : streak >= 10 ? 2 : 1;
+    const feverMult = feverActive ? 5 : 1;
+    const combMult = Math.min(8, 1 + Math.floor(combo / 5));
+    score += 100 * combMult * streakMult * feverMult;
+
+    // Hit explosion ring
+    laneExplosion[li] = { r: 0, maxR: 55, life: 1 };
+
+    const subLabel = feverActive ? '✦ FEVER ✦' : (streak >= 10 ? '✦ STREAK: ' + streak : (combo >= 5 ? '✦ x'+combMult : ''));
+    spawnEffect(closest.lane, 'PERFECT', '#c9a84c', subLabel);
     nebulaHue = (nebulaHue + 20) % 360;
-    playHit('perfect', combo);
+    playHit('perfect', streak);
+
   } else if (dist <= GOOD_WINDOW) {
     closest.hit = 'good';
+    totalHits++;
+    streak = 0; // reset streak on non-perfect
     combo++; maxCombo = Math.max(maxCombo, combo);
     const mult = Math.min(8, 1 + Math.floor(combo / 5));
     score += 50 * mult;
@@ -423,14 +480,19 @@ function drawLanes() {
   for (let i = 0; i < 4; i++) {
     const x = laneW * i;
     const active = laneFlash[i] > 0;
-    X.fillStyle = active ? `rgba(201,168,76,0.06)` : `rgba(255,255,255,0.015)`;
+    // Lane color tint (unique per column)
+    X.fillStyle = LANE_TINTS[i];
     X.fillRect(x + 1, 0, laneW - 2, H);
+    // Active flash overlay
+    if (active) {
+      X.fillStyle = 'rgba(201,168,76,0.05)';
+      X.fillRect(x + 1, 0, laneW - 2, H);
+    }
     X.strokeStyle = active ? 'rgba(201,168,76,0.22)' : 'rgba(255,255,255,0.06)';
     X.lineWidth = 1;
     X.strokeRect(x + 1, 0, laneW - 2, H);
     // Key label
     const ky = H * (window.innerWidth <= 900 ? 0.76 : 0.78);
-    X.font = `clamp(12px, 2vw, 18px)`;
     const fs = Math.max(12, Math.min(20, W * 0.013));
     X.font = fs + "px 'Luminari'";
     X.textAlign = 'center';
@@ -451,7 +513,6 @@ function drawTargetLine() {
   X.beginPath(); X.moveTo(0, tY); X.lineTo(W, tY);
   X.strokeStyle = grad; X.lineWidth = 3;
   X.shadowColor = '#c9a84c'; X.shadowBlur = 16; X.stroke(); X.shadowBlur = 0;
-  // Hit flash zones
   for (let i = 0; i < 4; i++) {
     if (laneFlash[i] > 0) {
       const laneW = W / 4;
@@ -461,31 +522,53 @@ function drawTargetLine() {
   }
 }
 
-function drawOrbs() {
+function drawOrbs(ts) {
   const tY = targetY();
+  // Orb breath pulse: scale 1.0 → 1.1 → 1.0
+  const breathScale = 1 + 0.05 * Math.sin(orbPulse);
   for (const o of orbs) {
     if (o.hit) continue;
     const x = getLaneX(o.lane);
     const dist = Math.abs(o.y - tY);
     const inPerfect = dist <= PERFECT_WINDOW;
     const inGood    = dist <= GOOD_WINDOW;
+    const r = ORB_R * breathScale;
     const glowR = inPerfect ? 28 : inGood ? 22 : 16;
     const glowA = inPerfect ? 0.55 : inGood ? 0.35 : 0.18;
+    // Fever glow enhancement
+    const feverBoost = feverActive ? 1.6 : 1;
     // Glow
-    const g = X.createRadialGradient(x, o.y, 0, x, o.y, glowR + ORB_R);
-    g.addColorStop(0, `rgba(201,168,76,${glowA})`);
+    const g = X.createRadialGradient(x, o.y, 0, x, o.y, (glowR + r) * feverBoost);
+    g.addColorStop(0, feverActive ? `rgba(255,215,0,${glowA * 1.5})` : `rgba(201,168,76,${glowA})`);
     g.addColorStop(1, 'transparent');
-    X.beginPath(); X.arc(x, o.y, glowR + ORB_R, 0, 6.283); X.fillStyle = g; X.fill();
+    X.beginPath(); X.arc(x, o.y, (glowR + r) * feverBoost, 0, 6.283); X.fillStyle = g; X.fill();
     // Core
-    X.beginPath(); X.arc(x, o.y, ORB_R, 0, 6.283);
-    X.fillStyle = inPerfect ? '#ffe566' : inGood ? '#c9a84c' : LANE_COLORS[o.lane] + 'cc';
-    X.shadowColor = inPerfect ? '#ffe566' : '#c9a84c';
-    X.shadowBlur = inPerfect ? 24 : 14;
+    X.beginPath(); X.arc(x, o.y, r, 0, 6.283);
+    X.fillStyle = feverActive ? '#FFD700' : (inPerfect ? '#ffe566' : inGood ? '#c9a84c' : LANE_COLORS[o.lane] + 'cc');
+    X.shadowColor = feverActive ? '#FFD700' : (inPerfect ? '#ffe566' : '#c9a84c');
+    X.shadowBlur = feverActive ? 36 : (inPerfect ? 24 : 14);
     X.fill(); X.shadowBlur = 0;
     // Ring
-    X.beginPath(); X.arc(x, o.y, ORB_R + 4, 0, 6.283);
-    X.strokeStyle = inPerfect ? 'rgba(255,229,102,0.6)' : 'rgba(201,168,76,0.35)';
+    X.beginPath(); X.arc(x, o.y, r + 4, 0, 6.283);
+    X.strokeStyle = feverActive ? 'rgba(255,215,0,0.7)' : (inPerfect ? 'rgba(255,229,102,0.6)' : 'rgba(201,168,76,0.35)');
     X.lineWidth = 1.5; X.stroke();
+  }
+}
+
+function drawExplosions() {
+  const tY = targetY();
+  for (let i = 0; i < 4; i++) {
+    const ex = laneExplosion[i];
+    if (!ex) continue;
+    const x = getLaneX(i);
+    ex.r += ex.maxR * 0.12;
+    ex.life -= 0.1;
+    if (ex.life <= 0) { laneExplosion[i] = null; continue; }
+    X.beginPath(); X.arc(x, tY, ex.r, 0, 6.283);
+    X.strokeStyle = `rgba(201,168,76,${ex.life * 0.8})`;
+    X.lineWidth = 3 * ex.life;
+    X.shadowColor = '#c9a84c'; X.shadowBlur = 18 * ex.life;
+    X.stroke(); X.shadowBlur = 0;
   }
 }
 
@@ -529,20 +612,50 @@ function drawHUD() {
   X.fillStyle = 'rgba(201,168,76,0.85)'; X.shadowColor = '#c9a84c'; X.shadowBlur = 10;
   X.fillText(score.toLocaleString(), 18, 34);
   X.shadowBlur = 0;
-  if (combo >= 2) {
+  // Combo + streak display
+  if (combo >= 2 || streak >= 2) {
     X.font = (fs - 2) + "px 'Luminari'"; X.textAlign = 'center';
-    X.fillStyle = `hsla(${(nebulaHue + 60) % 360},90%,70%,0.9)`;
-    X.fillText(combo + 'x COMBO', W/2, 34);
+    const streakMult = streak >= 20 ? '×3' : streak >= 10 ? '×2' : '';
+    const comboText = combo >= 2 ? combo + 'x COMBO' : '';
+    const streakText = streak >= 3 ? '✦ STREAK: ' + streak + (streakMult ? ' ' + streakMult : '') : '';
+    if (comboText) {
+      X.fillStyle = `hsla(${(nebulaHue + 60) % 360},90%,70%,0.9)`;
+      X.fillText(comboText, W/2, 34);
+    }
+    if (streakText) {
+      X.fillStyle = feverActive ? '#FFD700' : 'rgba(201,168,76,0.9)';
+      X.shadowColor = feverActive ? '#FFD700' : '#c9a84c';
+      X.shadowBlur = feverActive ? 20 : 8;
+      X.fillText(streakText, W/2, 34 + (fs + 4));
+      X.shadowBlur = 0;
+    }
   }
   drawHealth();
 }
 
 // ─── Loop ────────────────────────────────
+let lastTS2 = 0;
 requestAnimationFrame(function loop(ts) {
   requestAnimationFrame(loop);
+  const dt = Math.min((ts - (lastTS2 || ts)) / 1000, 0.05);
+  lastTS2 = ts;
 
-  // Background
-  X.fillStyle = 'rgba(0,2,8,0.9)';
+  // Fever timer
+  if (feverActive) {
+    feverTimer -= dt;
+    if (feverTimer <= 0) {
+      feverActive = false;
+      document.getElementById('fever-overlay').style.display = 'none';
+    }
+  }
+
+  // Background — gold pulse in fever mode
+  if (feverActive) {
+    const feverPulse = 0.04 + 0.03 * Math.sin(ts / 200);
+    X.fillStyle = `rgba(40,28,0,${feverPulse + 0.85})`;
+  } else {
+    X.fillStyle = 'rgba(0,2,8,0.9)';
+  }
   X.fillRect(0, 0, W, H);
 
   // Nebula
@@ -560,25 +673,23 @@ requestAnimationFrame(function loop(ts) {
 
   if (ST !== 'playing') return;
 
+  orbPulse += 0.08;
   const elapsed = (ts - t0) / 1000;
 
-  // Spawn orbs
   scheduleOrb();
 
-  // Move orbs
   const tY = targetY();
   for (const o of orbs) {
     if (!o.hit) o.y += orbSpeed * 60 / 60;
   }
 
-  // Miss check: orbs past target line + grace
   for (let i = orbs.length - 1; i >= 0; i--) {
     const o = orbs[i];
     if (o.hit) {
       o.alpha -= 0.1; if (o.alpha <= 0) orbs.splice(i, 1);
     } else if (o.y > tY + GOOD_WINDOW + 10) {
       // Missed
-      combo = 0;
+      combo = 0; streak = 0; totalMisses++;
       health--;
       spawnEffect(o.lane, 'MISS', '#FF3838', '');
       playHit('miss');
@@ -589,13 +700,15 @@ requestAnimationFrame(function loop(ts) {
 
   drawLanes();
   drawTargetLine();
-  drawOrbs();
+  drawOrbs(ts);
+  drawExplosions();
   drawEffects();
   drawHUD();
 });
 
 function gameOver(elapsed) {
   ST = 'over';
+  playHit('gameover');
   document.getElementById('finalScore').textContent = score.toLocaleString();
   const best = parseInt(localStorage.getItem('cc_best') || 0);
   if (score > best) {
@@ -606,6 +719,16 @@ function gameOver(elapsed) {
   }
   const rank = score >= 50000 ? 'Grand Conductor' : score >= 20000 ? 'Celestial' : score >= 8000 ? 'Rising Star' : 'Apprentice';
   document.getElementById('rankLbl').textContent = rank + ' · ' + maxCombo + 'x max combo';
+
+  // Stats + grade
+  const attempted = totalHits + totalMisses;
+  const accuracy = attempted > 0 ? Math.round((totalHits / attempted) * 100) : 0;
+  const grade = accuracy >= 95 ? 'S' : accuracy >= 80 ? 'A' : accuracy >= 65 ? 'B' : accuracy >= 50 ? 'C' : 'F';
+  document.getElementById('statsLbl').innerHTML =
+    'Perfect: ' + totalPerfect + ' &nbsp;·&nbsp; Hits: ' + totalHits + ' &nbsp;·&nbsp; Misses: ' + totalMisses + '<br>' +
+    'Accuracy: ' + accuracy + '% &nbsp;·&nbsp; Best Streak: ' + maxStreak;
+  document.getElementById('gradeLbl').textContent = 'GRADE: ' + grade;
+
   document.getElementById('os').classList.remove('off');
   if(typeof lbOnGameOver==='function')lbOnGameOver(score);
 }
