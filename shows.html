@@ -381,7 +381,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   var _tries = 0;
   var _poll = setInterval(function () {
     _tries++;
-    if (window.jestaDB || _tries > 50) {
+    if (window.jestaDB || _tries > 80) {
       clearInterval(_poll);
       if (window.jestaDB) {
         loadShows();

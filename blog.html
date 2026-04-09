@@ -527,7 +527,7 @@ function pressSectionToggle(){
   var _tries = 0;
   var _poll = setInterval(function () {
     _tries++;
-    if (window.jestaDB || _tries > 50) {
+    if (window.jestaDB || _tries > 80) {
       clearInterval(_poll);
       if (window.jestaDB) {
         loadPress();
