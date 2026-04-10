@@ -13288,6 +13288,109 @@ if(!isOpen){btn.classList.add('open');if(body)body.classList.add('open');}});});
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
+<script>(function(){
+/* ── Lyrics Firestore dynamic loader ── */
+var _LYRICS_FALLBACK = null; /* DOM is the fallback */
+function toSlug(s){return String(s||'').toLowerCase().replace(/[àáâ]/g,'a').replace(/[èéê]/g,'e').replace(/[ìíî]/g,'i').replace(/[òóô]/g,'o').replace(/[ùúû]/g,'u').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function ytVidId(url){if(!url)return'';var m=url.match(/[?&]v=([^&]+)|youtu\.be\/([^?#]+)/);return m?(m[1]||m[2]):'';}
+
+function buildLyrHtml(aSlug,alSlug,songs,albumYtUrl){
+  var html='';
+  (songs||[]).forEach(function(song,i){
+    var accId='acc-dyn-'+aSlug+'-'+alSlug+'-'+i;
+    var vid=ytVidId(song.youtubeUrl||albumYtUrl);
+    var ytHtml=vid?'<div class="yt-embed"><iframe src="https://www.youtube.com/embed/'+esc(vid)+'" frameborder="0" allowfullscreen loading="lazy"></iframe></div>':'';
+    var lyrHtml='';
+    if(song.lyrics){song.lyrics.split('\n').forEach(function(line){lyrHtml+='<p>'+(line?esc(line):'&nbsp;')+'</p>';});}
+    html+='<div class="accordion"><button class="acc-hdr lyr-dyn" data-acc="'+accId+'">'+esc(song.title)+'<span class="acc-arr">▾</span></button><div class="acc-body" id="'+accId+'">'+ytHtml+lyrHtml+'</div></div>';
+  });
+  return html;
+}
+
+function wireBtn(el){
+  if(el.dataset.wired)return; el.dataset.wired='1';
+  if(el.classList.contains('art-btn')){
+    el.addEventListener('click',function(){
+      var aslug=el.dataset.aslug;
+      document.querySelectorAll('.art-btn').forEach(function(b){b.classList.remove('active');});
+      el.classList.add('active');
+      state.level=1;state.artist=aslug;state.album=null;
+      document.getElementById('landingMsg').style.display='none';
+      clearVisible();
+      var ap=document.getElementById('ap-'+aslug);
+      if(ap){ap.classList.add('visible');if(window.innerWidth<=768){mobFadePanel(ap);mobHideSidebar();mobScrollTop();}else{document.getElementById('contentArea').scrollTop=0;}}
+      updateBreadcrumb();
+    });
+  } else if(el.classList.contains('al-card')){
+    el.addEventListener('click',function(){
+      var aslug=el.dataset.aslug,alslug=el.dataset.alslug;
+      state.level=2;state.album=alslug;
+      clearVisible();
+      var lp=document.getElementById('lp-'+aslug+'-'+alslug);
+      if(lp){lp.classList.add('visible');if(window.innerWidth<=768){mobFadePanel(lp);mobScrollTop();}else{document.getElementById('contentArea').scrollTop=0;}}
+      updateBreadcrumb();
+    });
+  } else if(el.classList.contains('lyr-dyn')){
+    el.addEventListener('click',function(){
+      var bodyId=el.dataset.acc,body=document.getElementById(bodyId);
+      var isOpen=el.classList.contains('open');
+      var panel=el.closest('.lyr-panel');
+      if(panel){panel.querySelectorAll('.acc-hdr.open').forEach(function(h){h.classList.remove('open');var b=document.getElementById(h.dataset.acc);if(b)b.classList.remove('open');});}
+      if(!isOpen){el.classList.add('open');if(body)body.classList.add('open');}
+    });
+  }
+}
+
+function loadLyrics(){
+  window.jestaDB.collection('lyrics').orderBy('order').get()
+    .then(function(snap){
+      var docs=[];
+      snap.forEach(function(doc){var d=doc.data();d._id=doc.id;if(d.visible===false)return;docs.push(d);});
+      if(!docs.length)return;
+      var sbScroll=document.querySelector('.sidebar-scroll');
+      var ca=document.getElementById('contentArea');
+      docs.forEach(function(d){
+        var aSlug=toSlug(d.artist),alSlug=toSlug(d.albumTitle);
+        /* update lookup maps accessible from prior script scope */
+        if(!ARTIST_NAMES[aSlug])ARTIST_NAMES[aSlug]=d.artist;
+        if(!ALBUM_NAMES[aSlug+'__'+alSlug])ALBUM_NAMES[aSlug+'__'+alSlug]=d.albumTitle;
+        /* artist button */
+        if(!document.querySelector('.art-btn[data-aslug="'+aSlug+'"]')){
+          var btn=document.createElement('button');
+          btn.className='art-btn';btn.setAttribute('data-aslug',aSlug);btn.textContent=d.artist;
+          sbScroll.appendChild(btn);wireBtn(btn);
+        }
+        /* album panel */
+        var apDiv=document.getElementById('ap-'+aSlug);
+        if(!apDiv){apDiv=document.createElement('div');apDiv.className='album-panel';apDiv.id='ap-'+aSlug;ca.appendChild(apDiv);}
+        /* album card */
+        if(!apDiv.querySelector('[data-alslug="'+alSlug+'"]')){
+          var card=document.createElement('button');
+          card.className='al-card';card.setAttribute('data-aslug',aSlug);card.setAttribute('data-alslug',alSlug);
+          var artSrc=d.artwork?'assets/albums/'+esc(d.artwork):'';
+          card.innerHTML='<img src="'+artSrc+'" alt="'+esc(d.albumTitle)+'" class="al-cover" loading="lazy"><span class="al-label">'+esc(d.albumTitle)+'</span>';
+          apDiv.appendChild(card);wireBtn(card);
+        }
+        /* lyric panel */
+        var lpId='lp-'+aSlug+'-'+alSlug;
+        if(!document.getElementById(lpId)){
+          var lpDiv=document.createElement('div');
+          lpDiv.className='lyr-panel';lpDiv.id=lpId;
+          lpDiv.innerHTML=buildLyrHtml(aSlug,alSlug,d.songs,d.youtubeUrl);
+          ca.appendChild(lpDiv);
+          lpDiv.querySelectorAll('.lyr-dyn').forEach(wireBtn);
+        }
+      });
+    })
+    .catch(function(){});
+}
+
+var _t=0,_iv=setInterval(function(){
+  if(window.jestaDB){clearInterval(_iv);loadLyrics();}
+  else if(++_t>80){clearInterval(_iv);}
+},100);
+})();</script>
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span>&nbsp;Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a>
 </footer>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>

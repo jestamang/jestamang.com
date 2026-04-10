@@ -368,6 +368,40 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .ent-natal-grid{grid-template-columns:1fr 1fr!important;}
 }
 
+/* ── Lyrics Manager ── */
+.lym-row{background:rgba(0,0,0,0.35);border:1px solid rgba(201,168,76,0.14);border-radius:4px;margin-bottom:6px;overflow:hidden;}
+.lym-row-header{display:flex;align-items:center;gap:10px;padding:10px 12px;}
+.lym-thumb{width:60px;height:60px;object-fit:cover;border-radius:2px;flex-shrink:0;background:rgba(201,168,76,0.08);}
+.lym-row-info{flex:1;min-width:0;}
+.lym-row-title{font-size:0.8rem;color:#c9a84c;letter-spacing:0.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lym-row-meta{font-size:0.6rem;color:rgba(240,230,210,0.7);letter-spacing:0.06em;margin-top:2px;}
+.lym-row-actions{display:flex;align-items:center;gap:5px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+.lym-visible-toggle{display:flex;align-items:center;gap:4px;font-size:0.58rem;color:rgba(240,230,210,0.7);letter-spacing:0.1em;cursor:pointer;white-space:nowrap;user-select:none;}
+.lym-visible-toggle input{accent-color:#02E127;cursor:pointer;width:13px;height:13px;}
+.lym-edit-panel{border-top:1px solid rgba(201,168,76,0.1);padding:16px;background:rgba(0,0,0,0.25);display:none;}
+.lym-edit-panel.open{display:block;}
+.lym-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;}
+.lym-art-preview{width:60px;height:60px;object-fit:cover;border-radius:2px;border:1px solid rgba(201,168,76,0.3);margin-top:6px;display:block;}
+.lym-song-list{margin-top:12px;}
+.lym-song-row{background:rgba(0,0,0,0.25);border:1px solid rgba(201,168,76,0.1);border-radius:3px;padding:10px 12px;margin-bottom:8px;}
+.lym-song-row-head{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.lym-song-num{color:rgba(201,168,76,0.5);font-size:0.65rem;min-width:22px;flex-shrink:0;}
+.lym-song-title{flex:1;}
+.lym-song-yt{width:180px;}
+.lym-song-del{background:none;border:1px solid rgba(251,56,56,0.35);color:rgba(251,56,56,0.65);font-size:0.6rem;padding:2px 8px;cursor:pointer;border-radius:2px;flex-shrink:0;}
+.lym-song-del:hover{background:rgba(251,56,56,0.1);}
+.lym-lyr-ta{width:100%;min-height:120px;font-family:monospace;font-size:0.78rem;white-space:pre-wrap;resize:vertical;background:rgba(0,0,0,0.4);border:1px solid rgba(201,168,76,0.2);color:rgba(240,230,210,0.9);padding:8px;border-radius:2px;line-height:1.55;margin-top:4px;}
+.lym-confirm-row{display:none;align-items:center;gap:8px;margin-top:4px;}
+.lym-confirm-row.visible{display:flex;}
+.lym-confirm-q{font-size:0.62rem;color:rgba(251,56,56,0.85);letter-spacing:0.1em;}
+@media(max-width:768px){
+  .lym-row-header{flex-wrap:wrap;gap:8px;}
+  .lym-row-actions{width:100%;}
+  .lym-form-grid{grid-template-columns:1fr!important;}
+  .lym-song-row-head{flex-wrap:wrap;}
+  .lym-song-yt{width:100%;}
+}
+
 /* ── Text Style Editor ── */
 .tse-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;}
 .tse-preview-wrap{border:1px solid rgba(201,168,76,0.18);background:rgba(0,0,0,0.35);border-radius:4px;padding:20px 18px;display:flex;align-items:center;justify-content:center;min-height:80px;margin-top:8px;}
@@ -422,6 +456,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-10')">Catalog</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-26')">Albums</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-27')">Entities</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-29')">Lyrics</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-14')">Videos</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-15')">Artifacts</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-23')">Photos</button>
@@ -450,7 +485,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-17')">Maintenance</button>
 </nav>
 <div id="adm-mobtabs" role="navigation" aria-label="Section tabs">
-  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-28')">TxtStyle</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
+  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-29')">Lyrics</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-28')">TxtStyle</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
 </div>
 
   <div class="adm-header">
@@ -676,6 +711,29 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <p class="status-msg" id="ent-add-status"></p>
       </div>
       <p class="status-msg" id="ent-status"></p>
+    </div>
+    <div class="adm-ornament">✦</div>
+    <div class="adm-section" id="sec-29">
+      <div class="adm-section-title">✦ Lyrics Manager</div>
+      <div class="adm-section-underline"></div>
+      <div class="tab-bar">
+        <button class="tab-btn active" id="lym-tab-list">Album List</button>
+        <button class="tab-btn" id="lym-tab-add">Add New Album</button>
+      </div>
+      <!-- Album list pane -->
+      <div class="tab-pane active" id="lym-pane-list">
+        <div id="lym-list-inner" style="min-height:60px;"><div style="color:rgba(201,168,76,0.4);font-size:0.7rem;letter-spacing:0.2em;">Loading lyrics catalog...</div></div>
+      </div>
+      <!-- Add New Album pane -->
+      <div class="tab-pane" id="lym-pane-add">
+        <div id="lym-add-form"></div>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn-gold" id="lym-add-btn">Add Album</button>
+          <button class="btn-ghost" id="lym-add-clear-btn">Clear</button>
+        </div>
+        <p class="status-msg" id="lym-add-status"></p>
+      </div>
+      <p class="status-msg" id="lym-status"></p>
     </div>
     <div class="adm-ornament">✦</div>
     <div class="adm-section" id="sec-14">
@@ -4122,7 +4180,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       obs.observe(el, { childList: true, characterData: true, subtree: true });
     });
   }
-  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-26','sec-27','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-25','sec-28','sec-1','sec-12','sec-20','sec-17'];
+  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-26','sec-27','sec-29','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-25','sec-28','sec-1','sec-12','sec-20','sec-17'];
   function initScrollSpy() {
     var secs = SEC_IDS.map(function(id){ return document.getElementById(id); }).filter(Boolean);
     var links = document.querySelectorAll('.adm-sidenav-link,.adm-mobtab');
@@ -4734,6 +4792,201 @@ function entLoad(){
   var _t=0,_iv=setInterval(function(){
     if(window.jestaDB){clearInterval(_iv);entLoad();}
     else if(++_t>80){clearInterval(_iv);var c=document.getElementById('ent-list-inner');if(c)c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
+  },100);
+})();
+})();</script>
+
+<script>(function(){
+/* ── Lyrics Manager ── */
+var _lymDocs = {};
+
+function lymEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function lymSongRowHtml(pfx,i,song){
+  song=song||{};
+  return '<div class="lym-song-row" data-song-row>'
+    +'<div class="lym-song-row-head">'
+    +'<span class="lym-song-num">'+(i+1)+'.</span>'
+    +'<input class="field-input lym-song-title" placeholder="Song title" value="'+lymEsc(song.title||'')+'" style="flex:1;">'
+    +'<input class="field-input lym-song-yt" placeholder="YouTube URL" value="'+lymEsc(song.youtubeUrl||'')+'">'
+    +'<button class="lym-song-del" onclick="lymRemoveSong(this)">✕</button>'
+    +'</div>'
+    +'<label class="field-label" style="font-size:0.58rem;margin-bottom:2px;">Lyrics</label>'
+    +'<textarea class="lym-lyr-ta" placeholder="Paste full lyric text here. Newlines preserved.">'+lymEsc(song.lyrics||'')+'</textarea>'
+    +'</div>';
+}
+
+function lymBuildForm(d,pfx){
+  d=d||{};
+  var songs=d.songs&&d.songs.length?d.songs:[{title:'',youtubeUrl:'',lyrics:''}];
+  var songsHtml='';songs.forEach(function(s,i){songsHtml+=lymSongRowHtml(pfx,i,s);});
+  return '<div class="lym-form-grid">'
+    +'<div><label class="field-label">Album Title</label><input class="field-input" id="'+pfx+'-albumTitle" value="'+lymEsc(d.albumTitle||'')+'" maxlength="200"></div>'
+    +'<div><label class="field-label">Artist</label><input class="field-input" id="'+pfx+'-artist" value="'+lymEsc(d.artist||'')+'" maxlength="200"></div>'
+    +'<div><label class="field-label">Artwork Filename</label><input class="field-input" id="'+pfx+'-artwork" value="'+lymEsc(d.artwork||'')+'" placeholder="filename.jpg" onchange="lymPreviewArt(\''+pfx+'\')"></div>'
+    +'<div><label class="field-label">Art Preview</label><img class="lym-art-preview" id="'+pfx+'-art-preview" src="'+(d.artwork?'assets/albums/'+lymEsc(d.artwork):'')+'" onerror="this.src=\'\'"></div>'
+    +'<div><label class="field-label">Album YouTube URL</label><input class="field-input" id="'+pfx+'-youtubeUrl" value="'+lymEsc(d.youtubeUrl||'')+'" placeholder="https://youtube.com/..."></div>'
+    +'<div><label class="field-label" style="display:flex;align-items:center;gap:6px;margin-top:18px;"><input type="checkbox" id="'+pfx+'-visible"'+(d.visible===false?'':' checked')+'> Visible</label>'
+    +'<label class="field-label" style="margin-top:8px;">Order</label><input class="field-input" id="'+pfx+'-order" type="number" value="'+(d.order||0)+'"></div>'
+    +'</div>'
+    +'<div class="lym-song-list" id="'+pfx+'-song-list">'+songsHtml+'</div>'
+    +'<button class="btn-ghost" style="margin-top:8px;font-size:0.62rem;padding:4px 12px;" onclick="lymAddSong(\''+pfx+'\')">+ Add Song</button>';
+}
+
+function lymReadSongs(pfx){
+  var list=document.getElementById(pfx+'-song-list');if(!list)return[];
+  var rows=list.querySelectorAll('[data-song-row]');
+  var songs=[];
+  rows.forEach(function(row){
+    var title=row.querySelector('.lym-song-title');
+    var yt=row.querySelector('.lym-song-yt');
+    var lyr=row.querySelector('.lym-lyr-ta');
+    songs.push({title:title?title.value.trim():'',youtubeUrl:yt?yt.value.trim():'',lyrics:lyr?lyr.value:''});
+  });
+  return songs;
+}
+
+function lymReadForm(pfx){
+  function v(id){var el=document.getElementById(pfx+'-'+id);return el?el.value.trim():'';}
+  var visEl=document.getElementById(pfx+'-visible');
+  return {albumTitle:v('albumTitle'),artist:v('artist'),artwork:v('artwork'),youtubeUrl:v('youtubeUrl'),
+    order:parseInt(v('order'))||0,visible:visEl?visEl.checked:true,songs:lymReadSongs(pfx)};
+}
+
+window.lymPreviewArt=function(pfx){
+  var img=document.getElementById(pfx+'-art-preview');
+  var inp=document.getElementById(pfx+'-artwork');
+  if(img&&inp)img.src=inp.value.trim()?'assets/albums/'+inp.value.trim():'';
+};
+
+window.lymAddSong=function(pfx){
+  var list=document.getElementById(pfx+'-song-list');if(!list)return;
+  var rows=list.querySelectorAll('[data-song-row]');
+  var div=document.createElement('div');
+  div.innerHTML=lymSongRowHtml(pfx,rows.length,{});
+  list.appendChild(div.firstChild);
+};
+
+window.lymRemoveSong=function(btn){
+  var row=btn.closest('[data-song-row]');if(row)row.remove();
+};
+
+function lymRowHtml(docId,d){
+  var artSrc=d.artwork?'assets/albums/'+lymEsc(d.artwork):'';
+  var songCount=(d.songs&&d.songs.length)||0;
+  return '<div class="lym-row" id="lym-row-'+lymEsc(docId)+'">'
+    +'<div class="lym-row-header">'
+    +(artSrc?'<img class="lym-thumb" src="'+artSrc+'" onerror="this.style.display=\'none\'">':'<div class="lym-thumb"></div>')
+    +'<div class="lym-row-info"><div class="lym-row-title">'+lymEsc(d.albumTitle||'(untitled)')+'</div><div class="lym-row-meta">'+lymEsc(d.artist||'')+'  ·  '+songCount+' song'+(songCount===1?'':'s')+'</div></div>'
+    +'<div class="lym-row-actions">'
+    +'<button class="btn-ghost" style="padding:4px 8px;font-size:0.6rem;" onclick="lymMoveOrder(\''+lymEsc(docId)+'\',\'up\')">▲</button>'
+    +'<button class="btn-ghost" style="padding:4px 8px;font-size:0.6rem;" onclick="lymMoveOrder(\''+lymEsc(docId)+'\',\'dn\')">▼</button>'
+    +'<button class="btn-ghost" style="padding:4px 8px;font-size:0.6rem;" onclick="lymToggleEdit(\''+lymEsc(docId)+'\')">Edit</button>'
+    +'<button class="btn-ghost" style="padding:4px 8px;font-size:0.6rem;color:rgba(251,56,56,0.7);" onclick="lymConfirmDelete(\''+lymEsc(docId)+'\')">Del</button>'
+    +'<label class="lym-visible-toggle"><input type="checkbox" '+(d.visible===false?'':'checked')+' onchange="lymSetVisible(\''+lymEsc(docId)+'\',this.checked)"> Vis</label>'
+    +'</div></div>'
+    +'<div class="lym-confirm-row" id="lym-confirm-'+lymEsc(docId)+'">'
+    +'<span class="lym-confirm-q">Delete "'+lymEsc(d.albumTitle||'')+'"?</span>'
+    +'<button class="btn-gold" style="padding:3px 10px;font-size:0.62rem;" onclick="lymDoDelete(\''+lymEsc(docId)+'\')">Yes</button>'
+    +'<button class="btn-ghost" style="padding:3px 10px;font-size:0.62rem;" onclick="lymCancelDelete(\''+lymEsc(docId)+'\')">No</button>'
+    +'</div>'
+    +'<div class="lym-edit-panel" id="lym-edit-'+lymEsc(docId)+'">'
+    +lymBuildForm(d,'lym-e-'+docId)
+    +'<div class="btn-row" style="margin-top:14px;">'
+    +'<button class="btn-gold" onclick="lymSave(\''+lymEsc(docId)+'\')">Save</button>'
+    +'<button class="btn-ghost" onclick="lymToggleEdit(\''+lymEsc(docId)+'\')">Cancel</button>'
+    +'</div>'
+    +'<p class="status-msg" id="lym-save-status-'+lymEsc(docId)+'"></p>'
+    +'</div>'
+  +'</div>';
+}
+
+function lymRenderList(docs){
+  var sorted=Object.keys(docs).map(function(id){return{id:id,d:docs[id]};});
+  sorted.sort(function(a,b){return(a.d.order||0)-(b.d.order||0);});
+  var html='';sorted.forEach(function(e){html+=lymRowHtml(e.id,e.d);});
+  if(!html)html='<div style="color:rgba(201,168,76,0.3);font-size:0.7rem;">No albums found.</div>';
+  var c=document.getElementById('lym-list-inner');if(c)c.innerHTML=html;
+}
+
+window.lymToggleEdit=function(docId){var p=document.getElementById('lym-edit-'+docId);if(p)p.classList.toggle('open');};
+window.lymConfirmDelete=function(docId){var r=document.getElementById('lym-confirm-'+docId);if(r)r.classList.add('visible');};
+window.lymCancelDelete=function(docId){var r=document.getElementById('lym-confirm-'+docId);if(r)r.classList.remove('visible');};
+
+window.lymDoDelete=function(docId){
+  window.jestaDB.collection('lyrics').doc(docId).delete()
+    .then(function(){delete _lymDocs[docId];var row=document.getElementById('lym-row-'+docId);if(row)row.remove();var s=document.getElementById('lym-status');if(s){s.textContent='Album deleted.';s.className='status-msg status-ok';}})
+    .catch(function(e){var s=document.getElementById('lym-status');if(s){s.textContent='Error: '+e.message;s.className='status-msg status-err';}});
+};
+
+window.lymSave=function(docId){
+  var data=lymReadForm('lym-e-'+docId);
+  if(!data.albumTitle){var s=document.getElementById('lym-save-status-'+docId);if(s){s.textContent='Album title required.';s.className='status-msg status-err';}return;}
+  window.jestaDB.collection('lyrics').doc(docId).set(data,{merge:true})
+    .then(function(){_lymDocs[docId]=data;var row=document.getElementById('lym-row-'+docId);if(row)row.outerHTML=lymRowHtml(docId,data);var s=document.getElementById('lym-status');if(s){s.textContent='Saved.';s.className='status-msg status-ok';}})
+    .catch(function(e){var s=document.getElementById('lym-save-status-'+docId);if(s){s.textContent='Error: '+e.message;s.className='status-msg status-err';}});
+};
+
+window.lymSetVisible=function(docId,vis){
+  window.jestaDB.collection('lyrics').doc(docId).set({visible:vis},{merge:true})
+    .then(function(){if(_lymDocs[docId])_lymDocs[docId].visible=vis;})
+    .catch(function(){});
+};
+
+window.lymMoveOrder=function(docId,dir){
+  var all=Object.keys(_lymDocs).sort(function(a,b){return(_lymDocs[a].order||0)-(_lymDocs[b].order||0);});
+  var idx=all.indexOf(docId);
+  var swapIdx=dir==='up'?idx-1:idx+1;
+  if(swapIdx<0||swapIdx>=all.length)return;
+  var swapId=all[swapIdx];
+  var a=_lymDocs[docId].order||0,b=_lymDocs[swapId].order||0;
+  var batch=window.jestaDB.batch();
+  batch.set(window.jestaDB.collection('lyrics').doc(docId),{order:b},{merge:true});
+  batch.set(window.jestaDB.collection('lyrics').doc(swapId),{order:a},{merge:true});
+  batch.commit().then(function(){_lymDocs[docId].order=b;_lymDocs[swapId].order=a;lymRenderList(_lymDocs);}).catch(function(){});
+};
+
+function lymInitAddForm(){
+  var c=document.getElementById('lym-add-form');
+  if(c)c.innerHTML=lymBuildForm(null,'lym-new');
+}
+
+function lymLoad(){
+  window.jestaDB.collection('lyrics').orderBy('order').get()
+    .then(function(snap){_lymDocs={};snap.forEach(function(doc){_lymDocs[doc.id]=doc.data();});lymRenderList(_lymDocs);})
+    .catch(function(e){var c=document.getElementById('lym-list-inner');if(c)c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Load error: '+lymEsc(e.message)+'</div>';});
+}
+
+/* ── Add new album ── */
+(function(){
+  var addBtn=document.getElementById('lym-add-btn');
+  if(addBtn)addBtn.addEventListener('click',function(){
+    var data=lymReadForm('lym-new');
+    if(!data.albumTitle){var s=document.getElementById('lym-add-status');if(s){s.textContent='Album title required.';s.className='status-msg status-err';}return;}
+    addBtn.disabled=true;addBtn.textContent='Adding\u2026';
+    window.jestaDB.collection('lyrics').add(data)
+      .then(function(ref){_lymDocs[ref.id]=data;document.getElementById('lym-tab-list').click();lymRenderList(_lymDocs);lymInitAddForm();var s=document.getElementById('lym-add-status');if(s){s.textContent='Album added.';s.className='status-msg status-ok';}addBtn.disabled=false;addBtn.textContent='Add Album';})
+      .catch(function(e){var s=document.getElementById('lym-add-status');if(s){s.textContent='Error: '+e.message;s.className='status-msg status-err';}addBtn.disabled=false;addBtn.textContent='Add Album';});
+  });
+  var clearBtn=document.getElementById('lym-add-clear-btn');
+  if(clearBtn)clearBtn.addEventListener('click',lymInitAddForm);
+})();
+
+/* ── Tab switching ── */
+(function(){
+  var t1=document.getElementById('lym-tab-list'),t2=document.getElementById('lym-tab-add');
+  var p1=document.getElementById('lym-pane-list'),p2=document.getElementById('lym-pane-add');
+  if(!t1||!t2)return;
+  t1.addEventListener('click',function(){t1.classList.add('active');t2.classList.remove('active');p1.classList.add('active');p2.classList.remove('active');});
+  t2.addEventListener('click',function(){t2.classList.add('active');t1.classList.remove('active');p2.classList.add('active');p1.classList.remove('active');});
+})();
+
+/* ── Boot ── */
+(function(){
+  lymInitAddForm();
+  var _t=0,_iv=setInterval(function(){
+    if(window.jestaDB){clearInterval(_iv);lymLoad();}
+    else if(++_t>80){clearInterval(_iv);var c=document.getElementById('lym-list-inner');if(c)c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
   },100);
 })();
 })();</script>
