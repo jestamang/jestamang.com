@@ -368,6 +368,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .ent-natal-grid{grid-template-columns:1fr 1fr!important;}
 }
 
+/* ── Text Style Editor ── */
+.tse-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;}
+.tse-preview-wrap{border:1px solid rgba(201,168,76,0.18);background:rgba(0,0,0,0.35);border-radius:4px;padding:20px 18px;display:flex;align-items:center;justify-content:center;min-height:80px;margin-top:8px;}
+.tse-preview-text{font-family:'Luminari',serif;font-size:1.4rem;color:#c9a84c;letter-spacing:0.12em;transition:color 0.2s,opacity 0.2s,font-size 0.2s;}
+.tse-color-row{display:flex;align-items:center;gap:8px;margin-top:4px;}
+.tse-color-wheel{width:38px;height:34px;border:1px solid rgba(201,168,76,0.5);background:transparent;cursor:pointer;padding:2px;border-radius:2px;}
+.tse-color-hex{flex:1;font-size:0.72rem;}
+.tse-rule-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:0.7rem;}
+.tse-rule-table th{text-align:left;font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.55);padding:4px 6px;border-bottom:1px solid rgba(201,168,76,0.12);}
+.tse-rule-table td{padding:6px 6px;border-bottom:1px solid rgba(201,168,76,0.07);color:rgba(240,230,210,0.85);vertical-align:middle;}
+.tse-swatch{display:inline-block;width:16px;height:16px;border-radius:2px;border:1px solid rgba(255,255,255,0.2);vertical-align:middle;}
+.tse-del-btn{background:none;border:1px solid rgba(251,56,56,0.4);color:rgba(251,56,56,0.75);font-size:0.6rem;padding:2px 7px;cursor:pointer;border-radius:2px;letter-spacing:0.08em;}
+.tse-del-btn:hover{background:rgba(251,56,56,0.1);}
+.tse-edit-btn{background:none;border:1px solid rgba(201,168,76,0.35);color:rgba(201,168,76,0.75);font-size:0.6rem;padding:2px 7px;cursor:pointer;border-radius:2px;letter-spacing:0.08em;margin-right:4px;}
+.tse-edit-btn:hover{background:rgba(201,168,76,0.08);}
+@media(max-width:768px){.tse-form-grid{grid-template-columns:1fr!important;}.tse-rule-table th:nth-child(3),.tse-rule-table td:nth-child(3){display:none;}}
+
 /* ── Theme Manager ── */
 .theme-ctrl-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;}
 .theme-row{margin-bottom:2px;}
@@ -426,13 +443,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-22')">Sigil Cards</button>
   <div style="font-size:0.58rem;letter-spacing:0.28em;color:rgba(201,168,76,0.7);padding:12px 10px 2px;margin-top:6px;border-top:1px solid rgba(201,168,76,0.12);text-transform:uppercase;font-family:'Luminari',serif;">System</div>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-25')">Theme</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-28')">Text Styles</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-1')">Analytics</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-12')">Cache Bust</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-20')">Backup</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-17')">Maintenance</button>
 </nav>
 <div id="adm-mobtabs" role="navigation" aria-label="Section tabs">
-  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
+  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-28')">TxtStyle</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
 </div>
 
   <div class="adm-header">
@@ -1207,6 +1225,100 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             <div id="theme-preview-text">Body text appears at the configured opacity. The card background, border, and padding reflect the current settings in real time.</div>
             <button id="theme-preview-btn">Save Theme</button>
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="adm-ornament">✦</div>
+    <div class="adm-section" id="sec-28">
+      <div class="adm-section-title">✦ Text Style Editor</div>
+      <div class="adm-section-underline"></div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Override color, opacity, and font size for any element on any page.</div>
+
+      <div class="tse-form-grid">
+        <!-- Left column: inputs -->
+        <div>
+          <label class="field-label">Page</label>
+          <select class="field-input" id="tse-page">
+            <option value="all">All Pages</option>
+            <option value="index.html">index.html</option>
+            <option value="albums.html">albums.html</option>
+            <option value="entities.html">entities.html</option>
+            <option value="lyrics.html">lyrics.html</option>
+            <option value="merch.html">merch.html</option>
+            <option value="photos.html">photos.html</option>
+            <option value="videos.html">videos.html</option>
+            <option value="shows.html">shows.html</option>
+            <option value="blog.html">blog.html</option>
+            <option value="comix.html">comix.html</option>
+            <option value="arcade.html">arcade.html</option>
+            <option value="email.html">email.html</option>
+            <option value="login.html">login.html</option>
+            <option value="profile.html">profile.html</option>
+            <option value="members.html">members.html</option>
+            <option value="listen.html">listen.html</option>
+            <option value="press.html">press.html</option>
+            <option value="dossier.html">dossier.html</option>
+            <option value="404.html">404.html</option>
+            <option value="privacy.html">privacy.html</option>
+            <option value="refund.html">refund.html</option>
+            <option value="terms.html">terms.html</option>
+            <option value="accessibility.html">accessibility.html</option>
+          </select>
+
+          <label class="field-label" style="margin-top:10px;">CSS Selector</label>
+          <input class="field-input" id="tse-selector" placeholder=".page-header h1, body, .album-title">
+          <div style="font-size:0.58rem;color:rgba(201,168,76,0.4);letter-spacing:0.1em;margin-top:4px;">Use any valid CSS selector. Test in browser devtools first.</div>
+
+          <label class="field-label" style="margin-top:10px;">Label</label>
+          <input class="field-input" id="tse-label" placeholder="e.g. Albums Page Title">
+
+          <label class="field-label" style="margin-top:10px;">Color</label>
+          <div class="tse-color-row">
+            <input type="color" class="tse-color-wheel" id="tse-color-wheel" value="#c9a84c">
+            <input class="field-input tse-color-hex" id="tse-color-hex" value="#c9a84c" maxlength="9" placeholder="#c9a84c">
+          </div>
+
+          <label class="field-label" style="margin-top:10px;">Opacity <span id="tse-opacity-val" style="color:#c9a84c;">1.0</span></label>
+          <input type="range" id="tse-opacity" min="0" max="1" step="0.01" value="1" style="width:100%;accent-color:#c9a84c;cursor:pointer;">
+
+          <label class="field-label" style="margin-top:10px;display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" id="tse-fs-enable" style="accent-color:#c9a84c;"> Change Font Size
+          </label>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+            <input class="field-input" id="tse-fs-num" type="number" min="0.1" step="0.1" value="1.4" style="width:80px;" disabled>
+            <select class="field-input" id="tse-fs-unit" style="width:70px;" disabled>
+              <option value="rem">rem</option>
+              <option value="em">em</option>
+              <option value="px">px</option>
+              <option value="vw">vw</option>
+            </select>
+          </div>
+
+          <div class="btn-row" style="margin-top:16px;">
+            <button class="btn-gold" id="tse-add-btn">Add Rule</button>
+            <button class="btn-ghost" id="tse-clear-btn">Clear</button>
+          </div>
+          <p class="status-msg" id="tse-status"></p>
+        </div>
+
+        <!-- Right column: live preview -->
+        <div>
+          <label class="field-label">Live Preview</label>
+          <div class="tse-preview-wrap">
+            <div class="tse-preview-text" id="tse-preview-text">The Jestamang Universe ✦</div>
+          </div>
+          <div style="font-size:0.58rem;color:rgba(201,168,76,0.3);letter-spacing:0.1em;margin-top:8px;">Preview updates as you adjust controls.</div>
+        </div>
+      </div>
+
+      <!-- Active rules -->
+      <div style="margin-top:24px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div class="field-label" style="margin-bottom:0;">Active Rules</div>
+          <button class="btn-ghost" id="tse-apply-btn" style="font-size:0.6rem;padding:4px 12px;">Apply All (Cache Bust)</button>
+        </div>
+        <div id="tse-rules-wrap">
+          <div style="color:rgba(201,168,76,0.3);font-size:0.7rem;">Loading rules...</div>
         </div>
       </div>
     </div>
@@ -4010,7 +4122,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       obs.observe(el, { childList: true, characterData: true, subtree: true });
     });
   }
-  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-26','sec-27','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-25','sec-1','sec-12','sec-20','sec-17'];
+  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-26','sec-27','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-25','sec-28','sec-1','sec-12','sec-20','sec-17'];
   function initScrollSpy() {
     var secs = SEC_IDS.map(function(id){ return document.getElementById(id); }).filter(Boolean);
     var links = document.querySelectorAll('.adm-sidenav-link,.adm-mobtab');
@@ -4622,6 +4734,198 @@ function entLoad(){
   var _t=0,_iv=setInterval(function(){
     if(window.jestaDB){clearInterval(_iv);entLoad();}
     else if(++_t>80){clearInterval(_iv);var c=document.getElementById('ent-list-inner');if(c)c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
+  },100);
+})();
+})();</script>
+
+<script>(function(){
+/* ── Text Style Editor ── */
+var _tseStyles = [];
+var _tseEditIdx = -1;
+
+function tseEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function tseUpdatePreview(){
+  var el=document.getElementById('tse-preview-text');if(!el)return;
+  var color=document.getElementById('tse-color-hex').value.trim()||'#c9a84c';
+  var opacity=parseFloat(document.getElementById('tse-opacity').value)||1;
+  var fsEn=document.getElementById('tse-fs-enable').checked;
+  var fsNum=document.getElementById('tse-fs-num').value||'1.4';
+  var fsUnit=document.getElementById('tse-fs-unit').value||'rem';
+  el.style.color=color;
+  el.style.opacity=opacity;
+  el.style.fontSize=fsEn?(fsNum+fsUnit):'1.4rem';
+}
+
+function tseReadForm(){
+  var fsEn=document.getElementById('tse-fs-enable').checked;
+  var fsNum=document.getElementById('tse-fs-num').value||'';
+  var fsUnit=document.getElementById('tse-fs-unit').value||'rem';
+  var id=_tseEditIdx>=0&&_tseStyles[_tseEditIdx]?_tseStyles[_tseEditIdx].id:('rule-'+Date.now());
+  return {
+    id:id,
+    page:document.getElementById('tse-page').value||'all',
+    selector:document.getElementById('tse-selector').value.trim(),
+    label:document.getElementById('tse-label').value.trim(),
+    color:document.getElementById('tse-color-hex').value.trim(),
+    opacity:parseFloat(document.getElementById('tse-opacity').value),
+    fontSize:fsEn&&fsNum?(fsNum+fsUnit):''
+  };
+}
+
+function tseClearForm(){
+  _tseEditIdx=-1;
+  document.getElementById('tse-page').value='all';
+  document.getElementById('tse-selector').value='';
+  document.getElementById('tse-label').value='';
+  document.getElementById('tse-color-wheel').value='#c9a84c';
+  document.getElementById('tse-color-hex').value='#c9a84c';
+  document.getElementById('tse-opacity').value='1';
+  document.getElementById('tse-opacity-val').textContent='1.0';
+  document.getElementById('tse-fs-enable').checked=false;
+  document.getElementById('tse-fs-num').value='1.4';
+  document.getElementById('tse-fs-num').disabled=true;
+  document.getElementById('tse-fs-unit').value='rem';
+  document.getElementById('tse-fs-unit').disabled=true;
+  tseUpdatePreview();
+  var btn=document.getElementById('tse-add-btn');if(btn)btn.textContent='Add Rule';
+}
+
+function tsePopulateForm(rule){
+  _tseEditIdx=_tseStyles.indexOf(rule);
+  document.getElementById('tse-page').value=rule.page||'all';
+  document.getElementById('tse-selector').value=rule.selector||'';
+  document.getElementById('tse-label').value=rule.label||'';
+  document.getElementById('tse-color-wheel').value=rule.color||'#c9a84c';
+  document.getElementById('tse-color-hex').value=rule.color||'#c9a84c';
+  document.getElementById('tse-opacity').value=typeof rule.opacity==='number'?rule.opacity:1;
+  document.getElementById('tse-opacity-val').textContent=parseFloat(document.getElementById('tse-opacity').value).toFixed(2);
+  var hasFontSize=!!(rule.fontSize);
+  document.getElementById('tse-fs-enable').checked=hasFontSize;
+  document.getElementById('tse-fs-num').disabled=!hasFontSize;
+  document.getElementById('tse-fs-unit').disabled=!hasFontSize;
+  if(hasFontSize){
+    var fsMatch=rule.fontSize.match(/^([\d.]+)(rem|em|px|vw)$/);
+    if(fsMatch){document.getElementById('tse-fs-num').value=fsMatch[1];document.getElementById('tse-fs-unit').value=fsMatch[2];}
+  }
+  tseUpdatePreview();
+  var btn=document.getElementById('tse-add-btn');if(btn)btn.textContent='Save Rule';
+  document.getElementById('sec-28').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function tseRenderRules(){
+  var wrap=document.getElementById('tse-rules-wrap');if(!wrap)return;
+  if(!_tseStyles.length){wrap.innerHTML='<div style="color:rgba(201,168,76,0.3);font-size:0.7rem;letter-spacing:0.1em;">No rules saved yet.</div>';return;}
+  var html='<table class="tse-rule-table"><thead><tr><th>Label</th><th>Page</th><th>Selector</th><th>Color</th><th>Opacity</th><th>Font Size</th><th></th></tr></thead><tbody>';
+  _tseStyles.forEach(function(r,i){
+    html+='<tr>'
+      +'<td>'+tseEsc(r.label||r.id)+'</td>'
+      +'<td>'+tseEsc(r.page||'all')+'</td>'
+      +'<td style="font-family:monospace;font-size:0.65rem;">'+tseEsc(r.selector||'')+'</td>'
+      +'<td><span class="tse-swatch" style="background:'+tseEsc(r.color||'#c9a84c')+'"></span> '+tseEsc(r.color||'')+'</td>'
+      +'<td>'+(typeof r.opacity==='number'?r.opacity.toFixed(2):'—')+'</td>'
+      +'<td>'+(r.fontSize?tseEsc(r.fontSize):'—')+'</td>'
+      +'<td style="white-space:nowrap;">'
+      +'<button class="tse-edit-btn" onclick="tseEditRule('+i+')">Edit</button>'
+      +'<button class="tse-del-btn" onclick="tseDeleteRule('+i+')">Del</button>'
+      +'</td>'
+    +'</tr>';
+  });
+  html+='</tbody></table>';
+  wrap.innerHTML=html;
+}
+
+window.tseEditRule=function(i){
+  var r=_tseStyles[i];if(!r)return;
+  tsePopulateForm(r);
+};
+
+window.tseDeleteRule=function(i){
+  _tseStyles.splice(i,1);
+  tseSaveToFirestore(function(){tseRenderRules();});
+};
+
+function tseSaveToFirestore(cb){
+  if(!window.jestaDB){var s=document.getElementById('tse-status');if(s){s.textContent='Firestore not ready.';s.className='status-msg status-err';}return;}
+  window.jestaDB.collection('siteConfig').doc('textStyles').set({styles:_tseStyles},{merge:true})
+    .then(function(){if(cb)cb();})
+    .catch(function(e){var s=document.getElementById('tse-status');if(s){s.textContent='Error: '+e.message;s.className='status-msg status-err';}});
+}
+
+function tseLoad(){
+  if(!window.jestaDB)return;
+  window.jestaDB.collection('siteConfig').doc('textStyles').get()
+    .then(function(doc){
+      _tseStyles=doc.exists&&Array.isArray(doc.data().styles)?doc.data().styles:[];
+      tseRenderRules();
+    })
+    .catch(function(){tseRenderRules();});
+}
+
+/* ── Wire up controls ── */
+(function(){
+  /* Color wheel ↔ hex sync */
+  var wheel=document.getElementById('tse-color-wheel');
+  var hex=document.getElementById('tse-color-hex');
+  if(wheel)wheel.addEventListener('input',function(){hex.value=wheel.value;tseUpdatePreview();});
+  if(hex)hex.addEventListener('input',function(){
+    var v=hex.value.trim();
+    if(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(v)){wheel.value=v;}
+    tseUpdatePreview();
+  });
+
+  /* Opacity slider */
+  var op=document.getElementById('tse-opacity');
+  var opVal=document.getElementById('tse-opacity-val');
+  if(op)op.addEventListener('input',function(){opVal.textContent=parseFloat(op.value).toFixed(2);tseUpdatePreview();});
+
+  /* Font size enable toggle */
+  var fsEn=document.getElementById('tse-fs-enable');
+  var fsNum=document.getElementById('tse-fs-num');
+  var fsUnit=document.getElementById('tse-fs-unit');
+  if(fsEn)fsEn.addEventListener('change',function(){
+    fsNum.disabled=!fsEn.checked;fsUnit.disabled=!fsEn.checked;tseUpdatePreview();
+  });
+  if(fsNum)fsNum.addEventListener('input',tseUpdatePreview);
+  if(fsUnit)fsUnit.addEventListener('change',tseUpdatePreview);
+
+  /* Add / Save rule */
+  var addBtn=document.getElementById('tse-add-btn');
+  if(addBtn)addBtn.addEventListener('click',function(){
+    var rule=tseReadForm();
+    if(!rule.selector){var s=document.getElementById('tse-status');if(s){s.textContent='CSS selector required.';s.className='status-msg status-err';}return;}
+    addBtn.disabled=true;addBtn.textContent='Saving\u2026';
+    if(_tseEditIdx>=0&&_tseEditIdx<_tseStyles.length){
+      _tseStyles[_tseEditIdx]=rule;
+    } else {
+      _tseStyles.push(rule);
+    }
+    tseSaveToFirestore(function(){
+      tseRenderRules();
+      tseClearForm();
+      var s=document.getElementById('tse-status');if(s){s.textContent='STYLE RULE SAVED ✦';s.className='status-msg status-ok';}
+      addBtn.disabled=false;addBtn.textContent='Add Rule';
+    });
+  });
+
+  /* Clear button */
+  var clearBtn=document.getElementById('tse-clear-btn');
+  if(clearBtn)clearBtn.addEventListener('click',function(){tseClearForm();var s=document.getElementById('tse-status');if(s)s.textContent='';});
+
+  /* Apply All (cache bust) */
+  var applyBtn=document.getElementById('tse-apply-btn');
+  if(applyBtn)applyBtn.addEventListener('click',function(){
+    if(!window.jestaDB)return;
+    applyBtn.disabled=true;
+    window.jestaDB.collection('siteConfig').doc('cacheVersion').set({v:Date.now()},{merge:true})
+      .then(function(){var s=document.getElementById('tse-status');if(s){s.textContent='Cache busted ✦';s.className='status-msg status-ok';}applyBtn.disabled=false;})
+      .catch(function(e){var s=document.getElementById('tse-status');if(s){s.textContent='Error: '+e.message;s.className='status-msg status-err';}applyBtn.disabled=false;});
+  });
+
+  /* Boot: poll for jestaDB then load */
+  var _t=0,_iv=setInterval(function(){
+    if(window.jestaDB){clearInterval(_iv);tseLoad();}
+    else if(++_t>80){clearInterval(_iv);var w=document.getElementById('tse-rules-wrap');if(w)w.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
   },100);
 })();
 })();</script>
