@@ -318,13 +318,13 @@ View Events &#8594;
 </div>
 
 <!-- ══ DYNAMIC PRESS — loaded from Firestore pressArticles ══ -->
-<div id="press-loading" style="text-align:center;padding:32px 0 20px;font-family:'Luminari',serif;font-size:0.78rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.25);font-style:italic;">Receiving Transmissions from the Outer World...</div>
+<div id="press-loading" style="display:none;"></div>
 
 <!-- Featured articles (always visible) — filled by JS -->
 <div id="press-featured"></div>
 
 <!-- Fallback: shown only if Firestore returns empty or fails -->
-<div id="press-fallback" style="display:none;">
+<div id="press-fallback">
 
   <article class="post" style="background:rgba(74,124,89,0.5)">
     <span class="post-numeral">✦</span><span class="post-tag">Press</span>
@@ -480,23 +480,27 @@ function pressSectionToggle(){
     var featuredEl = document.getElementById('press-featured');
     var overflowEl = document.getElementById('press-overflow');
     var expandBtn  = document.getElementById('press-expand-btn');
-    var loadingEl  = document.getElementById('press-loading');
     var fallbackEl = document.getElementById('press-fallback');
 
-    loadingEl.style.display = 'none';
-
     if (!allArticles.length) {
-      // Empty Firestore — show hardcoded fallback (no expand button, nothing in overflow)
-      fallbackEl.style.display = '';
+      // Fallback already showing — do nothing
       return;
     }
 
-    featuredEl.innerHTML = buildFeaturedHtml(featured);
-
-    if (rest.length) {
-      overflowEl.innerHTML = buildOverflowHtml(rest);
-      expandBtn.style.display = 'block';
-    }
+    // Fade out fallback, swap in Firestore content, fade in
+    fallbackEl.style.transition = 'opacity 0.3s ease';
+    fallbackEl.style.opacity = '0';
+    setTimeout(function() {
+      fallbackEl.style.display = 'none';
+      featuredEl.innerHTML = buildFeaturedHtml(featured);
+      featuredEl.style.opacity = '0';
+      featuredEl.style.transition = 'opacity 0.3s ease';
+      setTimeout(function() { featuredEl.style.opacity = '1'; }, 10);
+      if (rest.length) {
+        overflowEl.innerHTML = buildOverflowHtml(rest);
+        expandBtn.style.display = 'block';
+      }
+    }, 300);
   }
 
   function loadPress() {
@@ -513,23 +517,19 @@ function pressSectionToggle(){
         renderPress(articles);
       })
       .catch(function () {
-        // On error show fallback
-        document.getElementById('press-loading').style.display = 'none';
-        document.getElementById('press-fallback').style.display = '';
+        // Fallback already shown
       });
   }
 
   var _tries = 0;
   var _poll = setInterval(function () {
     _tries++;
-    if (window.jestaDB || _tries > 80) {
+    if (window.jestaDB) {
       clearInterval(_poll);
-      if (window.jestaDB) {
-        loadPress();
-      } else {
-        document.getElementById('press-loading').style.display = 'none';
-        document.getElementById('press-fallback').style.display = '';
-      }
+      loadPress();
+    } else if (_tries > 80) {
+      clearInterval(_poll);
+      // Fallback already shown
     }
   }, 100);
 

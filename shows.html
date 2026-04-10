@@ -216,11 +216,11 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 </article>
 
 <!-- ══ DYNAMIC SHOWS — loaded from Firestore shows collection ══ -->
-<div id="shows-loading" style="text-align:center;padding:60px 0 40px;font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.28);font-style:italic;">Consulting the Cosmic Calendar...</div>
+<div id="shows-loading" style="display:none;"></div>
 <div id="shows-upcoming"></div>
 
 <!-- Fallback: displayed only if Firestore fails -->
-<div id="shows-fallback" style="display:none;">
+<div id="shows-fallback">
 <article class="show-card show-card--tba">
   <span class="show-numeral">I</span>
   <span class="show-status">Forthcoming</span>
@@ -238,7 +238,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 </section>
 
 <!-- Fallback past list: displayed only if Firestore fails -->
-<section id="shows-past-fallback" class="past-section" style="display:none;"> <h2 class="section-heading">Past Events</h2> <ul class="past-list"> <li class="past-entry"> <span class="past-date">Feb 21, '26</span> <span class="past-venue">Prison Break</span> <span class="past-city">Immokalee, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 11, '25</span> <span class="past-venue">Kava Culture</span> <span class="past-city">Bonita Springs, FL</span> </li> <li class="past-entry"> <span class="past-date">Jul 23, '25</span> <span class="past-venue">529</span> <span class="past-city">Atlanta, GA</span> </li> <li class="past-entry"> <span class="past-date">Jun 20, '25</span> <span class="past-venue">Summer Solstice Parade</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">May 7, '25</span> <span class="past-venue">The Hanging Gardens</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Apr 15, '25</span> <span class="past-venue">WSLR 96.5</span> <span class="past-city">Sarasota, FL</span> </li> <li class="past-entry"> <span class="past-date">Feb 21, '25</span> <span class="past-venue">Soundgarden</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Jan 18, '25</span> <span class="past-venue">Beach Records</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Jan 17, '25</span> <span class="past-venue">Sidney Berne &amp; Davis Art Center</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 7, '24</span> <span class="past-venue">Beach Records</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 3, '24</span> <span class="past-venue">WSLR 96.5</span> <span class="past-city">Sarasota, FL</span> </li> <li class="past-entry"> <span class="past-date">Oct 26, '24</span> <span class="past-venue">Lost World Books</span> <span class="past-city">Ft. Myers, FL</span> </li> </ul> </section>
+<section id="shows-past-fallback" class="past-section"> <h2 class="section-heading">Past Events</h2> <ul class="past-list"> <li class="past-entry"> <span class="past-date">Feb 21, '26</span> <span class="past-venue">Prison Break</span> <span class="past-city">Immokalee, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 11, '25</span> <span class="past-venue">Kava Culture</span> <span class="past-city">Bonita Springs, FL</span> </li> <li class="past-entry"> <span class="past-date">Jul 23, '25</span> <span class="past-venue">529</span> <span class="past-city">Atlanta, GA</span> </li> <li class="past-entry"> <span class="past-date">Jun 20, '25</span> <span class="past-venue">Summer Solstice Parade</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">May 7, '25</span> <span class="past-venue">The Hanging Gardens</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Apr 15, '25</span> <span class="past-venue">WSLR 96.5</span> <span class="past-city">Sarasota, FL</span> </li> <li class="past-entry"> <span class="past-date">Feb 21, '25</span> <span class="past-venue">Soundgarden</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Jan 18, '25</span> <span class="past-venue">Beach Records</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Jan 17, '25</span> <span class="past-venue">Sidney Berne &amp; Davis Art Center</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 7, '24</span> <span class="past-venue">Beach Records</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 3, '24</span> <span class="past-venue">WSLR 96.5</span> <span class="past-city">Sarasota, FL</span> </li> <li class="past-entry"> <span class="past-date">Oct 26, '24</span> <span class="past-venue">Lost World Books</span> <span class="past-city">Ft. Myers, FL</span> </li> </ul> </section>
 
 <section class="ml-signup-sect">
   <div class="ml-signup-box">
@@ -394,8 +394,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   function renderUpcoming(upcoming) {
     var container = document.getElementById('shows-upcoming');
     if (!upcoming.length) {
-      // Static Madhouse card above already serves as the "no upcoming shows" placeholder
-      container.innerHTML = '';
+      // Fallback already showing — do nothing
       return;
     }
     var html = '';
@@ -425,15 +424,24 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         ticketHtml +
         '</article>';
     });
-    container.innerHTML = html;
+    // Fade out fallback, swap in Firestore upcoming, fade in
+    var fallbackEl = document.getElementById('shows-fallback');
+    fallbackEl.style.transition = 'opacity 0.3s ease';
+    fallbackEl.style.opacity = '0';
+    setTimeout(function() {
+      fallbackEl.style.display = 'none';
+      container.innerHTML = html;
+      container.style.opacity = '0';
+      container.style.transition = 'opacity 0.3s ease';
+      setTimeout(function() { container.style.opacity = '1'; }, 10);
+    }, 300);
   }
 
   function renderPast(past) {
     var section = document.getElementById('shows-past-section');
     var list = document.getElementById('shows-past-list');
     if (!past.length) {
-      section.style.display = 'none';
-      document.getElementById('shows-past-fallback').style.display = '';
+      // Fallback already showing — do nothing
       return;
     }
     past.sort(function (a, b) { return a.date > b.date ? -1 : 1; });
@@ -448,8 +456,18 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         '<span class="past-city">' + esc(show.city || '') + '</span>' +
         '</li>';
     });
-    list.innerHTML = html;
-    section.style.display = '';
+    // Fade out past fallback, swap in Firestore past, fade in
+    var pastFallback = document.getElementById('shows-past-fallback');
+    pastFallback.style.transition = 'opacity 0.3s ease';
+    pastFallback.style.opacity = '0';
+    setTimeout(function() {
+      pastFallback.style.display = 'none';
+      list.innerHTML = html;
+      section.style.display = '';
+      section.style.opacity = '0';
+      section.style.transition = 'opacity 0.3s ease';
+      setTimeout(function() { section.style.opacity = '1'; }, 10);
+    }, 300);
   }
 
   function showFallback() {
@@ -461,7 +479,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     var todayStr = new Date().toISOString().slice(0, 10);
     window.jestaDB.collection('shows').orderBy('date', 'asc').get()
       .then(function (snap) {
-        document.getElementById('shows-loading').style.display = 'none';
         var upcoming = [], past = [];
         snap.forEach(function (doc) {
           var d = doc.data();
@@ -477,8 +494,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         initCardObservers();
       })
       .catch(function () {
-        document.getElementById('shows-loading').style.display = 'none';
-        showFallback();
+        /* fallback already shown */
         initCardObservers();
       });
   }
@@ -491,8 +507,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       if (window.jestaDB) {
         loadShows();
       } else {
-        document.getElementById('shows-loading').style.display = 'none';
-        showFallback();
+        // Fallback already shown
         initCardObservers();
       }
     }

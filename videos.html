@@ -152,10 +152,6 @@ var FALLBACK_VIDEOS=[{title:'Jestamang Live at Prison Break',id:'31DacId6G1E'},{
 
 var _vGrid=document.getElementById('videoGrid');
 
-var _vLoadEl=document.createElement('div');
-_vLoadEl.style.cssText='grid-column:1/-1;text-align:center;padding:60px 20px;font-family:Luminari,Georgia,serif;font-size:0.8rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.35);font-style:italic;';
-_vLoadEl.textContent='LOADING TRANSMISSIONS...';
-_vGrid.appendChild(_vLoadEl);
 
 function _vTryFallback(el){var f=['sddefault.jpg','hqdefault.jpg','mqdefault.jpg'];var i=parseInt(el.dataset.fallback);if(i<f.length){el.dataset.fallback=i+1;el.src='https://img.youtube.com/vi/'+el.dataset.id+'/'+f[i];}else{el.onerror=null;el.onload=null;el.style.objectFit='contain';el.style.padding='20%';el.style.background='#000';el.src='assets/homepage/logo png.png';}}
 
@@ -190,6 +186,8 @@ function renderVideos(items){
 }
 
 function _vShowFallback(){renderVideos(FALLBACK_VIDEOS);}
+// Render fallback immediately — no loading state
+_vShowFallback();
 
 var _vTries=0,_vIv=setInterval(function(){
   _vTries++;
@@ -199,7 +197,7 @@ var _vTries=0,_vIv=setInterval(function(){
       .where('published','==',true)
       .get()
       .then(function(snap){
-        if(snap.empty){_vShowFallback();return;}
+        if(snap.empty){return;}
         var docs=[];
         snap.forEach(function(doc){docs.push({id:doc.id,data:doc.data()});});
         docs.sort(function(a,b){
@@ -207,10 +205,16 @@ var _vTries=0,_vIv=setInterval(function(){
           if(!ta)return 1;if(!tb)return -1;
           return tb.seconds-ta.seconds;
         });
-        renderVideos(docs.map(function(d){return{id:d.data.youtubeId,title:d.data.title};}));
+        var items=docs.map(function(d){return{id:d.data.youtubeId,title:d.data.title};});
+        var fbIds=FALLBACK_VIDEOS.map(function(v){return v.id;}).join(',');
+        var fsIds=items.map(function(v){return v.id;}).join(',');
+        if(fbIds===fsIds){return;}
+        _vGrid.style.transition='opacity 0.3s ease';
+        _vGrid.style.opacity='0';
+        setTimeout(function(){renderVideos(items);_vGrid.style.opacity='1';},300);
       })
-      .catch(function(){_vShowFallback();});
-  }else if(_vTries>80){clearInterval(_vIv);_vShowFallback();}
+      .catch(function(){/* fallback already shown */});
+  }else if(_vTries>80){clearInterval(_vIv);/* fallback already shown */}
 },100);
 </script>
 <div id="lightbox" class="lightbox" onclick="if(event.target===this)closeLightbox()"> <div class="lightbox-inner"> <button class="lightbox-close" onclick="closeLightbox()">&#x2715;</button> <div class="lightbox-frame" id="lb-frame"> <div id="lb-player"></div> </div> <div class="lb-error" id="lb-error"> <p>This video can't be played here</p> <a id="lb-yt-link" href="#" target="_blank" rel="noopener noreferrer">Watch on YouTube</a> </div> <div class="lightbox-title" id="lb-title"></div> </div> </div>
