@@ -50,8 +50,7 @@
   /* Instagram icon: scale down to match visual size of other icons */
   #insta-icon-mobile { width: 34px !important; height: 34px !important; }
   /* Footer: single line on mobile */
-  .hp-footer { display:flex !important; flex-direction:row !important; align-items:center !important; justify-content:center !important; flex-wrap:nowrap !important; white-space:nowrap !important; padding:8px 12px !important; font-size:0.58rem !important; letter-spacing:0.01em !important; }
-  .hp-footer-mark { margin:0 5px !important; }
+
 }
 /* Instagram icon: scale down to match visual size of other nav icons */
 #insta-icon-desktop { width: 34px !important; height: 34px !important; }
@@ -132,8 +131,7 @@
 .hp-photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
 .hp-photo-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center top;display:block;border:1px solid rgba(201,168,76,0.08);filter:brightness(0.78);transition:filter 0.3s,transform 0.3s}
 .hp-photo-grid img:hover{filter:brightness(1);transform:scale(1.02)}
-.hp-footer{background:linear-gradient(to bottom,rgba(15,45,20,0.85),rgba(0,0,0,0.96));text-align:center;padding:32px 24px 56px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.55);position:relative;z-index:10}
-.hp-footer a{color:rgba(201,168,76,0.75);text-decoration:none;transition:color 0.2s}.hp-footer a:hover{color:#c9a84c}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.6)}@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important;gap:0!important}.hp-footer-mark{margin:0 5px!important}}
+.hp-footer{background:transparent;text-align:center;padding:32px 24px 56px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10}.hp-footer a{color:rgba(201,168,76,0.75);text-decoration:none;transition:color 0.2s}.hp-footer a:hover{color:#c9a84c}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.6)}
 @media(max-width:900px){.hp-inner{padding:48px 28px;gap:48px}}
 @media(max-width:768px){#hp-hero{height:auto;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}.hp-scroll-hint{display:none}#hp-preview{padding:0}.hp-inner{flex-direction:column!important;gap:24px;padding:36px 16px}.hp-text{flex:none;width:100%}.hp-title{font-size:clamp(1.8rem,6vw,2.5rem)}.hp-visual{width:100%}.hp-text>*{opacity:0}.hp-section.jesta-revealed .hp-text>*:nth-child(1){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(2){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(3){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(4){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(5){animation-duration:0.5s}.hp-section.jesta-revealed .hp-visual{animation-duration:0.5s}.hp-strip img{height:110px}.hp-album-card{width:100px}.hp-album-card img{width:100px;height:100px}.hp-comix-strip{width:100%}.hp-comix-strip img{width:90px;height:128px}.hp-photo-grid{grid-template-columns:repeat(3,1fr)}.hp-merch-item{width:100px}.hp-merch-item img{width:100px;height:100px}.hp-entity-grid{grid-template-columns:repeat(4,1fr);gap:12px 8px}.hp-entity-img{width:64px;height:64px}.hp-entity-name{font-size:0.4rem}.hp-cta{display:block;text-align:center;padding:14px 20px;min-height:44px}}
 /* jt-text-treatments */
@@ -648,7 +646,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
 <!-- Cookie notice -->
 
-<footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span>&nbsp;Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a>
+<footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span> Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a>
 </footer>
 </section><!-- /#hp-preview -->
 <script>
@@ -885,6 +883,5 @@ document.addEventListener('DOMContentLoaded',eotdInit);
 })();
 </script>
 <!-- mobile-audit-fixes --><style>@media(max-width:768px){body{overflow-x:hidden}.entity-of-day,.eotd-wrap{display:block!important}.hp-events-section,.events-section{display:block!important}input,textarea,select{font-size:16px!important}.hp-cta{min-height:44px;display:block;text-align:center}}@media(hover:none){.nav-item:hover{transform:none!important}.hp-strip img:hover{transform:none!important}.hp-entity-item:hover .hp-entity-img{transform:none!important}.hp-album-card:hover img{transform:none!important}.hp-comix-strip img:hover{transform:none!important}.hp-merch-item:hover img{transform:none!important}}</style>
-<!-- footer-single-line-mobile -->
 <style>.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important}@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important}.hp-footer-mark{margin:0 8px!important;color:rgba(201,168,76,0.6)!important}}</style>
 </body> </html>
