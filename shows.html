@@ -306,17 +306,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   function renderUpcoming(upcoming) {
     var container = document.getElementById('shows-upcoming');
     if (!upcoming.length) {
-      var yr = ROMAN_YEARS[new Date().getFullYear()] || String(new Date().getFullYear());
-      container.innerHTML =
-        '<article class="show-card show-card--tba">' +
-        '<span class="show-numeral">I</span>' +
-        '<span class="show-status">Forthcoming</span>' +
-        '<p class="show-date">FORTHCOMING \u00b7 ' + yr + '</p>' +
-        '<h3 class="show-venue">The Next Conjuring Is Being Arranged</h3>' +
-        '<p class="show-city">Watch the Calendar</p>' +
-        '<div class="show-rule"></div>' +
-        '<p class="show-detail">The next event is being prepared in the dark. Watch the seasons. The calendar knows.</p>' +
-        '</article>';
+      // Static Madhouse card above already serves as the "no upcoming shows" placeholder
+      container.innerHTML = '';
       return;
     }
     var html = '';
