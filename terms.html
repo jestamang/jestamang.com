@@ -148,12 +148,7 @@ a:hover{color:#c9a84c;}
 .jsearch-float-btn svg{pointer-events:none}
 @media(max-width:767px){#jsearch-overlay{top:52px}#jsearch-inner{padding:16px 16px 20px}#jsearch-input{font-size:16px}#jsearch-close{min-width:44px;min-height:44px}}
 </style>
-<style id="jbtt-styles">
-#jbtt{position:fixed;bottom:24px;right:24px;z-index:998;width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.15);border:1px solid #c9a84c;color:#c9a84c;cursor:pointer;display:none;align-items:center;justify-content:center;font-family:'Luminari',serif;font-size:1.1rem;line-height:1;transition:background 0.2s,color 0.2s,box-shadow 0.2s,opacity 0.3s;opacity:0}
-#jbtt.jbtt-visible{display:flex;opacity:1}
-#jbtt:hover{background:rgba(201,168,76,0.85);color:#000;box-shadow:0 0 18px rgba(201,168,76,0.45)}
-@media(max-width:768px){#jbtt{bottom:80px;right:16px}}
-</style>
+
 <link rel="preload" as="font" type="font/ttf" href="assets/fonts/Luminari.ttf" crossorigin>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#c9a84c">
@@ -247,7 +242,7 @@ a:hover{color:#c9a84c;}
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
-<button id="jbtt" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button><script>(function(){var btn=document.getElementById('jbtt');if(!btn)return;window.addEventListener('scroll',function(){if(window.scrollY>300){btn.classList.add('jbtt-visible');}else{btn.classList.remove('jbtt-visible');}},{passive:true});})();</script>
+<script></script>
 <div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
 <div id="jsearch-inner">
 <div id="jsearch-close-row"><button id="jsearch-close" aria-label="Close search">✦</button></div>

@@ -23,7 +23,7 @@
 .fav-btn:hover{color:rgba(201,168,76,0.7);transform:scale(1.2)}
 .fav-btn.saved{color:#c9a84c}
 .fav-btn[title]:hover::after{content:attr(title);position:absolute;font-size:0.75rem;color:rgba(201,168,76,0.6);white-space:nowrap;left:0;bottom:110%;letter-spacing:0.1em}
-.dtrack-play{background:none;border:1px solid rgba(201,168,76,0.4);cursor:pointer;color:#c9a84c;font-size:0.72rem;padding:0;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:2px;transition:background 0.15s,color 0.15s,border-color 0.15s;line-height:1;font-family:sans-serif}
+.dtrack-play{background:none;border:1px solid rgba(201,168,76,0.4);cursor:pointer;color:#c9a84c;font-size:0.55rem;padding:0;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:2px;transition:background 0.15s,color 0.15s,border-color 0.15s;line-height:1;font-family:sans-serif}
 .dtrack-play:hover{background:rgba(201,168,76,0.15);border-color:#c9a84c}
 .dtrack-play.playing{color:#1DB954;border-color:rgba(29,185,84,0.6);background:rgba(29,185,84,0.08)}
 .dtrack-embed-wrap{overflow:hidden;max-height:0;transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1)}
@@ -64,6 +64,8 @@
   .page-wrap { padding: 70px 16px 60px; }
   /* Season labels: one line */
   .album-season { white-space: nowrap; font-size: 0.65rem !important; letter-spacing: 0.05em !important; padding: 2px 5px !important; }
+  .series-title { text-align: center; }
+  .series-subtitle { text-align: center; }
 }
 /* jt-text-treatments */
 h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
@@ -116,12 +118,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .jsearch-float-btn svg{pointer-events:none}
 @media(max-width:767px){#jsearch-overlay{top:52px}#jsearch-inner{padding:16px 16px 20px}#jsearch-input{font-size:16px}#jsearch-close{min-width:44px;min-height:44px}}
 </style>
-<style id="jbtt-styles">
-#jbtt{position:fixed;bottom:24px;right:24px;z-index:998;width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.15);border:1px solid #c9a84c;color:#c9a84c;cursor:pointer;display:none;align-items:center;justify-content:center;font-family:'Luminari',serif;font-size:1.1rem;line-height:1;transition:background 0.2s,color 0.2s,box-shadow 0.2s,opacity 0.3s;opacity:0}
-#jbtt.jbtt-visible{display:flex;opacity:1}
-#jbtt:hover{background:rgba(201,168,76,0.85);color:#000;box-shadow:0 0 18px rgba(201,168,76,0.45)}
-@media(max-width:768px){#jbtt{bottom:80px;right:16px}}
-</style>
+
 <style id="ck-styles">
 #ck-banner{position:fixed;bottom:0;left:0;right:0;z-index:99998;background:rgba(0,0,0,0.85);border-top:1px solid #c9a84c;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 #ck-banner.ck-hidden{display:none!important}
@@ -388,7 +385,7 @@ var _q=encodeURIComponent((card.dataset.album||'')+' '+(card.dataset.artist||'')
 var _plinks=[{cls:'bandcamp',href:card.getAttribute('data-album-bc')||'https://jestamang.bandcamp.com/album/'+_bcSlug,label:'Bandcamp',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 18.75l7.437-12.5H24l-7.438 12.5z"/></svg>'},{cls:'youtube',href:_ytHref,label:'YouTube',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>'},{cls:'spotify',href:card.getAttribute('data-album-sp')||'https://open.spotify.com/search/'+_q,label:'Spotify',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>'},{cls:'apple',href:card.getAttribute('data-album-am')||'https://music.apple.com/us/search?term='+_q,label:'Apple Music',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>'}];
 _plinks.forEach(function(pl){var _a=document.createElement('a');_a.className='dtrack-btn '+pl.cls;_a.href=pl.href;_a.target='_blank';_a.rel='noopener noreferrer';_a.title=pl.label;_a.innerHTML=pl.svg;_prow.appendChild(_a);});
 drawer.appendChild(_prow);drawer.appendChild(rule);drawer.appendChild(ol);var cardTop=card.getBoundingClientRect().top;var grid=card.parentNode;var siblings=Array.from(grid.children).filter(function(el){return el.classList.contains('album-card');});var lastInRow=card;for(var i=0;i<siblings.length;i++){var t=siblings[i].getBoundingClientRect().top;if(Math.abs(t-cardTop)<4){lastInRow=siblings[i];}}
-grid.insertBefore(drawer,lastInRow.nextSibling);requestAnimationFrame(function(){requestAnimationFrame(function(){drawer.classList.add('open');});});_activeDrawer=drawer;_activeCard=card;setTimeout(function(){drawer.scrollIntoView({behavior:'smooth',block:'start'});var navEl=document.getElementById('jtnav')||document.querySelector('nav');var navHeight=navEl?navEl.offsetHeight:80;window.scrollBy({top:-(navHeight+16),behavior:'smooth'});},150);}
+grid.insertBefore(drawer,lastInRow.nextSibling);requestAnimationFrame(function(){requestAnimationFrame(function(){drawer.classList.add('open');});});_activeDrawer=drawer;_activeCard=card;var _navEl=document.getElementById('jtnav')||document.querySelector('nav');var _navH=_navEl?_navEl.offsetHeight:52;setTimeout(function(){var rect=drawer.getBoundingClientRect();var target=rect.top+window.scrollY-_navH-12;window.scrollTo({top:target,behavior:'smooth'});},560);}
 // ── Inline track preview ──────────────────────────────────────────
 window._albumActiveEmbed=null;
 window._albumActiveBtn=null;
@@ -1165,8 +1162,8 @@ function jHL(text,q){if(!q)return text.replace(/[&<>"]/g,function(c){return{'&':
 function jSearchRender(q){var box=document.getElementById('jsearch-results');if(!box)return;if(!q.trim()){box.innerHTML='<div class="jsearch-hint">ENTER A NAME \u00b7 PAGE \u00b7 ALBUM \u00b7 TRACK \u00b7 GAME</div>';return;}var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);var scored=[];IDX.forEach(function(e){var nl=e.n.toLowerCase();var tl=(e.t||'').toLowerCase();var score=0;tokens.forEach(function(tok){if(nl===tok)score+=100;else if(nl.startsWith(tok))score+=50;else if(nl.indexOf(tok)!==-1)score+=30;if(tl.indexOf(tok)!==-1)score+=10;});if(score>0)scored.push({e:e,s:score});});scored.sort(function(a,b){return b.s-a.s;});scored=scored.slice(0,10);if(!scored.length){box.innerHTML='<div class="jsearch-empty">NO TRANSMISSIONS FOUND</div>';return;}var html='';scored.forEach(function(r){var e=r.e;html+='<a class="jsearch-item" href="'+e.u+'" onclick="jSearchClose()"><span class="jsearch-item-icon">'+e.i+'</span><span class="jsearch-item-name">'+jHL(e.n,q)+'</span><span class="jsearch-item-cat">'+e.c+'</span></a>';});box.innerHTML=html;}
 document.addEventListener('DOMContentLoaded',function(){var inp=document.getElementById('jsearch-input');var closeBtn=document.getElementById('jsearch-close');if(inp)inp.addEventListener('input',function(){jSearchRender(this.value);});if(closeBtn)closeBtn.addEventListener('click',jSearchClose);document.addEventListener('click',function(e){var o=document.getElementById('jsearch-overlay');if(!o||!o.classList.contains('jsearch-open'))return;var btn=document.getElementById('jsearch-btn');var fbtn=document.querySelector('.jsearch-float-btn');if(o.contains(e.target))return;if(btn&&btn.contains(e.target))return;if(fbtn&&fbtn.contains(e.target))return;jSearchClose();});document.addEventListener('keydown',function(e){if(e.key==='Escape')jSearchClose();if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();jSearchOpen();}});});
 })();</script>
-<button id="jbtt" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-<script>(function(){var btn=document.getElementById('jbtt');if(!btn)return;window.addEventListener('scroll',function(){if(window.scrollY>300){btn.classList.add('jbtt-visible');}else{btn.classList.remove('jbtt-visible');}},{passive:true});})();</script>
+
+<script></script>
 <div id="ck-banner" class="ck-hidden" role="dialog" aria-label="Cookie consent">
 <p id="ck-text">This site uses cookies for login and anonymous analytics. By continuing you accept this.</p>
 <div id="ck-btns">

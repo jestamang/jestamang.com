@@ -140,12 +140,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .jsearch-float-btn svg{pointer-events:none}
 @media(max-width:767px){#jsearch-overlay{top:52px}#jsearch-inner{padding:16px 16px 20px}#jsearch-input{font-size:16px}#jsearch-close{min-width:44px;min-height:44px}}
 </style>
-<style id="jbtt-styles">
-#jbtt{position:fixed;bottom:24px;right:24px;z-index:998;width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.15);border:1px solid #c9a84c;color:#c9a84c;cursor:pointer;display:none;align-items:center;justify-content:center;font-family:'Luminari',serif;font-size:1.1rem;line-height:1;transition:background 0.2s,color 0.2s,box-shadow 0.2s,opacity 0.3s;opacity:0}
-#jbtt.jbtt-visible{display:flex;opacity:1}
-#jbtt:hover{background:rgba(201,168,76,0.85);color:#000;box-shadow:0 0 18px rgba(201,168,76,0.45)}
-@media(max-width:768px){#jbtt{bottom:80px;right:16px}}
-</style>
+
 <style id="ck-styles">
 #ck-banner{position:fixed;bottom:0;left:0;right:0;z-index:99998;background:rgba(0,0,0,0.85);border-top:1px solid #c9a84c;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 #ck-banner.ck-hidden{display:none!important}
@@ -1318,8 +1313,8 @@ function jHL(text,q){if(!q)return text.replace(/[&<>"]/g,function(c){return{'&':
 function jSearchRender(q){var box=document.getElementById('jsearch-results');if(!box)return;if(!q.trim()){box.innerHTML='<div class="jsearch-hint">ENTER A NAME \u00b7 PAGE \u00b7 ALBUM \u00b7 TRACK \u00b7 GAME</div>';return;}var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);var scored=[];IDX.forEach(function(e){var nl=e.n.toLowerCase();var tl=(e.t||'').toLowerCase();var score=0;tokens.forEach(function(tok){if(nl===tok)score+=100;else if(nl.startsWith(tok))score+=50;else if(nl.indexOf(tok)!==-1)score+=30;if(tl.indexOf(tok)!==-1)score+=10;});if(score>0)scored.push({e:e,s:score});});scored.sort(function(a,b){return b.s-a.s;});scored=scored.slice(0,10);if(!scored.length){box.innerHTML='<div class="jsearch-empty">NO TRANSMISSIONS FOUND</div>';return;}var html='';scored.forEach(function(r){var e=r.e;html+='<a class="jsearch-item" href="'+e.u+'" onclick="jSearchClose()"><span class="jsearch-item-icon">'+e.i+'</span><span class="jsearch-item-name">'+jHL(e.n,q)+'</span><span class="jsearch-item-cat">'+e.c+'</span></a>';});box.innerHTML=html;}
 document.addEventListener('DOMContentLoaded',function(){var inp=document.getElementById('jsearch-input');var closeBtn=document.getElementById('jsearch-close');if(inp)inp.addEventListener('input',function(){jSearchRender(this.value);});if(closeBtn)closeBtn.addEventListener('click',jSearchClose);document.addEventListener('click',function(e){var o=document.getElementById('jsearch-overlay');if(!o||!o.classList.contains('jsearch-open'))return;var btn=document.getElementById('jsearch-btn');var fbtn=document.querySelector('.jsearch-float-btn');if(o.contains(e.target))return;if(btn&&btn.contains(e.target))return;if(fbtn&&fbtn.contains(e.target))return;jSearchClose();});document.addEventListener('keydown',function(e){if(e.key==='Escape')jSearchClose();if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();jSearchOpen();}});});
 })();</script>
-<button id="jbtt" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-<script>(function(){var btn=document.getElementById('jbtt');if(!btn)return;window.addEventListener('scroll',function(){if(window.scrollY>300){btn.classList.add('jbtt-visible');}else{btn.classList.remove('jbtt-visible');}},{passive:true});})();</script>
+
+<script></script>
 <div id="ck-banner" class="ck-hidden" role="dialog" aria-label="Cookie consent">
 <p id="ck-text">This site uses cookies for login and anonymous analytics. By continuing you accept this.</p>
 <div id="ck-btns">
