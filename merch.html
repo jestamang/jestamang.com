@@ -324,9 +324,9 @@ body {
 /* ── PRODUCT GRID ── */
 .merch-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-  max-width: 1100px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
   align-items: start;
@@ -335,10 +335,10 @@ body {
 /* ── PRODUCT CARD ── */
 .product-card {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  gap: 24px;
-  padding: 24px;
+  text-align: center;
+  padding: 32px 24px;
   border: 1px solid rgba(201, 168, 76, 0.3);
   border-radius: 4px;
   transition: all 0.3s ease;
@@ -347,8 +347,8 @@ body {
   box-sizing: border-box;
 }
 .merch-card-content {
-  flex: 1;
-  text-align: left;
+  width: 100%;
+  text-align: center;
 }
 
 .product-card:hover {
@@ -358,16 +358,16 @@ body {
 }
 
 .product-image-wrap {
-  flex: 0 0 180px;
-  max-width: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  margin-bottom: 24px;
 }
 
 .product-image-wrap img {
-  width: 100%;
-  max-height: 200px;
+  max-width: 180px;
+  max-height: 220px;
   height: auto;
   object-fit: contain;
   display: block;
@@ -679,10 +679,8 @@ body {
   .page-header h1 { font-size: clamp(1.7rem, 7vw, 2.4rem); }
   .page-header { padding-top: 28px; }
   .merch-grid { grid-template-columns: 1fr !important; gap: 1.5rem; padding: 0 16px; }
-  .product-card { width: 100% !important; padding: 20px !important; flex-direction: column; }
-  .product-image-wrap { flex: unset; max-width: 100%; width: 100%; }
-  .product-image-wrap img { max-height: 200px; height: auto; width: 100%; }
-  .merch-card-content { text-align: center; }
+  .product-card { width: 100% !important; padding: 20px !important; }
+  .product-image-wrap img { max-height: 200px; }
   .acquire-btn { min-height: 50px !important; font-size: 0.85rem !important; }
   .modal-panel, .inquiry-panel, #inquiry-modal .modal-content { width: 95vw !important; padding: 28px 20px !important; }
   .modal-panel input, .modal-panel textarea, .modal-panel select { width: 100% !important; }
