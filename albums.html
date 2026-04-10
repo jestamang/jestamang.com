@@ -602,6 +602,107 @@ window._albumPlayTrack=function(btn,idx,card){
   });
 })();
 </script>
+<script>
+/* ── Full Catalog Firestore Loader ── */
+(function(){
+  var _ALBUMS_FALLBACK = null; /* existing hardcoded HTML sections serve as fallback */
+
+  var SECTION_DEFS = [
+    {name:'Quarter Days', id:'quarter-days'},
+    {name:'2K2323',       id:'2k2323'},
+    {name:'2K2123',       id:'2k2123'},
+    {name:'NONS',         id:'nons'}
+  ];
+
+  function buildCatalogCard(a) {
+    var tracks = a.tracks || [];
+    var trackTitles = tracks.map(function(t){ return typeof t==='string' ? t : (t.title||''); });
+    var ytUrls  = tracks.map(function(t){ return typeof t==='object' ? (t.youtubeUrl||'')  : ''; });
+    var spUrls  = tracks.map(function(t){ return typeof t==='object' ? (t.spotifyUrl||'')  : ''; });
+    var amUrls  = tracks.map(function(t){ return typeof t==='object' ? (t.appleUrl||'')    : ''; });
+    var bcUrls  = tracks.map(function(t){ return typeof t==='object' ? (t.bandcampUrl||'') : ''; });
+
+    var artSrc = a.artwork ? 'assets/albums/' + a.artwork : 'assets/homepage/logo png.png';
+    var yearStr = String(a.year||'');
+
+    var div = document.createElement('div');
+    div.className = 'album-card';
+    div.setAttribute('data-artist',  a.artist||'');
+    div.setAttribute('data-album',   a.title||'');
+    div.setAttribute('data-year',    yearStr);
+    div.setAttribute('data-genre',   a.genre||'');
+    div.setAttribute('data-tracks',  JSON.stringify(trackTitles));
+    div.setAttribute('data-yt-urls', JSON.stringify(ytUrls));
+    div.setAttribute('data-sp-urls', JSON.stringify(spUrls));
+    div.setAttribute('data-am-urls', JSON.stringify(amUrls));
+    div.setAttribute('data-bc-urls', JSON.stringify(bcUrls));
+    if (a.spotifyUrl)        div.setAttribute('data-album-sp',   a.spotifyUrl);
+    if (a.youtubeUrl)        div.setAttribute('data-album-yt',   a.youtubeUrl);
+    if (a.appleUrl)          div.setAttribute('data-album-am',   a.appleUrl);
+    if (a.bandcampUrl)       div.setAttribute('data-album-bc',   a.bandcampUrl);
+    if (a.bandcampEmbedSrc)  div.setAttribute('data-bc-embed',   a.bandcampEmbedSrc);
+
+    var img = document.createElement('img');
+    img.className = 'album-art';
+    img.src = artSrc;
+    img.alt = String(a.artist||'');
+    img.loading = 'lazy';
+    img.onclick = function(){ toggleDrawer(div); };
+
+    var titleEl  = document.createElement('div'); titleEl.className  = 'album-title-label'; titleEl.textContent  = a.title||'';
+    var artistEl = document.createElement('div'); artistEl.className = 'album-artist';       artistEl.textContent = a.artist||'';
+    var yearEl   = document.createElement('div'); yearEl.className   = 'album-season';
+    yearEl.style.cssText = 'background-color:#c9a84c;color:#000;padding:2px 8px;border-radius:3px;';
+    yearEl.textContent = yearStr;
+
+    div.appendChild(img); div.appendChild(titleEl); div.appendChild(artistEl);
+    if (yearStr) div.appendChild(yearEl);
+    return div;
+  }
+
+  function replaceGrid(secEl, albums) {
+    var grid = secEl.querySelector('.album-grid');
+    if (!grid || albums.length === 0) return;
+    if (window._activeDrawer && grid.contains(window._activeDrawer)) {
+      if (window._activeDrawer.parentNode) window._activeDrawer.parentNode.removeChild(window._activeDrawer);
+      window._activeDrawer = null; window._activeCard = null;
+    }
+    grid.style.transition = 'opacity 0.3s ease';
+    grid.style.opacity = '0';
+    var snap_albums = albums.slice();
+    setTimeout(function(){
+      grid.innerHTML = '';
+      snap_albums.forEach(function(a){ grid.appendChild(buildCatalogCard(a)); });
+      grid.style.opacity = '1';
+    }, 300);
+  }
+
+  function loadCatalog() {
+    window.jestaDB.collection('releases').orderBy('order').get()
+      .then(function(snap){
+        if (snap.empty) return;
+        var grouped = {'Quarter Days':[], '2K2323':[], '2K2123':[], 'NONS':[]};
+        snap.forEach(function(doc){
+          var d = doc.data(); d._id = doc.id;
+          if (d.visible === false) return;
+          if (grouped[d.section] !== undefined) grouped[d.section].push(d);
+        });
+        SECTION_DEFS.forEach(function(sec){
+          var albums = grouped[sec.name];
+          if (!albums || albums.length === 0) return;
+          var secEl = document.getElementById(sec.id);
+          if (secEl) replaceGrid(secEl, albums);
+        });
+      })
+      .catch(function(){ /* fallback: existing hardcoded HTML stays visible */ });
+  }
+
+  var _t = 0, _iv = setInterval(function(){
+    if (window.jestaDB){ clearInterval(_iv); loadCatalog(); }
+    else if (++_t > 80){ clearInterval(_iv); }
+  }, 100);
+})();
+</script>
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span> Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a>
 </footer>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>

@@ -309,6 +309,38 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .adm-mobtab{font-size:0.62rem!important;padding:5px 8px!important;}
 }
 
+/* ── Album Manager ── */
+.alm-section-group{margin-bottom:20px;}
+.alm-section-label{font-size:0.58rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.7);padding:6px 0 4px;border-bottom:1px solid rgba(201,168,76,0.12);margin-bottom:8px;}
+.alm-row{background:rgba(0,0,0,0.35);border:1px solid rgba(201,168,76,0.14);border-radius:4px;margin-bottom:6px;overflow:hidden;}
+.alm-row-header{display:flex;align-items:center;gap:10px;padding:10px 12px;}
+.alm-thumb{width:52px;height:52px;object-fit:cover;border-radius:2px;flex-shrink:0;background:rgba(201,168,76,0.08);}
+.alm-row-info{flex:1;min-width:0;}
+.alm-row-title{font-size:0.8rem;color:#c9a84c;letter-spacing:0.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.alm-row-meta{font-size:0.6rem;color:rgba(240,230,210,0.7);letter-spacing:0.06em;margin-top:2px;}
+.alm-row-actions{display:flex;align-items:center;gap:5px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+.alm-visible-toggle{display:flex;align-items:center;gap:4px;font-size:0.58rem;color:rgba(240,230,210,0.7);letter-spacing:0.1em;cursor:pointer;white-space:nowrap;user-select:none;}
+.alm-visible-toggle input{accent-color:#02E127;cursor:pointer;width:13px;height:13px;}
+.alm-edit-panel{border-top:1px solid rgba(201,168,76,0.1);padding:16px;background:rgba(0,0,0,0.25);display:none;}
+.alm-edit-panel.open{display:block;}
+.alm-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;}
+.alm-track-list{margin-top:8px;}
+.alm-track-row{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid rgba(201,168,76,0.06);}
+.alm-track-num{color:rgba(201,168,76,0.5);font-size:0.65rem;min-width:22px;flex-shrink:0;text-align:right;}
+.alm-track-title{flex:1;min-width:80px;}
+.alm-track-url{width:120px;font-size:0.72rem;}
+.alm-confirm-row{display:none;align-items:center;gap:8px;margin-top:4px;}
+.alm-confirm-row.visible{display:flex;}
+.alm-confirm-q{font-size:0.62rem;color:rgba(251,56,56,0.85);letter-spacing:0.1em;}
+.alm-art-preview{width:80px;height:80px;object-fit:cover;border-radius:2px;border:1px solid rgba(201,168,76,0.3);margin-top:6px;display:block;}
+@media(max-width:768px){
+  .alm-row-header{flex-wrap:wrap;gap:8px;}
+  .alm-row-actions{width:100%;}
+  .alm-form-grid{grid-template-columns:1fr!important;}
+  .alm-track-row{flex-wrap:wrap;}
+  .alm-track-url{width:100%;}
+}
+
 /* ── Theme Manager ── */
 .theme-ctrl-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;}
 .theme-row{margin-bottom:2px;}
@@ -344,6 +376,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-13')">Announcement</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-4')">Blog Publisher</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-10')">Catalog</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-26')">Albums</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-14')">Videos</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-15')">Artifacts</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-23')">Photos</button>
@@ -371,7 +404,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-17')">Maintenance</button>
 </nav>
 <div id="adm-mobtabs" role="navigation" aria-label="Section tabs">
-  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
+  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
 </div>
 
   <div class="adm-header">
@@ -551,6 +584,29 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Existing Releases</div>
         <div id="am-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
       </div>
+    </div>
+    <div class="adm-ornament">✦</div>
+    <div class="adm-section" id="sec-26">
+      <div class="adm-section-title">✦ Album Manager</div>
+      <div class="adm-section-underline"></div>
+      <div class="tab-bar">
+        <button class="tab-btn active" id="alm-tab-list">Album List</button>
+        <button class="tab-btn" id="alm-tab-add">Add New Album</button>
+      </div>
+      <!-- Album List pane -->
+      <div class="tab-pane active" id="alm-pane-list">
+        <div id="alm-list-inner" style="min-height:60px;"><div style="color:rgba(201,168,76,0.4);font-size:0.7rem;letter-spacing:0.2em;">Loading catalog...</div></div>
+      </div>
+      <!-- Add New Album pane -->
+      <div class="tab-pane" id="alm-pane-add">
+        <div id="alm-add-form"></div>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn-gold" id="alm-add-btn">Add Album</button>
+          <button class="btn-ghost" id="alm-add-clear-btn">Clear</button>
+        </div>
+        <p class="status-msg" id="alm-add-status"></p>
+      </div>
+      <p class="status-msg" id="alm-status"></p>
     </div>
     <div class="adm-ornament">✦</div>
     <div class="adm-section" id="sec-14">
@@ -3903,7 +3959,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       obs.observe(el, { childList: true, characterData: true, subtree: true });
     });
   }
-  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-25','sec-1','sec-12','sec-20','sec-17'];
+  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-26','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-25','sec-1','sec-12','sec-20','sec-17'];
   function initScrollSpy() {
     var secs = SEC_IDS.map(function(id){ return document.getElementById(id); }).filter(Boolean);
     var links = document.querySelectorAll('.adm-sidenav-link,.adm-mobtab');
@@ -3923,6 +3979,367 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   function init() { attachStatObs(); setTimeout(initScrollSpy, 600); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
+})();</script>
+
+<script>(function(){
+/* ── Album Manager ── */
+var ALM_SECTIONS = ['Quarter Days','2K2323','2K2123','NONS'];
+var _almDocs = {}; /* docId -> data */
+
+function almEsc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ── Build edit/add form HTML ── */
+function almBuildForm(data, prefix) {
+  data = data || {};
+  var tracks = data.tracks || [];
+  var pfx = prefix || 'almf';
+
+  var sectionOpts = ALM_SECTIONS.map(function(s){
+    return '<option value="'+almEsc(s)+'"'+(data.section===s?' selected':'')+'>'+almEsc(s)+'</option>';
+  }).join('');
+
+  var trackRows = '';
+  tracks.forEach(function(t, i){
+    var tt = typeof t === 'string' ? {title:t} : (t||{});
+    trackRows += almTrackRowHtml(pfx, i, tt);
+  });
+
+  return '<div class="alm-form-grid">'
+    +'<div><label class="field-label" style="margin-top:0">Title</label><input class="field-input" id="'+pfx+'-title" value="'+almEsc(data.title||'')+'"></div>'
+    +'<div><label class="field-label" style="margin-top:0">Artist</label><input class="field-input" id="'+pfx+'-artist" value="'+almEsc(data.artist||'')+'"></div>'
+    +'<div><label class="field-label">Section</label><select class="field-select" id="'+pfx+'-section">'+sectionOpts+'</select></div>'
+    +'<div><label class="field-label">Year</label><input class="field-input" id="'+pfx+'-year" type="text" value="'+almEsc(String(data.year||''))+'"></div>'
+    +'<div><label class="field-label">Genre</label><input class="field-input" id="'+pfx+'-genre" value="'+almEsc(data.genre||'')+'"></div>'
+    +'<div><label class="field-label">Order #</label><input class="field-input" id="'+pfx+'-order" type="number" value="'+almEsc(String(data.order||'0'))+'"></div>'
+    +'<div style="grid-column:1/-1"><label class="field-label">Artwork filename (e.g. <em>jestress melody.jpg</em>)</label>'
+    +'<input class="field-input" id="'+pfx+'-artwork" value="'+almEsc(data.artwork||'')+'" oninput="almPreviewArt(\''+pfx+'\')">'
+    +'<img id="'+pfx+'-art-preview" class="alm-art-preview" src="'+(data.artwork?'assets/albums/'+almEsc(data.artwork):'')+'" style="'+(data.artwork?'':'display:none')+'">'
+    +'</div>'
+    +'<div><label class="field-label">Spotify URL (album)</label><input class="field-input" id="'+pfx+'-sp" value="'+almEsc(data.spotifyUrl||'')+'"></div>'
+    +'<div><label class="field-label">YouTube URL (album)</label><input class="field-input" id="'+pfx+'-yt" value="'+almEsc(data.youtubeUrl||'')+'"></div>'
+    +'<div><label class="field-label">Apple Music URL</label><input class="field-input" id="'+pfx+'-am" value="'+almEsc(data.appleUrl||'')+'"></div>'
+    +'<div><label class="field-label">Bandcamp URL</label><input class="field-input" id="'+pfx+'-bc" value="'+almEsc(data.bandcampUrl||'')+'"></div>'
+    +'<div style="grid-column:1/-1"><label class="field-label">Bandcamp Embed Src</label><input class="field-input" id="'+pfx+'-bc-embed" value="'+almEsc(data.bandcampEmbedSrc||'')+'"></div>'
+    +'</div>'
+    +'<div style="margin-top:14px">'
+    +'<div style="font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.7);margin-bottom:6px;">Tracklist</div>'
+    +'<div class="alm-track-list" id="'+pfx+'-tracks">'+trackRows+'</div>'
+    +'<button type="button" class="btn-ghost btn-sm" style="margin-top:8px;" onclick="almAddTrack(\''+pfx+'\')">+ Add Track</button>'
+    +'</div>';
+}
+
+function almTrackRowHtml(pfx, i, t) {
+  return '<div class="alm-track-row" id="'+pfx+'-tr-'+i+'">'
+    +'<span class="alm-track-num">'+(i+1)+'.</span>'
+    +'<input class="field-input alm-track-title" placeholder="Track title" value="'+almEsc(t.title||'')+'"> '
+    +'<input class="field-input alm-track-url" placeholder="Spotify URL" value="'+almEsc(t.spotifyUrl||'')+'"> '
+    +'<input class="field-input alm-track-url" placeholder="YouTube URL" value="'+almEsc(t.youtubeUrl||'')+'"> '
+    +'<input class="field-input alm-track-url" placeholder="Apple URL" value="'+almEsc(t.appleUrl||'')+'"> '
+    +'<input class="field-input alm-track-url" placeholder="Bandcamp URL" value="'+almEsc(t.bandcampUrl||'')+'"> '
+    +'<button type="button" class="btn-danger btn-sm" onclick="almRemoveTrack(this)" style="flex-shrink:0;">✕</button>'
+    +'</div>';
+}
+
+window.almPreviewArt = function(pfx) {
+  var inp = document.getElementById(pfx+'-artwork');
+  var img = document.getElementById(pfx+'-art-preview');
+  if (!inp || !img) return;
+  var v = inp.value.trim();
+  if (v) { img.src = 'assets/albums/' + v; img.style.display = 'block'; }
+  else   { img.src = ''; img.style.display = 'none'; }
+};
+
+window.almAddTrack = function(pfx) {
+  var list = document.getElementById(pfx+'-tracks');
+  if (!list) return;
+  var count = list.querySelectorAll('.alm-track-row').length;
+  var div = document.createElement('div');
+  div.innerHTML = almTrackRowHtml(pfx, count, {});
+  list.appendChild(div.firstChild);
+  almRenumberTracks(pfx);
+};
+
+window.almRemoveTrack = function(btn) {
+  var row = btn.closest('.alm-track-row');
+  if (row) row.remove();
+  /* re-number — find prefix from parent id */
+  var list = btn.closest('.alm-track-list');
+  if (list) almRenumberTracksList(list);
+};
+
+function almRenumberTracks(pfx) {
+  var list = document.getElementById(pfx+'-tracks');
+  if (list) almRenumberTracksList(list);
+}
+
+function almRenumberTracksList(list) {
+  list.querySelectorAll('.alm-track-row').forEach(function(row, i){
+    var numEl = row.querySelector('.alm-track-num');
+    if (numEl) numEl.textContent = (i+1)+'.';
+  });
+}
+
+function almReadForm(pfx) {
+  function val(id){ var el=document.getElementById(pfx+'-'+id); return el?el.value.trim():''; }
+  var tracks = [];
+  var list = document.getElementById(pfx+'-tracks');
+  if (list) {
+    list.querySelectorAll('.alm-track-row').forEach(function(row){
+      var inputs = row.querySelectorAll('input');
+      var title = inputs[0] ? inputs[0].value.trim() : '';
+      if (!title) return;
+      tracks.push({
+        title:      title,
+        spotifyUrl: inputs[1] ? inputs[1].value.trim() : '',
+        youtubeUrl: inputs[2] ? inputs[2].value.trim() : '',
+        appleUrl:   inputs[3] ? inputs[3].value.trim() : '',
+        bandcampUrl:inputs[4] ? inputs[4].value.trim() : ''
+      });
+    });
+  }
+  return {
+    title:           val('title'),
+    artist:          val('artist'),
+    section:         val('section'),
+    year:            val('year'),
+    genre:           val('genre'),
+    order:           parseInt(val('order'),10)||0,
+    artwork:         val('artwork'),
+    spotifyUrl:      val('sp'),
+    youtubeUrl:      val('yt'),
+    appleUrl:        val('am'),
+    bandcampUrl:     val('bc'),
+    bandcampEmbedSrc:val('bc-embed'),
+    visible:         true,
+    tracks:          tracks
+  };
+}
+
+/* ── Render album list ── */
+function almRenderList(docs) {
+  var container = document.getElementById('alm-list-inner');
+  if (!container) return;
+  if (!docs || docs.length === 0) {
+    container.innerHTML = '<div style="color:rgba(201,168,76,0.4);font-size:0.7rem;letter-spacing:0.15em;">No albums found in Firestore. Add the first one →</div>';
+    return;
+  }
+
+  var grouped = {};
+  ALM_SECTIONS.forEach(function(s){ grouped[s] = []; });
+  docs.forEach(function(item){
+    var sec = item.data.section;
+    if (grouped[sec]) grouped[sec].push(item);
+    else { if (!grouped['Other']) grouped['Other']=[]; grouped['Other'].push(item); }
+  });
+
+  var html = '';
+  ALM_SECTIONS.forEach(function(sec){
+    var list = grouped[sec];
+    if (!list || list.length === 0) return;
+    html += '<div class="alm-section-group"><div class="alm-section-label">'+almEsc(sec)+'</div>';
+    list.forEach(function(item){
+      html += almRowHtml(item.id, item.data);
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+
+  /* attach listeners */
+  container.querySelectorAll('.alm-visible-toggle input').forEach(function(chk){
+    chk.addEventListener('change', function(){
+      var docId = chk.dataset.id;
+      if (!docId || !window.jestaDB) return;
+      window.jestaDB.collection('releases').doc(docId).update({visible: chk.checked}).catch(function(){});
+    });
+  });
+}
+
+function almRowHtml(docId, d) {
+  var artSrc = d.artwork ? 'assets/albums/'+almEsc(d.artwork) : '';
+  var imgHtml = artSrc
+    ? '<img class="alm-thumb" src="'+artSrc+'" alt="" onerror="this.style.opacity=0.2">'
+    : '<div class="alm-thumb" style="display:flex;align-items:center;justify-content:center;color:rgba(201,168,76,0.3);font-size:1.2rem;">◈</div>';
+  var vis = d.visible !== false;
+  return '<div class="alm-row" id="alm-row-'+almEsc(docId)+'">'
+    +'<div class="alm-row-header">'
+    +imgHtml
+    +'<div class="alm-row-info"><div class="alm-row-title">'+almEsc(d.title||'(untitled)')+'</div>'
+    +'<div class="alm-row-meta">'+almEsc(d.artist||'')+(d.year?' · '+almEsc(String(d.year)):'')+(d.genre?' · '+almEsc(d.genre):'')+'</div></div>'
+    +'<div class="alm-row-actions">'
+    +'<label class="alm-visible-toggle"><input type="checkbox" data-id="'+almEsc(docId)+'"'+(vis?' checked':'')+'>Visible</label>'
+    +'<button class="btn-ghost btn-sm" onclick="almToggleEdit(\''+almEsc(docId)+'\')">Edit</button>'
+    +'<button class="btn-ghost btn-sm" onclick="almMoveOrder(\''+almEsc(docId)+'\',\'up\')">↑</button>'
+    +'<button class="btn-ghost btn-sm" onclick="almMoveOrder(\''+almEsc(docId)+'\',\'dn\')">↓</button>'
+    +'<button class="btn-danger btn-sm" onclick="almConfirmDelete(\''+almEsc(docId)+'\')">Delete</button>'
+    +'</div></div>'
+    +'<div class="alm-confirm-row" id="alm-confirm-'+almEsc(docId)+'">'
+    +'<span class="alm-confirm-q">Delete "'+almEsc(d.title||'')+'\"?</span>'
+    +'<button class="btn-danger btn-sm" onclick="almDoDelete(\''+almEsc(docId)+'\')">Yes, Delete</button>'
+    +'<button class="btn-ghost btn-sm" onclick="almCancelDelete(\''+almEsc(docId)+'\')">Cancel</button>'
+    +'</div>'
+    +'<div class="alm-edit-panel" id="alm-edit-'+almEsc(docId)+'">'
+    +almBuildForm(d, 'alme-'+docId)
+    +'<div class="btn-row" style="margin-top:12px;">'
+    +'<button class="btn-gold" onclick="almSave(\''+almEsc(docId)+'\')">Save</button>'
+    +'<button class="btn-ghost" onclick="almToggleEdit(\''+almEsc(docId)+'\')">Cancel</button>'
+    +'</div>'
+    +'<p class="status-msg" id="alm-edit-status-'+almEsc(docId)+'"></p>'
+    +'</div>'
+    +'</div>';
+}
+
+window.almToggleEdit = function(docId) {
+  var panel = document.getElementById('alm-edit-'+docId);
+  if (!panel) return;
+  panel.classList.toggle('open');
+};
+
+window.almConfirmDelete = function(docId) {
+  var row = document.getElementById('alm-confirm-'+docId);
+  if (row) row.classList.add('visible');
+};
+window.almCancelDelete = function(docId) {
+  var row = document.getElementById('alm-confirm-'+docId);
+  if (row) row.classList.remove('visible');
+};
+window.almDoDelete = function(docId) {
+  if (!window.jestaDB) return;
+  window.jestaDB.collection('releases').doc(docId).delete().then(function(){
+    var rowEl = document.getElementById('alm-row-'+docId);
+    if (rowEl) rowEl.remove();
+    delete _almDocs[docId];
+  }).catch(function(e){
+    var statusEl = document.getElementById('alm-status');
+    if (statusEl) { statusEl.textContent = 'Delete failed: '+(e.message||e); statusEl.className='status-msg status-err'; }
+  });
+};
+
+window.almSave = function(docId) {
+  if (!window.jestaDB) return;
+  var data = almReadForm('alme-'+docId);
+  var statusEl = document.getElementById('alm-edit-status-'+docId);
+  var saveBtn = document.querySelector('#alm-edit-'+docId+' .btn-gold');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
+  window.jestaDB.collection('releases').doc(docId).set(data, {merge:true})
+    .then(function(){
+      _almDocs[docId] = data;
+      /* Re-render this row */
+      var rowEl = document.getElementById('alm-row-'+docId);
+      if (rowEl) {
+        var newDiv = document.createElement('div');
+        newDiv.innerHTML = almRowHtml(docId, data);
+        rowEl.parentNode.replaceChild(newDiv.firstChild, rowEl);
+        /* Re-attach visible toggle listener */
+        var newChk = document.querySelector('#alm-row-'+docId+' .alm-visible-toggle input');
+        if (newChk) newChk.addEventListener('change', function(){
+          window.jestaDB.collection('releases').doc(docId).update({visible: newChk.checked}).catch(function(){});
+        });
+      }
+      if (statusEl) { statusEl.textContent = 'Saved.'; statusEl.className='status-msg status-ok'; }
+    })
+    .catch(function(e){
+      if (statusEl) { statusEl.textContent = 'Save failed: '+(e.message||e); statusEl.className='status-msg status-err'; }
+      if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save'; }
+    });
+};
+
+window.almMoveOrder = function(docId, dir) {
+  if (!window.jestaDB || !_almDocs[docId]) return;
+  var sec = _almDocs[docId].section;
+  var peers = Object.keys(_almDocs).filter(function(id){ return _almDocs[id].section === sec; });
+  peers.sort(function(a,b){ return (_almDocs[a].order||0) - (_almDocs[b].order||0); });
+  var idx = peers.indexOf(docId);
+  var swapIdx = dir === 'up' ? idx - 1 : idx + 1;
+  if (swapIdx < 0 || swapIdx >= peers.length) return;
+  var swapId = peers[swapIdx];
+  var myOrder = _almDocs[docId].order || 0;
+  var swapOrder = _almDocs[swapId].order || 0;
+  var batch = window.jestaDB.batch();
+  batch.update(window.jestaDB.collection('releases').doc(docId), {order: swapOrder});
+  batch.update(window.jestaDB.collection('releases').doc(swapId), {order: myOrder});
+  batch.commit().then(function(){
+    _almDocs[docId].order = swapOrder;
+    _almDocs[swapId].order = myOrder;
+    almRefreshList();
+  }).catch(function(){});
+};
+
+function almRefreshList() {
+  var docs = Object.keys(_almDocs).map(function(id){ return {id:id, data:_almDocs[id]}; });
+  docs.sort(function(a,b){ return (a.data.order||0)-(b.data.order||0); });
+  almRenderList(docs);
+}
+
+/* ── Load catalog from Firestore ── */
+function almLoad() {
+  if (!window.jestaDB) return;
+  var container = document.getElementById('alm-list-inner');
+  if (container) container.innerHTML = '<div style="color:rgba(201,168,76,0.4);font-size:0.7rem;letter-spacing:0.2em;">Loading catalog...</div>';
+  window.jestaDB.collection('releases').orderBy('order').get()
+    .then(function(snap){
+      var docs = [];
+      snap.forEach(function(doc){ _almDocs[doc.id] = doc.data(); docs.push({id:doc.id, data:doc.data()}); });
+      almRenderList(docs);
+    })
+    .catch(function(e){
+      var container2 = document.getElementById('alm-list-inner');
+      if (container2) container2.innerHTML = '<div style="color:rgba(251,56,56,0.7);font-size:0.7rem;">Failed to load: '+(e.message||e)+'</div>';
+    });
+}
+
+/* ── Add new album ── */
+function almInitAddForm() {
+  var formEl = document.getElementById('alm-add-form');
+  if (!formEl) return;
+  formEl.innerHTML = almBuildForm({section:'Quarter Days', order:0, visible:true}, 'almn');
+}
+
+/* ── Tab switching ── */
+document.getElementById('alm-tab-list').addEventListener('click', function(){
+  document.getElementById('alm-tab-list').classList.add('active');
+  document.getElementById('alm-tab-add').classList.remove('active');
+  document.getElementById('alm-pane-list').classList.add('active');
+  document.getElementById('alm-pane-add').classList.remove('active');
+});
+document.getElementById('alm-tab-add').addEventListener('click', function(){
+  document.getElementById('alm-tab-add').classList.add('active');
+  document.getElementById('alm-tab-list').classList.remove('active');
+  document.getElementById('alm-pane-add').classList.add('active');
+  document.getElementById('alm-pane-list').classList.remove('active');
+});
+
+document.getElementById('alm-add-btn').addEventListener('click', function(){
+  if (!window.jestaDB) { var s=document.getElementById('alm-add-status'); if(s){s.textContent='Firestore not ready.';s.className='status-msg status-err';} return; }
+  var data = almReadForm('almn');
+  if (!data.title) { var s2=document.getElementById('alm-add-status'); if(s2){s2.textContent='Title is required.';s2.className='status-msg status-err';} return; }
+  var btn = document.getElementById('alm-add-btn');
+  btn.disabled = true; btn.textContent = 'Adding…';
+  window.jestaDB.collection('releases').add(data)
+    .then(function(ref){
+      _almDocs[ref.id] = data;
+      /* switch to list and refresh */
+      document.getElementById('alm-tab-list').click();
+      almRefreshList();
+      almInitAddForm(); /* clear the form */
+      var s3=document.getElementById('alm-add-status'); if(s3){s3.textContent='Album added.';s3.className='status-msg status-ok';}
+      btn.disabled = false; btn.textContent = 'Add Album';
+    })
+    .catch(function(e){
+      var s4=document.getElementById('alm-add-status'); if(s4){s4.textContent='Failed: '+(e.message||e);s4.className='status-msg status-err';}
+      btn.disabled = false; btn.textContent = 'Add Album';
+    });
+});
+
+document.getElementById('alm-add-clear-btn').addEventListener('click', function(){ almInitAddForm(); });
+
+/* ── Boot ── */
+(function(){
+  almInitAddForm();
+  var _t=0,_iv=setInterval(function(){
+    if(window.jestaDB){ clearInterval(_iv); almLoad(); }
+    else if(++_t>80){ clearInterval(_iv); var c=document.getElementById('alm-list-inner'); if(c) c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>'; }
+  },100);
+})();
 })();</script>
 
 <script>(function(){
