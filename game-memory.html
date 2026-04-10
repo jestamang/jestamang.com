@@ -35,6 +35,11 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-ind
 .stat-val{font-size:1.5rem;color:#c9a84c;letter-spacing:0.05em}
 .stat-label{font-size:0.75rem;letter-spacing:0.35em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-top:3px}
 .card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:660px;margin:0 auto}
+.card-grid.hard{grid-template-columns:repeat(5,1fr);max-width:780px}
+.diff-btns{display:flex;justify-content:center;gap:10px;margin-bottom:20px}
+.diff-btn{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;border:1px solid rgba(201,168,76,0.3);padding:7px 18px;cursor:pointer;transition:all 0.2s;min-height:44px}
+.diff-btn.active{color:#c9a84c;border-color:#c9a84c;background:rgba(201,168,76,0.08)}
+.diff-btn:hover{border-color:rgba(201,168,76,0.6);color:#c9a84c}
 .mem-card{aspect-ratio:3/4;cursor:pointer;perspective:900px;position:relative}
 .mem-card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1)}
 .mem-card.flipped .mem-card-inner,.mem-card.matched .mem-card-inner{transform:rotateY(180deg)}
@@ -75,7 +80,8 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 .win-title{font-size:clamp(2.2rem,7vw,4.5rem);letter-spacing:0.5em;color:#c9a84c;text-shadow:0 0 60px rgba(201,168,76,0.7)}
 .win-sub{font-size:0.72rem;letter-spacing:0.28em;color:rgba(255,255,255,0.4);text-transform:uppercase}
 .win-stats-txt{font-size:0.85rem;letter-spacing:0.12em;color:rgba(201,168,76,0.65)}
-@media(max-width:520px){.card-grid{gap:7px}.stats{gap:24px}}
+@media(max-width:520px){.card-grid{gap:5px}.stats{gap:24px}}
+@media(max-width:768px){.mem-card{min-width:60px;min-height:80px}.card-grid{touch-action:manipulation}.mem-card-inner{transition:transform 0.4s cubic-bezier(0.4,0,0.2,1)}}
 /* LEADERBOARD */
 .lb-modal-wrap{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:16px}
 .lb-modal-wrap.open{display:flex}
@@ -191,8 +197,12 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 
 <div class="game-wrap">
   <h1 class="game-title">Memory Vault</h1>
-  <p class="game-sub">Match the albums · find all 8 pairs</p>
+  <p class="game-sub" id="game-sub">Match the pix · find all 6 lix</p>
   <div class="gold-rule"></div>
+  <div class="diff-btns">
+    <button class="diff-btn active" data-diff="easy">Easy · 6 pairs</button>
+    <button class="diff-btn" data-diff="hard">Hard · 10 pairs</button>
+  </div>
   <div class="stats">
     <div class="stat"><div class="stat-val" id="s-moves">0</div><div class="stat-label">Moves</div></div>
     <div class="stat"><div class="stat-val" id="s-time">0:00</div><div class="stat-label">Time</div></div>
@@ -242,16 +252,23 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 </div>
 
 <script>
-var ALBUMS = [
-  {title:'Zodiac', src:'assets/albums/QUARTER DAYS/children/qu01.jpg'},
-  {title:'New \u00C6on', src:'assets/albums/QUARTER DAYS/kek-buh/qu02.jpg'},
-  {title:'Niga Denots', src:'assets/albums/QUARTER DAYS/ace of chase/qu03.jpg'},
-  {title:'Jestress Melody', src:'assets/albums/QUARTER DAYS/cricket om/qu04.jpg'},
-  {title:'The Naples Society', src:'assets/albums/2K2323/jr mason/2k2323jan.jpg'},
-  {title:'Peter Thy Godfather', src:'assets/albums/2K2323/father p journee/2k2323feb.jpg'},
-  {title:'Covers the Taste', src:'assets/albums/2K2323/blue jays/2k2323mar.jpg'},
-  {title:'Sleep Cycle', src:'assets/albums/2K2323/mutt tour/2k2323apr.jpg'}
+var ALL_PHOTOS = [
+  "the ace of chase.jpg","the ace of chase 2.jpg","the ace of chase 3.jpg","the ace of chase 4.jpg","the ace of chase 5.jpg","the ace of chase 6.jpg","the ace of chase 7.jpg","the ace of chase 8.jpg","the ace of chase 9.jpg","the ace of chase 10.jpg","the ace of chase 11.jpg","the ace of chase 12.jpg","the ace of chase 13.jpg","the ace of chase 14.jpg","the ace of chase 15.jpg","the ace of chase 16.jpg","the ace of chase 17.jpg","the ace of chase 18.jpg","the ace of chase 19.jpg","the ace of chase 20.jpg","the ace of chase 21.jpg","the ace of chase 22.jpg","the ace of chase 23.jpg","the ace of chase 24.jpg","the ace of chase 25.jpg",
+  "the perfect trip.jpg","the perfect trip 2.JPG","the perfect trip 3.jpeg","the perfect trip 4.jpg","the perfect trip 5.jpg","the perfect trip 6.jpg","the perfect trip 7.jpg","the perfect trip 8.jpg","the perfect trip 9.jpg","the perfect trip 10.jpg","the perfect trip 11.jpg","the perfect trip 12.jpg","the perfect trip 13.jpg","the perfect trip 14.jpg","the perfect trip 15.jpg","the perfect trip 16.jpg","the perfect trip 17.jpg","the perfect trip 18.jpg","the perfect trip 19.jpg","the perfect trip 20.jpg","the perfect trip 21.jpg",
+  "ft myers.jpg","ft myers 2.jpg","ft myers 3.jpg","ft myers 4.jpg","ft myers 5.jpg","ft myers 6.jpg","ft myers 7.jpg","ft myers 8.jpeg","ft myers 9.jpg","ft myers 10.jpg","ft myers 11.jpg","ft myers 13.jpg","ft myers 12.jpeg","ft myers 12.jpg",
+  "mars.jpg","mars 2.jpeg","mars 3.jpeg","mars 4.jpg","mars 5.jpg","mars 6.jpg","mars 7.jpg","mars 8.jpg","mars 9.jpg","mars 10.jpg","mars 11.jpg","mars 12.jpg","mars 13.jpg","mars and kahvi.jpg",
+  "kahvi.jpg","kahvi 1.jpg","kahvi 2.jpeg","kahvi 3.jpg","kahvi 4.jpg","kahvi 5.jpg","kahvi 6.jpg","kahvi 7.jpg",
+  "hanging gardens.jpg","hanging gardens 2.jpg","hanging gardens 3.jpg","hanging gardens 4.jpg","hanging gardens 5.jpg",
+  "mutt tour 2.jpg","mutt tour 4.jpg","mutt tour 5.jpeg","mutt tour 6.jpg",
+  "shelly 1.jpg","shelly 2.jpg","shelly 3.jpg","shelly 4.jpg","shelly and jr.jpg",
+  "venus.jpg","venus 1.jpg","venus 2.jpg","venus 3.jpg","venus 4.JPG","venus 5.jpg",
+  "kek buh.jpeg","kek buh 2.jpg","kek buh 3.jpg",
+  "blue jays.jpeg","blue jays 2.jpeg",
+  "addison.jpg","alissa orange.JPG","atlas is alice lillenger.jpg","atlas is alice lillenger 2.jpg","austinich.jpg","beach records.jpg","beach records 2.jpg","big boy new cat records.jpg","big boy new cat 2.jpg","big smoke.JPG","boston.jpg","cats.jpg","coin.jpg","cricket om.jpg","cricket om 2.jpg","father p journee.jpg","father p journee 2.JPF","hodge.jpg","jonas kyle.jpg","jonas kyle 2.jpg","jr mason.JPG","jr mason 2.jpg","jr mason 3.jpg","lilly.jpg","max.jpeg","mike 55.jpg","nails.jpg","ode to bonnie.jpeg","ode to bonnie 2.JPG","ode to bonnie 3.jpeg","sidney berne.jpeg","sounds across the world.JPG","tbsottopy.jpg","tbsottopy 2.jpg","the colours.jpg","the woodland singapore orchestra.jpg","trash.jpg"
 ];
+var ACTIVE_PHOTOS = ALL_PHOTOS;
+var DIFF = 'easy';
+var DIFF_PAIRS = {easy: 6, hard: 10};
 
 /* ── Audio ── */
 var _ac=null;
@@ -303,7 +320,7 @@ var BEST_KEY='memoryBestTime';
 
 function pad(n){return n<10?'0'+n:n}
 function tick(){secs++;document.getElementById('s-time').textContent=Math.floor(secs/60)+':'+pad(secs%60)}
-function upd(){document.getElementById('s-moves').textContent=moves;document.getElementById('s-pairs').textContent=pairs+' / 8'}
+function upd(){var t=DIFF_PAIRS[DIFF];document.getElementById('s-moves').textContent=moves;document.getElementById('s-pairs').textContent=pairs+' / '+t}
 
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 
@@ -313,7 +330,7 @@ function resetHintTimer(){
   hintUsedThisInterval=false;
   document.getElementById('hint-btn').style.display='none';
   hintTimer=setTimeout(function(){
-    if(pairs<8&&started){document.getElementById('hint-btn').style.display='inline-block';}
+    if(pairs<DIFF_PAIRS[DIFF]&&started){document.getElementById('hint-btn').style.display='inline-block';}
   },30000);
 }
 
@@ -321,13 +338,8 @@ function doHint(){
   if(lives<=0||locked)return;
   var unmatched=[].slice.call(document.querySelectorAll('.mem-card:not(.matched)'));
   if(!unmatched.length)return;
-  // Find a pair
   var idMap={};
-  unmatched.forEach(function(c){
-    var id=c.dataset.id;
-    if(!idMap[id])idMap[id]=[];
-    idMap[id].push(c);
-  });
+  unmatched.forEach(function(c){var id=c.dataset.id;if(!idMap[id])idMap[id]=[];idMap[id].push(c);});
   var pairCards=null;
   Object.keys(idMap).forEach(function(id){if(idMap[id].length>=2&&!pairCards)pairCards=idMap[id].slice(0,2);});
   if(!pairCards)return;
@@ -335,12 +347,9 @@ function doHint(){
   document.getElementById('hint-btn').style.display='none';
   hintUsedThisInterval=true;
   playHintSound();
-  // Briefly flip both cards to show them
   pairCards.forEach(function(c){c.classList.add('flipped','hint-flash');});
   setTimeout(function(){
-    pairCards.forEach(function(c){
-      c.classList.remove('flipped','hint-flash');
-    });
+    pairCards.forEach(function(c){c.classList.remove('flipped','hint-flash');});
     resetHintTimer();
   },700);
 }
@@ -355,14 +364,40 @@ function build(){
   var fb=document.getElementById('flawless-banner');if(fb)fb.style.display='none';
   var grid=document.getElementById('grid');
   grid.innerHTML='';
-  var deck=shuffle(ALBUMS.concat(ALBUMS.map(function(a){return{title:a.title,src:a.src}})));
-  deck.forEach(function(album){
-    var card=document.createElement('div');
-    card.className='mem-card';
-    card.dataset.id=album.title;
-    card.innerHTML='<div class="mem-card-inner"><div class="mem-back"><div class="mem-back-glyph">\u2726</div><div class="mem-back-text">Jestamang</div></div><div class="mem-front"><img src="'+album.src+'" alt="'+album.title+'" loading="lazy"></div></div>';
-    card.addEventListener('click',function(){flip(card)});
-    grid.appendChild(card);
+  var total=DIFF_PAIRS[DIFF];
+  // Update subtitle and grid columns
+  var sub=document.getElementById('game-sub');
+  if(sub)sub.textContent='Match the pix \u00b7 find all '+total+' lix';
+  if(DIFF==='hard'){grid.classList.add('hard');}else{grid.classList.remove('hard');}
+  // Fisher-Yates shuffle, pick first N unique photos
+  var pool=ACTIVE_PHOTOS.slice();
+  shuffle(pool);
+  var selected=pool.slice(0,total);
+  // Build deck: each photo appears twice, shuffle pairs
+  var deck=[];
+  selected.forEach(function(fn,i){
+    var obj={id:'p'+i,src:'assets/photos/'+fn};
+    deck.push(obj);deck.push({id:'p'+i,src:'assets/photos/'+fn});
+  });
+  shuffle(deck);
+  // Preload unique srcs, then render cards
+  var srcs=selected.map(function(fn){return 'assets/photos/'+fn;});
+  var loaded=0;
+  function renderCards(){
+    deck.forEach(function(item){
+      var card=document.createElement('div');
+      card.className='mem-card';
+      card.dataset.id=item.id;
+      card.innerHTML='<div class="mem-card-inner"><div class="mem-back"><div class="mem-back-glyph">\u2726</div><div class="mem-back-text">Jestamang</div></div><div class="mem-front"><img src="'+item.src+'" alt="" loading="eager"></div></div>';
+      card.addEventListener('click',function(){flip(card);});
+      grid.appendChild(card);
+    });
+  }
+  if(!srcs.length){renderCards();return;}
+  srcs.forEach(function(src){
+    var img=new Image();
+    img.onload=img.onerror=function(){if(++loaded===srcs.length)renderCards();};
+    img.src=src;
   });
 }
 
@@ -371,37 +406,23 @@ function flip(card){
   if(!started){started=true;ticker=setInterval(tick,1000);resetHintTimer();}
   playFlipSound();
   card.classList.add('flipped');
-  if(!first){first=card;return}
-  second=card;
-  locked=true;
-  moves++;upd();
+  if(!first){first=card;return;}
+  second=card;locked=true;moves++;upd();
   if(first.dataset.id===second.dataset.id){
-    var a=first,b=second;
-    first=null;second=null;
+    var a=first,b=second;first=null;second=null;
     setTimeout(function(){
-      a.classList.add('matched','match-pulse');
-      b.classList.add('matched','match-pulse');
+      a.classList.add('matched','match-pulse');b.classList.add('matched','match-pulse');
       setTimeout(function(){a.classList.remove('match-pulse');b.classList.remove('match-pulse');},350);
-      playMatchSound();
-      pairs++;upd();
-      lastMatchTime=Date.now();
-      resetHintTimer();
-      locked=false;
-      if(pairs===8)setTimeout(win,600);
+      playMatchSound();pairs++;upd();lastMatchTime=Date.now();resetHintTimer();locked=false;
+      if(pairs===DIFF_PAIRS[DIFF])setTimeout(win,600);
     },200);
   } else {
-    mismatches++;
-    var a=first,b=second;
-    first=null;second=null;
+    mismatches++;var a=first,b=second;first=null;second=null;
     setTimeout(function(){
-      a.classList.add('mismatch-shake');
-      b.classList.add('mismatch-shake');
-      playMismatchSound();
+      a.classList.add('mismatch-shake');b.classList.add('mismatch-shake');playMismatchSound();
       setTimeout(function(){
-        a.classList.remove('mismatch-shake','flipped');
-        b.classList.remove('mismatch-shake','flipped');
-        playFlipSound();
-        locked=false;
+        a.classList.remove('mismatch-shake','flipped');b.classList.remove('mismatch-shake','flipped');
+        playFlipSound();locked=false;
       },400);
     },300);
   }
@@ -409,51 +430,61 @@ function flip(card){
 
 function win(){
   clearInterval(ticker);clearTimeout(hintTimer);
-  var m=Math.floor(secs/60),s=secs%60;
-  var timeStr=m+':'+pad(s);
-  // Best time tracking
+  var m=Math.floor(secs/60),s=secs%60;var timeStr=m+':'+pad(s);
   var bestTxt='';
   try{
     var prev=JSON.parse(localStorage.getItem(BEST_KEY)||'null');
-    if(!prev||secs<prev.secs){
-      localStorage.setItem(BEST_KEY,JSON.stringify({secs:secs,str:timeStr}));
-      bestTxt='NEW BEST TIME!';
-    } else {
-      bestTxt='BEST: '+prev.str;
-    }
+    if(!prev||secs<prev.secs){localStorage.setItem(BEST_KEY,JSON.stringify({secs:secs,str:timeStr}));bestTxt='NEW BEST TIME!';}
+    else{bestTxt='BEST: '+prev.str;}
   }catch(e){}
-  document.getElementById('win-stat-txt').textContent=moves+' moves  ·  '+timeStr;
-  var bestEl=document.getElementById('win-best-txt');
-  if(bestEl)bestEl.textContent=bestTxt;
-  // Flawless bonus
+  document.getElementById('win-stat-txt').textContent=moves+' moves  \u00b7  '+timeStr;
+  var bestEl=document.getElementById('win-best-txt');if(bestEl)bestEl.textContent=bestTxt;
   if(mismatches===0){
-    showFlawless();
-    playLevelCompleteSound();
-    submitScore('memory-vault',moves+' (FLAWLESS +500)',true,null);
+    showFlawless();playLevelCompleteSound();submitScore('memory-vault',moves+' (FLAWLESS +500)',true,null);
   } else {
-    playLevelCompleteSound();
-    document.getElementById('win-overlay').classList.add('show');
-    submitScore('memory-vault',moves,true,null);
+    playLevelCompleteSound();document.getElementById('win-overlay').classList.add('show');submitScore('memory-vault',moves,true,null);
   }
 }
 
 function showFlawless(){
-  var fb=document.getElementById('flawless-banner');
-  if(!fb)return;
-  fb.textContent='FLAWLESS MEMORY \u2726';
-  fb.style.display='block';
-  setTimeout(function(){
-    fb.style.display='none';
-    document.getElementById('win-overlay').classList.add('show');
-  },2200);
+  var fb=document.getElementById('flawless-banner');if(!fb)return;
+  fb.textContent='FLAWLESS MEMORY \u2726';fb.style.display='block';
+  setTimeout(function(){fb.style.display='none';document.getElementById('win-overlay').classList.add('show');},2200);
 }
 
 document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-restart').addEventListener('click',build);
   document.getElementById('btn-again').addEventListener('click',build);
   document.getElementById('hint-btn').addEventListener('click',doHint);
+  document.querySelectorAll('.diff-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      DIFF=this.dataset.diff;
+      document.querySelectorAll('.diff-btn').forEach(function(b){b.classList.remove('active');});
+      this.classList.add('active');
+      build();
+    });
+  });
   build();
 });
+
+/* ── Firestore photo pool loader (100ms × 80 tries) ── */
+(function(){
+  var tries=0;
+  function tryLoad(){
+    var db=window.jestaDB;
+    if(!db){if(++tries<80)setTimeout(tryLoad,100);return;}
+    db.collection('photos').get().then(function(snap){
+      var filenames=[];
+      snap.forEach(function(doc){
+        var g=doc.data();
+        if(g.visible===false)return;
+        (g.photos||[]).forEach(function(p){if(p.visible!==false&&p.filename)filenames.push(p.filename);});
+      });
+      if(filenames.length>10)ACTIVE_PHOTOS=filenames;
+    }).catch(function(){});
+  }
+  setTimeout(tryLoad,100);
+})();
 </script>
 
 <script>
