@@ -1215,6 +1215,86 @@ body::before{
 .circ-btn:hover text{fill:#0a0600 !important;}
 @media(max-width:768px){.circ-actions{gap:20px;}.circ-btn svg{width:70px;height:70px;}}
 
+/* ── Change Password section ── */
+.cp-field-wrap {
+  margin-bottom: 18px;
+}
+.cp-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+.cp-input-wrap .form-input {
+  padding-right: 46px;
+  margin-bottom: 0;
+}
+.cp-eye {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 42px;
+  background: none;
+  border: none;
+  color: rgba(201,168,76,0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+  flex-shrink: 0;
+  padding: 0;
+  min-height: unset;
+}
+.cp-eye:hover { color: #c9a84c; }
+.cp-eye svg { pointer-events: none; display: block; }
+.cp-strength-wrap {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cp-strength-track {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.cp-strength-bar {
+  height: 100%;
+  width: 0;
+  border-radius: 2px;
+  transition: width 0.35s ease, background 0.35s ease;
+}
+.cp-strength-label {
+  font-family: 'Luminari', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  min-width: 44px;
+  text-align: right;
+  transition: color 0.35s;
+}
+.cp-subtitle {
+  font-family: 'Luminari', serif;
+  font-size: 0.78rem;
+  color: rgba(240,230,210,0.55);
+  line-height: 1.7;
+  margin-bottom: 22px;
+  letter-spacing: 0.04em;
+}
+#cp-msg {
+  font-family: 'Luminari', serif;
+  font-style: italic;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  margin-top: 18px;
+  text-align: center;
+  border-top: 1px solid rgba(201,168,76,0.15);
+  padding-top: 14px;
+}
 /* jt-mobile-global-base */
 @media (max-width: 768px) {
   /* Prevent iOS input zoom */
@@ -1257,6 +1337,8 @@ body::before{
   /* Circ buttons: smaller on mobile */
   .circ-actions { gap: 16px !important; }
   .circ-btn svg { width: 72px !important; height: 72px !important; }
+  /* Change password: full-width button */
+  #sec-change-password .btn-gold { width: 100% !important; text-align: center; }
 }
 
 /* ── Avatar upload overlay ── */
@@ -1720,23 +1802,52 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   </div>
 
   <!-- Account Actions -->
-  <!-- Part 3: Set Password (only shown for Google-only accounts) -->
-  <div class="dark-card profile-section" id="sec-set-password" data-section="set-password" style="display:none;">
-    <div class="card-title">Set a Password</div>
-    <p style="font-family:'Luminari',serif;font-size:0.78rem;color:rgba(240,230,210,0.6);line-height:1.7;margin-bottom:20px;letter-spacing:0.04em;">
-      You signed in with Google. Set a password to also sign in with your email.
-    </p>
-    <label class="dossier-field-label" for="sp-pw">New Password</label>
-    <input type="password" id="sp-pw" placeholder="At least 6 characters" autocomplete="new-password"
-      style="display:block;width:100%;background:rgba(10,8,5,1);border:1px solid rgba(201,168,76,0.2);color:#fff;font-family:'Luminari',serif;font-size:0.88rem;letter-spacing:0.06em;padding:11px 14px;margin-bottom:16px;outline:none;transition:border-color 0.25s;-webkit-appearance:none;appearance:none;">
-    <label class="dossier-field-label" for="sp-pw2">Confirm Password</label>
-    <input type="password" id="sp-pw2" placeholder="Repeat password" autocomplete="new-password"
-      style="display:block;width:100%;background:rgba(10,8,5,1);border:1px solid rgba(201,168,76,0.2);color:#fff;font-family:'Luminari',serif;font-size:0.88rem;letter-spacing:0.06em;padding:11px 14px;margin-bottom:20px;outline:none;transition:border-color 0.25s;-webkit-appearance:none;appearance:none;">
-    <button id="sp-submit" type="button"
-      style="display:block;width:100%;background:#c9a84c;border:none;color:#000;font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.28em;text-transform:uppercase;padding:14px 20px;cursor:pointer;transition:background 0.25s,box-shadow 0.25s;min-height:44px;">
-      Set Password
-    </button>
-    <div id="sp-msg" style="display:none;font-family:'Luminari',serif;font-style:italic;font-size:0.78rem;color:#c9a84c;letter-spacing:0.04em;line-height:1.6;margin-top:16px;text-align:center;border-top:1px solid rgba(201,168,76,0.15);padding-top:14px;"></div>
+  <!-- Change / Set Password (unified section, shown for all authenticated users) -->
+  <div class="dark-card profile-section" id="sec-change-password" data-section="change-password" style="display:none;">
+    <div class="card-title" id="cp-heading">Change Password</div>
+    <p class="cp-subtitle" id="cp-subtitle"></p>
+
+    <!-- Current password — shown only when account already has a password -->
+    <div class="cp-field-wrap" id="cp-current-wrap" style="display:none;">
+      <label class="dossier-field-label" for="cp-current">Current Password</label>
+      <div class="cp-input-wrap">
+        <input class="form-input" type="password" id="cp-current" placeholder="············" autocomplete="current-password">
+        <button class="cp-eye" type="button" data-for="cp-current" aria-label="Show/hide current password">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- New password -->
+    <div class="cp-field-wrap">
+      <label class="dossier-field-label" for="cp-new">New Password</label>
+      <div class="cp-input-wrap">
+        <input class="form-input" type="password" id="cp-new" placeholder="············" autocomplete="new-password">
+        <button class="cp-eye" type="button" data-for="cp-new" aria-label="Show/hide new password">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div class="cp-strength-wrap" id="cp-strength-wrap" style="display:none;">
+        <div class="cp-strength-track"><div class="cp-strength-bar" id="cp-strength-bar"></div></div>
+        <span class="cp-strength-label" id="cp-strength-label"></span>
+      </div>
+    </div>
+
+    <!-- Confirm new password -->
+    <div class="cp-field-wrap">
+      <label class="dossier-field-label" for="cp-confirm">Confirm New Password</label>
+      <div class="cp-input-wrap">
+        <input class="form-input" type="password" id="cp-confirm" placeholder="············" autocomplete="new-password">
+        <button class="cp-eye" type="button" data-for="cp-confirm" aria-label="Show/hide confirm password">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-gold" id="cp-submit" type="button">Update Password</button>
+    </div>
+    <div id="cp-msg" style="display:none;"></div>
   </div>
 
   <div class="dark-card profile-section" id="sec-account" data-section="account" style="text-align:center;">
@@ -2945,11 +3056,8 @@ var NC = (function(){
     db = firebase.firestore();
     showPage(user);
 
-    // ── Part 3: Show "Set Password" section for Google-only accounts ──
-    var providerIds = user.providerData.map(function(p){ return p.providerId; });
-    var isGoogleOnly = providerIds.indexOf('google.com') !== -1 && providerIds.indexOf('password') === -1;
-    var spSection = document.getElementById('sec-set-password');
-    if (spSection) spSection.style.display = isGoogleOnly ? '' : 'none';
+    // ── Configure Change/Set Password section ─────────────────────
+    if (window._initChangePassword) window._initChangePassword(user);
     if(user.email === 'thejestamang@gmail.com'){
       var row = document.getElementById('circ-actions-row');
       if(row && !document.getElementById('circ-btn-admin')){
@@ -3271,45 +3379,168 @@ var NC = (function(){
     });
   });
 
-  // ── Part 3: Set Password handler ─────────────────────────────
-  document.getElementById('sp-submit').addEventListener('click', function(){
-    var pw1  = document.getElementById('sp-pw').value;
-    var pw2  = document.getElementById('sp-pw2').value;
-    var msg  = document.getElementById('sp-msg');
-    var btn  = document.getElementById('sp-submit');
-    function spMsg(text, isError) {
-      msg.textContent  = text;
-      msg.style.color  = isError ? 'rgba(251,56,56,0.85)' : '#c9a84c';
-      msg.style.display = 'block';
+  // ── Change / Set Password section ────────────────────────────
+  (function() {
+    var cpSection    = document.getElementById('sec-change-password');
+    var cpHeading    = document.getElementById('cp-heading');
+    var cpSubtitle   = document.getElementById('cp-subtitle');
+    var cpCurrentWrap = document.getElementById('cp-current-wrap');
+    var cpCurrentInp = document.getElementById('cp-current');
+    var cpNewInp     = document.getElementById('cp-new');
+    var cpConfirmInp = document.getElementById('cp-confirm');
+    var cpSubmitBtn  = document.getElementById('cp-submit');
+    var cpMsg        = document.getElementById('cp-msg');
+    var cpStrengthWrap = document.getElementById('cp-strength-wrap');
+    var cpStrengthBar  = document.getElementById('cp-strength-bar');
+    var cpStrengthLbl  = document.getElementById('cp-strength-label');
+    var cpIsGoogleOnly = false; // set by initChangePassword()
+
+    function cpShowMsg(text, isError) {
+      cpMsg.textContent  = text;
+      cpMsg.style.color  = isError ? '#FB3838' : '#02E127';
+      cpMsg.style.display = 'block';
     }
-    if (!pw1 || pw1.length < 6) { spMsg('Password must be at least 6 characters.', true); return; }
-    if (pw1 !== pw2)             { spMsg('Passwords do not match.', true); return; }
-    if (!currentUser)            { spMsg('You must be signed in.', true); return; }
-    btn.disabled = true;
-    btn.textContent = 'Setting…';
-    var credential = firebase.auth.EmailAuthProvider.credential(currentUser.email, pw1);
-    currentUser.linkWithCredential(credential)
-      .then(function() {
-        spMsg('Password set. You can now sign in with email or Google.', false);
-        btn.disabled    = true;
-        btn.textContent = 'Password Set';
-        // Hide section after a brief pause — account now has both providers
-        setTimeout(function() {
-          var sec = document.getElementById('sec-set-password');
-          if (sec) sec.style.display = 'none';
-        }, 3000);
-      })
-      .catch(function(err) {
-        btn.disabled    = false;
-        btn.textContent = 'Set Password';
-        var map = {
-          'auth/weak-password':        'Password must be at least 6 characters.',
-          'auth/requires-recent-login':'Please sign out and sign in again before setting a password.',
-          'auth/provider-already-linked':'A password is already set for this account.'
-        };
-        spMsg(map[err.code] || ('Could not set password (' + err.code + ').'), true);
+    function cpClearMsg() { cpMsg.style.display = 'none'; cpMsg.textContent = ''; }
+
+    // Password strength scoring
+    function getStrength(pw) {
+      if (!pw) return null;
+      var score = 0;
+      if (pw.length >= 8)  score++;
+      if (pw.length >= 12) score++;
+      if (/[A-Z]/.test(pw)) score++;
+      if (/[0-9]/.test(pw)) score++;
+      if (/[^A-Za-z0-9]/.test(pw)) score++;
+      if (score <= 1) return { pct: 33,  color: '#FB3838', label: 'Weak' };
+      if (score <= 3) return { pct: 66,  color: '#c9a84c', label: 'Medium' };
+      return               { pct: 100, color: '#02E127', label: 'Strong' };
+    }
+
+    // Strength meter
+    cpNewInp.addEventListener('input', function() {
+      var pw = cpNewInp.value;
+      if (!pw) { cpStrengthWrap.style.display = 'none'; return; }
+      var s = getStrength(pw);
+      cpStrengthWrap.style.display = 'flex';
+      cpStrengthBar.style.width    = s.pct + '%';
+      cpStrengthBar.style.background = s.color;
+      cpStrengthLbl.textContent    = s.label;
+      cpStrengthLbl.style.color    = s.color;
+    });
+
+    // Eye toggle for all password fields
+    document.querySelectorAll('#sec-change-password .cp-eye').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var targetId = btn.getAttribute('data-for');
+        var inp = document.getElementById(targetId);
+        if (!inp) return;
+        var isText = inp.type === 'text';
+        inp.type = isText ? 'password' : 'text';
+        // Swap eye/eye-off icon
+        btn.innerHTML = isText
+          ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+          : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
       });
-  });
+    });
+
+    // Submit handler
+    cpSubmitBtn.addEventListener('click', function() {
+      cpClearMsg();
+      var newPw     = cpNewInp.value;
+      var confirmPw = cpConfirmInp.value;
+      var currentPw = cpCurrentInp.value;
+
+      if (!newPw || newPw.length < 6) { cpShowMsg('Password must be at least 6 characters.', true); return; }
+      if (newPw !== confirmPw)         { cpShowMsg('Passwords do not match.', true); return; }
+      if (!currentUser)                { cpShowMsg('You must be signed in.', true); return; }
+
+      cpSubmitBtn.disabled    = true;
+      cpSubmitBtn.textContent = cpIsGoogleOnly ? 'Setting…' : 'Updating…';
+
+      if (cpIsGoogleOnly) {
+        // Case 2: Google-only — link email/password credential
+        var cred = firebase.auth.EmailAuthProvider.credential(currentUser.email, newPw);
+        currentUser.linkWithCredential(cred)
+          .then(function() {
+            cpShowMsg('Password set. You can now sign in with email or Google. ✦', false);
+            cpSubmitBtn.textContent = 'Password Set';
+            cpIsGoogleOnly = false;
+            // After linking, section now serves as Change Password (hide for now)
+            setTimeout(function() { cpSection.style.display = 'none'; }, 3500);
+          })
+          .catch(function(err) {
+            cpSubmitBtn.disabled    = false;
+            cpSubmitBtn.textContent = 'Set Password';
+            var errMap = {
+              'auth/weak-password':          'Password must be at least 6 characters.',
+              'auth/requires-recent-login':  'Please sign out and sign back in, then try again.',
+              'auth/provider-already-linked':'A password is already set for this account.'
+            };
+            cpShowMsg(errMap[err.code] || ('Could not set password (' + err.code + ').'), true);
+          });
+      } else {
+        // Cases 1 & 3: has password — re-auth then update
+        if (!currentPw) { cpSubmitBtn.disabled = false; cpSubmitBtn.textContent = 'Update Password'; cpShowMsg('Current password is required.', true); return; }
+        var reAuthCred = firebase.auth.EmailAuthProvider.credential(currentUser.email, currentPw);
+        currentUser.reauthenticateWithCredential(reAuthCred)
+          .then(function() { return currentUser.updatePassword(newPw); })
+          .then(function() {
+            cpShowMsg('Your password has been updated. ✦', false);
+            cpCurrentInp.value = '';
+            cpNewInp.value     = '';
+            cpConfirmInp.value = '';
+            cpStrengthWrap.style.display = 'none';
+            cpSubmitBtn.disabled    = false;
+            cpSubmitBtn.textContent = 'Update Password';
+          })
+          .catch(function(err) {
+            cpSubmitBtn.disabled    = false;
+            cpSubmitBtn.textContent = 'Update Password';
+            var errMap = {
+              'auth/wrong-password':        'Current password is incorrect.',
+              'auth/invalid-credential':    'Current password is incorrect.',
+              'auth/weak-password':         'Password must be at least 6 characters.',
+              'auth/requires-recent-login': 'Please sign out and sign back in, then try again.',
+              'auth/too-many-requests':     'Too many attempts. Wait a moment and try again.'
+            };
+            cpShowMsg(errMap[err.code] || ('Update failed (' + err.code + ').'), true);
+          });
+      }
+    });
+
+    // Called from onAuthStateChanged to configure the section for the current user
+    window._initChangePassword = function(user) {
+      if (!user) { cpSection.style.display = 'none'; return; }
+      var providerIds = user.providerData.map(function(p) { return p.providerId; });
+      var hasGoogle   = providerIds.indexOf('google.com') !== -1;
+      var hasPassword = providerIds.indexOf('password') !== -1;
+
+      cpSection.style.display = '';
+      cpClearMsg();
+      cpNewInp.value     = '';
+      cpConfirmInp.value = '';
+      cpCurrentInp.value = '';
+      cpStrengthWrap.style.display = 'none';
+
+      if (hasPassword) {
+        // Case 1 or 3: account has a password
+        cpIsGoogleOnly = false;
+        cpHeading.textContent   = 'Change Password';
+        cpSubtitle.textContent  = hasGoogle
+          ? 'Your account uses both Google and email/password sign-in. Enter your current password to set a new one.'
+          : 'Enter your current password to set a new one.';
+        cpCurrentWrap.style.display = '';
+        cpSubmitBtn.textContent = 'Update Password';
+      } else {
+        // Case 2: Google-only
+        cpIsGoogleOnly = true;
+        cpHeading.textContent   = 'Set a Password';
+        cpSubtitle.textContent  = 'You signed in with Google. Set a password to also sign in with your email.';
+        cpCurrentWrap.style.display = 'none';
+        cpSubmitBtn.textContent = 'Set Password';
+      }
+    };
+  })();
 
   document.getElementById('signout-btn').addEventListener('click', function(){
     firebase.auth().signOut().then(function(){ window.location.href = 'index.html'; });
