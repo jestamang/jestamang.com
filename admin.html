@@ -349,8 +349,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <img class="adm-badge-img" src="assets/homepage/logo png.png" alt="Jestamang" onerror="this.style.display='none'">
     </div>
     <h1 class="adm-title">Control Room</h1>
-    <div class="adm-sub">The Jestamang Command Center</div>
-    <div class="adm-user" id="adm-user-label">Verifying clearance...</div>
     <div class="gold-rule"></div>
   </div>
 
@@ -1108,7 +1106,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           if (!user) { window.location.replace('login.html'); return; }
           if (user.email !== ADMIN_EMAIL) { window.location.replace('index.html'); return; }
           db = window.jestaDB;
-          document.getElementById('adm-user-label').textContent = 'Logged in as ' + user.email;
           document.getElementById('admin-content').style.display = 'block';
           initAll();
         });
