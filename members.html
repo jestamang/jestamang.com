@@ -699,7 +699,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   </div>
   <div class="gold-rule-sm"></div>
 
-  <div class="catalog-grid treats-grid">
+  <div class="catalog-grid treats-grid" id="treats-grid">
 
     <a class="catalog-card treat-card" href="photos.html">
       <div class="catalog-art">
@@ -880,6 +880,37 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     db = firebase.firestore();
 
     document.getElementById('page-content').style.display = 'block';
+
+    /* Load Treats from Firestore */
+    db.collection('treats').orderBy('order','asc').get()
+      .then(function(snap){
+        if(snap.empty) return; // keep hardcoded defaults
+        var grid = document.getElementById('treats-grid');
+        if(!grid) return;
+        var blurMap = {1:'catalog-blur-1',2:'catalog-blur-2',3:'catalog-blur-3'};
+        var html = '';
+        snap.forEach(function(doc){
+          var d = doc.data();
+          var blurCls = blurMap[d.blur] || 'catalog-blur-1';
+          var lines = (d.overlayTitle||d.title||'').replace(/<br>/g,'\n').split('\n');
+          var overlayHtml = lines.map(function(l){ return esc(l); }).join('<br>');
+          html += '<a class="catalog-card treat-card" href="'+esc(d.url||'#')+'">'
+            + '<div class="catalog-art"><div class="catalog-art-inner">'
+            + '<div class="'+blurCls+'"></div>'
+            + '<div class="catalog-overlay">'
+            + '<div class="catalog-lock">'+esc(d.icon||'◎')+'</div>'
+            + '<div class="catalog-pending">'+overlayHtml+'</div>'
+            + '</div></div></div>'
+            + '<div class="catalog-info">'
+            + '<div class="catalog-info-title">'+esc(d.title||'')+'</div>'
+            + '<div class="catalog-info-meta">'+esc(d.meta||'')+'</div>'
+            + '</div></a>';
+        });
+        grid.innerHTML = html;
+      })
+      .catch(function(){}); // silently keep hardcoded on error
+
+    function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
     /* Personalized greeting */
     var fallback = user.displayName || user.email.split('@')[0];
