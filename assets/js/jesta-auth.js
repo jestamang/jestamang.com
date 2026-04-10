@@ -266,6 +266,56 @@
     insertAuthNav();
   }
 
+  // ── Cookie consent banner ────────────────────────────────────
+  function initCookieBanner() {
+    if (document.getElementById('ck-banner')) return; // already present
+    var v = localStorage.getItem('cookieAccepted');
+    // Inject CSS
+    var cs = document.createElement('style');
+    cs.id = 'ck-styles';
+    cs.textContent =
+      '#ck-banner{position:fixed;bottom:0;left:0;right:0;z-index:99998;background:rgba(0,0,0,0.85);border-top:1px solid #c9a84c;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}' +
+      '#ck-banner.ck-hidden{display:none!important}' +
+      '#ck-text{font-family:\'Luminari\',serif;font-size:0.72rem;letter-spacing:0.05em;color:rgba(240,230,210,0.85);line-height:1.7;flex:1;min-width:180px;margin:0}' +
+      '#ck-btns{display:flex;gap:10px;flex-shrink:0;align-items:center}' +
+      '#ck-accept,#ck-decline{font-family:\'Luminari\',serif;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;cursor:pointer;padding:10px 18px;min-height:44px;transition:background 0.2s,color 0.2s,border-color 0.2s,box-shadow 0.2s;white-space:nowrap}' +
+      '#ck-accept{background:#c9a84c;color:#000;border:none}' +
+      '#ck-accept:hover{background:#dfc060;box-shadow:0 0 16px rgba(201,168,76,0.3)}' +
+      '#ck-decline{background:transparent;border:1px solid rgba(201,168,76,0.55);color:rgba(201,168,76,0.8)}' +
+      '#ck-decline:hover{border-color:#c9a84c;color:#c9a84c}' +
+      '@media(max-width:768px){#ck-banner{flex-direction:column;align-items:stretch;padding:14px 16px;gap:12px}#ck-btns{flex-direction:column}#ck-accept,#ck-decline{width:100%;text-align:center}}';
+    document.head.appendChild(cs);
+    // Inject HTML
+    var banner = document.createElement('div');
+    banner.id = 'ck-banner';
+    banner.className = 'ck-hidden';
+    banner.setAttribute('role', 'dialog');
+    banner.setAttribute('aria-label', 'Cookie consent');
+    banner.innerHTML =
+      '<p id="ck-text">This site uses cookies for login and anonymous analytics. By continuing you accept this.</p>' +
+      '<div id="ck-btns">' +
+      '<button id="ck-accept" type="button">Accept</button>' +
+      '<button id="ck-decline" type="button">Decline</button>' +
+      '</div>';
+    document.body.appendChild(banner);
+    // Init
+    if (!v) { banner.classList.remove('ck-hidden'); }
+    document.getElementById('ck-accept').addEventListener('click', function () {
+      localStorage.setItem('cookieAccepted', 'true');
+      banner.classList.add('ck-hidden');
+    });
+    document.getElementById('ck-decline').addEventListener('click', function () {
+      localStorage.setItem('cookieAccepted', 'false');
+      banner.classList.add('ck-hidden');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCookieBanner);
+  } else {
+    initCookieBanner();
+  }
+
   // ── Button press animation ────────────────────────────────────
   var ps = document.createElement('style');
   ps.textContent =
