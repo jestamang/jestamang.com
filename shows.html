@@ -202,7 +202,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <p class="show-city">Ft. Myers, FL</p>
   <div class="show-rule"></div>
   <!-- DETAILS: time, door price, or any other info -->
-  <p class="show-detail">Watch the seasons. The calendar knows.</p>
+  <p class="show-detail" style="text-align:center">Watch the seasons. The calendar knows.</p>
   <div class="show-ticket-wrap">
     <!-- TICKETS: replace # with real ticket URL when available -->
     <!-- Supports: Eventbrite, Dice.fm, Ticketmaster, direct venue links, or any URL -->
@@ -219,17 +219,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <div id="shows-upcoming"></div>
 
 <!-- Fallback: displayed only if Firestore fails -->
-<div id="shows-fallback">
-<article class="show-card show-card--tba">
-  <span class="show-numeral">I</span>
-  <span class="show-status">Forthcoming</span>
-  <p class="show-date">To Be Announced</p>
-  <h3 class="show-venue">?</h3>
-  <p class="show-city">Ft. Myers, FL</p>
-  <div class="show-rule"></div>
-  <p class="show-detail">Watch the seasons. The calendar knows.</p>
-</article>
-</div>
+<div id="shows-fallback"></div>
 
 <section id="shows-past-section" class="past-section" style="display:none;">
   <h2 class="section-heading">Past Events</h2>
@@ -262,7 +252,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     btn.textContent = 'Notifications On \u2736';
     btn.classList.add('notif-on');
     btn.disabled = false;
-    status.textContent = 'You will be notified of new shows and announcements';
+    status.textContent = 'You will be notified of upcoming conjurings. \u2726';
     status.className = 'ok';
     localStorage.setItem(LS, 'true');
   }
@@ -278,40 +268,33 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     btn.textContent = 'Notifications Blocked';
     btn.classList.remove('notif-on');
     btn.disabled = false;
-    status.textContent = 'Enable notifications in your browser settings to receive transmissions';
+    status.textContent = 'Notifications blocked. Enable them in your browser settings.';
     status.className = 'blocked';
   }
 
-  // Restore state
   if (Notification.permission === 'denied') { setBlocked(); }
   else if (Notification.permission === 'granted' && localStorage.getItem(LS) === 'true') { setOn(); }
   else { setOff(); }
 
   btn.addEventListener('click', function() {
-    if (btn.classList.contains('notif-on')) {
-      // Turn off
-      if (window.jestaMessaging && window.jestaMessaging.deleteToken) {
-        window.jestaMessaging.deleteToken().catch(function(){});
-      }
-      setOff();
-      return;
-    }
+    if (btn.classList.contains('notif-on')) { setOff(); return; }
     btn.disabled = true;
     btn.textContent = 'Requesting\u2026';
-    Notification.requestPermission().then(function(perm) {
+    function handlePerm(perm) {
       if (perm !== 'granted') { setBlocked(); return; }
-      // Save FCM token if available
-      if (window.JESTA_VAPID_KEY && window.jestaMessaging) {
-        window.jestaMessaging.getToken({ vapidKey: window.JESTA_VAPID_KEY })
-          .then(function(token) {
-            if (token && window.jestaDB && window.jestaAuth && window.jestaAuth.currentUser) {
-              window.jestaDB.collection('users').doc(window.jestaAuth.currentUser.uid)
-                .set({ fcmToken: token, fcmUpdated: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
-            }
-          }).catch(function(){});
-      }
       setOn();
-    }).catch(function(){ btn.disabled = false; });
+    }
+    try {
+      var result = Notification.requestPermission();
+      if (result && typeof result.then === 'function') {
+        result.then(handlePerm).catch(function() { btn.disabled = false; btn.textContent = 'Enable Notifications'; });
+      } else {
+        Notification.requestPermission(handlePerm);
+      }
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = 'Enable Notifications';
+    }
   });
 })();
 </script>
