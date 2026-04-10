@@ -252,7 +252,7 @@
       if (mobWrap) {
         mobWrap.innerHTML =
           '<div class="jtnav-mob-divider"></div>' +
-          '<a class="jtnav-mob-link" href="login.html">Enter the Circle</a>';
+          '<a class="jtnav-mob-link" href="login.html">Log In</a>';
       }
       if (mobLogin) { mobLogin.href = 'login.html'; mobLogin.textContent = 'Log In'; }
     }
