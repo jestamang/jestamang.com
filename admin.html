@@ -293,9 +293,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-20')">Backup</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-21')">Top Members</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-22')">Sigil Cards</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-23')">Photos</button>
 </nav>
 <div id="adm-mobtabs" role="navigation" aria-label="Section tabs">
-  <button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button>
+  <button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button>
 </div>
 
   <div class="adm-header">
@@ -1015,6 +1016,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div id="sc-cards" style="margin-top:24px;"></div>
     </div>
 
+    <div class="adm-section" id="sec-23">
+      <div class="adm-section-title">✦ Photo Archive Manager</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:24px;">Add, remove, or reorder photos and groups. Changes are live on photos.html immediately.</div>
+
+      <div id="pm-group-list"></div>
+
+      <div style="margin-top:32px;padding-top:24px;border-top:1px solid rgba(201,168,76,0.1);">
+        <div class="adm-section-title" style="font-size:0.65rem;margin-bottom:16px;">✦ Add New Group</div>
+        <label class="field-label">Group ID (lowercase, hyphens only)</label>
+        <input class="field-input" id="pm-new-id" type="text" placeholder="e.g. summer-tour">
+        <label class="field-label">Group Label</label>
+        <input class="field-input" id="pm-new-label" type="text" placeholder="e.g. Summer Tour">
+        <button class="btn-gold btn-gold-full" id="pm-new-btn" style="margin-top:18px;">ADD GROUP ✦</button>
+        <div class="status-msg" id="pm-new-status"></div>
+      </div>
+    </div>
+
   </div><!-- /admin-content -->
 </div><!-- /adm-wrap -->
 
@@ -1138,6 +1156,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initBackupDashboard();
     initTopMembers();
     initSigilCardEditor();
+    initPhotos();
     initTabs();
     initQuickLinks();
   }
@@ -3201,6 +3220,336 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     });
   }
 
+  /* ══════════════ SECTION 23: PHOTO ARCHIVE MANAGER ══════════════ */
+  function initPhotos() {
+    var pmGroups = [];
+
+    function pmLoad() {
+      document.getElementById('pm-group-list').innerHTML = '<div style="font-size:0.7rem;color:rgba(201,168,76,0.3);letter-spacing:0.12em;padding:8px 0;">Loading groups…</div>';
+      db.collection('photos').orderBy('order').get().then(function(snap) {
+        pmGroups = [];
+        snap.forEach(function(doc) { pmGroups.push(Object.assign({}, doc.data(), {_id: doc.id})); });
+        pmRender();
+      }).catch(function(err) {
+        document.getElementById('pm-group-list').innerHTML = '<div class="status-err">Failed to load: ' + esc(err.message) + '</div>';
+      });
+    }
+
+    function pmSaveGroup(groupId, data, statusEl) {
+      if (statusEl) { statusEl.className = 'status-msg'; statusEl.textContent = 'Saving…'; }
+      db.collection('photos').doc(groupId).update(data).then(function() {
+        if (statusEl) { statusEl.className = 'status-msg status-ok'; statusEl.textContent = 'Saved ✦'; setTimeout(function(){ statusEl.textContent = ''; }, 2500); }
+      }).catch(function(err) {
+        if (statusEl) { statusEl.className = 'status-msg status-err'; statusEl.textContent = err.message; }
+      });
+    }
+
+    function pmRender() {
+      var el = document.getElementById('pm-group-list');
+      if (!pmGroups.length) {
+        el.innerHTML = '<div style="color:rgba(201,168,76,0.3);font-size:0.72rem;letter-spacing:0.12em;">No groups found. Run scripts/seed-photos.js to seed Firestore.</div>';
+        return;
+      }
+      el.innerHTML = '';
+      pmGroups.forEach(function(g, gi) {
+        var row = document.createElement('div');
+        row.style.cssText = 'border:1px solid rgba(201,168,76,0.15);border-radius:2px;margin-bottom:10px;overflow:hidden;';
+        row.id = 'pm-row-' + g._id;
+
+        var hdr = document.createElement('div');
+        hdr.style.cssText = 'display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;background:rgba(5,3,1,0.8);user-select:none;';
+
+        var lbl = document.createElement('span');
+        lbl.style.cssText = 'flex:1;font-size:0.78rem;letter-spacing:0.12em;color:#c9a84c;';
+        lbl.textContent = g.label;
+
+        var ct = document.createElement('span');
+        ct.style.cssText = 'font-size:0.62rem;color:rgba(201,168,76,0.35);letter-spacing:0.1em;flex-shrink:0;';
+        ct.textContent = (g.photos ? g.photos.length : 0) + ' photos';
+
+        var vis = document.createElement('button');
+        vis.className = g.visible !== false ? 'btn-ghost btn-sm' : 'btn-danger btn-sm';
+        vis.style.cssText = 'font-size:0.55rem;padding:4px 10px;flex-shrink:0;';
+        vis.textContent = g.visible !== false ? 'VISIBLE' : 'HIDDEN';
+        vis.onclick = function(e) {
+          e.stopPropagation();
+          g.visible = g.visible === false ? true : false;
+          vis.className = g.visible !== false ? 'btn-ghost btn-sm' : 'btn-danger btn-sm';
+          vis.style.cssText = 'font-size:0.55rem;padding:4px 10px;flex-shrink:0;';
+          vis.textContent = g.visible !== false ? 'VISIBLE' : 'HIDDEN';
+          db.collection('photos').doc(g._id).update({ visible: g.visible }).catch(function(err){ console.error(err); });
+        };
+
+        var chevron = document.createElement('span');
+        chevron.style.cssText = 'color:rgba(201,168,76,0.3);font-size:0.8rem;transition:transform 0.2s;flex-shrink:0;';
+        chevron.textContent = '▼';
+
+        hdr.appendChild(lbl); hdr.appendChild(ct); hdr.appendChild(vis); hdr.appendChild(chevron);
+        row.appendChild(hdr);
+
+        var panel = document.createElement('div');
+        panel.style.cssText = 'display:none;padding:16px;background:rgba(3,2,1,0.9);border-top:1px solid rgba(201,168,76,0.08);';
+        panel.id = 'pm-panel-' + g._id;
+        row.appendChild(panel);
+
+        hdr.addEventListener('click', function() {
+          var open = panel.style.display !== 'none';
+          panel.style.display = open ? 'none' : 'block';
+          chevron.style.transform = open ? '' : 'rotate(180deg)';
+          if (!open) pmBuildPanel(g, gi, panel);
+        });
+
+        el.appendChild(row);
+      });
+    }
+
+    function pmBuildPanel(g, gi, panel) {
+      panel.innerHTML = '';
+
+      // Label editor
+      var labelWrap = document.createElement('div');
+      labelWrap.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:14px;';
+      var labelInput = document.createElement('input');
+      labelInput.className = 'field-input';
+      labelInput.style.cssText = 'flex:1;font-size:0.8rem;';
+      labelInput.value = g.label;
+      var labelSaveBtn = document.createElement('button');
+      labelSaveBtn.className = 'btn-ghost btn-sm';
+      labelSaveBtn.textContent = 'RENAME';
+      var labelStatus = document.createElement('span');
+      labelStatus.className = 'status-msg';
+      labelStatus.style.cssText = 'font-size:0.6rem;min-width:60px;';
+      labelSaveBtn.onclick = function() {
+        var v = labelInput.value.trim();
+        if (!v) return;
+        g.label = v;
+        var rowHdr = document.querySelector('#pm-row-' + g._id + ' span');
+        if (rowHdr) rowHdr.textContent = v;
+        pmSaveGroup(g._id, { label: v }, labelStatus);
+      };
+      labelWrap.appendChild(labelInput); labelWrap.appendChild(labelSaveBtn); labelWrap.appendChild(labelStatus);
+      panel.appendChild(labelWrap);
+
+      // Order controls
+      var orderWrap = document.createElement('div');
+      orderWrap.style.cssText = 'display:flex;gap:8px;margin-bottom:14px;';
+      var upBtn = document.createElement('button');
+      upBtn.className = 'btn-ghost btn-sm';
+      upBtn.textContent = '↑ Move Up';
+      upBtn.disabled = gi === 0;
+      upBtn.onclick = function() { pmMoveGroup(gi, -1); };
+      var downBtn = document.createElement('button');
+      downBtn.className = 'btn-ghost btn-sm';
+      downBtn.textContent = '↓ Move Down';
+      downBtn.disabled = gi === pmGroups.length - 1;
+      downBtn.onclick = function() { pmMoveGroup(gi, 1); };
+      orderWrap.appendChild(upBtn); orderWrap.appendChild(downBtn);
+      panel.appendChild(orderWrap);
+
+      // Delete group
+      var delGroupBtn = document.createElement('button');
+      delGroupBtn.className = 'btn-danger btn-sm';
+      delGroupBtn.textContent = 'DELETE GROUP';
+      delGroupBtn.style.cssText = 'margin-bottom:14px;';
+      var delGroupConfirm = document.createElement('div');
+      delGroupConfirm.className = 'confirm-inline';
+      delGroupConfirm.innerHTML = '<span class="confirm-q">Delete "' + esc(g.label) + '" and all its photos?</span>'
+        + '<button class="btn-danger btn-sm" id="pm-del-yes-' + g._id + '">YES</button>'
+        + '<button class="btn-ghost btn-sm" id="pm-del-no-' + g._id + '">Cancel</button>';
+      delGroupBtn.onclick = function() { delGroupConfirm.classList.add('visible'); };
+      panel.appendChild(delGroupBtn);
+      panel.appendChild(delGroupConfirm);
+      setTimeout(function() {
+        var y = document.getElementById('pm-del-yes-' + g._id);
+        var n = document.getElementById('pm-del-no-' + g._id);
+        if (y) y.onclick = function() {
+          db.collection('photos').doc(g._id).delete().then(function() {
+            pmGroups = pmGroups.filter(function(x){ return x._id !== g._id; });
+            pmRender();
+          }).catch(function(err){ alert('Delete failed: ' + err.message); });
+        };
+        if (n) n.onclick = function() { delGroupConfirm.classList.remove('visible'); };
+      }, 0);
+
+      // Divider
+      var divider = document.createElement('div');
+      divider.style.cssText = 'border-top:1px solid rgba(201,168,76,0.08);margin:14px 0;';
+      panel.appendChild(divider);
+
+      // Bulk-add photos
+      var bulkTitle = document.createElement('div');
+      bulkTitle.style.cssText = 'font-size:0.62rem;letter-spacing:0.22em;color:rgba(201,168,76,0.45);text-transform:uppercase;margin-bottom:8px;';
+      bulkTitle.textContent = 'Add Photos (one filename per line)';
+      var bulkTA = document.createElement('textarea');
+      bulkTA.className = 'field-input field-textarea';
+      bulkTA.style.cssText = 'width:100%;min-height:70px;font-size:0.7rem;';
+      bulkTA.placeholder = 'photo.jpg\nphoto 2.jpg\nphoto 3.jpeg';
+      var bulkRow = document.createElement('div');
+      bulkRow.style.cssText = 'display:flex;gap:8px;align-items:center;margin-top:8px;';
+      var bulkBtn = document.createElement('button');
+      bulkBtn.className = 'btn-ghost btn-sm';
+      bulkBtn.textContent = 'ADD ✦';
+      var bulkStatus = document.createElement('span');
+      bulkStatus.className = 'status-msg';
+      bulkStatus.style.cssText = 'font-size:0.6rem;';
+      var photoListEl = document.createElement('div');
+      photoListEl.style.cssText = 'margin-top:16px;';
+
+      bulkBtn.onclick = function() {
+        var lines = bulkTA.value.split('\n').map(function(l){ return l.trim(); }).filter(Boolean);
+        if (!lines.length) return;
+        var existing = (g.photos || []).map(function(p){ return p.filename; });
+        var added = 0;
+        lines.forEach(function(fn) {
+          if (existing.indexOf(fn) === -1) {
+            g.photos = g.photos || [];
+            g.photos.push({ filename: fn, caption: '', order: g.photos.length, visible: true });
+            added++;
+          }
+        });
+        if (!added) { bulkStatus.className = 'status-msg status-err'; bulkStatus.textContent = 'All filenames already exist'; return; }
+        bulkTA.value = '';
+        // Update count in header
+        var ctEl = document.querySelector('#pm-row-' + g._id + ' div > span:nth-child(2)');
+        if (ctEl) ctEl.textContent = g.photos.length + ' photos';
+        pmSaveGroup(g._id, { photos: g.photos }, bulkStatus);
+        pmBuildPhotoList(g, photoListEl, gi, panel);
+      };
+      bulkRow.appendChild(bulkBtn); bulkRow.appendChild(bulkStatus);
+      panel.appendChild(bulkTitle); panel.appendChild(bulkTA); panel.appendChild(bulkRow);
+      panel.appendChild(photoListEl);
+      pmBuildPhotoList(g, photoListEl, gi, panel);
+    }
+
+    function pmBuildPhotoList(g, container, gi, panel) {
+      container.innerHTML = '';
+      var photos = g.photos || [];
+      if (!photos.length) {
+        container.innerHTML = '<div style="color:rgba(201,168,76,0.25);font-size:0.68rem;letter-spacing:0.1em;padding:8px 0;">No photos in this group.</div>';
+        return;
+      }
+      var listTitle = document.createElement('div');
+      listTitle.style.cssText = 'font-size:0.62rem;letter-spacing:0.22em;color:rgba(201,168,76,0.45);text-transform:uppercase;margin-bottom:8px;';
+      listTitle.textContent = photos.length + ' Photos';
+      container.appendChild(listTitle);
+
+      photos.forEach(function(ph, pi) {
+        var row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.06);flex-wrap:wrap;';
+
+        var thumb = document.createElement('img');
+        thumb.src = 'assets/photos/' + ph.filename;
+        thumb.style.cssText = 'width:40px;height:40px;object-fit:cover;border:1px solid rgba(201,168,76,0.2);flex-shrink:0;border-radius:1px;';
+        thumb.onerror = function(){ this.style.background='rgba(201,168,76,0.05)'; this.style.border='1px solid rgba(201,168,76,0.1)'; };
+
+        var info = document.createElement('div');
+        info.style.cssText = 'flex:1;min-width:80px;';
+        var fnSpan = document.createElement('div');
+        fnSpan.style.cssText = 'font-size:0.62rem;color:rgba(201,168,76,0.5);letter-spacing:0.04em;margin-bottom:4px;word-break:break-all;';
+        fnSpan.textContent = ph.filename;
+        var capInput = document.createElement('input');
+        capInput.className = 'field-input';
+        capInput.style.cssText = 'font-size:0.65rem;padding:4px 2px;';
+        capInput.value = ph.caption || '';
+        capInput.placeholder = 'Caption (optional)';
+        info.appendChild(fnSpan); info.appendChild(capInput);
+
+        var visTgl = document.createElement('button');
+        visTgl.className = ph.visible !== false ? 'btn-ghost btn-sm' : 'btn-danger btn-sm';
+        visTgl.style.cssText = 'font-size:0.5rem;padding:3px 7px;flex-shrink:0;';
+        visTgl.textContent = ph.visible !== false ? 'ON' : 'OFF';
+        visTgl.onclick = function() {
+          ph.visible = ph.visible === false ? true : false;
+          visTgl.className = ph.visible !== false ? 'btn-ghost btn-sm' : 'btn-danger btn-sm';
+          visTgl.style.cssText = 'font-size:0.5rem;padding:3px 7px;flex-shrink:0;';
+          visTgl.textContent = ph.visible !== false ? 'ON' : 'OFF';
+          pmSaveGroup(g._id, { photos: g.photos }, null);
+        };
+
+        var saveCapBtn = document.createElement('button');
+        saveCapBtn.className = 'btn-ghost btn-sm';
+        saveCapBtn.style.cssText = 'font-size:0.5rem;padding:3px 7px;flex-shrink:0;';
+        saveCapBtn.textContent = 'SAVE';
+        saveCapBtn.onclick = function() {
+          ph.caption = capInput.value.trim();
+          pmSaveGroup(g._id, { photos: g.photos }, null);
+          saveCapBtn.textContent = '✓';
+          setTimeout(function(){ saveCapBtn.textContent = 'SAVE'; }, 1500);
+        };
+
+        var upBtn2 = document.createElement('button');
+        upBtn2.className = 'btn-ghost btn-sm';
+        upBtn2.style.cssText = 'font-size:0.5rem;padding:3px 7px;flex-shrink:0;';
+        upBtn2.textContent = '↑';
+        upBtn2.disabled = pi === 0;
+        upBtn2.onclick = function() { pmMovePhoto(g, pi, -1, container, gi, panel); };
+
+        var downBtn2 = document.createElement('button');
+        downBtn2.className = 'btn-ghost btn-sm';
+        downBtn2.style.cssText = 'font-size:0.5rem;padding:3px 7px;flex-shrink:0;';
+        downBtn2.textContent = '↓';
+        downBtn2.disabled = pi === photos.length - 1;
+        downBtn2.onclick = function() { pmMovePhoto(g, pi, 1, container, gi, panel); };
+
+        var delBtn = document.createElement('button');
+        delBtn.className = 'btn-danger btn-sm';
+        delBtn.style.cssText = 'font-size:0.5rem;padding:3px 7px;flex-shrink:0;';
+        delBtn.textContent = '✕';
+        delBtn.onclick = function() {
+          if (!confirm('Remove "' + ph.filename + '" from this group?')) return;
+          g.photos.splice(pi, 1);
+          var ctEl = document.querySelector('#pm-row-' + g._id + ' div > span:nth-child(2)');
+          if (ctEl) ctEl.textContent = g.photos.length + ' photos';
+          pmSaveGroup(g._id, { photos: g.photos }, null);
+          pmBuildPhotoList(g, container, gi, panel);
+        };
+
+        row.appendChild(thumb); row.appendChild(info); row.appendChild(visTgl);
+        row.appendChild(saveCapBtn); row.appendChild(upBtn2); row.appendChild(downBtn2); row.appendChild(delBtn);
+        container.appendChild(row);
+      });
+    }
+
+    function pmMovePhoto(g, pi, dir, container, gi, panel) {
+      var ni = pi + dir;
+      if (ni < 0 || ni >= g.photos.length) return;
+      var tmp = g.photos[pi]; g.photos[pi] = g.photos[ni]; g.photos[ni] = tmp;
+      g.photos.forEach(function(p, i) { p.order = i; });
+      pmSaveGroup(g._id, { photos: g.photos }, null);
+      pmBuildPhotoList(g, container, gi, panel);
+    }
+
+    function pmMoveGroup(gi, dir) {
+      var ni = gi + dir;
+      if (ni < 0 || ni >= pmGroups.length) return;
+      var tmp = pmGroups[gi]; pmGroups[gi] = pmGroups[ni]; pmGroups[ni] = tmp;
+      var batch = db.batch();
+      pmGroups.forEach(function(g, i) { batch.update(db.collection('photos').doc(g._id), { order: i }); g.order = i; });
+      batch.commit().catch(function(err){ console.error(err); });
+      pmRender();
+    }
+
+    document.getElementById('pm-new-btn').addEventListener('click', function() {
+      var id = document.getElementById('pm-new-id').value.trim();
+      var label = document.getElementById('pm-new-label').value.trim();
+      var statusEl = document.getElementById('pm-new-status');
+      if (!id || !label) { statusEl.className = 'status-msg status-err'; statusEl.textContent = 'ID and Label are required'; return; }
+      if (!/^[a-z0-9-]+$/.test(id)) { statusEl.className = 'status-msg status-err'; statusEl.textContent = 'ID must be lowercase letters, numbers, and hyphens only'; return; }
+      statusEl.className = 'status-msg'; statusEl.textContent = 'Creating…';
+      var newGroup = { id: id, label: label, order: pmGroups.length, visible: true, photos: [] };
+      db.collection('photos').doc(id).set(newGroup).then(function() {
+        pmGroups.push(Object.assign({}, newGroup, {_id: id}));
+        document.getElementById('pm-new-id').value = '';
+        document.getElementById('pm-new-label').value = '';
+        statusEl.className = 'status-msg status-ok'; statusEl.textContent = 'Group created ✦';
+        setTimeout(function(){ statusEl.textContent = ''; }, 2500);
+        pmRender();
+      }).catch(function(err) { statusEl.className = 'status-msg status-err'; statusEl.textContent = err.message; });
+    });
+
+    pmLoad();
+  }
+
   waitForAuth();
 
 })();
@@ -3232,7 +3581,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       obs.observe(el, { childList: true, characterData: true, subtree: true });
     });
   }
-  var SEC_IDS = ['sec-1','sec-2','sec-3','sec-4','sec-5','sec-6','sec-7','sec-8','sec-10','sec-11','sec-12','sec-13','sec-14','sec-15','sec-16','sec-17','sec-18','sec-19','sec-20','sec-21','sec-22'];
+  var SEC_IDS = ['sec-1','sec-2','sec-3','sec-4','sec-5','sec-6','sec-7','sec-8','sec-10','sec-11','sec-12','sec-13','sec-14','sec-15','sec-16','sec-17','sec-18','sec-19','sec-20','sec-21','sec-22','sec-23'];
   function initScrollSpy() {
     var secs = SEC_IDS.map(function(id){ return document.getElementById(id); }).filter(Boolean);
     var links = document.querySelectorAll('.adm-sidenav-link,.adm-mobtab');
