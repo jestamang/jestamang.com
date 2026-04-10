@@ -314,6 +314,43 @@
     insertAuthNav();
   }
 
+  // ── Sitewide theme loader ─────────────────────────────────────
+  (function () {
+    var TD = {
+      goldColor: '#c9a84c',
+      bgOverlayOpacity: '0.92',
+      fontSizeBase: '16',
+      bodyTextOpacity: '0.9',
+      cardBgOpacity: '0.55',
+      cardBorderOpacity: '0.3',
+      navBgOpacity: '0.75',
+      sectionSpacing: '40',
+      cardPadding: '32',
+      headingSize: 'clamp(2.2rem,5.5vw,3.6rem)'
+    };
+    function applyTheme(d) {
+      var r = document.documentElement;
+      r.style.setProperty('--gold',                d.goldColor         || TD.goldColor);
+      r.style.setProperty('--bg-overlay-opacity',  d.bgOverlayOpacity  || TD.bgOverlayOpacity);
+      r.style.setProperty('--font-size-base',      (d.fontSizeBase     || TD.fontSizeBase) + 'px');
+      r.style.setProperty('--body-text-opacity',   d.bodyTextOpacity   || TD.bodyTextOpacity);
+      r.style.setProperty('--card-bg-opacity',     d.cardBgOpacity     || TD.cardBgOpacity);
+      r.style.setProperty('--card-border-opacity', d.cardBorderOpacity || TD.cardBorderOpacity);
+      r.style.setProperty('--nav-bg-opacity',      d.navBgOpacity      || TD.navBgOpacity);
+      r.style.setProperty('--section-spacing',     (d.sectionSpacing   || TD.sectionSpacing) + 'px');
+      r.style.setProperty('--card-padding',        (d.cardPadding      || TD.cardPadding) + 'px');
+      r.style.setProperty('--heading-size',        d.headingSize       || TD.headingSize);
+    }
+    var _t = 0, _iv = setInterval(function () {
+      if (window.jestaDB) {
+        clearInterval(_iv);
+        window.jestaDB.collection('siteConfig').doc('theme').get()
+          .then(function (doc) { if (doc.exists) applyTheme(doc.data()); })
+          .catch(function () {});
+      } else if (++_t > 80) { clearInterval(_iv); }
+    }, 100);
+  })();
+
   // ── Cookie consent banner ────────────────────────────────────
   function initCookieBanner() {
     if (document.getElementById('ck-banner')) return; // already present
