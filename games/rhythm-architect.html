@@ -213,6 +213,9 @@ body{font-family:'Luminari',serif;color:#e8dcc8;min-height:100vh;overflow-x:hidd
 .hp-footer a:hover{color:#c9a84c}
 .hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4)}@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important;gap:0!important}.hp-footer-mark{margin:0 5px!important}}
 </style>
+<!-- Cloudflare Web Analytics -->
+<script>(function(){if(localStorage.getItem('cookieAccepted')==='false')return;var s=document.createElement('script');s.defer=true;s.src='https://static.cloudflareinsights.com/beacon.min.js';s.setAttribute('data-cf-beacon','{"token":"278a3dd9772141e6a6e40a9c83c51d57"}');document.head.appendChild(s);})();</script>
+<!-- End Cloudflare Web Analytics -->
 </head>
 <body>
 
@@ -1226,5 +1229,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
 <!-- footer-single-line-mobile -->
 <style>.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important}@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important}.hp-footer-mark{margin:0 8px!important;color:rgba(201,168,76,0.6)!important}}</style>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 </body>
 </html>
