@@ -893,13 +893,6 @@ var _mBgColors = [
   'rgba(124,74,74,0.5)'
 ];
 
-// Loading state
-var _mLoadEl = document.createElement('div');
-_mLoadEl.id = 'merch-loading';
-_mLoadEl.style.cssText = 'grid-column:1/-1;text-align:center;font-family:Luminari,Georgia,serif;font-size:0.85rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.4);font-style:italic;padding:60px 20px;';
-_mLoadEl.textContent = 'THE ARTIFACTS ARE BEING PREPARED...';
-_mGrid.appendChild(_mLoadEl);
-
 function _mEsc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -1009,25 +1002,40 @@ function showFallback() {
   });
 }
 
+// Render fallback immediately — no loading state
+showFallback();
+
+// Silently swap with Firestore data if it differs from fallback
 var _mTries = 0, _mIv = setInterval(function() {
   _mTries++;
   if (window.jestaDB) {
     clearInterval(_mIv);
     window.jestaDB.collection('merch').get()
       .then(function(snap) {
-        if (snap.empty) { showFallback(); return; }
+        if (snap.empty) { return; }
         var docs = [];
         snap.forEach(function(doc) {
           var d = doc.data();
           if (d.active !== false) docs.push({ id: doc.id, data: d });
         });
-        if (docs.length === 0) { showFallback(); return; }
-        renderMerchCards(docs);
+        if (docs.length === 0) { return; }
+        // If Firestore matches fallback (same count + same names in order), do nothing
+        var matches = docs.length === _mFallback.length && docs.every(function(doc, i) {
+          return (doc.data.name || '') === (_mFallback[i].title || '');
+        });
+        if (matches) { return; }
+        // Fade out, swap content, fade in
+        _mGrid.style.transition = 'opacity 0.3s ease';
+        _mGrid.style.opacity = '0';
+        setTimeout(function() {
+          renderMerchCards(docs);
+          _mGrid.style.opacity = '1';
+        }, 300);
       })
-      .catch(function() { showFallback(); });
+      .catch(function() { /* fallback already shown */ });
   } else if (_mTries > 80) {
     clearInterval(_mIv);
-    showFallback();
+    // fallback already shown, nothing to do
   }
 }, 100);
 </script>
