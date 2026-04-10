@@ -322,7 +322,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-7')">Shows</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-8')">Press</button>
   <div style="font-size:0.55rem;letter-spacing:0.28em;color:rgba(255,255,255,0.55);padding:10px 12px 3px;margin-top:6px;border-top:1px solid rgba(201,168,76,0.12);text-transform:uppercase;font-family:'Luminari',serif;">Community</div>
-  <button class="adm-sidenav-link" onclick="admNavTo('sec-3')">Inner Circle</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-3')">Members</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-24')">Treats</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-5')">Moderation</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-6')">Inquiries</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-21')">Top Members</button>
@@ -341,7 +342,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-17')">Maintenance</button>
 </nav>
 <div id="adm-mobtabs" role="navigation" aria-label="Section tabs">
-  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
+  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
 </div>
 
   <div class="adm-header">
@@ -683,6 +684,63 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <input class="search-input" id="member-search" type="text" placeholder="Search by username or email..." autocomplete="off">
       </div>
       <div id="member-list"><div style="color:rgba(201,168,76,0.25);font-size:0.7rem;padding:12px 0;">Loading members…</div></div>
+    </div>
+    <div class="adm-ornament">✦</div>
+    <div class="adm-section" id="sec-24">
+      <div class="adm-section-title">✦ Treats</div>
+      <div class="adm-section-underline"></div>
+      <div style="font-size:0.62rem;letter-spacing:0.18em;color:rgba(201,168,76,0.35);margin-bottom:20px;">Manage member-exclusive link cards shown on the Members page.</div>
+
+      <!-- Add / Edit form -->
+      <div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.15);padding:20px;margin-bottom:24px;">
+        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.6);margin-bottom:16px;" id="treat-form-label">Add Treat</div>
+        <input type="hidden" id="treat-edit-id">
+
+        <label class="field-label" for="treat-title">Title</label>
+        <input class="field-input" id="treat-title" type="text" placeholder="Photos" maxlength="40">
+
+        <label class="field-label" for="treat-overlay">Card Text <span style="color:rgba(201,168,76,0.3);font-size:0.58rem;">(big text inside card, use \n for line break)</span></label>
+        <input class="field-input" id="treat-overlay" type="text" placeholder="Photo Archive" maxlength="40">
+
+        <label class="field-label" for="treat-meta">Meta / Description</label>
+        <input class="field-input" id="treat-meta" type="text" placeholder="Full archive · All groups" maxlength="80">
+
+        <label class="field-label" for="treat-url">URL / Link</label>
+        <input class="field-input" id="treat-url" type="text" placeholder="photos.html or https://..." maxlength="200">
+
+        <label class="field-label" for="treat-icon">Icon</label>
+        <select class="field-input field-select" id="treat-icon">
+          <option value="◎">◎ Circle</option>
+          <option value="◇">◇ Diamond</option>
+          <option value="◉">◉ Bullseye</option>
+          <option value="◈">◈ Diamond Dot</option>
+          <option value="✦">✦ Star Four</option>
+          <option value="✶">✶ Star Six</option>
+          <option value="★">★ Star</option>
+          <option value="◆">◆ Diamond Solid</option>
+          <option value="▽">▽ Triangle</option>
+          <option value="⬡">⬡ Hexagon</option>
+        </select>
+
+        <label class="field-label" for="treat-blur">Card Style</label>
+        <select class="field-input field-select" id="treat-blur">
+          <option value="1">Style 1 (Green)</option>
+          <option value="2">Style 2 (Purple)</option>
+          <option value="3">Style 3 (Red)</option>
+        </select>
+
+        <label class="field-label" for="treat-order">Order <span style="color:rgba(201,168,76,0.3);font-size:0.58rem;">(lower = shown first)</span></label>
+        <input class="field-input" id="treat-order" type="number" value="10" min="0" max="999">
+
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button class="btn-ghost" id="treat-save-btn" onclick="treatSave()" style="flex:1;">SAVE TREAT ✦</button>
+          <button class="btn-ghost" id="treat-cancel-btn" onclick="treatCancelEdit()" style="display:none;padding:8px 16px;">✕</button>
+        </div>
+        <div id="treat-form-msg" style="font-size:0.62rem;letter-spacing:0.15em;color:rgba(201,168,76,0.4);margin-top:10px;min-height:1em;"></div>
+      </div>
+
+      <!-- Live treat list -->
+      <div id="treat-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:8px 0;">Loading…</div></div>
     </div>
     <div class="adm-ornament">✦</div>
     <div class="adm-section" id="sec-5">
@@ -1134,6 +1192,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initTopMembers();
     initSigilCardEditor();
     initPhotos();
+    initTreats();
     initTabs();
     initQuickLinks();
   }
@@ -1454,6 +1513,126 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     db.collection('blogPosts').doc(id).update({ published: false })
       .then(loadRecentPosts).catch(function(){});
   };
+
+  /* ══════════════ SECTION 24: TREATS ══════════════ */
+  var treatUnsub = null;
+
+  function initTreats() {
+    if (treatUnsub) return;
+    treatUnsub = db.collection('treats').orderBy('order', 'asc').onSnapshot(function (snap) {
+      renderTreatList(snap);
+    }, function () {
+      document.getElementById('treat-list').innerHTML =
+        '<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error loading treats.</div>';
+    });
+  }
+
+  function renderTreatList(snap) {
+    var el = document.getElementById('treat-list');
+    if (!el) return;
+    if (snap.empty) {
+      el.innerHTML = '<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:8px 0;">No treats yet.</div>';
+      return;
+    }
+    var html = '';
+    snap.forEach(function (doc) {
+      var d = doc.data();
+      html += '<div class="entry-item" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;margin-bottom:6px;border:1px solid rgba(201,168,76,0.12);">'
+        + '<div style="flex:1;min-width:0;">'
+        + '<div style="font-family:\'Luminari\',serif;font-size:0.72rem;letter-spacing:0.15em;color:#c9a84c;">' + esc(d.icon || '') + '  ' + esc(d.title || '') + '</div>'
+        + '<div style="font-size:0.62rem;letter-spacing:0.12em;color:rgba(201,168,76,0.4);margin-top:2px;">' + esc(d.meta || '') + '</div>'
+        + '<div style="font-size:0.58rem;letter-spacing:0.1em;color:rgba(201,168,76,0.25);margin-top:2px;">' + esc(d.url || '') + ' · order: ' + (d.order || 0) + '</div>'
+        + '</div>'
+        + '<div style="display:flex;gap:6px;flex-shrink:0;">'
+        + '<button class="btn-ghost" onclick="treatEdit(\'' + doc.id + '\')" style="padding:5px 12px;font-size:0.58rem;letter-spacing:0.2em;">EDIT</button>'
+        + '<button class="btn-ghost" onclick="treatDelete(\'' + doc.id + '\')" style="padding:5px 12px;font-size:0.58rem;letter-spacing:0.2em;border-color:rgba(251,56,56,0.4);color:rgba(251,56,56,0.7);">DEL</button>'
+        + '</div>'
+        + '</div>';
+    });
+    el.innerHTML = html;
+  }
+
+  window._treatCache = {};
+
+  // Store treat data for edit
+  function cacheTreat(snap) {
+    snap.forEach(function (doc) { window._treatCache[doc.id] = doc.data(); });
+  }
+
+  function treatEdit(id) {
+    db.collection('treats').doc(id).get().then(function (doc) {
+      if (!doc.exists) return;
+      var d = doc.data();
+      document.getElementById('treat-edit-id').value = id;
+      document.getElementById('treat-title').value = d.title || '';
+      document.getElementById('treat-overlay').value = (d.overlayTitle || '').replace('<br>', '\n');
+      document.getElementById('treat-meta').value = d.meta || '';
+      document.getElementById('treat-url').value = d.url || '';
+      document.getElementById('treat-icon').value = d.icon || '◎';
+      document.getElementById('treat-blur').value = String(d.blur || '1');
+      document.getElementById('treat-order').value = d.order || 0;
+      document.getElementById('treat-form-label').textContent = 'Edit Treat';
+      document.getElementById('treat-cancel-btn').style.display = '';
+      document.getElementById('treat-save-btn').textContent = 'UPDATE TREAT ✦';
+      admNavTo('sec-24');
+    });
+  }
+
+  function treatCancelEdit() {
+    document.getElementById('treat-edit-id').value = '';
+    document.getElementById('treat-title').value = '';
+    document.getElementById('treat-overlay').value = '';
+    document.getElementById('treat-meta').value = '';
+    document.getElementById('treat-url').value = '';
+    document.getElementById('treat-icon').value = '◎';
+    document.getElementById('treat-blur').value = '1';
+    document.getElementById('treat-order').value = '10';
+    document.getElementById('treat-form-label').textContent = 'Add Treat';
+    document.getElementById('treat-cancel-btn').style.display = 'none';
+    document.getElementById('treat-save-btn').textContent = 'SAVE TREAT ✦';
+    document.getElementById('treat-form-msg').textContent = '';
+  }
+
+  function treatSave() {
+    var editId  = document.getElementById('treat-edit-id').value.trim();
+    var title   = document.getElementById('treat-title').value.trim();
+    var overlay = document.getElementById('treat-overlay').value.trim();
+    var meta    = document.getElementById('treat-meta').value.trim();
+    var url     = document.getElementById('treat-url').value.trim();
+    var icon    = document.getElementById('treat-icon').value;
+    var blur    = parseInt(document.getElementById('treat-blur').value, 10) || 1;
+    var order   = parseInt(document.getElementById('treat-order').value, 10) || 10;
+    var msg     = document.getElementById('treat-form-msg');
+
+    if (!title || !url) { msg.textContent = 'Title and URL are required.'; return; }
+
+    var data = {
+      title: title,
+      overlayTitle: overlay.replace(/\n/g, '<br>'),
+      meta: meta,
+      url: url,
+      icon: icon,
+      blur: blur,
+      order: order,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    msg.textContent = 'Saving…';
+    var ref = editId ? db.collection('treats').doc(editId) : db.collection('treats').doc();
+    (editId ? ref.update(data) : ref.set(data))
+      .then(function () {
+        msg.textContent = editId ? 'Updated.' : 'Treat added.';
+        treatCancelEdit();
+        setTimeout(function () { msg.textContent = ''; }, 2000);
+      })
+      .catch(function (e) { msg.textContent = 'Error: ' + esc(e.message); });
+  }
+
+  function treatDelete(id) {
+    if (!confirm('Remove this treat?')) return;
+    db.collection('treats').doc(id).delete()
+      .catch(function (e) { alert('Error: ' + e.message); });
+  }
 
   /* ══════════════ SECTION 5: MODERATION ══════════════ */
   var lastCommentDoc = null;
@@ -3595,7 +3774,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       obs.observe(el, { childList: true, characterData: true, subtree: true });
     });
   }
-  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-1','sec-12','sec-20','sec-17'];
+  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-1','sec-12','sec-20','sec-17'];
   function initScrollSpy() {
     var secs = SEC_IDS.map(function(id){ return document.getElementById(id); }).filter(Boolean);
     var links = document.querySelectorAll('.adm-sidenav-link,.adm-mobtab');

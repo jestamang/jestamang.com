@@ -128,6 +128,15 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .ml-signup-box{background:rgba(0,0,0,0.6);border:1px solid #c9a84c;padding:32px;max-width:500px;margin:0 auto}
 .ml-signup-title{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.5em;color:#c9a84c;text-transform:uppercase;margin-bottom:10px}
 .ml-signup-sub{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.1em;color:rgba(240,230,210,0.4);font-style:italic;margin-bottom:24px;line-height:1.7}
+.ml-notif-divider{width:60%;max-width:280px;height:1px;background:rgba(201,168,76,0.2);margin:24px auto 20px}
+.ml-notif-label{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.28em;color:rgba(201,168,76,0.45);text-transform:uppercase;margin-bottom:12px}
+#shows-notif-btn{background:transparent;border:1px solid rgba(201,168,76,0.5);color:#c9a84c;font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.4em;text-transform:uppercase;padding:12px 28px;cursor:pointer;transition:background 0.2s,border-color 0.2s,color 0.2s;display:inline-block}
+#shows-notif-btn:hover{background:rgba(201,168,76,0.1);border-color:#c9a84c}
+#shows-notif-btn.notif-on{background:rgba(201,168,76,0.12);border-color:#c9a84c;color:#dfc060}
+#shows-notif-btn:disabled{opacity:0.45;cursor:default}
+#shows-notif-status{font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.18em;color:rgba(240,230,210,0.35);margin-top:10px;min-height:1em}
+#shows-notif-status.ok{color:rgba(201,168,76,0.65)}
+#shows-notif-status.blocked{color:rgba(251,56,56,0.7)}
 .ml-signup-box .ml-form-embedWrapper{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important}
 .ml-signup-box .ml-form-embedWrapper .ml-form-embedBody,
 .ml-signup-box .ml-form-embedWrapper .ml-form-embedBody .ml-form-formContent{padding:0!important;background:transparent!important}
@@ -226,8 +235,77 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     <p class="ml-signup-title">STAY IN THE LOOP</p>
     <p class="ml-signup-sub">Get notified when the next conjuring is announced.</p>
     <div class="ml-embedded" data-form="8EZtSf"></div>
+    <div class="ml-notif-divider"></div>
+    <p class="ml-notif-label">Browser Push Notifications</p>
+    <button id="shows-notif-btn">Enable Notifications</button>
+    <p id="shows-notif-status"></p>
   </div>
 </section>
+<script>
+(function(){
+  var btn = document.getElementById('shows-notif-btn');
+  var status = document.getElementById('shows-notif-status');
+  var LS = 'jesta-notif-enabled';
+  if (!btn) return;
+  if (!('Notification' in window)) { btn.style.display='none'; return; }
+
+  function setOn() {
+    btn.textContent = 'Notifications On \u2736';
+    btn.classList.add('notif-on');
+    btn.disabled = false;
+    status.textContent = 'You will be notified of new shows and announcements';
+    status.className = 'ok';
+    localStorage.setItem(LS, 'true');
+  }
+  function setOff() {
+    btn.textContent = 'Enable Notifications';
+    btn.classList.remove('notif-on');
+    btn.disabled = false;
+    status.textContent = '';
+    status.className = '';
+    localStorage.setItem(LS, 'false');
+  }
+  function setBlocked() {
+    btn.textContent = 'Notifications Blocked';
+    btn.classList.remove('notif-on');
+    btn.disabled = false;
+    status.textContent = 'Enable notifications in your browser settings to receive transmissions';
+    status.className = 'blocked';
+  }
+
+  // Restore state
+  if (Notification.permission === 'denied') { setBlocked(); }
+  else if (Notification.permission === 'granted' && localStorage.getItem(LS) === 'true') { setOn(); }
+  else { setOff(); }
+
+  btn.addEventListener('click', function() {
+    if (btn.classList.contains('notif-on')) {
+      // Turn off
+      if (window.jestaMessaging && window.jestaMessaging.deleteToken) {
+        window.jestaMessaging.deleteToken().catch(function(){});
+      }
+      setOff();
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Requesting\u2026';
+    Notification.requestPermission().then(function(perm) {
+      if (perm !== 'granted') { setBlocked(); return; }
+      // Save FCM token if available
+      if (window.JESTA_VAPID_KEY && window.jestaMessaging) {
+        window.jestaMessaging.getToken({ vapidKey: window.JESTA_VAPID_KEY })
+          .then(function(token) {
+            if (token && window.jestaDB && window.jestaAuth && window.jestaAuth.currentUser) {
+              window.jestaDB.collection('users').doc(window.jestaAuth.currentUser.uid)
+                .set({ fcmToken: token, fcmUpdated: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+            }
+          }).catch(function(){});
+      }
+      setOn();
+    }).catch(function(){ btn.disabled = false; });
+  });
+})();
+</script>
 </div>
 <!-- card observers run inside the Firestore load callback below -->
 
