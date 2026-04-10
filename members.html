@@ -272,7 +272,7 @@ body::before{
   position:relative;
   transition:border-color 0.3s ease;
 }
-.catalog-card:hover{border-color:rgba(201,168,76,0.3);}
+.catalog-card:hover{border-color:rgba(201,168,76,0.3);}.treat-card{text-decoration:none;display:block;cursor:pointer;}.treat-card:hover{border-color:rgba(201,168,76,0.5);}.treat-card:hover .catalog-lock{color:#c9a84c;}.treat-card .catalog-info-title{color:rgba(201,168,76,0.75)!important;}.treats-grid{grid-template-columns:repeat(3,1fr);}
 
 .catalog-art{
   width:100%;
@@ -659,31 +659,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 #ck-decline:hover{border-color:#c9a84c;color:#c9a84c}
 @media(max-width:768px){#ck-banner{flex-direction:column;align-items:stretch;padding:14px 16px;gap:12px}#ck-btns{flex-direction:column}#ck-accept,#ck-decline{width:100%;text-align:center}}
 </style>
-<style id="ml-signup-styles">
-.ml-signup-sect{position:relative;z-index:1;padding:48px 24px 0;text-align:center}
-.ml-signup-box{background:rgba(0,0,0,0.6);border:1px solid #c9a84c;padding:32px;max-width:500px;margin:0 auto}
-.ml-signup-title{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.5em;color:#c9a84c;text-transform:uppercase;margin-bottom:10px}
-.ml-signup-sub{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.1em;color:rgba(240,230,210,0.4);font-style:italic;margin-bottom:24px;line-height:1.7}
-.ml-signup-box .ml-form-embedWrapper{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important}
-.ml-signup-box .ml-form-embedWrapper .ml-form-embedBody,
-.ml-signup-box .ml-form-embedWrapper .ml-form-embedBody .ml-form-formContent{padding:0!important;background:transparent!important}
-.ml-signup-box input[type="email"],
-.ml-signup-box input[type="text"]{background:transparent!important;border:none!important;border-bottom:1px solid rgba(201,168,76,0.3)!important;border-radius:0!important;color:#e8e0d0!important;font-family:'Luminari',serif!important;font-size:16px!important;letter-spacing:0.12em!important;padding:8px 4px!important;outline:none!important;width:100%!important;max-width:320px!important;box-shadow:none!important;text-align:center!important;caret-color:#c9a84c!important;-webkit-appearance:none!important;appearance:none!important}
-.ml-signup-box input[type="email"]::placeholder,
-.ml-signup-box input[type="text"]::placeholder{color:rgba(201,168,76,0.22)!important;font-style:italic!important}
-.ml-signup-box button[type="submit"],
-.ml-signup-box .ml-form-embedSubmit button{background:#c9a84c!important;color:transparent!important;font-family:'Luminari',serif!important;font-size:0!important;letter-spacing:0.45em!important;text-transform:uppercase!important;border:none!important;border-radius:0!important;padding:0!important;width:auto!important;min-width:200px!important;min-height:46px!important;cursor:pointer!important;margin-top:18px!important;transition:background 0.2s,box-shadow 0.2s!important;display:block!important;margin-left:auto!important;margin-right:auto!important;position:relative!important;box-shadow:none!important}
-.ml-signup-box button[type="submit"]::after,
-.ml-signup-box .ml-form-embedSubmit button::after{content:'JOIN THE JESTAGANG';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.45em;color:#08060a;text-transform:uppercase}
-.ml-signup-box button[type="submit"]:hover,
-.ml-signup-box .ml-form-embedSubmit button:hover{background:#dfc060!important;box-shadow:0 0 24px rgba(201,168,76,0.35)!important}
-.ml-signup-box .ml-form-successBody,.ml-signup-box .ml-form-successContent{background:transparent!important;border:none!important;box-shadow:none!important}
-.ml-signup-box .ml-form-successContent h4{font-family:'Luminari',serif!important;color:rgba(201,168,76,0.7)!important;letter-spacing:0.3em!important;text-transform:uppercase!important;font-size:0.72rem!important;font-weight:normal!important}
-.ml-signup-box .ml-form-successContent p{font-family:'Luminari',serif!important;color:rgba(240,230,210,0.35)!important;font-size:0.62rem!important;letter-spacing:0.14em!important}
-.ml-signup-box .ml-form-fieldRow{margin-bottom:4px!important}
-.ml-signup-box label{display:none!important}
-@media(max-width:520px){.ml-signup-box{padding:24px 16px}.ml-signup-box button[type="submit"],.ml-signup-box .ml-form-embedSubmit button{min-width:180px!important}}
-</style>
 <script>(function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[]).push(arguments);};l=d.createElement(e);l.async=1;l.src=u;n=d.getElementsByTagName(e)[0];n.parentNode.insertBefore(l,n);})(window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');ml('account','1679810');</script>
 </head>
 <body>
@@ -701,9 +676,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
   <!-- ── HERO ─────────────────────────────────────────── -->
   <div class="ic-hero">
-    <h1 class="ic-title">Welcome to the Inner Circle</h1>
+    <h1 class="ic-title">Members</h1>
     <p class="ic-recognize" id="hero-name">Jestamang sees you.</p>
-    <p class="ic-since" id="member-since">Initiated: —</p>
   </div>
 
   <div class="gold-rule"><span class="gold-rule-glyph">◈ &nbsp; ◈ &nbsp; ◈</span></div>
@@ -720,61 +694,108 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
   <!-- ── SECTION 2: HIDDEN CATALOG ─────────────────────── -->
   <div class="section-header">
-    <div class="section-eyebrow">◈ Classified · Unreleased Transmissions</div>
-    <h2 class="section-title">The Hidden Catalog</h2>
-    <p class="section-sub">Signals intercepted. Pending release to the inner circle first.</p>
+    <h2 class="section-title">Treats</h2>
+    <p class="section-sub">Members-only links and shortcuts across the Jestamang universe.</p>
   </div>
   <div class="gold-rule-sm"></div>
 
-  <div class="catalog-grid">
+  <div class="catalog-grid treats-grid">
 
-    <div class="catalog-card">
+    <a class="catalog-card treat-card" href="photos.html">
       <div class="catalog-art">
         <div class="catalog-art-inner">
           <div class="catalog-blur-1"></div>
           <div class="catalog-overlay">
-            <div class="catalog-lock">🔒</div>
-            <div class="catalog-pending">Transmission<br>Pending...</div>
+            <div class="catalog-lock">◎</div>
+            <div class="catalog-pending">Photo<br>Archive</div>
           </div>
         </div>
       </div>
       <div class="catalog-info">
-        <div class="catalog-info-title">████████████ Vol. IV</div>
-        <div class="catalog-info-meta">ETA · Unknown &nbsp;·&nbsp; IC Exclusive</div>
+        <div class="catalog-info-title">Photos</div>
+        <div class="catalog-info-meta">Full archive · All groups</div>
       </div>
-    </div>
+    </a>
 
-    <div class="catalog-card">
+    <a class="catalog-card treat-card" href="blog.html">
       <div class="catalog-art">
         <div class="catalog-art-inner">
           <div class="catalog-blur-2"></div>
           <div class="catalog-overlay">
-            <div class="catalog-lock">🔒</div>
-            <div class="catalog-pending">Transmission<br>Pending...</div>
+            <div class="catalog-lock">◇</div>
+            <div class="catalog-pending">Blog &amp;<br>Transmissions</div>
           </div>
         </div>
       </div>
       <div class="catalog-info">
-        <div class="catalog-info-title">████ — Drift Sessions</div>
-        <div class="catalog-info-meta">ETA · Unknown &nbsp;·&nbsp; IC Exclusive</div>
+        <div class="catalog-info-title">Blog</div>
+        <div class="catalog-info-meta">Writings · Press · Community</div>
       </div>
-    </div>
+    </a>
 
-    <div class="catalog-card">
+    <a class="catalog-card treat-card" href="arcade.html">
       <div class="catalog-art">
         <div class="catalog-art-inner">
           <div class="catalog-blur-3"></div>
           <div class="catalog-overlay">
-            <div class="catalog-lock">🔒</div>
-            <div class="catalog-pending">Transmission<br>Pending...</div>
+            <div class="catalog-lock">◉</div>
+            <div class="catalog-pending">The<br>Arcade</div>
           </div>
         </div>
       </div>
       <div class="catalog-info">
-        <div class="catalog-info-title">The ██████ Protocol</div>
-        <div class="catalog-info-meta">ETA · Unknown &nbsp;·&nbsp; IC Exclusive</div>
+        <div class="catalog-info-title">Games</div>
+        <div class="catalog-info-meta">Vault · Oracle · Conductor</div>
       </div>
-    </div>
+    </a>
+
+    <a class="catalog-card treat-card" href="albums.html">
+      <div class="catalog-art">
+        <div class="catalog-art-inner">
+          <div class="catalog-blur-1"></div>
+          <div class="catalog-overlay">
+            <div class="catalog-lock">◈</div>
+            <div class="catalog-pending">Full<br>Discography</div>
+          </div>
+        </div>
+      </div>
+      <div class="catalog-info">
+        <div class="catalog-info-title">Albums</div>
+        <div class="catalog-info-meta">Quarter Days · 2K2323 · NONS</div>
+      </div>
+    </a>
+
+    <a class="catalog-card treat-card" href="comix.html">
+      <div class="catalog-art">
+        <div class="catalog-art-inner">
+          <div class="catalog-blur-2"></div>
+          <div class="catalog-overlay">
+            <div class="catalog-lock">✦</div>
+            <div class="catalog-pending">Jestamang<br>Comix</div>
+          </div>
+        </div>
+      </div>
+      <div class="catalog-info">
+        <div class="catalog-info-title">Comix</div>
+        <div class="catalog-info-meta">Art · Comics · Illustration</div>
+      </div>
+    </a>
+
+    <a class="catalog-card treat-card" href="profile.html">
+      <div class="catalog-art">
+        <div class="catalog-art-inner">
+          <div class="catalog-blur-3"></div>
+          <div class="catalog-overlay">
+            <div class="catalog-lock">✶</div>
+            <div class="catalog-pending">Your<br>Dossier</div>
+          </div>
+        </div>
+      </div>
+      <div class="catalog-info">
+        <div class="catalog-info-title">My Dossier</div>
+        <div class="catalog-info-meta">Profile · Natal Chart · Settings</div>
+      </div>
+    </a>
 
   </div>
 
@@ -859,13 +880,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     db = firebase.firestore();
 
     document.getElementById('page-content').style.display = 'block';
-
-    /* Member since */
-    var since = new Date(user.metadata.creationTime);
-    var months = ['January','February','March','April','May','June',
-                  'July','August','September','October','November','December'];
-    var sinceStr = months[since.getMonth()]+' '+since.getDate()+', '+since.getFullYear();
-    document.getElementById('member-since').textContent = 'Initiated: '+sinceStr;
 
     /* Personalized greeting */
     var fallback = user.displayName || user.email.split('@')[0];
@@ -1046,13 +1060,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 </script>
 
 
-<section class="ml-signup-sect">
-  <div class="ml-signup-box">
-    <p class="ml-signup-title">SPREAD THE SIGNAL</p>
-    <p class="ml-signup-sub">Share the Jestagang with those worthy of initiation.</p>
-    <div class="ml-embedded" data-form="8EZtSf"></div>
-  </div>
-</section>
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span> Jestamang<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a>
 </footer>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
