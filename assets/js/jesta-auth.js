@@ -16,6 +16,7 @@
     '.jtnav-auth-star:hover{color:#c9a84c}',
     /* On mobile: hide the desktop auth div, show only the right mob-login link */
     '@media(max-width:767px){#jtnav-auth{display:none!important}}',
+    '@media(max-width:767px){#jtnav-mob-auth{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;width:100%;gap:8px}#jtnav-mob-auth .jtnav-mob-link{width:60%;max-width:220px;text-align:center}#jtnav-mob-auth .jtnav-mob-divider{width:100%}}',
     '#jtnav-mob-login{display:none!important}',
     '@media(max-width:767px){#jtnav-mob-login{display:flex!important;align-items:center;font-family:\'Luminari\',serif!important;color:#c9a84c!important;font-size:0.62rem!important;letter-spacing:0.16em!important;text-transform:uppercase!important;transition:opacity 0.2s!important}}',
     '#jtnav-mob-login:hover{opacity:0.75}'
@@ -58,7 +59,7 @@
       mobWrap.innerHTML =
         '<div class="jtnav-mob-divider"></div>' +
         '<a class="jtnav-mob-link" href="profile.html">My Dossier</a>' +
-        '<a class="jtnav-mob-link" href="members.html">Inner Circle</a>' +
+        '<a class="jtnav-mob-link" href="members.html">Members</a>' +
         '<a class="jtnav-mob-link" href="#" id="jtnav-mob-so">Depart for Now</a>';
       var so = document.getElementById('jtnav-mob-so');
       if (so) so.addEventListener('click', function (e) {
