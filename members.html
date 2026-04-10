@@ -794,10 +794,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <div class="chat-empty" id="chat-empty">No transmissions yet. Be the first to speak.</div>
     </div>
     <div class="chat-input-row">
-      <textarea id="chat-input" rows="1" placeholder="Send a transmission to the inner circle..." maxlength="500"></textarea>
+      <textarea id="chat-input" rows="1" placeholder="Awaiting your transmission..." maxlength="500"></textarea>
       <button id="chat-send">Send ✦</button>
     </div>
-    <div class="chat-status" id="chat-status">Inner Circle · Encrypted · Members Only</div>
   </div>
 
 
@@ -922,8 +921,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     var messagesEl = document.getElementById('chat-messages');
     var input      = document.getElementById('chat-input');
     var sendBtn    = document.getElementById('chat-send');
-    var statusEl   = document.getElementById('chat-status');
-
     /* Real-time listener ordered ascending, last 50 */
     unsubChat = db.collection('innerCircleChat')
       .orderBy('ts','asc')
@@ -932,7 +929,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         renderMessages(snap, messagesEl);
       }, function(err){
         console.error('Chat error:', err);
-        statusEl.textContent = 'Signal disrupted. Reconnecting...';
+        console.error('Chat signal disrupted');
       });
 
     /* Send */
