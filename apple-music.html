@@ -95,12 +95,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
-<footer style="position:relative;z-index:1;text-align:center;padding:24px 20px 32px;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.3);border-top:1px solid rgba(201,168,76,0.12);margin-top:40px;">
-  <a href="privacy.html" style="color:rgba(201,168,76,0.45);text-decoration:none;">Privacy Policy</a>
-  <span style="margin:0 10px;opacity:0.4;">·</span>
-  <span>© <span class="jcyr"></span>&nbsp;Jestamang</span>
-  <span style="margin:0 10px;opacity:0.4;">·</span>
-  <a href="terms.html" style="color:rgba(201,168,76,0.45);text-decoration:none;">Terms of Service</a>
+<footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span>&nbsp;Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a>
 </footer>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
@@ -668,4 +663,6 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
   }
 })();
 </script>
+<!-- footer-single-line-mobile -->
+<style>.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important}@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important}.hp-footer-mark{margin:0 8px!important;color:rgba(201,168,76,0.6)!important}}</style>
 </body> </html>
