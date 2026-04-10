@@ -341,6 +341,33 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .alm-track-url{width:100%;}
 }
 
+/* ── Entity Manager ── */
+.ent-group{margin-bottom:20px;}
+.ent-group-label{font-size:0.58rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.7);padding:6px 0 4px;border-bottom:1px solid rgba(201,168,76,0.12);margin-bottom:8px;}
+.ent-row{background:rgba(0,0,0,0.35);border:1px solid rgba(201,168,76,0.14);border-radius:4px;margin-bottom:6px;overflow:hidden;}
+.ent-row-header{display:flex;align-items:center;gap:10px;padding:10px 12px;}
+.ent-thumb{width:52px;height:52px;object-fit:cover;border-radius:50%;flex-shrink:0;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);}
+.ent-row-info{flex:1;min-width:0;}
+.ent-row-title{font-size:0.8rem;color:#c9a84c;letter-spacing:0.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ent-row-meta{font-size:0.6rem;color:rgba(240,230,210,0.7);letter-spacing:0.06em;margin-top:2px;}
+.ent-row-actions{display:flex;align-items:center;gap:5px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+.ent-visible-toggle{display:flex;align-items:center;gap:4px;font-size:0.58rem;color:rgba(240,230,210,0.7);letter-spacing:0.1em;cursor:pointer;white-space:nowrap;user-select:none;}
+.ent-visible-toggle input{accent-color:#02E127;cursor:pointer;width:13px;height:13px;}
+.ent-edit-panel{border-top:1px solid rgba(201,168,76,0.1);padding:16px;background:rgba(0,0,0,0.25);display:none;}
+.ent-edit-panel.open{display:block;}
+.ent-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;}
+.ent-natal-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px;}
+.ent-confirm-row{display:none;align-items:center;gap:8px;margin-top:4px;}
+.ent-confirm-row.visible{display:flex;}
+.ent-confirm-q{font-size:0.62rem;color:rgba(251,56,56,0.85);letter-spacing:0.1em;}
+.ent-art-preview{width:80px;height:80px;object-fit:cover;border-radius:50%;border:1px solid rgba(201,168,76,0.3);margin-top:6px;display:block;}
+@media(max-width:768px){
+  .ent-row-header{flex-wrap:wrap;gap:8px;}
+  .ent-row-actions{width:100%;}
+  .ent-form-grid{grid-template-columns:1fr!important;}
+  .ent-natal-grid{grid-template-columns:1fr 1fr!important;}
+}
+
 /* ── Theme Manager ── */
 .theme-ctrl-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;}
 .theme-row{margin-bottom:2px;}
@@ -377,6 +404,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-4')">Blog Publisher</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-10')">Catalog</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-26')">Albums</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-27')">Entities</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-14')">Videos</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-15')">Artifacts</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-23')">Photos</button>
@@ -404,7 +432,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-17')">Maintenance</button>
 </nav>
 <div id="adm-mobtabs" role="navigation" aria-label="Section tabs">
-  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
+  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
 </div>
 
   <div class="adm-header">
@@ -607,6 +635,29 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <p class="status-msg" id="alm-add-status"></p>
       </div>
       <p class="status-msg" id="alm-status"></p>
+    </div>
+    <div class="adm-ornament">✦</div>
+    <div class="adm-section" id="sec-27">
+      <div class="adm-section-title">✦ Entity Manager</div>
+      <div class="adm-section-underline"></div>
+      <div class="tab-bar">
+        <button class="tab-btn active" id="ent-tab-list">Entity List</button>
+        <button class="tab-btn" id="ent-tab-add">Add New Entity</button>
+      </div>
+      <!-- Entity List pane -->
+      <div class="tab-pane active" id="ent-pane-list">
+        <div id="ent-list-inner" style="min-height:60px;"><div style="color:rgba(201,168,76,0.4);font-size:0.7rem;letter-spacing:0.2em;">Loading entities...</div></div>
+      </div>
+      <!-- Add New Entity pane -->
+      <div class="tab-pane" id="ent-pane-add">
+        <div id="ent-add-form"></div>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn-gold" id="ent-add-btn">Add Entity</button>
+          <button class="btn-ghost" id="ent-add-clear-btn">Clear</button>
+        </div>
+        <p class="status-msg" id="ent-add-status"></p>
+      </div>
+      <p class="status-msg" id="ent-status"></p>
     </div>
     <div class="adm-ornament">✦</div>
     <div class="adm-section" id="sec-14">
@@ -3959,7 +4010,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       obs.observe(el, { childList: true, characterData: true, subtree: true });
     });
   }
-  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-26','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-25','sec-1','sec-12','sec-20','sec-17'];
+  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-26','sec-27','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-25','sec-1','sec-12','sec-20','sec-17'];
   function initScrollSpy() {
     var secs = SEC_IDS.map(function(id){ return document.getElementById(id); }).filter(Boolean);
     var links = document.querySelectorAll('.adm-sidenav-link,.adm-mobtab');
@@ -4338,6 +4389,239 @@ document.getElementById('alm-add-clear-btn').addEventListener('click', function(
   var _t=0,_iv=setInterval(function(){
     if(window.jestaDB){ clearInterval(_iv); almLoad(); }
     else if(++_t>80){ clearInterval(_iv); var c=document.getElementById('alm-list-inner'); if(c) c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>'; }
+  },100);
+})();
+})();</script>
+
+<script>(function(){
+/* ── Entity Manager ── */
+var _entDocs = {};
+
+function entEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function entBuildForm(d,pfx){
+  d=d||{};
+  var n=d.natal||{};
+  var typeOpts=['cartoon','child'].map(function(v){
+    return '<option value="'+v+'"'+(d.type===v?' selected':'')+'>'+v+'</option>';
+  }).join('');
+  var html='<div class="ent-form-grid">'
+    +'<div><label class="field-label">Name</label><input class="field-input" id="'+pfx+'-name" value="'+entEsc(d.name||'')+'" maxlength="120"></div>'
+    +'<div><label class="field-label">Type</label><select class="field-input" id="'+pfx+'-type">'+typeOpts+'</select></div>'
+    +'<div><label class="field-label">Image Path</label><input class="field-input" id="'+pfx+'-image" value="'+entEsc(d.image||'')+'" placeholder="assets/entities/..." onchange="entPreviewArt(\''+pfx+'\')"></div>'
+    +'<div><label class="field-label">Art Preview</label><img class="ent-art-preview" id="'+pfx+'-art-preview" src="'+entEsc(d.image||'')+'" onerror="this.src=\'\'"></div>'
+    +'<div><label class="field-label">Bg Color</label><input class="field-input" id="'+pfx+'-bgColor" value="'+entEsc(d.bgColor||'')+'" placeholder="rgba(15,50,25,0.25)"></div>'
+    +'<div><label class="field-label">Albums</label><input class="field-input" id="'+pfx+'-albums" value="'+entEsc(d.albums||'')+'" placeholder="Album (year) · Album (year)"></div>'
+    +'<div><label class="field-label">Likes</label><input class="field-input" id="'+pfx+'-likes" value="'+entEsc(d.likes||'')+'"></div>'
+    +'<div><label class="field-label">Hates</label><input class="field-input" id="'+pfx+'-hates" value="'+entEsc(d.hates||'')+'"></div>'
+    +'<div><label class="field-label">Order</label><input class="field-input" id="'+pfx+'-order" type="number" value="'+(d.order||0)+'"></div>'
+    +'<div><label class="field-label" style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="'+pfx+'-visible"'+(d.visible===false?'':' checked')+'> Visible</label></div>'
+  +'</div>'
+  +'<div style="margin-top:10px;"><label class="field-label">Bio (children)</label><textarea class="field-input" id="'+pfx+'-bio" rows="4" style="resize:vertical;min-height:70px;">'+entEsc(d.bio||'')+'</textarea></div>'
+  +'<div style="margin-top:10px;"><label class="field-label">Chart Image Path (children)</label><input class="field-input" id="'+pfx+'-chartImage" value="'+entEsc(d.chartImage||'')+'" placeholder="assets/entities/children/charts/..."></div>'
+  +'<div style="margin-top:12px;"><div class="field-label" style="margin-bottom:6px;letter-spacing:0.2em;">Natal Positions (children)</div>'
+  +'<div class="ent-natal-grid">'
+  +['sun','moon','rising','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'].map(function(pl){
+    return '<div><label class="field-label" style="font-size:0.58rem;">'+pl.charAt(0).toUpperCase()+pl.slice(1)+'</label><input class="field-input" id="'+pfx+'-natal-'+pl+'" value="'+entEsc(n[pl]||'')+'" placeholder="Sign deg (House)" style="font-size:0.72rem;"></div>';
+  }).join('')
+  +'</div></div>';
+  return html;
+}
+
+function entReadForm(pfx){
+  function v(id){var el=document.getElementById(pfx+'-'+id);return el?el.value.trim():'';}
+  var natal={};
+  ['sun','moon','rising','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(function(pl){
+    var val=v('natal-'+pl);if(val)natal[pl]=val;
+  });
+  return {
+    name:v('name'),type:v('type'),image:v('image'),bgColor:v('bgColor'),
+    albums:v('albums'),likes:v('likes'),hates:v('hates'),bio:v('bio'),
+    chartImage:v('chartImage'),natal:natal,
+    order:parseInt(v('order'))||0,
+    visible:document.getElementById(pfx+'-visible')?document.getElementById(pfx+'-visible').checked:true
+  };
+}
+
+window.entPreviewArt=function(pfx){
+  var img=document.getElementById(pfx+'-art-preview');
+  var inp=document.getElementById(pfx+'-image');
+  if(img&&inp)img.src=inp.value.trim();
+};
+
+function entRowHtml(docId,d){
+  var thumb=d.image?'<img class="ent-thumb" src="'+entEsc(d.image)+'" onerror="this.style.display=\'none\'">':'<div class="ent-thumb"></div>';
+  return '<div class="ent-row" id="ent-row-'+entEsc(docId)+'">'
+    +'<div class="ent-row-header">'
+    +thumb
+    +'<div class="ent-row-info"><div class="ent-row-title">'+entEsc(d.name||'(unnamed)')+'</div><div class="ent-row-meta">'+entEsc(d.type||'cartoon')+(d.albums?' · '+entEsc(d.albums):'')+'</div></div>'
+    +'<div class="ent-row-actions">'
+    +'<button class="btn-ghost" style="padding:4px 8px;font-size:0.6rem;" onclick="entMoveOrder(\''+entEsc(docId)+'\',\'up\')">▲</button>'
+    +'<button class="btn-ghost" style="padding:4px 8px;font-size:0.6rem;" onclick="entMoveOrder(\''+entEsc(docId)+'\',\'dn\')">▼</button>'
+    +'<button class="btn-ghost" style="padding:4px 8px;font-size:0.6rem;" onclick="entToggleEdit(\''+entEsc(docId)+'\')">Edit</button>'
+    +'<button class="btn-ghost" style="padding:4px 8px;font-size:0.6rem;color:rgba(251,56,56,0.7);" onclick="entConfirmDelete(\''+entEsc(docId)+'\')">Del</button>'
+    +'<label class="ent-visible-toggle"><input type="checkbox" '+(d.visible===false?'':'checked')+' onchange="entSetVisible(\''+entEsc(docId)+'\',this.checked)"> Vis</label>'
+    +'</div></div>'
+    +'<div class="ent-confirm-row" id="ent-confirm-'+entEsc(docId)+'">'
+    +'<span class="ent-confirm-q">Delete "'+entEsc(d.name||'')+'\"?</span>'
+    +'<button class="btn-gold" style="padding:3px 10px;font-size:0.62rem;" onclick="entDoDelete(\''+entEsc(docId)+'\')">Yes</button>'
+    +'<button class="btn-ghost" style="padding:3px 10px;font-size:0.62rem;" onclick="entCancelDelete(\''+entEsc(docId)+'\')">No</button>'
+    +'</div>'
+    +'<div class="ent-edit-panel" id="ent-edit-'+entEsc(docId)+'">'
+    +entBuildForm(d,'ent-e-'+docId)
+    +'<div class="btn-row" style="margin-top:12px;">'
+    +'<button class="btn-gold" onclick="entSave(\''+entEsc(docId)+'\')">Save</button>'
+    +'<button class="btn-ghost" onclick="entToggleEdit(\''+entEsc(docId)+'\')">Cancel</button>'
+    +'</div>'
+    +'<p class="status-msg" id="ent-save-status-'+entEsc(docId)+'"></p>'
+    +'</div>'
+  +'</div>';
+}
+
+function entRenderList(docs){
+  var children=[],cartoons=[];
+  Object.keys(docs).forEach(function(id){
+    var d=docs[id];
+    if(d.type==='child')children.push({id:id,d:d});
+    else cartoons.push({id:id,d:d});
+  });
+  children.sort(function(a,b){return(a.d.order||0)-(b.d.order||0);});
+  cartoons.sort(function(a,b){return(a.d.order||0)-(b.d.order||0);});
+  var html='';
+  if(children.length){
+    html+='<div class="ent-group"><div class="ent-group-label">One of the Children</div>';
+    children.forEach(function(e){html+=entRowHtml(e.id,e.d);});
+    html+='</div>';
+  }
+  if(cartoons.length){
+    html+='<div class="ent-group"><div class="ent-group-label">Cartoon Entity</div>';
+    cartoons.forEach(function(e){html+=entRowHtml(e.id,e.d);});
+    html+='</div>';
+  }
+  if(!html)html='<div style="color:rgba(201,168,76,0.3);font-size:0.7rem;">No entities found.</div>';
+  var c=document.getElementById('ent-list-inner');if(c)c.innerHTML=html;
+}
+
+window.entToggleEdit=function(docId){
+  var p=document.getElementById('ent-edit-'+docId);
+  if(p)p.classList.toggle('open');
+};
+
+window.entConfirmDelete=function(docId){
+  var r=document.getElementById('ent-confirm-'+docId);if(r)r.classList.add('visible');
+};
+window.entCancelDelete=function(docId){
+  var r=document.getElementById('ent-confirm-'+docId);if(r)r.classList.remove('visible');
+};
+window.entDoDelete=function(docId){
+  window.jestaDB.collection('entities').doc(docId).delete()
+    .then(function(){
+      delete _entDocs[docId];
+      var row=document.getElementById('ent-row-'+docId);if(row)row.remove();
+      var s=document.getElementById('ent-status');if(s){s.textContent='Entity deleted.';s.className='status-msg status-ok';}
+    })
+    .catch(function(e){
+      var s=document.getElementById('ent-status');if(s){s.textContent='Error: '+e.message;s.className='status-msg status-err';}
+    });
+};
+
+window.entSave=function(docId){
+  var data=entReadForm('ent-e-'+docId);
+  if(!data.name){var s=document.getElementById('ent-save-status-'+docId);if(s){s.textContent='Name required.';s.className='status-msg status-err';}return;}
+  window.jestaDB.collection('entities').doc(docId).set(data,{merge:true})
+    .then(function(){
+      _entDocs[docId]=data;
+      var row=document.getElementById('ent-row-'+docId);
+      if(row)row.outerHTML=entRowHtml(docId,data);
+      var s=document.getElementById('ent-status');if(s){s.textContent='Saved.';s.className='status-msg status-ok';}
+    })
+    .catch(function(e){
+      var s=document.getElementById('ent-save-status-'+docId);if(s){s.textContent='Error: '+e.message;s.className='status-msg status-err';}
+    });
+};
+
+window.entSetVisible=function(docId,vis){
+  window.jestaDB.collection('entities').doc(docId).set({visible:vis},{merge:true})
+    .then(function(){if(_entDocs[docId])_entDocs[docId].visible=vis;})
+    .catch(function(){});
+};
+
+window.entMoveOrder=function(docId,dir){
+  var d=_entDocs[docId];if(!d)return;
+  var sameType=Object.keys(_entDocs).filter(function(id){return _entDocs[id].type===d.type;});
+  sameType.sort(function(a,b){return(_entDocs[a].order||0)-(_entDocs[b].order||0);});
+  var idx=sameType.indexOf(docId);
+  var swapIdx=dir==='up'?idx-1:idx+1;
+  if(swapIdx<0||swapIdx>=sameType.length)return;
+  var swapId=sameType[swapIdx];
+  var a=_entDocs[docId].order||0,b=_entDocs[swapId].order||0;
+  var batch=window.jestaDB.batch();
+  batch.set(window.jestaDB.collection('entities').doc(docId),{order:b},{merge:true});
+  batch.set(window.jestaDB.collection('entities').doc(swapId),{order:a},{merge:true});
+  batch.commit().then(function(){
+    _entDocs[docId].order=b;_entDocs[swapId].order=a;
+    entRenderList(_entDocs);
+  }).catch(function(){});
+};
+
+function entInitAddForm(){
+  var c=document.getElementById('ent-add-form');
+  if(c)c.innerHTML=entBuildForm(null,'ent-new');
+}
+
+function entLoad(){
+  window.jestaDB.collection('entities').orderBy('order').get()
+    .then(function(snap){
+      _entDocs={};
+      snap.forEach(function(doc){_entDocs[doc.id]=doc.data();});
+      entRenderList(_entDocs);
+    })
+    .catch(function(e){
+      var c=document.getElementById('ent-list-inner');
+      if(c)c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Load error: '+entEsc(e.message)+'</div>';
+    });
+}
+
+/* ── Add new entity ── */
+(function(){
+  var addBtn=document.getElementById('ent-add-btn');
+  if(addBtn)addBtn.addEventListener('click',function(){
+    var data=entReadForm('ent-new');
+    if(!data.name){var s=document.getElementById('ent-add-status');if(s){s.textContent='Name required.';s.className='status-msg status-err';}return;}
+    addBtn.disabled=true;addBtn.textContent='Adding\u2026';
+    window.jestaDB.collection('entities').add(data)
+      .then(function(ref){
+        _entDocs[ref.id]=data;
+        document.getElementById('ent-tab-list').click();
+        entRenderList(_entDocs);
+        entInitAddForm();
+        var s=document.getElementById('ent-add-status');if(s){s.textContent='Entity added.';s.className='status-msg status-ok';}
+        addBtn.disabled=false;addBtn.textContent='Add Entity';
+      })
+      .catch(function(e){
+        var s=document.getElementById('ent-add-status');if(s){s.textContent='Error: '+e.message;s.className='status-msg status-err';}
+        addBtn.disabled=false;addBtn.textContent='Add Entity';
+      });
+  });
+  var clearBtn=document.getElementById('ent-add-clear-btn');
+  if(clearBtn)clearBtn.addEventListener('click',entInitAddForm);
+})();
+
+/* ── Tab switching ── */
+(function(){
+  var t1=document.getElementById('ent-tab-list'),t2=document.getElementById('ent-tab-add');
+  var p1=document.getElementById('ent-pane-list'),p2=document.getElementById('ent-pane-add');
+  if(!t1||!t2)return;
+  t1.addEventListener('click',function(){t1.classList.add('active');t2.classList.remove('active');p1.classList.add('active');p2.classList.remove('active');});
+  t2.addEventListener('click',function(){t2.classList.add('active');t1.classList.remove('active');p2.classList.add('active');p1.classList.remove('active');});
+})();
+
+/* ── Boot ── */
+(function(){
+  entInitAddForm();
+  var _t=0,_iv=setInterval(function(){
+    if(window.jestaDB){clearInterval(_iv);entLoad();}
+    else if(++_t>80){clearInterval(_iv);var c=document.getElementById('ent-list-inner');if(c)c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
   },100);
 })();
 })();</script>
