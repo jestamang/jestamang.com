@@ -480,10 +480,22 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   firebase.auth().onAuthStateChanged(function(user){
     if(user && !redirectPending){
       redirectPending = true;
-      var name = user.displayName || user.email || '';
-      wbName.textContent = name ? 'Welcome Back, ' + name.split(' ')[0].toUpperCase() : 'WELCOME BACK';
-      wbOverlay.classList.add('wb-show');
-      setTimeout(function(){ window.location.href = 'profile.html'; }, 1000);
+      var fallback = (user.displayName || user.email || '').split('@')[0];
+      function showWelcome(name) {
+        wbName.textContent = name ? 'Welcome Back, ' + name.split(' ')[0].toUpperCase() : 'WELCOME BACK';
+        wbOverlay.classList.add('wb-show');
+        setTimeout(function(){ window.location.href = 'profile.html'; }, 1000);
+      }
+      if (window.jestaDB) {
+        window.jestaDB.collection('users').doc(user.uid).get()
+          .then(function(doc) {
+            var name = (doc.exists && doc.data().username) ? doc.data().username : fallback;
+            showWelcome(name);
+          })
+          .catch(function() { showWelcome(fallback); });
+      } else {
+        showWelcome(fallback);
+      }
     }
   });
 
@@ -568,7 +580,22 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     }
     promise
       .then(function(){ /* onAuthStateChanged handles redirect */ })
-      .catch(function(err){ showError(translateError(err.code)); submitBtn.disabled = false; });
+      .catch(function(err){
+        submitBtn.disabled = false;
+        if (mode === 'signin' && err.code === 'auth/invalid-login-credentials') {
+          firebase.auth().fetchSignInMethodsForEmail(email)
+            .then(function(methods) {
+              if (methods.indexOf('google.com') !== -1 && methods.indexOf('password') === -1) {
+                showError('This account was created with Google. Please use the Google sign-in button below.');
+              } else {
+                showError(translateError(err.code));
+              }
+            })
+            .catch(function() { showError(translateError(err.code)); });
+        } else {
+          showError(translateError(err.code));
+        }
+      });
   });
 
   // Allow Enter key to submit
