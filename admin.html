@@ -1320,10 +1320,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var joined = fmtDate(d.createdAt);
       var lastSeen = d.lastSeen ? fmtDate(d.lastSeen) : (d.lastLogin ? fmtDate(d.lastLogin) : '—');
       var avatarHtml;
+      var memInitial = esc((d.username||d.displayName||d.email||'?').charAt(0).toUpperCase());
       if (d.photoURL) {
-        avatarHtml = '<img class="mem-avatar" src="' + esc(d.photoURL) + '" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\';" alt=""><span class="mem-initial" style="display:none;">' + esc((d.username||d.displayName||'?').charAt(0).toUpperCase()) + '</span>';
+        avatarHtml = '<img class="mem-avatar" src="' + esc(d.photoURL) + '" onerror="admAvatarErr(this,\'' + memInitial + '\')" alt="">';
       } else {
-        avatarHtml = '<span class="mem-initial">' + esc((d.username||d.displayName||'?').charAt(0).toUpperCase()) + '</span>';
+        avatarHtml = '<span class="mem-initial">' + memInitial + '</span>';
       }
       html += '<tr class="mem-row" id="mem-row-' + uid + '">'
         + '<td data-label="Avatar">' + avatarHtml + '</td>'
@@ -3084,9 +3085,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       players.forEach(function(p, i) {
         var rankColor = i < 3 ? rankColors[i] : 'rgba(240,230,210,0.4)';
         var rankLabel = i < 3 ? rankSymbols[i] : (i+1);
+        var lbInitial = (p.name || '?')[0].toUpperCase();
+        var lbInitialStyle = 'width:28px;height:28px;border-radius:50%;background:rgba(201,168,76,0.2);border:1px solid #c9a84c;display:inline-flex;align-items:center;justify-content:center;font-family:Luminari,Georgia,serif;font-size:0.68rem;color:#c9a84c;flex-shrink:0;vertical-align:middle;';
         var avatar = p.photo
-          ? '<img src="' + esc(p.photo) + '" onerror="this.src=\'assets/homepage/jesta jr.jpg\'" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.2);" loading="lazy">'
-          : '<img src="assets/homepage/jesta jr.jpg" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.15);">';
+          ? '<img src="' + esc(p.photo) + '" onerror="admAvatarErr(this,\'' + lbInitial + '\')" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.2);" loading="lazy">'
+          : '<div style="' + lbInitialStyle + '">' + lbInitial + '</div>';
         html += '<tr style="border-bottom:1px solid rgba(201,168,76,0.05);">'
           + '<td style="padding:8px 6px;color:' + rankColor + ';font-family:\'Luminari\',serif;font-size:' + (i<3?'1rem':'0.72rem') + ';">' + rankLabel + '</td>'
           + '<td style="padding:8px 4px;width:36px;">' + avatar + '</td>'
@@ -3599,6 +3602,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
     pmLoad();
   }
+
+  /* ── Avatar fallback helper ── */
+  window.admAvatarErr = function(img, initial) {
+    img.style.display = 'none';
+    var d = document.createElement('div');
+    d.style.cssText = 'width:32px;height:32px;border-radius:50%;background:rgba(201,168,76,0.2);border:1px solid #c9a84c;display:flex;align-items:center;justify-content:center;font-family:Luminari,Georgia,serif;font-size:0.75rem;color:#c9a84c;flex-shrink:0;';
+    d.textContent = (initial || '?')[0].toUpperCase();
+    img.parentNode.insertBefore(d, img);
+  };
 
   waitForAuth();
 
