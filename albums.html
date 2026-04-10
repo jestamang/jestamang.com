@@ -605,7 +605,7 @@ window._albumPlayTrack=function(btn,idx,card){
 <script>
 /* ── Full Catalog Firestore Loader ── */
 (function(){
-  var _ALBUMS_FALLBACK = null; /* existing hardcoded HTML sections serve as fallback */
+  var _ALBUMS_FALLBACK = []; /* existing hardcoded HTML sections serve as fallback */
 
   var SECTION_DEFS = [
     {name:'Quarter Days', id:'quarter-days'},

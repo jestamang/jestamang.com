@@ -13290,7 +13290,7 @@ if(!isOpen){btn.classList.add('open');if(body)body.classList.add('open');}});});
 <script src="assets/js/jesta-auth.js" defer></script>
 <script>(function(){
 /* ── Lyrics Firestore dynamic loader ── */
-var _LYRICS_FALLBACK = null; /* DOM is the fallback */
+var _LYRICS_FALLBACK = []; /* DOM is the fallback */
 function toSlug(s){return String(s||'').toLowerCase().replace(/[àáâ]/g,'a').replace(/[èéê]/g,'e').replace(/[ìíî]/g,'i').replace(/[òóô]/g,'o').replace(/[ùúû]/g,'u').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function ytVidId(url){if(!url)return'';var m=url.match(/[?&]v=([^&]+)|youtu\.be\/([^?#]+)/);return m?(m[1]||m[2]):'';}
