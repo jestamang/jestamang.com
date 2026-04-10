@@ -138,18 +138,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 @media(max-width:767px){#jsearch-overlay{top:52px}#jsearch-inner{padding:12px 16px 12px}#jsearch-input{font-size:16px}.jsearch-hint{letter-spacing:0.08em;font-size:0.6rem;padding:12px 0;white-space:nowrap}}
 </style>
 
-<style id="ck-styles">
-#ck-banner{position:fixed;bottom:0;left:0;right:0;z-index:99998;background:rgba(0,0,0,0.85);border-top:1px solid #c9a84c;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-#ck-banner.ck-hidden{display:none!important}
-#ck-text{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.05em;color:rgba(240,230,210,0.85);line-height:1.7;flex:1;min-width:180px;margin:0}
-#ck-btns{display:flex;gap:10px;flex-shrink:0;align-items:center}
-#ck-accept,#ck-decline{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;cursor:pointer;padding:10px 18px;min-height:44px;transition:background 0.2s,color 0.2s,border-color 0.2s,box-shadow 0.2s;white-space:nowrap}
-#ck-accept{background:#c9a84c;color:#000;border:none}
-#ck-accept:hover{background:#dfc060;box-shadow:0 0 16px rgba(201,168,76,0.3)}
-#ck-decline{background:transparent;border:1px solid rgba(201,168,76,0.55);color:rgba(201,168,76,0.8)}
-#ck-decline:hover{border-color:#c9a84c;color:#c9a84c}
-@media(max-width:768px){#ck-banner{flex-direction:column;align-items:stretch;padding:14px 16px;gap:12px}#ck-btns{flex-direction:column}#ck-accept,#ck-decline{width:100%;text-align:center}}
-</style>
 <style id="ml-signup-styles">
 .ml-signup-sect{position:relative;z-index:1;padding:48px 24px 0;text-align:center}
 .ml-signup-box{background:rgba(0,0,0,0.6);border:1px solid #c9a84c;padding:32px;max-width:500px;margin:0 auto}
@@ -1308,14 +1296,6 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 })();</script>
 
 <script></script>
-<div id="ck-banner" class="ck-hidden" role="dialog" aria-label="Cookie consent">
-<p id="ck-text">This site uses cookies for login and anonymous analytics. By continuing you accept this.</p>
-<div id="ck-btns">
-<button id="ck-accept" type="button">Accept</button>
-<button id="ck-decline" type="button">Decline</button>
-</div>
-</div>
-<script>(function(){var b=document.getElementById('ck-banner');if(!b)return;var v=localStorage.getItem('cookieAccepted');if(!v){b.classList.remove('ck-hidden');}document.getElementById('ck-accept').addEventListener('click',function(){localStorage.setItem('cookieAccepted','true');b.classList.add('ck-hidden');});document.getElementById('ck-decline').addEventListener('click',function(){localStorage.setItem('cookieAccepted','false');b.classList.add('ck-hidden');});})();</script>
 
 <!-- SW Update Banner -->
 <div id="sw-update-banner" style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#c9a84c;color:#0a0702;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;font-family:sans-serif;font-size:13px;font-weight:600;letter-spacing:0.04em;box-shadow:0 2px 12px rgba(0,0,0,0.5);transform:translateY(-100%);transition:transform 0.4s ease;opacity:0;pointer-events:none;"></div>
