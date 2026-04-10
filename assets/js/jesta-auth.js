@@ -224,20 +224,28 @@
 
     var mobLogin = document.getElementById('jtnav-mob-login');
     if (user) {
+      var CACHE_KEY = 'jesta_uname_' + user.uid;
+      var cached = localStorage.getItem(CACHE_KEY);
       var fallback = (user.displayName || user.email || '').split('@')[0];
-      renderAuthNav(wrap, mobWrap, fallback);
-      if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = fallback.length > 10 ? fallback.slice(0,9)+'\u2026' : fallback; }
+      // Show cached username instantly — no flash to email
+      var initialName = cached || fallback;
+      renderAuthNav(wrap, mobWrap, initialName);
+      if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = initialName.length > 10 ? initialName.slice(0,9)+'\u2026' : initialName; }
       checkNotifications(user);
       if (window.jestaDB) {
         window.jestaDB.collection('users').doc(user.uid).get()
           .then(function (doc) {
             var name = (doc.exists && doc.data().username) ? doc.data().username : fallback;
-            renderAuthNav(wrap, mobWrap, name);
-            if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = name.length > 10 ? name.slice(0,9)+'\u2026' : name; }
+            localStorage.setItem(CACHE_KEY, name);
+            if (name !== initialName) {
+              renderAuthNav(wrap, mobWrap, name);
+              if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = name.length > 10 ? name.slice(0,9)+'\u2026' : name; }
+            }
           })
           .catch(function () {});
       }
     } else {
+      // Clear cached name on logout
       wrap.innerHTML =
         '<div id="jtnav-auth-sep"></div>' +
         '<a class="jtnav-auth-link" href="login.html">Log in</a>';

@@ -32,14 +32,14 @@ body{
   background-attachment:fixed;
   min-height:100vh;
   position:relative;
-  color:white;
+  color:#e8e0d0;
   padding-top:52px;
 }
 body::before{
   content:'';
   position:fixed;
   inset:0;
-  background:radial-gradient(ellipse at 50% 35%,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.88) 100%);
+  background:radial-gradient(ellipse at 50% 35%,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.75) 100%);
   pointer-events:none;
   z-index:0;
 }
@@ -71,13 +71,8 @@ body::before{
   color:#c9a84c;
   text-transform:uppercase;
   text-align:center;
-  text-shadow:0 0 60px rgba(201,168,76,0.3);
+  text-shadow:0 0 40px rgba(201,168,76,0.5),0 0 80px rgba(201,168,76,0.18),0 2px 16px rgba(0,0,0,1);
   margin-bottom:10px;
-  background:linear-gradient(90deg,#c9a84c 0%,#f5e0a0 40%,#c9a84c 60%,#a07830 100%);
-  background-size:200% auto;
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
 }
 .page-sub{
   font-family:'Luminari',serif;
@@ -108,7 +103,7 @@ p{
   font-family:'Luminari',serif;
   font-size:0.88rem;
   line-height:1.9;
-  color:rgba(240,230,210,0.75);
+  color:#e8e0d0;
   letter-spacing:0.03em;
   margin-bottom:18px;
 }
@@ -127,7 +122,7 @@ a:hover{color:#c9a84c;}
   font-family:'Luminari',serif;
   font-size:0.65rem;
   letter-spacing:0.18em;
-  color:rgba(255,255,255,0.22);
+  color:rgba(201,168,76,0.65);
   text-align:center;
   margin-top:48px;
 }
@@ -141,7 +136,7 @@ a:hover{color:#c9a84c;}
 /* jt-text-treatments */
 h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .page-sub,.section-heading{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-.hp-footer{background:transparent;text-align:center;padding:32px 24px 56px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.55);position:relative;z-index:10}.hp-footer a{color:rgba(201,168,76,0.55);text-decoration:none;transition:color 0.2s}.hp-footer a:hover{color:#c9a84c}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4)}
+.hp-footer{background:transparent;text-align:center;padding:32px 24px 56px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10}.hp-footer a{color:rgba(201,168,76,0.75);text-decoration:none;transition:color 0.2s}.hp-footer a:hover{color:#c9a84c}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.6)}
 </style>
 <style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
 <link rel="preload" as="font" type="font/ttf" href="assets/fonts/Luminari.ttf" crossorigin>
@@ -160,10 +155,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 #jsearch-btn svg{display:block;pointer-events:none}
 #jsearch-overlay{display:none;position:fixed;top:52px;left:0;right:0;bottom:auto;z-index:9998;background:rgba(0,0,0,0.95);border-bottom:1px solid #c9a84c;flex-direction:column;max-height:400px;overflow-y:auto}
 #jsearch-overlay.jsearch-open{display:flex}
-#jsearch-inner{width:100%;padding:20px 40px 24px;position:relative}
-#jsearch-close-row{position:absolute;top:12px;right:20px}
-#jsearch-close{background:none;border:none;color:rgba(201,168,76,0.6);font-size:20px;cursor:pointer;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;transition:color 0.2s;font-family:'Luminari',serif;line-height:1}
-#jsearch-close:hover{color:#c9a84c}
+#jsearch-inner{width:100%;padding:16px 40px 14px;position:relative}
 #jsearch-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,0.65);color:#c9a84c;font-family:'Luminari',serif;font-size:18px;letter-spacing:0.18em;padding:10px 4px;outline:none;text-transform:uppercase;caret-color:#c9a84c;-webkit-appearance:none;border-radius:0}
 #jsearch-input::placeholder{color:rgba(201,168,76,0.32);letter-spacing:0.12em}
 #jsearch-results{margin-top:14px}
@@ -174,11 +166,11 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .jsearch-item-name mark{background:none;color:#c9a84c;font-style:normal}
 .jsearch-item-cat{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.5);flex-shrink:0;margin-left:8px}
 .jsearch-empty{text-align:center;font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.3);padding:40px 0}
-.jsearch-hint{text-align:center;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.2);padding:28px 0}
+.jsearch-hint{text-align:center;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.6);padding:16px 0}
 .jsearch-float-btn{position:fixed;top:14px;right:14px;z-index:9000;background:rgba(0,0,0,0.55);border:1px solid rgba(201,168,76,0.35);color:rgba(201,168,76,0.75);cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s}
 .jsearch-float-btn:hover{border-color:rgba(201,168,76,0.75);color:#c9a84c}
 .jsearch-float-btn svg{pointer-events:none}
-@media(max-width:767px){#jsearch-overlay{top:52px}#jsearch-inner{padding:16px 16px 20px}#jsearch-input{font-size:16px}#jsearch-close{min-width:44px;min-height:44px}}
+@media(max-width:767px){#jsearch-overlay{top:52px}#jsearch-inner{padding:12px 16px 12px}#jsearch-input{font-size:16px}.jsearch-hint{letter-spacing:0.08em;font-size:0.6rem;padding:12px 0;white-space:nowrap}}
 </style>
 
 <style id="ck-styles">
@@ -232,7 +224,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <p>We may update this policy from time to time. Continued use of the site following any update constitutes acceptance of the revised policy. For any privacy-related inquiries contact Jestamang directly via the <a href="email.html">email provided on this site</a>.</p>
 
   <p class="updated">Copyright &#10022; <span class="jcyr"></span> Jestamang. All Rights Reserved.</p>
-  <p class="updated" style="margin-top:16px;"><a href="accessibility.html" style="color:rgba(201,168,76,0.4);text-decoration:none;letter-spacing:0.18em;">View our Accessibility Statement</a></p>
+  <p class="updated" style="margin-top:16px;"><a href="accessibility.html" style="color:rgba(201,168,76,0.65);text-decoration:none;letter-spacing:0.18em;">View our Accessibility Statement</a></p>
 </div>
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span>&nbsp;Jestamang<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a>
 </footer>
@@ -242,7 +234,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <button class="jsearch-float-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button>
 <div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
 <div id="jsearch-inner">
-<div id="jsearch-close-row"><button id="jsearch-close" aria-label="Close search">✦</button></div>
 <input id="jsearch-input" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="SEARCH THE JESTAMANG UNIVERSE...">
 <div id="jsearch-results"><div class="jsearch-hint">ENTER A NAME &nbsp;·&nbsp; PAGE &nbsp;·&nbsp; ALBUM &nbsp;·&nbsp; ENTITY</div></div>
 </div>
