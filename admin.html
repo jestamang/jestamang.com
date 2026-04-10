@@ -383,8 +383,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .lym-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;}
 .lym-art-preview{width:60px;height:60px;object-fit:cover;border-radius:2px;border:1px solid rgba(201,168,76,0.3);margin-top:6px;display:block;}
 .lym-song-list{margin-top:12px;}
-.lym-song-row{background:rgba(0,0,0,0.25);border:1px solid rgba(201,168,76,0.1);border-radius:3px;padding:10px 12px;margin-bottom:8px;}
+.lym-song-row{background:rgba(0,0,0,0.25);border:1px solid rgba(201,168,76,0.1);border-radius:3px;padding:10px 12px;margin-bottom:8px;cursor:default;}
+.lym-song-row.lym-drag-over{border-color:rgba(201,168,76,0.55);background:rgba(201,168,76,0.06);}
 .lym-song-row-head{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.lym-drag-handle{cursor:grab;color:rgba(201,168,76,0.45);font-size:1rem;flex-shrink:0;line-height:1;user-select:none;}
+.lym-drag-handle:active{cursor:grabbing;}
 .lym-song-num{color:rgba(201,168,76,0.5);font-size:0.65rem;min-width:22px;flex-shrink:0;}
 .lym-song-title{flex:1;}
 .lym-song-yt{width:180px;}
@@ -823,7 +826,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
       <label class="radio-label" style="margin-top:16px;gap:10px;">
         <input type="checkbox" id="sh-autonotify" style="accent-color:#c9a84c;width:15px;height:15px;">
-        <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.6);">Auto-notify all members when this show is added</span>
+        <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.85);">Auto-notify all members when this show is added</span>
       </label>
 
       <button class="btn-gold btn-gold-full" id="sh-add-btn">Add Conjuring</button>
@@ -875,7 +878,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
       <label class="radio-label" style="margin-top:16px;gap:10px;">
         <input type="checkbox" id="pm-featured" style="accent-color:#c9a84c;width:15px;height:15px;">
-        <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.6);">Featured — show as one of the top 3 articles</span>
+        <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.85);">Featured — show as one of the top 3 articles</span>
       </label>
 
       <button class="btn-gold btn-gold-full" id="pm-add-btn">Add Article</button>
@@ -1163,7 +1166,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
         <label class="radio-label" style="gap:8px;">
           <input type="checkbox" id="lb-select-all" style="accent-color:#c9a84c;width:14px;height:14px;">
-          <span style="font-size:0.65rem;letter-spacing:0.1em;color:rgba(240,230,210,0.5);">Select All</span>
+          <span style="font-size:0.65rem;letter-spacing:0.1em;color:rgba(240,230,210,0.85);">Select All</span>
         </label>
         <button class="btn-danger btn-sm" id="lb-delete-selected">Delete Selected</button>
       </div>
@@ -1408,14 +1411,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
       <div style="margin-top:20px;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.1);padding:16px;border-radius:2px;">
         <div style="font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.35);margin-bottom:8px;">How it works</div>
-        <div style="font-size:0.7rem;color:rgba(240,230,210,0.45);line-height:1.7;">
+        <div style="font-size:0.7rem;color:rgba(240,230,210,0.85);line-height:1.7;">
           Clicking the button writes a new version to Firestore → <code style="color:rgba(201,168,76,0.5);">siteConfig/cacheVersion</code>. All visitors with the site open see a gold banner prompting them to refresh. This device's service worker also activates immediately via SKIP_WAITING.
         </div>
       </div>
 
       <div style="margin-top:18px;">
         <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:10px;">Version History</div>
-        <div id="cb-history" style="font-size:0.7rem;color:rgba(240,230,210,0.4);line-height:2;">Loading...</div>
+        <div id="cb-history" style="font-size:0.7rem;color:rgba(240,230,210,0.85);line-height:2;">Loading...</div>
       </div>
     </div>
     <div class="adm-ornament">✦</div>
@@ -2189,7 +2192,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           +'</div>'
           +'</div>'
           +(d.email?'<div style="font-size:0.72rem;margin-bottom:6px;color:rgba(201,168,76,0.55);">'+esc(d.email)+'</div>':'')
-          +'<div style="font-size:0.75rem;color:rgba(240,230,210,0.65);line-height:1.5;margin-bottom:8px;">'+esc(d.message||d.text||'')+'</div>'
+          +'<div style="font-size:0.75rem;color:rgba(240,230,210,0.85);line-height:1.5;margin-bottom:8px;">'+esc(d.message||d.text||'')+'</div>'
           +(d.repliedAt?'<div style="font-size:0.6rem;color:rgba(201,168,76,0.3);letter-spacing:0.1em;">REPLIED \u2726 '+fmtDate(d.repliedAt)+'</div>':'')
           +'<div id="reply-panel-'+doc.id+'" style="display:none;margin-top:14px;padding:14px;background:rgba(0,0,0,0.4);border:1px solid rgba(201,168,76,0.15);border-radius:2px;">'
           +'<div style="font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;color:rgba(201,168,76,0.4);margin-bottom:12px;">Reply</div>'
@@ -3715,7 +3718,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           + '<div class="sc-prev-glyph" style="font-size:2rem;color:rgba(201,168,76,0.6);margin-bottom:8px;">' + esc(card.glyph) + '</div>'
           + '<div class="sc-prev-arcana" style="font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.4);margin-bottom:4px;">' + esc(card.arcana) + '</div>'
           + '<div class="sc-prev-name" style="font-family:\'Luminari\',Georgia,serif;font-size:0.85rem;letter-spacing:0.2em;color:#c9a84c;margin-bottom:12px;">' + esc(card.name) + '</div>'
-          + '<div class="sc-prev-reading" style="font-size:0.62rem;color:rgba(240,230,210,0.55);line-height:1.7;font-style:italic;">' + esc(card.reading) + '</div>'
+          + '<div class="sc-prev-reading" style="font-size:0.62rem;color:rgba(240,230,210,0.85);line-height:1.7;font-style:italic;">' + esc(card.reading) + '</div>'
           + '</div>'
           + '</div>'
           + '</div>';
@@ -4804,8 +4807,9 @@ function lymEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;
 
 function lymSongRowHtml(pfx,i,song){
   song=song||{};
-  return '<div class="lym-song-row" data-song-row>'
+  return '<div class="lym-song-row" data-song-row draggable="true">'
     +'<div class="lym-song-row-head">'
+    +'<span class="lym-drag-handle" title="Drag to reorder">⠿</span>'
     +'<span class="lym-song-num">'+(i+1)+'.</span>'
     +'<input class="field-input lym-song-title" placeholder="Song title" value="'+lymEsc(song.title||'')+'" style="flex:1;">'
     +'<input class="field-input lym-song-yt" placeholder="YouTube URL" value="'+lymEsc(song.youtubeUrl||'')+'">'
@@ -4871,6 +4875,39 @@ window.lymRemoveSong=function(btn){
   var row=btn.closest('[data-song-row]');if(row)row.remove();
 };
 
+function lymWireDragDrop(list){
+  var dragged=null;
+  list.addEventListener('dragstart',function(e){
+    dragged=e.target.closest('[data-song-row]');
+    if(dragged)e.dataTransfer.effectAllowed='move';
+  });
+  list.addEventListener('dragover',function(e){
+    e.preventDefault();
+    var target=e.target.closest('[data-song-row]');
+    list.querySelectorAll('[data-song-row]').forEach(function(r){r.classList.remove('lym-drag-over');});
+    if(target&&target!==dragged)target.classList.add('lym-drag-over');
+  });
+  list.addEventListener('dragleave',function(e){
+    var target=e.target.closest('[data-song-row]');
+    if(target)target.classList.remove('lym-drag-over');
+  });
+  list.addEventListener('drop',function(e){
+    e.preventDefault();
+    var target=e.target.closest('[data-song-row]');
+    list.querySelectorAll('[data-song-row]').forEach(function(r){r.classList.remove('lym-drag-over');});
+    if(!target||!dragged||target===dragged)return;
+    var rows=Array.from(list.querySelectorAll('[data-song-row]'));
+    var fromIdx=rows.indexOf(dragged),toIdx=rows.indexOf(target);
+    if(fromIdx<toIdx)list.insertBefore(dragged,target.nextSibling);
+    else list.insertBefore(dragged,target);
+    dragged=null;
+  });
+  list.addEventListener('dragend',function(){
+    list.querySelectorAll('[data-song-row]').forEach(function(r){r.classList.remove('lym-drag-over');});
+    dragged=null;
+  });
+}
+
 function lymRowHtml(docId,d){
   var artSrc=d.artwork?'assets/albums/'+lymEsc(d.artwork):'';
   var songCount=(d.songs&&d.songs.length)||0;
@@ -4906,7 +4943,7 @@ function lymRenderList(docs){
   sorted.sort(function(a,b){return(a.d.order||0)-(b.d.order||0);});
   var html='';sorted.forEach(function(e){html+=lymRowHtml(e.id,e.d);});
   if(!html)html='<div style="color:rgba(201,168,76,0.3);font-size:0.7rem;">No albums found.</div>';
-  var c=document.getElementById('lym-list-inner');if(c)c.innerHTML=html;
+  var c=document.getElementById('lym-list-inner');if(c){c.innerHTML=html;c.querySelectorAll('.lym-song-list').forEach(lymWireDragDrop);}
 }
 
 window.lymToggleEdit=function(docId){var p=document.getElementById('lym-edit-'+docId);if(p)p.classList.toggle('open');};
@@ -4948,7 +4985,7 @@ window.lymMoveOrder=function(docId,dir){
 
 function lymInitAddForm(){
   var c=document.getElementById('lym-add-form');
-  if(c)c.innerHTML=lymBuildForm(null,'lym-new');
+  if(c){c.innerHTML=lymBuildForm(null,'lym-new');var sl=document.getElementById('lym-new-song-list');if(sl)lymWireDragDrop(sl);}
 }
 
 function lymLoad(){
