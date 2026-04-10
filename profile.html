@@ -1720,6 +1720,25 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   </div>
 
   <!-- Account Actions -->
+  <!-- Part 3: Set Password (only shown for Google-only accounts) -->
+  <div class="dark-card profile-section" id="sec-set-password" data-section="set-password" style="display:none;">
+    <div class="card-title">Set a Password</div>
+    <p style="font-family:'Luminari',serif;font-size:0.78rem;color:rgba(240,230,210,0.6);line-height:1.7;margin-bottom:20px;letter-spacing:0.04em;">
+      You signed in with Google. Set a password to also sign in with your email.
+    </p>
+    <label class="dossier-field-label" for="sp-pw">New Password</label>
+    <input type="password" id="sp-pw" placeholder="At least 6 characters" autocomplete="new-password"
+      style="display:block;width:100%;background:rgba(10,8,5,1);border:1px solid rgba(201,168,76,0.2);color:#fff;font-family:'Luminari',serif;font-size:0.88rem;letter-spacing:0.06em;padding:11px 14px;margin-bottom:16px;outline:none;transition:border-color 0.25s;-webkit-appearance:none;appearance:none;">
+    <label class="dossier-field-label" for="sp-pw2">Confirm Password</label>
+    <input type="password" id="sp-pw2" placeholder="Repeat password" autocomplete="new-password"
+      style="display:block;width:100%;background:rgba(10,8,5,1);border:1px solid rgba(201,168,76,0.2);color:#fff;font-family:'Luminari',serif;font-size:0.88rem;letter-spacing:0.06em;padding:11px 14px;margin-bottom:20px;outline:none;transition:border-color 0.25s;-webkit-appearance:none;appearance:none;">
+    <button id="sp-submit" type="button"
+      style="display:block;width:100%;background:#c9a84c;border:none;color:#000;font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.28em;text-transform:uppercase;padding:14px 20px;cursor:pointer;transition:background 0.25s,box-shadow 0.25s;min-height:44px;">
+      Set Password
+    </button>
+    <div id="sp-msg" style="display:none;font-family:'Luminari',serif;font-style:italic;font-size:0.78rem;color:#c9a84c;letter-spacing:0.04em;line-height:1.6;margin-top:16px;text-align:center;border-top:1px solid rgba(201,168,76,0.15);padding-top:14px;"></div>
+  </div>
+
   <div class="dark-card profile-section" id="sec-account" data-section="account" style="text-align:center;">
     <div class="card-title" style="margin-bottom:28px;">Account</div>
     <div class="circ-actions" id="circ-actions-row">
@@ -2925,6 +2944,12 @@ var NC = (function(){
     currentUser = user;
     db = firebase.firestore();
     showPage(user);
+
+    // ── Part 3: Show "Set Password" section for Google-only accounts ──
+    var providerIds = user.providerData.map(function(p){ return p.providerId; });
+    var isGoogleOnly = providerIds.indexOf('google.com') !== -1 && providerIds.indexOf('password') === -1;
+    var spSection = document.getElementById('sec-set-password');
+    if (spSection) spSection.style.display = isGoogleOnly ? '' : 'none';
     if(user.email === 'thejestamang@gmail.com'){
       var row = document.getElementById('circ-actions-row');
       if(row && !document.getElementById('circ-btn-admin')){
@@ -3244,6 +3269,46 @@ var NC = (function(){
       status.textContent='Transmission failed. Try again.';
       btn.disabled=false;
     });
+  });
+
+  // ── Part 3: Set Password handler ─────────────────────────────
+  document.getElementById('sp-submit').addEventListener('click', function(){
+    var pw1  = document.getElementById('sp-pw').value;
+    var pw2  = document.getElementById('sp-pw2').value;
+    var msg  = document.getElementById('sp-msg');
+    var btn  = document.getElementById('sp-submit');
+    function spMsg(text, isError) {
+      msg.textContent  = text;
+      msg.style.color  = isError ? 'rgba(251,56,56,0.85)' : '#c9a84c';
+      msg.style.display = 'block';
+    }
+    if (!pw1 || pw1.length < 6) { spMsg('Password must be at least 6 characters.', true); return; }
+    if (pw1 !== pw2)             { spMsg('Passwords do not match.', true); return; }
+    if (!currentUser)            { spMsg('You must be signed in.', true); return; }
+    btn.disabled = true;
+    btn.textContent = 'Setting…';
+    var credential = firebase.auth.EmailAuthProvider.credential(currentUser.email, pw1);
+    currentUser.linkWithCredential(credential)
+      .then(function() {
+        spMsg('Password set. You can now sign in with email or Google.', false);
+        btn.disabled    = true;
+        btn.textContent = 'Password Set';
+        // Hide section after a brief pause — account now has both providers
+        setTimeout(function() {
+          var sec = document.getElementById('sec-set-password');
+          if (sec) sec.style.display = 'none';
+        }, 3000);
+      })
+      .catch(function(err) {
+        btn.disabled    = false;
+        btn.textContent = 'Set Password';
+        var map = {
+          'auth/weak-password':        'Password must be at least 6 characters.',
+          'auth/requires-recent-login':'Please sign out and sign in again before setting a password.',
+          'auth/provider-already-linked':'A password is already set for this account.'
+        };
+        spMsg(map[err.code] || ('Could not set password (' + err.code + ').'), true);
+      });
   });
 
   document.getElementById('signout-btn').addEventListener('click', function(){

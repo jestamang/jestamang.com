@@ -443,19 +443,21 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script src="assets/js/jesta-auth.js"></script>
 <script>
 (function(){
-  var mode = 'signin'; // 'signin' | 'signup'
-  var submitBtn = document.getElementById('submit-btn');
+  var mode = 'signin'; // 'signin' | 'signup' | 'link'
+  var pendingGoogleCred = null; // held during account-exists-with-different-credential flow
+
+  var submitBtn  = document.getElementById('submit-btn');
   var toggleLink = document.getElementById('toggle-link');
   var toggleWrap = document.getElementById('toggle-mode-wrap');
-  var errorDiv = document.getElementById('auth-error');
+  var errorDiv   = document.getElementById('auth-error');
   var emailInput = document.getElementById('email-input');
-  var pwInput = document.getElementById('pw-input');
-  var nameInput = document.getElementById('name-input');
-  var nameLabel = document.getElementById('name-label');
+  var pwInput    = document.getElementById('pw-input');
+  var nameInput  = document.getElementById('name-input');
+  var nameLabel  = document.getElementById('name-label');
   var rememberWrap = document.getElementById('remember-wrap');
-  var rememberMe = document.getElementById('remember-me');
-  var wbOverlay = document.getElementById('wb-overlay');
-  var wbName = document.getElementById('wb-name');
+  var rememberMe   = document.getElementById('remember-me');
+  var wbOverlay  = document.getElementById('wb-overlay');
+  var wbName     = document.getElementById('wb-name');
   var redirectPending = false;
 
   // ── Returning user detection ───────────────────────────────────
@@ -481,22 +483,49 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     }
   });
 
+  // ── Highlight Google button to guide the user ──────────────────
+  function highlightGoogleBtn() {
+    var btn = document.getElementById('google-btn');
+    if (!btn) return;
+    btn.style.transition = 'border-color 0.3s,box-shadow 0.3s,color 0.3s';
+    btn.style.borderColor = '#c9a84c';
+    btn.style.boxShadow   = '0 0 18px rgba(201,168,76,0.35)';
+    btn.style.color       = '#c9a84c';
+    setTimeout(function() {
+      btn.style.borderColor = '';
+      btn.style.boxShadow   = '';
+      btn.style.color       = '';
+    }, 4000);
+  }
+
   function setMode(m){
     mode = m;
+    if (mode === 'link') {
+      submitBtn.textContent = 'Link & Sign In';
+      nameLabel.style.display  = 'none';
+      nameInput.style.display  = 'none';
+      rememberWrap.style.display = 'flex';
+      pwInput.setAttribute('autocomplete','current-password');
+      // leave toggleWrap as-is so user can still switch if needed
+      return;
+    }
     if(mode === 'signup'){
       submitBtn.textContent = 'Declare Yourself';
-      toggleWrap.innerHTML = 'Returning? <a id="toggle-link" href="#">Enter Here</a>';
-      nameLabel.style.display = 'block';
-      nameInput.style.display = 'block';
+      toggleWrap.innerHTML  = 'Returning? <a id="toggle-link" href="#">Enter Here</a>';
+      nameLabel.style.display  = 'block';
+      nameInput.style.display  = 'block';
       rememberWrap.style.display = 'none';
-      pwInput.setAttribute('autocomplete', 'new-password');
+      pwInput.setAttribute('autocomplete','new-password');
     } else {
       submitBtn.textContent = 'Initiate';
-      toggleWrap.innerHTML = 'First time? <a id="toggle-link" href="#">Declare Yourself</a>';
-      nameLabel.style.display = 'none';
-      nameInput.style.display = 'none';
+      toggleWrap.innerHTML  = 'First time? <a id="toggle-link" href="#">Declare Yourself</a>';
+      nameLabel.style.display  = 'none';
+      nameInput.style.display  = 'none';
       rememberWrap.style.display = 'flex';
-      pwInput.setAttribute('autocomplete', 'current-password');
+      pwInput.setAttribute('autocomplete','current-password');
+      // reset any link-mode state
+      emailInput.readOnly  = false;
+      pendingGoogleCred    = null;
     }
     document.getElementById('toggle-link').addEventListener('click',function(e){
       e.preventDefault();
@@ -511,27 +540,28 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   });
 
   function showError(msg){
-    errorDiv.textContent = msg;
+    errorDiv.textContent  = msg;
     errorDiv.style.display = 'block';
   }
   function clearError(){
-    errorDiv.textContent='';
-    errorDiv.style.display='none';
+    errorDiv.textContent  = '';
+    errorDiv.style.display = 'none';
   }
 
   function translateError(code){
     var map = {
-      'auth/wrong-password':        'The mythology does not recognize this key. Try again.',
-      'auth/invalid-credential':    'The mythology does not recognize this key. Try again.',
-      'auth/user-not-found':        'No record of this signal in the inner circle.',
-      'auth/email-already-in-use':  'This signal is already bound to another soul.',
-      'auth/weak-password':         'Your key must be at least six characters long.',
-      'auth/invalid-email':         'This signal format is unrecognized.',
-      'auth/too-many-requests':     'Too many attempts. The gate is temporarily sealed. Wait and try again.',
-      'auth/operation-not-allowed': 'This sign-in method is not yet enabled. Try another way or contact the keeper.',
-      'auth/popup-blocked':         'The portal was blocked. Attempting redirect — allow popups for this site or try again.',
-      'auth/popup-closed-by-user':  'The portal was closed before you entered. Try again.',
-      'auth/cancelled-popup-request': 'Only one portal can be open at a time.',
+      'auth/wrong-password':         'The mythology does not recognize this key. Try again.',
+      'auth/invalid-credential':     'The mythology does not recognize this key. Try again.',
+      'auth/invalid-login-credentials':'The mythology does not recognize this key. Try again.',
+      'auth/user-not-found':         'No record of this signal in the inner circle.',
+      'auth/email-already-in-use':   'This signal is already bound to another soul.',
+      'auth/weak-password':          'Your key must be at least six characters long.',
+      'auth/invalid-email':          'This signal format is unrecognized.',
+      'auth/too-many-requests':      'Too many attempts. The gate is temporarily sealed. Wait and try again.',
+      'auth/operation-not-allowed':  'This sign-in method is not yet enabled. Try another way or contact the keeper.',
+      'auth/popup-blocked':          'The portal was blocked. Attempting redirect — allow popups for this site or try again.',
+      'auth/popup-closed-by-user':   'The portal was closed before you entered. Try again.',
+      'auth/cancelled-popup-request':'Only one portal can be open at a time.',
       'auth/network-request-failed': 'The signal could not reach the other side. Check your connection.'
     };
     return map[code] || ('The initiation encountered resistance (' + (code||'unknown') + '). Try again.');
@@ -543,39 +573,77 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       : firebase.auth.Auth.Persistence.SESSION;
   }
 
+  // ── Part 1: email/password sign-in with provider fallback check ─
+  function handleSignInError(err, email) {
+    var needsCheck = err.code === 'auth/invalid-login-credentials' ||
+                     err.code === 'auth/user-not-found'            ||
+                     err.code === 'auth/invalid-credential';
+    if (!needsCheck) { showError(translateError(err.code)); return; }
+    firebase.auth().fetchSignInMethodsForEmail(email)
+      .then(function(methods) {
+        if (!methods || methods.length === 0) {
+          showError('No account found with this email. Please register first.');
+        } else if (methods.indexOf('google.com') !== -1 && methods.indexOf('password') === -1) {
+          showError('This account was created with Google. Use the Google button below, or set a password first.');
+          highlightGoogleBtn();
+        } else {
+          showError(translateError(err.code));
+        }
+      })
+      .catch(function() { showError(translateError(err.code)); });
+  }
+
+  // ── Part 2: registration with existing-account check ───────────
+  function handleSignUpError(err, email) {
+    if (err.code !== 'auth/email-already-in-use') { showError(translateError(err.code)); return; }
+    firebase.auth().fetchSignInMethodsForEmail(email)
+      .then(function(methods) {
+        if (methods && methods.indexOf('google.com') !== -1 && methods.indexOf('password') === -1) {
+          showError('This email is linked to a Google account. Sign in with Google to link both methods.');
+          highlightGoogleBtn();
+        } else {
+          showError('An account with this email already exists. Try signing in instead.');
+        }
+      })
+      .catch(function() { showError(translateError(err.code)); });
+  }
+
   submitBtn.addEventListener('click', function(){
     var email = emailInput.value.trim();
-    var pw = pwInput.value;
+    var pw    = pwInput.value;
     clearError();
     if(!email || !pw){ showError('Both signal and key are required to enter.'); return; }
     submitBtn.disabled = true;
     var promise;
-    if(mode === 'signup'){
+
+    if (mode === 'link' && pendingGoogleCred) {
+      // ── Part 1 link flow: sign in with password then link Google ─
+      promise = firebase.auth().setPersistence(getPersistence())
+        .then(function(){ return firebase.auth().signInWithEmailAndPassword(email, pw); })
+        .then(function(cred){ return cred.user.linkWithCredential(pendingGoogleCred); })
+        .then(function(){
+          pendingGoogleCred   = null;
+          emailInput.readOnly = false;
+          showError('Google sign-in linked to your existing account. You can now use either method.');
+          // onAuthStateChanged will handle redirect
+        });
+    } else if (mode === 'signup') {
       var name = nameInput.value.trim();
-      promise = firebase.auth().createUserWithEmailAndPassword(email, pw).then(function(cred){
-        if(name) return cred.user.updateProfile({displayName: name});
-      });
+      promise = firebase.auth().createUserWithEmailAndPassword(email, pw)
+        .then(function(cred){ if(name) return cred.user.updateProfile({displayName: name}); });
     } else {
-      promise = firebase.auth().setPersistence(getPersistence()).then(function(){
-        return firebase.auth().signInWithEmailAndPassword(email, pw);
-      });
+      promise = firebase.auth().setPersistence(getPersistence())
+        .then(function(){ return firebase.auth().signInWithEmailAndPassword(email, pw); });
     }
+
     promise
       .then(function(){ /* onAuthStateChanged handles redirect */ })
       .catch(function(err){
         submitBtn.disabled = false;
-        if (mode === 'signin' && err.code === 'auth/invalid-login-credentials') {
-          firebase.auth().fetchSignInMethodsForEmail(email)
-            .then(function(methods) {
-              if (methods.indexOf('google.com') !== -1 && methods.indexOf('password') === -1) {
-                showError('This account was created with Google. Please use the Google sign-in button below.');
-              } else {
-                showError(translateError(err.code));
-              }
-            })
-            .catch(function() { showError(translateError(err.code)); });
+        if (mode === 'signup') {
+          handleSignUpError(err, email);
         } else {
-          showError(translateError(err.code));
+          handleSignInError(err, email);
         }
       });
   });
@@ -590,7 +658,17 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     .then(function(result){
       if(result && result.user){ /* onAuthStateChanged handles redirect */ }
     })
-    .catch(function(err){ showError(translateError(err.code)); });
+    .catch(function(err){
+      if (err.code === 'auth/account-exists-with-different-credential') {
+        pendingGoogleCred = err.credential;
+        if (err.email) emailInput.value = err.email;
+        emailInput.readOnly = true;
+        setMode('link');
+        showError('This email has a password. Enter it below to link your Google sign-in.');
+      } else {
+        showError(translateError(err.code));
+      }
+    });
 
   // ── Google Sign In (popup → redirect fallback) ─────────────────
   document.getElementById('google-btn').addEventListener('click', function(){
@@ -602,7 +680,15 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     })
     .then(function(){ /* onAuthStateChanged handles redirect */ })
     .catch(function(err){
-      if(err.code === 'auth/popup-blocked' || err.code === 'auth/popup-closed-by-user'){
+      if (err.code === 'auth/account-exists-with-different-credential') {
+        // ── Part 1: Google sign-in but email/password account exists ─
+        pendingGoogleCred = err.credential;
+        var pendingEmail  = err.email || '';
+        if (pendingEmail) emailInput.value = pendingEmail;
+        emailInput.readOnly = true;
+        setMode('link');
+        showError('This email has a password. Enter it below to link your Google sign-in.');
+      } else if (err.code === 'auth/popup-blocked' || err.code === 'auth/popup-closed-by-user') {
         firebase.auth().signInWithRedirect(provider);
       } else {
         showError(translateError(err.code));

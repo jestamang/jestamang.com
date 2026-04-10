@@ -233,13 +233,27 @@
       if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = initialName.length > 10 ? initialName.slice(0,9)+'\u2026' : initialName; }
       checkNotifications(user);
       if (window.jestaDB) {
-        window.jestaDB.collection('users').doc(user.uid).get()
+        var _userRef = window.jestaDB.collection('users').doc(user.uid);
+        _userRef.get()
           .then(function (doc) {
             var name = (doc.exists && doc.data().username) ? doc.data().username : fallback;
             localStorage.setItem(CACHE_KEY, name);
             if (name !== initialName) {
               renderAuthNav(wrap, mobWrap, name);
               if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = name.length > 10 ? name.slice(0,9)+'\u2026' : name; }
+            }
+            // Part 4: Keep providers array in sync so admin can see sign-in methods
+            var providers = user.providerData.map(function(p) { return p.providerId; });
+            if (!doc.exists) {
+              _userRef.set({
+                email:       user.email || '',
+                displayName: user.displayName || '',
+                photoURL:    user.photoURL || '',
+                createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+                providers:   providers
+              }).catch(function() {});
+            } else {
+              _userRef.update({ providers: providers }).catch(function() {});
             }
           })
           .catch(function () {});
