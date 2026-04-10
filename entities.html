@@ -196,6 +196,73 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
+<script>(function(){
+  var _ENTITIES_FALLBACK = null;
+  var ZODIAC = {Aries:'♈︎',Taurus:'♉︎',Gemini:'♊︎',Cancer:'♋︎',Leo:'♌︎',Virgo:'♍︎',Libra:'♎︎',Scorpio:'♏︎',Sagittarius:'♐︎',Capricorn:'♑︎',Aquarius:'♒︎',Pisces:'♓︎'};
+  var PLANETS = [
+    {key:'sun',label:'Sun',sym:'☉'},{key:'moon',label:'Moon',sym:'☽'},
+    {key:'rising',label:'Rising',sym:'↑'},{key:'mercury',label:'Mercury',sym:'☿'},
+    {key:'venus',label:'Venus',sym:'♀'},{key:'mars',label:'Mars',sym:'♂'},
+    {key:'jupiter',label:'Jupiter',sym:'♃'},{key:'saturn',label:'Saturn',sym:'♄'},
+    {key:'uranus',label:'Uranus',sym:'♅'},{key:'neptune',label:'Neptune',sym:'♆'},
+    {key:'pluto',label:'Pluto',sym:'♇'}
+  ];
+  function zodiacGlyph(val){if(!val)return'';var s=val.split(' ')[0];return ZODIAC[s]||'';}
+  function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function buildDossier(d,idx){
+    var n=d.natal||{},planets='';
+    PLANETS.forEach(function(p){var v=n[p.key];if(!v)return;
+      planets+='<div class="dossier-row"><span class="doss-glyph">'+zodiacGlyph(v)+'</span><span class="doss-label">'+p.label+'</span><span class="doss-value">'+esc(v)+'</span><span class="doss-planet-sym">'+p.sym+'</span></div>';
+    });
+    return '<div class="dossier-panel" id="dossier-'+idx+'" style="background:'+esc(d.bgColor||'rgba(0,0,0,0.62)')+'">'
+      +'<div class="dossier-hero"><img src="'+esc(d.image)+'" alt="'+esc(d.name)+'" class="dossier-hero-img" loading="lazy"><div class="dossier-hero-overlay"></div></div>'
+      +'<h2 class="dossier-name">'+esc(d.name)+'</h2>'
+      +'<div class="dossier-body">'
+        +'<div class="dossier-top">'
+          +'<div class="dossier-desc-block"><div class="dossier-seal">✦</div><p class="dossier-desc">'+esc(d.bio||'')+'</p></div>'
+          +'<div class="dossier-chart-block"><img src="'+esc(d.chartImage||'')+'" alt="Natal chart \u2014 '+esc(d.name)+'" class="dossier-chart-img" loading="lazy"><div class="dossier-chart-caption">Natal Chart</div></div>'
+        +'</div>'
+        +(planets?'<div class="dossier-rule"><span>✦ Planetary Positions ✦</span></div><div class="dossier-planets">'+planets+'</div>':'')
+      +'</div>'
+    +'</div>';
+  }
+  function buildCard(d){
+    return '<div class="entity-card" style="background:'+esc(d.bgColor||'rgba(0,0,0,0.25)')+'">'
+      +'<img class="entity-photo" src="'+esc(d.image)+'" alt="'+esc(d.name)+'" loading="lazy">'
+      +'<div class="entity-name">'+esc(d.name)+'</div>'
+      +(d.albums?'<div class="entity-row"><span class="entity-label">Albums</span><span class="entity-value">'+esc(d.albums)+'</span></div>':'')
+      +(d.likes?'<div class="entity-row"><span class="entity-label">Likes</span><span class="entity-value">'+esc(d.likes)+'</span></div>':'')
+      +(d.hates?'<div class="entity-row"><span class="entity-label">Hates</span><span class="entity-value">'+esc(d.hates)+'</span></div>':'')
+    +'</div>';
+  }
+  function fadeReplace(el,html){
+    el.style.transition='opacity 0.3s';el.style.opacity='0';
+    setTimeout(function(){el.innerHTML=html;el.style.opacity='1';},300);
+  }
+  function loadEntities(){
+    window.jestaDB.collection('entities').orderBy('order').get()
+      .then(function(snap){
+        var children=[],cartoons=[];
+        snap.forEach(function(doc){var d=doc.data();d._id=doc.id;
+          if(d.visible===false)return;
+          if(d.type==='child')children.push(d);else cartoons.push(d);
+        });
+        if(children.length){
+          var el=document.querySelector('.children-list');
+          if(el){var h='';children.forEach(function(d,i){h+=buildDossier(d,i);});fadeReplace(el,h);}
+        }
+        if(cartoons.length){
+          var el=document.querySelector('.entity-grid');
+          if(el){var h='';cartoons.forEach(function(d){h+=buildCard(d);});fadeReplace(el,h);}
+        }
+      })
+      .catch(function(){});
+  }
+  var _t=0,_iv=setInterval(function(){
+    if(window.jestaDB){clearInterval(_iv);loadEntities();}
+    else if(++_t>80){clearInterval(_iv);}
+  },100);
+})();</script>
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span> Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a>
 </footer>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
