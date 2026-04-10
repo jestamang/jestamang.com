@@ -225,24 +225,36 @@
     var mobLogin = document.getElementById('jtnav-mob-login');
     if (user) {
       var CACHE_KEY = 'jesta_uname_' + user.uid;
+      var PHOTO_KEY = 'jesta_photo_' + user.uid;
       var cached = localStorage.getItem(CACHE_KEY);
       var fallback = (user.displayName || user.email || '').split('@')[0];
-      // Show cached username instantly — no flash to email
-      var initialName = cached || fallback;
-      renderAuthNav(wrap, mobWrap, initialName);
-      if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = initialName.length > 10 ? initialName.slice(0,9)+'\u2026' : initialName; }
+
+      if (cached) {
+        // Layer 1: instant render from localStorage cache — no flash
+        renderAuthNav(wrap, mobWrap, cached);
+        if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = cached.length > 10 ? cached.slice(0,9)+'\u2026' : cached; }
+      } else {
+        // Layer 2: first login, no cache yet — hide until Firestore ready, no raw email flash
+        wrap.style.opacity = '0';
+        wrap.style.transition = 'opacity 0.2s';
+      }
+
       checkNotifications(user);
-      if (window.jestaDB) {
-        var _userRef = window.jestaDB.collection('users').doc(user.uid);
-        _userRef.get()
+
+      function _doFetch() {
+        window.jestaDB.collection('users').doc(user.uid).get()
           .then(function (doc) {
             var name = (doc.exists && doc.data().username) ? doc.data().username : fallback;
+            var photo = (doc.exists && doc.data().photoURL) ? doc.data().photoURL : (user.photoURL || '');
             localStorage.setItem(CACHE_KEY, name);
-            if (name !== initialName) {
+            if (photo) localStorage.setItem(PHOTO_KEY, photo);
+            if (!cached || name !== cached) {
               renderAuthNav(wrap, mobWrap, name);
               if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = name.length > 10 ? name.slice(0,9)+'\u2026' : name; }
             }
-            // Part 4: Keep providers array in sync so admin can see sign-in methods
+            if (!cached) { wrap.style.opacity = '1'; }
+            // Keep providers array in sync so admin can see sign-in methods
+            var _userRef = window.jestaDB.collection('users').doc(user.uid);
             var providers = user.providerData.map(function(p) { return p.providerId; });
             if (!doc.exists) {
               _userRef.set({
@@ -256,7 +268,29 @@
               _userRef.update({ providers: providers }).catch(function() {});
             }
           })
-          .catch(function () {});
+          .catch(function () {
+            if (!cached) {
+              renderAuthNav(wrap, mobWrap, fallback);
+              if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = fallback.length > 10 ? fallback.slice(0,9)+'\u2026' : fallback; }
+              wrap.style.opacity = '1';
+            }
+          });
+      }
+
+      if (window.jestaDB) {
+        _doFetch();
+      } else {
+        var _t = 0, _iv = setInterval(function () {
+          if (window.jestaDB) { clearInterval(_iv); _doFetch(); }
+          else if (++_t > 80) {
+            clearInterval(_iv);
+            if (!cached) {
+              renderAuthNav(wrap, mobWrap, fallback);
+              if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = fallback.length > 10 ? fallback.slice(0,9)+'\u2026' : fallback; }
+              wrap.style.opacity = '1';
+            }
+          }
+        }, 100);
       }
     } else {
       // Clear cached name on logout
