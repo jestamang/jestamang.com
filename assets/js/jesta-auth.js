@@ -351,6 +351,39 @@
     }, 100);
   })();
 
+  // ── Sitewide text style loader ───────────────────────────────
+  (function () {
+    var currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    var _t = 0, _iv = setInterval(function () {
+      if (window.jestaDB) {
+        clearInterval(_iv);
+        window.jestaDB.collection('siteConfig').doc('textStyles').get()
+          .then(function (doc) {
+            if (!doc.exists) return;
+            var styles = doc.data().styles;
+            if (!Array.isArray(styles) || !styles.length) return;
+            var css = '';
+            styles.forEach(function (s) {
+              if (!s || !s.selector) return;
+              if (s.page !== 'all' && s.page !== currentPage) return;
+              var rules = [];
+              if (s.color) rules.push('color:' + s.color + '!important');
+              if (typeof s.opacity === 'number') rules.push('opacity:' + s.opacity + '!important');
+              if (s.fontSize) rules.push('font-size:' + s.fontSize + '!important');
+              if (rules.length) css += s.selector + '{' + rules.join(';') + '}';
+            });
+            if (css) {
+              var tag = document.createElement('style');
+              tag.id = 'jesta-text-styles';
+              tag.textContent = css;
+              document.head.appendChild(tag);
+            }
+          })
+          .catch(function () {});
+      } else if (++_t > 80) { clearInterval(_iv); }
+    }, 100);
+  })();
+
   // ── Cookie consent banner ────────────────────────────────────
   function initCookieBanner() {
     if (document.getElementById('ck-banner')) return; // already present
