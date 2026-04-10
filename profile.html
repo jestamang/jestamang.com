@@ -1330,8 +1330,9 @@ body::before{
   .username-wrap { justify-content: center !important; }
   /* Natal form grid: single column */
   .natal-form-grid { grid-template-columns: 1fr !important; }
-  /* Unknown time label: wrap below input on mobile */
-  #nc-tob-unknown-label { font-size:0.65rem !important; letter-spacing:0.04em !important; white-space:normal !important; flex-shrink:0; max-width:80px; text-align:center; line-height:1.3; padding-top:0 !important; }
+  /* Unknown time row: stay inline on mobile */
+  #nc-tob-row { display:flex !important; align-items:center !important; gap:8px !important; flex-wrap:nowrap !important; width:100% !important; }
+  #nc-tob-unknown-label { font-size:0.65rem !important; letter-spacing:0.04em !important; white-space:nowrap !important; flex-shrink:0 !important; padding-top:0 !important; }
   /* Allow note to wrap on mobile since column is full width */
   .natal-form-note { white-space:normal !important; }
   /* Circ buttons: smaller on mobile */
@@ -1603,7 +1604,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         </div>
         <div>
           <label class="natal-form-label" for="nc-tob">Time of Birth</label>
-          <div style="display:flex;align-items:center;gap:10px;">
+          <div id="nc-tob-row" style="display:flex;align-items:center;gap:10px;">
             <input class="form-input" type="time" id="nc-tob" placeholder="HH:MM" style="flex:1;min-width:0;">
             <label id="nc-tob-unknown-label" style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;color:rgba(201,168,76,0.65);font-size:0.72rem;letter-spacing:0.08em;padding-top:2px;">
               <input type="checkbox" id="nc-tob-unknown" style="accent-color:#c9a84c;cursor:pointer;width:14px;height:14px;">
