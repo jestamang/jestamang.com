@@ -3257,9 +3257,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       // Wrap plain text in minimal HTML for MailerLite
       var htmlBody = '<html><body style="font-family:Georgia,serif;color:#1a1a1a;max-width:600px;margin:0 auto;padding:40px 20px;">'
         + '<p style="white-space:pre-wrap;">' + body.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}) + '</p>'
-        + '<!-- footer-single-line-mobile -->
-<style>.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important}@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important}.hp-footer-mark{margin:0 8px!important;color:rgba(201,168,76,0.6)!important}}</style>
-</body></html>';
+        + '<!-- footer-single-line-mobile --><style>.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important}@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important}.hp-footer-mark{margin:0 8px!important;color:rgba(201,168,76,0.6)!important}}</style></body></html>';
 
       var payload = {
         name: subject + ' — ' + new Date().toISOString().slice(0,10),
