@@ -802,7 +802,8 @@ body::before{
   margin-right:4px;
 }
 .sign-glyph {
-  color:rgba(201,168,76,0.7);
+  font-family:'Luminari',Georgia,serif;
+  color:#c9a84c;
   margin-right:3px;
 }
 .house-num-cell {
@@ -2389,8 +2390,8 @@ var NC = (function(){
 
   var SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
                'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-  var SIGN_GLYPHS = ['\u2648','\u2649','\u264A','\u264B','\u264C','\u264D',
-                     '\u264E','\u264F','\u2650','\u2651','\u2652','\u2653'];
+  var SIGN_GLYPHS = ['\u2648\uFE0E','\u2649\uFE0E','\u264A\uFE0E','\u264B\uFE0E','\u264C\uFE0E','\u264D\uFE0E',
+                     '\u264E\uFE0E','\u264F\uFE0E','\u2650\uFE0E','\u2651\uFE0E','\u2652\uFE0E','\u2653\uFE0E'];
 
   function decToMin(decDeg){
     var abs = Math.abs(decDeg);
@@ -2662,7 +2663,7 @@ var NC = (function(){
       var color=ELEMENT_COLORS[SIGN_ELEMENT[SIGNS[si]]];
       svg+='<path d="'+sectorPath(R_ZO,R_ZI,a1,a2)+'" fill="'+color+'" stroke="rgba(201,168,76,0.3)" stroke-width="0.5"/>';
       var midA=lonToAngle(ascLon+si*30+15), gp=polar(midA,(R_ZO+R_ZI)/2);
-      svg+='<text x="'+fx(gp.x)+'" y="'+fx(gp.y+5.5)+'" text-anchor="middle" font-size="16" fill="rgba(201,168,76,0.95)" font-family="serif" filter="url(#ncgs)">'+SIGN_GLYPHS[si]+'</text>';
+      svg+='<text x="'+fx(gp.x)+'" y="'+fx(gp.y+5.5)+'" text-anchor="middle" font-size="16" fill="rgba(201,168,76,0.95)" font-family="Luminari,Georgia,serif" filter="url(#ncgs)">'+SIGN_GLYPHS[si]+'</text>';
     }
 
     // Degree ticks every 10° in zodiac ring
@@ -2878,9 +2879,9 @@ var NC = (function(){
     if(container.sunSubEl){
       var sun=planets['Sun'],moonPl=planets['Moon'];
       var parts=[];
-      if(sun)    parts.push(sun.glyph+'\uFE0E Sun in '+sun.sign);
-      if(moonPl) parts.push(moonPl.glyph+'\uFE0E Moon in '+moonPl.sign);
-      if(ascData) parts.push(ascData.glyph+'\uFE0E '+ascData.sign+' Rising');
+      if(sun)    parts.push(sun.glyph+' Sun in '+sun.sign);
+      if(moonPl) parts.push(moonPl.glyph+' Moon in '+moonPl.sign);
+      if(ascData) parts.push(ascData.glyph+' '+ascData.sign+' Rising');
       container.sunSubEl.textContent=parts.join('  \u00B7  ');
     }
 
@@ -2931,7 +2932,7 @@ var NC = (function(){
           var hhtml='';
           for(var hci=0;hci<12;hci++){
             var h=lonToSign(houseCusps[hci]);
-            hhtml+='<div class="natal-house-row"><span class="natal-house-num">'+ROMAN_HOUSES[hci]+'</span><span class="natal-house-sign">'+h.glyph+' '+h.sign+' '+formatPos(h)+'</span></div>';
+            hhtml+='<div class="natal-house-row"><span class="natal-house-num">'+ROMAN_HOUSES[hci]+'</span><span class="natal-house-sign"><span class="sign-glyph">'+h.glyph+'</span>'+h.sign+' '+formatPos(h)+'</span></div>';
           }
           container.housesGridEl.innerHTML=hhtml;
         }
