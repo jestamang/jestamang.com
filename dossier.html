@@ -294,7 +294,7 @@ body::before{
   .dossier-top { grid-template-columns: 1fr !important; }
   .dossier-chart-img { max-width: 280px; margin: 0 auto; display: block; }
 }
-.hp-footer{background:transparent;text-align:center;padding:32px 24px 56px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10}.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important;transition:color 0.2s}.hp-footer a:hover{color:#c9a84c}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.6)}
+
 </style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
@@ -791,8 +791,7 @@ const NC = (function(){
   });
 })();
 </script>
-<footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span>&nbsp;Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a>
-</footer>
+<footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>©<span class="jcyr"></span> Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a></footer>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
@@ -1360,6 +1359,7 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 })();
 </script>
 <!-- footer-single-line-mobile -->
-<style>.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important}@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important}.hp-footer-mark{margin:0 8px!important;color:rgba(201,168,76,0.6)!important}}</style>
+
+<style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;gap:0!important;background:transparent;padding:32px 24px 56px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10;}.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none;white-space:nowrap!important;}.hp-footer a:hover{color:#c9a84c!important;}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4);white-space:nowrap!important;}@media(max-width:768px){.hp-footer{padding:8px 12px 56px!important;font-size:0.65rem!important;flex-direction:row!important;flex-wrap:nowrap!important;}}</style>
 </body>
 </html>

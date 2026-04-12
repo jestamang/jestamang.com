@@ -46,7 +46,7 @@ canvas{display:block;position:fixed;inset:0;touch-action:none}
 #tz-a{left:0;width:25%}#tz-s{left:25%;width:25%}
 #tz-d{left:50%;width:25%}#tz-f{left:75%;width:25%}
 @media (max-width:900px){#touch-zones{display:block}}
-.hp-footer{background:transparent;text-align:center;padding:32px 24px 56px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10}.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important;transition:color 0.2s}.hp-footer a:hover{color:#c9a84c}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.6)}@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important;gap:0!important}.hp-footer-mark{margin:0 5px!important}}
+
 </style>
 <style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
 <link rel="preload" as="font" type="font/ttf" href="../assets/fonts/Luminari.ttf" crossorigin>
@@ -752,8 +752,7 @@ document.getElementById('restartBtn').addEventListener('click', () => {
 </div>
 </div>
 
-<footer class="hp-footer"><a href="../privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>© <span class="jcyr"></span>&nbsp;Jestamang LLC<span class="hp-footer-mark">·</span><a href="../terms.html">Terms of Service</a>
-</footer>
+<footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>©<span class="jcyr"></span> Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a></footer>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
@@ -1300,6 +1299,7 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 <script></script>
 <!-- mobile-audit-fixes --><style>@media(max-width:768px){canvas{width:100vw!important;max-width:100vw!important;touch-action:none}#touch-zones{height:22vh!important}.tz{font-size:clamp(1.2rem,5vw,1.8rem)}.btn{min-height:44px;padding:14px 32px}.scr{padding:20px 14px}#back{min-height:44px;display:flex;align-items:center}.score-big{font-size:clamp(2rem,9vw,4rem)}}</style>
 <!-- footer-single-line-mobile -->
-<style>.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important}@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important}.hp-footer-mark{margin:0 8px!important;color:rgba(201,168,76,0.6)!important}}</style>
+
+<style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;gap:0!important;background:transparent;padding:32px 24px 56px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10;}.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none;white-space:nowrap!important;}.hp-footer a:hover{color:#c9a84c!important;}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4);white-space:nowrap!important;}@media(max-width:768px){.hp-footer{padding:8px 12px 56px!important;font-size:0.65rem!important;flex-direction:row!important;flex-wrap:nowrap!important;}}</style>
 </body>
 </html>
