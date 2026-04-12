@@ -42,12 +42,14 @@
   /* Mobile: flex column so logo + icons stack tight together */
   body { display:flex !important; flex-direction:column !important; align-items:stretch; }
   .logo-wrap { position:relative !important; padding-top:58px !important; margin-bottom:4px !important; width:100%; }
-  /* Mobile nav grid — uniform 4-column layout */
-  .mob-nav{display:block;position:relative;bottom:auto;z-index:30;padding:0;}
-  .mob-nav-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 8px;padding:24px 16px;width:100%;}
+  /* Mobile nav grid — uniform 4-column layout, fills remaining viewport */
+  #hp-hero{display:flex!important;flex-direction:column!important;}
+  .mob-nav{display:flex!important;flex-direction:column!important;flex:1 1 auto;position:relative;bottom:auto;z-index:30;padding:0;}
+  .mob-nav-grid{display:grid!important;grid-template-columns:repeat(4,1fr);align-content:space-evenly;gap:8px 8px;padding:16px;width:100%;flex:1 1 auto;}
   .mob-nav-item{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-decoration:none;gap:6px;}
   .mob-nav-icon{width:56px;height:56px;object-fit:contain;display:block;}
   .mob-nav-label{font-family:'Luminari',Georgia,serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,230,210,0.85);text-align:center;white-space:nowrap;}
+  .mob-nav-item[href="instagram.html"] .mob-nav-icon{width:35px!important;height:35px!important;}
 
 }
 /* Instagram icon: scale down to match visual size of other nav icons */
