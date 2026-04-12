@@ -1331,9 +1331,11 @@ body::before{
   .username-wrap { justify-content: center !important; }
   /* Natal form grid: single column */
   .natal-form-grid { grid-template-columns: 1fr !important; }
-  /* Unknown time row: stay inline on mobile */
-  #nc-tob-row { display:flex !important; align-items:center !important; gap:8px !important; flex-wrap:nowrap !important; width:100% !important; }
-  #nc-tob-unknown-label { font-size:0.65rem !important; letter-spacing:0.04em !important; white-space:nowrap !important; flex-shrink:0 !important; padding-top:0 !important; }
+  /* Unknown time row — aggressive mobile fix */
+  #nc-tob-row { display:flex !important; flex-wrap:nowrap !important; align-items:center !important; width:100% !important; overflow:hidden !important; gap:0 !important; }
+  #nc-tob { flex:1 !important; min-width:0 !important; }
+  #nc-tob-unknown { flex-shrink:0 !important; margin:0 6px !important; position:static !important; left:auto !important; right:auto !important; }
+  #nc-tob-unknown-label { flex-shrink:0 !important; white-space:nowrap !important; font-size:0.75rem !important; color:rgba(201,168,76,0.8) !important; position:static !important; left:auto !important; right:auto !important; padding-top:0 !important; }
   /* Allow note to wrap on mobile since column is full width */
   .natal-form-note { white-space:normal !important; }
   /* Circ buttons: smaller on mobile */
