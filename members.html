@@ -537,7 +537,7 @@ body::before{
   resize:none;
   line-height:1.4;
 }
-#chat-input::placeholder{color:rgba(255,255,255,0.42);font-style:italic;}
+#chat-input::placeholder{color:rgba(255,255,255,0.42);font-style:italic;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
 #chat-send{
   background:none;
   border:none;
@@ -783,7 +783,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
   <!-- ── SECTION 4: CHAT ────────────────────────────────── -->
   <div class="section-header">
-    <div class="section-eyebrow">◈ Live Transmissions · Inner Circle Only</div>
+    <div class="section-eyebrow">◈ Live Transmissions</div>
     <h2 class="section-title">Chat</h2>
     <p class="section-sub">A live signal shared only among those who have entered. Speak freely.</p>
   </div>
@@ -794,7 +794,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <div class="chat-empty" id="chat-empty">No transmissions yet. Be the first to speak.</div>
     </div>
     <div class="chat-input-row">
-      <textarea id="chat-input" rows="1" placeholder="Awaiting your transmission..." maxlength="500"></textarea>
+      <textarea id="chat-input" rows="1" placeholder="Awaiting transmission..." maxlength="500"></textarea>
       <button id="chat-send">Send ✦</button>
     </div>
   </div>
