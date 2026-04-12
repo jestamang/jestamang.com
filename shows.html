@@ -246,7 +246,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   var status = document.getElementById('shows-notif-status');
   var LS = 'jesta-notif-enabled';
   if (!btn) return;
-  if (!('Notification' in window)) { btn.style.display='none'; return; }
+  if (!('Notification' in window)) { status.textContent = 'Notifications not supported in this browser.'; status.className = 'blocked'; btn.disabled = true; return; }
 
   function setOn() {
     btn.textContent = 'Notifications On \u2736';
