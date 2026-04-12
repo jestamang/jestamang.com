@@ -1495,7 +1495,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   </nav>
 
   <!-- Hero -->
-  <div class="profile-hero profile-section">
+  <div class="profile-hero profile-section" style="visibility:hidden">
     <div class="avatar-ring-wrap">
       <div class="avatar-ring-outer"></div>
       <div class="avatar-ring"></div>
@@ -3081,7 +3081,36 @@ var NC = (function(){
     }
   });
 
-  // ── Avatar load helpers ──
+  // ── Avatar / flash helpers ──
+
+  // Returns true for null/empty URLs and Google's grey default avatar
+  function _isGoogleDefault(url) {
+    if (!url) return true;
+    // Real custom Google photos contain a long user-specific hash path
+    // The default grey circle has no such hash (path is just /a/default or very short)
+    if (url.indexOf('googleusercontent.com') !== -1) {
+      return !/[A-Za-z0-9_\-]{20}/.test(url);
+    }
+    return false;
+  }
+
+  // Show the user's initial in a gold circle instead of a grey placeholder
+  function _showInitialAvatar(name) {
+    var img = document.getElementById('avatar-img');
+    var ph  = document.getElementById('avatar-placeholder');
+    if (img) { img.style.display = 'none'; }
+    if (ph) {
+      ph.style.cssText = 'position:absolute;width:120px;height:120px;border-radius:50%;'
+        + 'background:radial-gradient(circle at 40% 35%,rgba(201,168,76,0.22),rgba(0,0,0,0.85));'
+        + 'border:2px solid rgba(201,168,76,0.55);z-index:1;display:flex;'
+        + 'align-items:center;justify-content:center;'
+        + 'font-family:Luminari,Georgia,serif;font-size:2.8rem;'
+        + 'color:#c9a84c;text-shadow:0 0 20px rgba(201,168,76,0.5);'
+        + 'animation:none;pointer-events:none;';
+      ph.textContent = String(name || '?')[0].toUpperCase();
+    }
+  }
+
   function _avatarFadeIn(){
     var img = document.getElementById('avatar-img');
     var ph  = document.getElementById('avatar-placeholder');
@@ -3106,55 +3135,72 @@ var NC = (function(){
 
   function showPage(user){
     document.getElementById('page-content').style.display = 'block';
-    var name = user.displayName || user.email.split('@')[0];
-    document.getElementById('display-name').textContent = name.toUpperCase();
 
-    // ── Avatar: show cached URL immediately while Firestore loads ──
-    var lsKey   = 'jesta_av_' + user.uid;
-    var avatarImg = document.getElementById('avatar-img');
-    var cachedUrl = null;
-    try{ cachedUrl = localStorage.getItem(lsKey); }catch(e){}
+    // ── Cache keys ──────────────────────────────────────────────────
+    var AV_KEY    = 'jesta_av_'    + user.uid;  // Firebase Storage upload URL
+    var UNAME_KEY = 'jesta_uname_' + user.uid;  // Firestore username (set by jesta-auth.js)
+    var PHOTO_KEY = 'jesta_photo_' + user.uid;  // Firestore photoURL fallback
 
-    if(cachedUrl){
-      // Use cached Firebase Storage URL right away — no Firestore wait
-      _setAvatarSrc(cachedUrl, null);
-    } else {
-      // No cache: default logo is already the src; just wire up the fade
-      avatarImg.onload  = _avatarFadeIn;
-      avatarImg.onerror = _avatarFadeIn;
-      if(avatarImg.complete && avatarImg.naturalWidth) _avatarFadeIn();
+    var cachedAvUrl = null, cachedName = null, cachedPhoto = null;
+    try { cachedAvUrl = localStorage.getItem(AV_KEY);    } catch(e) {}
+    try { cachedName  = localStorage.getItem(UNAME_KEY); } catch(e) {}
+    try { cachedPhoto = localStorage.getItem(PHOTO_KEY); } catch(e) {}
+
+    var heroEl = document.querySelector('.profile-hero');
+
+    // ── STEP 3: Sync cache render — zero delay ──────────────────────
+    // Best available photo: uploaded avatar > cached Firestore photo (if not Google default)
+    var bestPhoto = cachedAvUrl || (!_isGoogleDefault(cachedPhoto) ? cachedPhoto : null);
+
+    if (cachedName) {
+      // Populate from cache instantly — hero becomes visible NOW
+      document.getElementById('display-name').textContent = cachedName.toUpperCase();
+      if (bestPhoto) {
+        _setAvatarSrc(bestPhoto, null);
+      } else {
+        _showInitialAvatar(cachedName);
+      }
+      if (heroEl) heroEl.style.visibility = 'visible';
     }
+    // If no cache: keep hero hidden — Firestore resolve (below) will show it
 
+    // ── STEP 4: Firestore fetch ─────────────────────────────────────
     db.collection('users').doc(user.uid).get()
       .then(function(doc){
         var data = doc.exists ? doc.data() : {};
         dossierData = data;
-        renderViewMode(data, user);
+        renderViewMode(data, user);  // updates display-name and makes hero visible
         loadFavorites(user.uid);
-        // ── Resolve avatar: update if Firestore has a URL ──
-        if(data.avatarUrl){
-          if(data.avatarUrl !== cachedUrl){
-            // Fresh or changed — update src and cache
-            _setAvatarSrc(data.avatarUrl, lsKey);
+
+        // Resolve avatar — uploaded avatar takes priority over OAuth photo
+        if (data.avatarUrl) {
+          if (data.avatarUrl !== cachedAvUrl) {
+            _setAvatarSrc(data.avatarUrl, AV_KEY);
           }
-          // If same as cached, already loading — nothing to do
+        } else if (data.photoURL && !_isGoogleDefault(data.photoURL)) {
+          // Firestore has a non-default OAuth photo
+          if (data.photoURL !== cachedPhoto) {
+            _setAvatarSrc(data.photoURL, null);
+            try { localStorage.setItem(PHOTO_KEY, data.photoURL); } catch(e) {}
+          }
+        } else if (!bestPhoto) {
+          // No usable photo at all — show initial
+          var nameForInitial = data.username || cachedName || (user.displayName || user.email || '?').split('@')[0];
+          _showInitialAvatar(nameForInitial);
         }
 
-        // If page loaded from a shared URL, auto-calculate and skip saved chart restore
+        // Natal chart restore
         if(_sharedBirthData){
           setTimeout(function(){ document.getElementById('natal-calc-btn').click(); }, 200);
         } else {
-          // Check for saved natal chart
           db.collection('users').doc(user.uid).collection('natalChart').doc('chart').get()
             .then(function(chartDoc){
               if(chartDoc.exists){
                 var cd = chartDoc.data();
                 savedNatalChart = cd;
-                // Pre-fill form from saved data
                 if(cd.birthDate) document.getElementById('nc-dob').value = cd.birthDate;
                 if(cd.birthTime) document.getElementById('nc-tob').value = cd.birthTime;
                 if(cd.birthPlace) document.getElementById('nc-pob').value = cd.birthPlace;
-                // Cache saved coords so recalculation skips geocoding
                 if(cd.lat != null && cd.lng != null){
                   _pobLat = cd.lat; _pobLng = cd.lng;
                   _pobDisplayName = cd.birthPlace || null;
@@ -3163,14 +3209,24 @@ var NC = (function(){
                     '\u2002\u00b7\u2002LAT: ' + cd.lat.toFixed(4) +
                     '\u2002\u00b7\u2002LNG: ' + cd.lng.toFixed(4));
                 }
-                // Display saved result
                 displaySavedChart(cd, user);
               }
             })
             .catch(function(e){ console.log('No saved natal chart or error:', e); });
         }
       })
-      .catch(function(e){ console.error('Profile load error:', e); loadFavorites(user.uid); });
+      .catch(function(e){
+        console.error('Profile load error:', e);
+        // Firestore failed — if we had cache the hero is already visible and correct
+        if (!cachedName) {
+          // Last resort: show auth fallback so page isn't permanently blank
+          var fb = (user.displayName || user.email || '?').split('@')[0];
+          document.getElementById('display-name').textContent = fb.toUpperCase();
+          _showInitialAvatar(fb);
+          if (heroEl) heroEl.style.visibility = 'visible';
+        }
+        loadFavorites(user.uid);
+      });
   }
 
   // ── Dossier view/edit (unchanged) ──
@@ -3195,8 +3251,16 @@ var NC = (function(){
       var el = document.getElementById(id);
       if(el){ el.textContent = val(v) || '\u2014'; el.classList.toggle('empty', !val(v)); }
     }
-    var displayName = data.username || user.displayName || user.email.split('@')[0];
+    // Use Firestore username first; fall back to displayName/email prefix only as last resort
+    var displayName = data.username || (user.displayName || user.email || '?').split('@')[0];
     document.getElementById('display-name').textContent = displayName.toUpperCase();
+    // Keep jesta_uname_ cache fresh so next load renders instantly
+    if (data.username) {
+      try { localStorage.setItem('jesta_uname_' + user.uid, data.username); } catch(e) {}
+    }
+    // Hero is now populated with correct data — make it visible
+    var heroEl = document.querySelector('.profile-hero');
+    if (heroEl) heroEl.style.visibility = 'visible';
     setField('v-username', data.username);
     setField('v-dob', data.dateOfBirth);
     setField('v-tob', data.timeOfBirth);
