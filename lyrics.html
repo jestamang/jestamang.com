@@ -13351,7 +13351,9 @@ function loadLyrics(){
       var sbScroll=document.querySelector('.sidebar-scroll');
       var ca=document.getElementById('contentArea');
       docs.forEach(function(d){
+        if(!d.artist || !d.albumTitle)return;
         var aSlug=toSlug(d.artist),alSlug=toSlug(d.albumTitle);
+        if(!aSlug || !alSlug)return;
         /* update lookup maps accessible from prior script scope */
         if(!ARTIST_NAMES[aSlug])ARTIST_NAMES[aSlug]=d.artist;
         if(!ALBUM_NAMES[aSlug+'__'+alSlug])ALBUM_NAMES[aSlug+'__'+alSlug]=d.albumTitle;
