@@ -216,6 +216,15 @@
     if (banner) banner.remove();
   };
 
+  // ── Helper: true for null/empty and Google's grey default avatar ─
+  function _isNavGoogleDefault(url) {
+    if (!url) return true;
+    if (url.indexOf('googleusercontent.com') !== -1) {
+      return !/[A-Za-z0-9_\-]{20}/.test(url);
+    }
+    return false;
+  }
+
   // ── Update nav based on auth state ───────────────────────────
   function updateNav(user) {
     var wrap = document.getElementById('jtnav-auth');
@@ -245,7 +254,9 @@
         window.jestaDB.collection('users').doc(user.uid).get()
           .then(function (doc) {
             var name = (doc.exists && doc.data().username) ? doc.data().username : fallback;
-            var photo = (doc.exists && doc.data().photoURL) ? doc.data().photoURL : (user.photoURL || '');
+            // Prefer Firestore photoURL; only fall back to user.photoURL if it's not a Google default
+            var fsPhoto = doc.exists && doc.data().photoURL;
+            var photo = fsPhoto || (!_isNavGoogleDefault(user.photoURL) ? user.photoURL : '');
             localStorage.setItem(CACHE_KEY, name);
             if (photo) localStorage.setItem(PHOTO_KEY, photo);
             if (!cached || name !== cached) {
