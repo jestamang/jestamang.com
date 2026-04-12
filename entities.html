@@ -65,85 +65,70 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   outline-offset: 4px;
 }
 
-/* Children — Pisces: dreamy oceanic teal (The Ace of Chase) */
+/* Children — Green: The Ace of Chase */
 #dossier-0 .dossier-hero-img {
-  border: 2px solid #4fc3c3;
-  box-shadow: 0 0 16px rgba(79,195,195,0.5), 0 0 32px rgba(30,80,120,0.4), inset 0 0 12px rgba(79,195,195,0.1);
-  animation: pisces-shimmer 4s ease-in-out infinite alternate;
+  border: 2px solid #02E127;
+  box-shadow: 0 0 16px rgba(2,225,39,0.7), 0 0 32px rgba(2,225,39,0.4);
+  animation: glow-green 2.5s ease-in-out infinite alternate;
 }
 
-/* Children — Gemini: dual electric yellow/violet (Austinich) */
+/* Children — Purple: Austinich */
 #dossier-1 .dossier-hero-img {
-  border: 2px solid #e8e800;
-  box-shadow: 0 0 12px rgba(232,232,0,0.35), 0 0 24px rgba(155,48,255,0.35);
-  animation: gemini-hue 6s linear infinite;
+  border: 2px solid #7800DE;
+  box-shadow: 0 0 16px rgba(120,0,222,0.7), 0 0 32px rgba(120,0,222,0.4);
+  animation: glow-purple 2.5s ease-in-out infinite alternate;
 }
 
-/* Children — Scorpio: brooding deep crimson (Cricket Om) */
+/* Children — Red: Cricket Om */
 #dossier-2 .dossier-hero-img {
-  border: 2px solid #8b0000;
-  box-shadow: 0 0 16px rgba(139,0,0,0.7), 0 0 32px rgba(80,0,0,0.5), inset 0 0 10px rgba(139,0,0,0.2);
+  border: 2px solid #FB3838;
+  box-shadow: 0 0 16px rgba(251,56,56,0.7), 0 0 32px rgba(251,56,56,0.4);
+  animation: glow-red 2.5s ease-in-out infinite alternate;
 }
 
-/* Children — Aries: bold fiery red/orange (Israel) */
+/* Children — Green: Israel */
 #dossier-3 .dossier-hero-img {
-  border: 2px solid #ff4500;
-  box-shadow: 0 0 14px rgba(255,69,0,0.6), 0 0 28px rgba(255,140,0,0.3), inset 0 0 8px rgba(255,69,0,0.15);
-  animation: aries-pulse 2s ease-in-out infinite alternate;
+  border: 2px solid #02E127;
+  box-shadow: 0 0 16px rgba(2,225,39,0.7), 0 0 32px rgba(2,225,39,0.4);
+  animation: glow-green 2.5s ease-in-out infinite alternate;
 }
 
-/* Children — Taurus: earthy deep green/gold (Kek-Buh) */
+/* Children — Purple: Kek-Buh */
 #dossier-4 .dossier-hero-img {
-  border: 2px solid #4a7c3f;
-  box-shadow: 0 0 14px rgba(74,124,63,0.5), 0 0 28px rgba(201,168,76,0.3), inset 0 0 8px rgba(74,124,63,0.15);
+  border: 2px solid #7800DE;
+  box-shadow: 0 0 16px rgba(120,0,222,0.7), 0 0 32px rgba(120,0,222,0.4);
+  animation: glow-purple 2.5s ease-in-out infinite alternate;
 }
 
-/* Children — Leo: regal blazing gold/amber (Porphigen) */
+/* Children — Red: Porphigen */
 #dossier-5 .dossier-hero-img {
-  border: 2px solid #ffbf00;
-  box-shadow: 0 0 20px rgba(255,191,0,0.7), 0 0 40px rgba(255,140,0,0.4), inset 0 0 12px rgba(255,191,0,0.2);
-  animation: leo-blaze 3s ease-in-out infinite alternate;
+  border: 2px solid #FB3838;
+  box-shadow: 0 0 16px rgba(251,56,56,0.7), 0 0 32px rgba(251,56,56,0.4);
+  animation: glow-red 2.5s ease-in-out infinite alternate;
 }
 
 /* Keyframe animations */
-@keyframes pisces-shimmer {
-  from { box-shadow: 0 0 16px rgba(79,195,195,0.4); }
-  to   { box-shadow: 0 0 24px rgba(79,195,195,0.8), 0 0 40px rgba(30,80,120,0.5); }
+@keyframes glow-green {
+  from { box-shadow: 0 0 10px rgba(2,225,39,0.4); }
+  to   { box-shadow: 0 0 24px rgba(2,225,39,0.95), 0 0 40px rgba(2,225,39,0.5); }
 }
-@keyframes gemini-hue {
-  0%   { border-color: #e8e800; }
-  50%  { border-color: #9b30ff; }
-  100% { border-color: #e8e800; }
+@keyframes glow-purple {
+  from { box-shadow: 0 0 10px rgba(120,0,222,0.4); }
+  to   { box-shadow: 0 0 24px rgba(120,0,222,0.95), 0 0 40px rgba(120,0,222,0.5); }
 }
-@keyframes aries-pulse {
-  from { box-shadow: 0 0 10px rgba(255,69,0,0.4); }
-  to   { box-shadow: 0 0 22px rgba(255,69,0,0.9), 0 0 36px rgba(255,140,0,0.5); }
-}
-@keyframes leo-blaze {
-  from { box-shadow: 0 0 16px rgba(255,191,0,0.5); }
-  to   { box-shadow: 0 0 28px rgba(255,191,0,0.95), 0 0 50px rgba(255,140,0,0.6); }
+@keyframes glow-red {
+  from { box-shadow: 0 0 10px rgba(251,56,56,0.4); }
+  to   { box-shadow: 0 0 24px rgba(251,56,56,0.95), 0 0 40px rgba(251,56,56,0.5); }
 }
 
 /* Mobile — reduce glow intensity on frames */
 @media (max-width: 768px) {
-  #dossier-0 .dossier-hero-img { box-shadow: 0 0 10px rgba(79,195,195,0.5), 0 0 20px rgba(30,80,120,0.35); }
-  #dossier-1 .dossier-hero-img { box-shadow: 0 0 8px rgba(232,232,0,0.3), 0 0 16px rgba(155,48,255,0.3); }
-  #dossier-2 .dossier-hero-img { box-shadow: 0 0 10px rgba(139,0,0,0.65), 0 0 20px rgba(80,0,0,0.4); }
-  #dossier-3 .dossier-hero-img { box-shadow: 0 0 10px rgba(255,69,0,0.55), 0 0 20px rgba(255,140,0,0.25); }
-  #dossier-4 .dossier-hero-img { box-shadow: 0 0 10px rgba(74,124,63,0.45), 0 0 20px rgba(201,168,76,0.25); }
-  #dossier-5 .dossier-hero-img { box-shadow: 0 0 14px rgba(255,191,0,0.6), 0 0 28px rgba(255,140,0,0.35); }
-  @keyframes pisces-shimmer {
-    from { box-shadow: 0 0 10px rgba(79,195,195,0.35); }
-    to   { box-shadow: 0 0 18px rgba(79,195,195,0.65), 0 0 28px rgba(30,80,120,0.4); }
-  }
-  @keyframes aries-pulse {
-    from { box-shadow: 0 0 8px rgba(255,69,0,0.35); }
-    to   { box-shadow: 0 0 16px rgba(255,69,0,0.75), 0 0 26px rgba(255,140,0,0.4); }
-  }
-  @keyframes leo-blaze {
-    from { box-shadow: 0 0 10px rgba(255,191,0,0.4); }
-    to   { box-shadow: 0 0 20px rgba(255,191,0,0.8), 0 0 36px rgba(255,140,0,0.5); }
-  }
+  #dossier-0 .dossier-hero-img { box-shadow: 0 0 10px rgba(2,225,39,0.5), 0 0 20px rgba(2,225,39,0.3); }
+  #dossier-1 .dossier-hero-img { box-shadow: 0 0 10px rgba(120,0,222,0.5), 0 0 20px rgba(120,0,222,0.3); }
+  #dossier-2 .dossier-hero-img { box-shadow: 0 0 10px rgba(251,56,56,0.5), 0 0 20px rgba(251,56,56,0.3); }
+  #dossier-3 .dossier-hero-img { box-shadow: 0 0 10px rgba(2,225,39,0.5), 0 0 20px rgba(2,225,39,0.3); }
+  #dossier-4 .dossier-hero-img { box-shadow: 0 0 10px rgba(120,0,222,0.5), 0 0 20px rgba(120,0,222,0.3); }
+  #dossier-5 .dossier-hero-img { box-shadow: 0 0 10px rgba(251,56,56,0.5), 0 0 20px rgba(251,56,56,0.3); }
 }
 </style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
