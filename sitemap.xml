@@ -1,31 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://jestamang.com/</loc><lastmod>2026-04-07</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://jestamang.com/albums.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://jestamang.com/entities.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://jestamang.com/lyrics.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://jestamang.com/profile.html</loc><lastmod>2026-04-07</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://jestamang.com/blog.html</loc><lastmod>2026-04-07</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://jestamang.com/comix.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://jestamang.com/shows.html</loc><lastmod>2026-04-07</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://jestamang.com/merch.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://jestamang.com/members.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://jestamang.com/photos.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://jestamang.com/videos.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://jestamang.com/arcade.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://jestamang.com/games/void.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://jestamang.com/games/cosmic-conductor.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://jestamang.com/game-21.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://jestamang.com/game-texas.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://jestamang.com/game-memory.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://jestamang.com/game-oracle.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://jestamang.com/email.html</loc><lastmod>2026-04-07</lastmod><changefreq>yearly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://jestamang.com/spotify.html</loc><lastmod>2026-04-07</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://jestamang.com/apple-music.html</loc><lastmod>2026-04-07</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://jestamang.com/youtube.html</loc><lastmod>2026-04-07</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://jestamang.com/instagram.html</loc><lastmod>2026-04-07</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://jestamang.com/accessibility.html</loc><lastmod>2026-04-07</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://jestamang.com/terms.html</loc><lastmod>2026-04-07</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://jestamang.com/privacy.html</loc><lastmod>2026-04-07</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://jestamang.com/refund.html</loc><lastmod>2026-04-07</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+
+  <!-- Core pages - highest priority -->
+  <url><loc>https://jestamang.com/</loc><lastmod>2026-04-13</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://jestamang.com/albums.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://jestamang.com/entities.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://jestamang.com/lyrics.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jestamang.com/photos.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jestamang.com/videos.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jestamang.com/shows.html</loc><lastmod>2026-04-13</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://jestamang.com/blog.html</loc><lastmod>2026-04-13</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jestamang.com/merch.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jestamang.com/comix.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Discovery pages -->
+  <url><loc>https://jestamang.com/arcade.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jestamang.com/listen.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jestamang.com/email.html</loc><lastmod>2026-04-13</lastmod><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://jestamang.com/press.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jestamang.com/dossier.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Member pages -->
+  <url><loc>https://jestamang.com/login.html</loc><lastmod>2026-04-13</lastmod><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://jestamang.com/members.html</loc><lastmod>2026-04-13</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jestamang.com/profile.html</loc><lastmod>2026-04-13</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
+
+  <!-- Games -->
+  <url><loc>https://jestamang.com/games/void.html</loc><lastmod>2026-04-13</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jestamang.com/games/cosmic-conductor.html</loc><lastmod>2026-04-13</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jestamang.com/games/pitch-oracle.html</loc><lastmod>2026-04-13</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jestamang.com/games/rhythm-architect.html</loc><lastmod>2026-04-13</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jestamang.com/games/chord-conjurer.html</loc><lastmod>2026-04-13</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jestamang.com/game-oracle.html</loc><lastmod>2026-04-13</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jestamang.com/game-memory.html</loc><lastmod>2026-04-13</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
+
+  <!-- Legal -->
+  <url><loc>https://jestamang.com/privacy.html</loc><lastmod>2026-04-13</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://jestamang.com/terms.html</loc><lastmod>2026-04-13</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://jestamang.com/accessibility.html</loc><lastmod>2026-04-13</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+
 </urlset>
