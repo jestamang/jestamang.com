@@ -182,7 +182,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   #answer-grid{gap:8px}
   .ans-btn{min-height:80px;padding:14px 8px}
   .ans-sig{font-size:clamp(1.2rem,7vw,1.6rem)}
-  .ans-desc{font-size:0.55rem}
+  .ans-desc{font-size:0.7rem}
   .btn{min-height:48px;padding:14px 36px}
   #beat-row{gap:6px}
   .bd{width:12px;height:12px}
@@ -910,6 +910,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
-<style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;gap:0!important;background:transparent;padding:16px 24px 20px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10;}.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none;white-space:nowrap!important;}.hp-footer a:hover{color:#c9a84c!important;}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4);white-space:nowrap!important;}@media(max-width:768px){.hp-footer{padding:8px 12px 20px!important;font-size:0.65rem!important;flex-direction:row!important;flex-wrap:nowrap!important;}}</style>
+<style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;gap:0!important;background:transparent;padding:16px 24px 20px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10;}.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none;white-space:nowrap!important;}.hp-footer a:hover{color:#c9a84c!important;}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4);white-space:nowrap!important;}@media(max-width:768px){.hp-footer{padding:8px 12px 20px!important;font-size:0.7rem!important;flex-direction:row!important;flex-wrap:nowrap!important;}}</style>
+<style>@media(max-width:768px){input,textarea,select{font-size:16px!important}}</style>
 </body>
 </html>
