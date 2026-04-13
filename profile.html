@@ -3214,7 +3214,7 @@ var NC = (function(){
                 displaySavedChart(cd, user);
               }
             })
-            .catch(function(e){ console.log('No saved natal chart or error:', e); });
+            .catch(function(e){ console.error('No saved natal chart or error:', e); });
         }
       })
       .catch(function(e){
