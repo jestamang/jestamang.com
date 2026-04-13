@@ -1,5 +1,6 @@
 <!DOCTYPE html> <html lang="en"> <head>
 <meta charset="UTF-8">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blog — Jestamang</title>
 <meta name="description" content="Transmissions from the Jestamang universe. Lore, updates, and dispatches for the Jestagang. New music, shows, and cosmic revelations.">
@@ -577,7 +578,7 @@ function pressSectionToggle(){
           var del='';
           if(user&&user.uid===d.userId) del='<button class="comment-delete" data-id="'+item.id+'">✕</button>';
           var avSrc=d.photoURL||'assets/homepage/jesta jr.jpg';
-          el.innerHTML='<img class="comment-avatar" src="'+escHtml(avSrc)+'" onerror="this.onerror=null;this.src=\'assets/homepage/jesta jr.jpg\'" alt="">'+
+          el.innerHTML='<img class="comment-avatar" src="'+escHtml(avSrc)+'" onerror="this.onerror=null;this.src=\'assets/homepage/jesta jr.jpg\'" alt="" loading="lazy">'+
             '<div class="comment-body">'+del+'<div class="comment-author">'+escHtml(d.username||'Anonymous')+' · '+fmtDate(d.timestamp)+'</div><div class="comment-text">'+escHtml(d.text)+'</div></div>';
           var delBtn=el.querySelector('.comment-delete');
           if(delBtn) delBtn.addEventListener('click',function(){

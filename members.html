@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Members — Jestamang</title>
 <meta name="description" content="The Inner Circle. Exclusive content, live chat, and the guestbook for initiated members of the Jestagang.">
@@ -803,11 +804,11 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 </div><!-- /#page-content -->
 
 <!-- ── FIREBASE ─────────────────────────────────────────── -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="assets/js/firebase-config.js"></script>
-<script src="assets/js/jesta-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
+<script src="assets/js/firebase-config.js" defer></script>
+<script src="assets/js/jesta-auth.js" defer></script>
 
 <script>
 (function(){
@@ -1005,7 +1006,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       wrap.setAttribute('data-id', doc.id);
       var avSrc1 = isMe ? currentUserPhoto : (d.photo || '/assets/homepage/jesta jr.jpg');
       wrap.innerHTML  =
-        '<div class="chat-avatar"><img src="'+esc(avSrc1)+'" onerror="this.onerror=null;this.src=\'/assets/homepage/jesta jr.jpg\'" alt=""></div>'+
+        '<div class="chat-avatar"><img src="'+esc(avSrc1)+'" onerror="this.onerror=null;this.src=\'/assets/homepage/jesta jr.jpg\'" alt="" loading="lazy"></div>'+
         '<div class="chat-bubble">'+
           (canDel ? '<button class="chat-del-btn'+(isAdmin&&!isMe?' admin-del':'')+'" title="Delete message" aria-label="Delete message">&#215;</button>' : '')+
           '<div class="chat-meta">'+
