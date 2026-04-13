@@ -3037,6 +3037,7 @@ var NC = (function(){
      PROFILE PAGE LOGIC (Dossier + Natal Chart + Firebase)
 ═══════════════════════════════════════════════════ -->
 <script>
+document.addEventListener('DOMContentLoaded', function(){
 (function(){
   var db;
   var currentUser;
@@ -4543,6 +4544,7 @@ var NC = (function(){
     });
   })();
 })();
+});
 </script>
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>©<span class="jcyr"></span> Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a></footer>
 
@@ -4550,6 +4552,7 @@ var NC = (function(){
      PUSH NOTIFICATIONS — FCM opt-in + Firestore listener
      ═══════════════════════════════════════════════════ -->
 <script>
+document.addEventListener('DOMContentLoaded', function(){
 (function () {
   'use strict';
 
@@ -4708,6 +4711,7 @@ var NC = (function(){
   }
 
 })();
+});
 </script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
@@ -5262,7 +5266,7 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
     _b.innerHTML='<span>SITE UPDATED · REFRESH FOR THE LATEST TRANSMISSIONS</span>'
       +'<span style="display:flex;gap:10px;align-items:center;">'
       +'<button onclick="location.reload()" style="background:#0a0702;color:#c9a84c;border:none;padding:5px 14px;font-size:12px;font-weight:700;letter-spacing:0.06em;cursor:pointer;border-radius:2px;">REFRESH</button>'
-      +'<button onclick="(function(b){b.style.transform='translateY(-100%)';setTimeout(function(){b.style.opacity='0';b.style.pointerEvents='none';},400);})(document.getElementById('sw-update-banner'))" style="background:none;border:none;color:#0a0702;font-size:20px;line-height:1;cursor:pointer;padding:0 4px;">×</button>'
+      +'<button onclick="(function(b){b.style.transform=\'translateY(-100%)\';setTimeout(function(){b.style.opacity=\'0\';b.style.pointerEvents=\'none\';},400);})(document.getElementById(\'sw-update-banner\'))" style="background:none;border:none;color:#0a0702;font-size:20px;line-height:1;cursor:pointer;padding:0 4px;">×</button>'
       +'</span>';
   }
   if('serviceWorker' in navigator){
