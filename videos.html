@@ -1,5 +1,6 @@
 <!DOCTYPE html> <html lang="en"> <head>
 <meta charset="UTF-8">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Videos — Jestamang</title>
 <meta name="description" content="Music videos, live performances, and visual art from Jestamang — the experimental psychedelic music collective.">
@@ -218,7 +219,7 @@ var _vTries=0,_vIv=setInterval(function(){
 },100);
 </script>
 <div id="lightbox" class="lightbox" onclick="if(event.target===this)closeLightbox()"> <div class="lightbox-inner"> <button class="lightbox-close" onclick="closeLightbox()">&#x2715;</button> <div class="lightbox-frame" id="lb-frame"> <div id="lb-player"></div> </div> <div class="lb-error" id="lb-error"> <p>This video can't be played here</p> <a id="lb-yt-link" href="#" target="_blank" rel="noopener noreferrer">Watch on YouTube</a> </div> <div class="lightbox-title" id="lb-title"></div> </div> </div>
-<script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://www.youtube.com/iframe_api" defer></script>
 <script>var _ytReady=false;var _pendingId=null;var _pendingTitle=null;var _ytPlayer=null;var _currentVideoId=null;function onYouTubeIframeAPIReady(){_ytReady=true;if(_pendingId)_createPlayer(_pendingId,_pendingTitle);}
 function _showError(){document.getElementById('lb-frame').style.display='none';document.getElementById('lb-error').classList.add('show');document.getElementById('lb-yt-link').href='https://www.youtube.com/watch?v='+_currentVideoId;}
 function _createPlayer(id,title){_currentVideoId=id;document.getElementById('lb-frame').style.display='';document.getElementById('lb-error').classList.remove('show');if(_ytPlayer){try{_ytPlayer.destroy();}catch(e){}_ytPlayer=null;}

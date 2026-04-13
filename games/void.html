@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="dns-prefetch" href="https://firestore.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Void — Jestamang</title>
 <meta name="description" content="Play The Void — a survival arcade game from the Jestamang universe. Navigate darkness, collect fragments, and escape the drift.">
@@ -111,10 +113,10 @@ canvas{display:block;position:fixed;inset:0;touch-action:none}
 @media(max-width:767px){#jsearch-overlay{top:52px}#jsearch-inner{padding:12px 16px 12px}#jsearch-input{font-size:16px}.jsearch-hint{letter-spacing:0.08em;font-size:0.6rem;padding:12px 0;white-space:nowrap}}
 </style>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="../assets/js/firebase-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
+<script src="../assets/js/firebase-config.js" defer></script>
 <script>(function(GID,GDISP,FLFLOAT){
 var _score=0,_docId=null;
 var MON=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
@@ -155,7 +157,7 @@ var cls=i===0?'lb-r1':i<3?'lb-r23':'';
 if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
 tr.className=cls;
 var cr=i===0?'<span style="margin-right:5px">✦</span>':'';
-tr.innerHTML='<td>'+(i+1)+'</td><td><img class="lb-av" src="../assets/homepage/jesta jr.jpg" onerror="this.onerror=null;this.src=\'../assets/homepage/jesta jr.jpg\'" alt="">'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
+tr.innerHTML='<td>'+(i+1)+'</td><td><img class="lb-av" src="../assets/homepage/jesta jr.jpg" onerror="this.onerror=null;this.src=\'../assets/homepage/jesta jr.jpg\'" alt="" loading="lazy">'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
 tb.appendChild(tr);
 });
 }).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">SIGNAL LOST</td></tr>';});

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jestamang</title>
 <meta name="description" content="Calculate your free natal chart with the Jestamang Celestial Calculator. Accurate Placidus houses, planetary positions, aspects, and cosmic interpretation.">
@@ -1901,13 +1902,13 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
 </div><!-- end #page-content -->
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js"></script>
-<script src="assets/js/firebase-config.js"></script>
-<script src="assets/js/jesta-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js" defer></script>
+<script src="assets/js/firebase-config.js" defer></script>
+<script src="assets/js/jesta-auth.js" defer></script>
 
 <!-- ═══════════════════════════════════════════════════
      NATAL CHART ENGINE — Meeus Algorithms + Full SVG Wheel
@@ -5277,5 +5278,8 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 <!-- mobile-audit-fixes --><style>@media(max-width:768px){input,select,textarea{font-size:16px!important}.planet-table,.house-table,.aspects-table{overflow-x:auto;-webkit-overflow-scrolling:touch;display:block;width:100%}.chart-svg,svg.chart{max-width:100%;height:auto}.circ-btn{min-width:44px;min-height:44px}.profile-form input,.profile-form select{font-size:16px!important}}@media(hover:none){.circ-btn:hover{transform:none!important}}</style>
 
 <style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;gap:0!important;background:transparent;padding:16px 24px 20px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10;}.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none;white-space:nowrap!important;}.hp-footer a:hover{color:#c9a84c!important;}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4);white-space:nowrap!important;}@media(max-width:768px){.hp-footer{padding:8px 12px 20px!important;font-size:0.7rem!important;flex-direction:row!important;flex-wrap:nowrap!important;}}</style>
+<script>
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});}
+</script>
 </body>
 </html>
