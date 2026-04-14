@@ -309,6 +309,31 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
   <button class="btn" id="startBtn">Consult the Oracle</button>
   <button class="btn-learn" id="learnBtn">Learn the Notes</button>
   <div style="font-size:0.58rem;letter-spacing:0.28em;color:rgba(255,255,255,0.12);text-transform:uppercase;margin-top:18px;line-height:2;font-family:'Luminari',serif">10 rounds · 3 lives · 1000 points possible</div>
+
+  <!-- ── Learn the Notes inline panel ── -->
+  <div id="ltn-panel">
+    <div id="ltn-inner">
+      <div class="ltn-sec-title">✦ The 12 Notes</div>
+      <div id="ltn-note-grid"></div>
+      <div class="gold-rule"></div>
+      <div class="ltn-sec-title">✦ How to Train Your Ear</div>
+      <div class="ltn-prose">
+        <p>The ear is a muscle. It learns through repetition, not theory.</p>
+        <p>Start by memorizing A440 — hum it, sing it, find it in the world around you.</p>
+        <p>Then learn its neighbors. A# sits just above. G# just below.</p>
+        <p>Over time the distances between notes become familiar. This is called relative pitch.</p>
+        <p>Absolute pitch — knowing a note without reference — takes years. Relative pitch can be learned in weeks.</p>
+      </div>
+      <div class="gold-rule"></div>
+      <div class="ltn-sec-title">✦ Sharps vs Flats</div>
+      <div class="ltn-prose">
+        <p>C# and D♭ are the same pitch — two names for the same key on the piano. Which name you use depends on the key you're in. In this game we use sharps.</p>
+      </div>
+      <div style="text-align:center;margin-top:28px;padding-bottom:8px">
+        <button id="ltn-close" class="btn-learn">✦ Close</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════
@@ -1096,7 +1121,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('os').classList.add('off'); getAC(); startGame();
   });
   if (document.getElementById('learnBtn'))
-    document.getElementById('learnBtn').addEventListener('click', function() { getAC(); openLearnMode(); });
+    document.getElementById('learnBtn').addEventListener('click', function() { if(window.ltnToggle) window.ltnToggle(); });
   if (document.getElementById('learnBack'))
     document.getElementById('learnBack').addEventListener('click', closeLearnMode);
   document.getElementById('po-replay').addEventListener('click', handleReplay);
@@ -1138,6 +1163,126 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 </style>
 
+<style>
+/* ── Learn the Notes panel ── */
+#ss.ltn-open{justify-content:flex-start;overflow-y:auto;padding-top:72px;padding-bottom:32px}
+#ss.ltn-open::-webkit-scrollbar{display:none}
+#ss.ltn-open{scrollbar-width:none}
+#ltn-panel{max-height:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.35s ease;opacity:0;width:100%;max-width:560px;margin-top:0}
+#ltn-panel.ltn-open{max-height:4000px;opacity:1;margin-top:18px}
+#ltn-inner{background:rgba(0,0,0,0.7);border:1px solid rgba(201,168,76,0.3);padding:24px 20px 8px;text-align:left}
+.ltn-sec-title{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.55em;color:#c9a84c;text-transform:uppercase;margin-bottom:16px;text-align:center}
+#ltn-note-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.ltn-card{background:rgba(4,2,10,0.9);border:1px solid rgba(201,168,76,0.22);padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.ltn-note-name{font-family:'Luminari',serif;font-size:1.35rem;letter-spacing:0.05em;color:#c9a84c;line-height:1}
+.ltn-freq{font-family:'Luminari',serif;font-size:0.5rem;letter-spacing:0.15em;color:rgba(255,255,255,0.38);text-transform:uppercase}
+.ltn-desc{font-family:'Luminari',serif;font-size:0.52rem;letter-spacing:0.08em;color:rgba(240,230,210,0.45);line-height:1.6;font-style:italic;flex:1;text-align:center}
+.ltn-hear-btn{font-family:'Luminari',serif;font-size:0.48rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;border:1px solid rgba(201,168,76,0.22);padding:5px 8px;cursor:pointer;transition:all 0.2s;margin-top:2px;min-height:28px;width:100%}
+.ltn-hear-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.55);background:rgba(201,168,76,0.06)}
+.ltn-hear-btn.ltn-playing{color:#c9a84c;border-color:#c9a84c;background:rgba(201,168,76,0.12);box-shadow:0 0 10px rgba(201,168,76,0.25)}
+.ltn-prose{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.12em;color:rgba(240,230,210,0.5);line-height:2;margin-bottom:16px}
+.ltn-prose p{margin-bottom:8px}
+.ltn-prose p:last-child{margin-bottom:0}
+@media(max-width:768px){
+  #ltn-note-grid{grid-template-columns:repeat(2,1fr);gap:7px}
+  .ltn-note-name{font-size:1.15rem}
+  .ltn-desc{font-size:0.5rem}
+  .ltn-hear-btn{font-size:0.45rem;padding:5px 4px}
+  #ltn-inner{padding:18px 14px 8px}
+  .ltn-prose{font-size:0.6rem}
+}
+</style>
 <style>@media(max-width:768px){body{overflow-x:hidden}}</style>
+
+<!-- Learn the Notes panel logic -->
+<script>(function(){
+'use strict';
+var NOTE_DATA=[
+  {note:'C',   freq:261.63,desc:'The root. The beginning. Every scale starts here.'},
+  {note:'C#',  freq:277.18,desc:'Edgy and chromatic. Loves tension.'},
+  {note:'D',   freq:293.66,desc:'Bright and bold. The key of triumph.'},
+  {note:'D#',  freq:311.13,desc:'Dark nobility. Jazz loves it.'},
+  {note:'E',   freq:329.63,desc:'Open and resonant. The guitar\'s favorite.'},
+  {note:'F',   freq:349.23,desc:'Soft and introspective. A step away from resolution.'},
+  {note:'F#',  freq:369.99,desc:'The furthest from C. Exotic and remote.'},
+  {note:'G',   freq:392.00,desc:'Stable and warm. The perfect fifth of C.'},
+  {note:'G#',  freq:415.30,desc:'Lush and romantic. Leans toward resolution.'},
+  {note:'A',   freq:440.00,desc:'The universal tuning note. A440 — the world agrees here.'},
+  {note:'A#',  freq:466.16,desc:'Bluesy and soulful. The note of longing.'},
+  {note:'B',   freq:493.88,desc:'The leading tone. One half-step from home.'}
+];
+
+var _ltnCtx=null;
+function ltnCtx(){
+  if(!_ltnCtx)try{_ltnCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}
+  if(_ltnCtx&&_ltnCtx.state==='suspended')_ltnCtx.resume();
+  return _ltnCtx;
+}
+function ltnPlay(freq){
+  var ctx=ltnCtx();if(!ctx)return;
+  var g=ctx.createGain();
+  g.connect(ctx.destination);
+  var t=ctx.currentTime;
+  g.gain.setValueAtTime(0.001,t);
+  g.gain.exponentialRampToValueAtTime(0.28,t+0.025);
+  g.gain.exponentialRampToValueAtTime(0.001,t+1.5);
+  ['sine','triangle'].forEach(function(type,i){
+    var osc=ctx.createOscillator();
+    var gs=ctx.createGain();gs.gain.value=i===0?0.7:0.3;
+    osc.type=type;osc.frequency.value=freq;
+    osc.connect(gs);gs.connect(g);
+    osc.start(t);osc.stop(t+1.6);
+  });
+}
+
+window.ltnToggle=function(){
+  var panel=document.getElementById('ltn-panel');
+  var ss=document.getElementById('ss');
+  var btn=document.getElementById('learnBtn');
+  if(!panel)return;
+  var opening=!panel.classList.contains('ltn-open');
+  panel.classList.toggle('ltn-open',opening);
+  if(ss)ss.classList.toggle('ltn-open',opening);
+  if(btn)btn.textContent=opening?'✦ Close Notes':'Learn the Notes';
+  if(opening){
+    setTimeout(function(){
+      panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+    },60);
+  }
+};
+
+document.addEventListener('DOMContentLoaded',function(){
+  var grid=document.getElementById('ltn-note-grid');
+  if(grid){
+    NOTE_DATA.forEach(function(nd){
+      var card=document.createElement('div');
+      card.className='ltn-card';
+      card.innerHTML=
+        '<div class="ltn-note-name">'+nd.note+'</div>'
+        +'<div class="ltn-freq">'+nd.freq.toFixed(2)+' Hz</div>'
+        +'<div class="ltn-desc">'+nd.desc+'</div>'
+        +'<button class="ltn-hear-btn" data-freq="'+nd.freq+'">▶ Hear it</button>';
+      grid.appendChild(card);
+    });
+    grid.addEventListener('click',function(e){
+      var b=e.target.closest('.ltn-hear-btn');if(!b)return;
+      ltnCtx();// unlock AudioContext on gesture
+      ltnPlay(parseFloat(b.dataset.freq));
+      b.classList.add('ltn-playing');
+      setTimeout(function(){b.classList.remove('ltn-playing');},1600);
+    });
+    grid.addEventListener('touchstart',function(e){
+      var b=e.target.closest('.ltn-hear-btn');if(!b)return;
+      e.preventDefault();
+      ltnCtx();
+      ltnPlay(parseFloat(b.dataset.freq));
+      b.classList.add('ltn-playing');
+      setTimeout(function(){b.classList.remove('ltn-playing');},1600);
+    },{passive:false});
+  }
+  var closeBtn=document.getElementById('ltn-close');
+  if(closeBtn)closeBtn.addEventListener('click',function(){window.ltnToggle();});
+});
+})();</script>
 </body>
 </html>
