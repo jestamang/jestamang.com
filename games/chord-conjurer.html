@@ -136,6 +136,53 @@ body{font-family:'Luminari',serif;background:#000;color:#fff;min-height:100vh;ov
 #back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
 @media(max-width:480px){.btn{padding:12px 26px}#cc-theory{padding:10px 14px}}
 
+/* ── Difficulty tabs ── */
+#diff-tabs{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;max-width:640px;width:100%;justify-content:center;padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+#diff-tabs::-webkit-scrollbar{display:none}
+.diff-tab{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.38em;text-transform:uppercase;color:rgba(201,168,76,0.45);background:none;border:1px solid rgba(201,168,76,0.2);padding:8px 18px;cursor:pointer;transition:all 0.25s;min-height:40px;white-space:nowrap;flex-shrink:0}
+.diff-tab:hover:not(.locked){border-color:rgba(201,168,76,0.55);color:rgba(201,168,76,0.8)}
+.diff-tab.active{color:#c9a84c;border-color:#c9a84c;background:rgba(201,168,76,0.1)}
+.diff-tab.locked{color:rgba(201,168,76,0.18);border-color:rgba(201,168,76,0.1);cursor:not-allowed}
+
+/* ── Progress bar ── */
+#cc-progress-wrap{width:100%;max-width:460px;margin-bottom:10px}
+#cc-progress-bar{height:2px;background:rgba(201,168,76,0.12);border-radius:1px;overflow:hidden;margin-bottom:5px}
+#cc-progress-inner{height:100%;background:#c9a84c;width:0%;transition:width 0.4s ease}
+#cc-progress-label{font-size:0.44rem;letter-spacing:0.32em;color:rgba(201,168,76,0.28);text-transform:uppercase;text-align:center}
+
+/* ── Listen/Replay area ── */
+#cc-listen-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:14px}
+#cc-listen-indicator{font-size:0.62rem;letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase;min-height:1.2em;text-shadow:0 0 18px rgba(201,168,76,0.5);transition:opacity 0.3s}
+#cc-replay-dots{font-size:1.05rem;letter-spacing:0.3em;color:rgba(201,168,76,0.55);min-height:1.4em}
+#cc-replay-btn{font-family:'Luminari',serif;font-size:0.57rem;letter-spacing:0.38em;text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;border:1px solid rgba(201,168,76,0.28);padding:8px 20px;cursor:pointer;transition:all 0.2s;min-height:40px}
+#cc-replay-btn:hover:not(:disabled){border-color:#c9a84c;color:#c9a84c}
+#cc-replay-btn:disabled{opacity:0.22;cursor:default;pointer-events:none}
+
+/* ── Answer options grid ── */
+#cc-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:520px;margin-bottom:14px}
+#cc-options.five-cols .cc-opt-btn:nth-child(5){grid-column:1/-1}
+
+/* ── Explanation ── */
+#cc-explanation{max-width:480px;text-align:center;margin:6px auto 10px;min-height:1.5em;font-size:clamp(0.57rem,1.6vw,0.67rem);letter-spacing:0.1em;color:rgba(240,230,210,0.42);line-height:1.9;font-style:italic;opacity:0;transition:opacity 0.35s}
+#cc-explanation.show{opacity:1}
+
+/* ── Mini piano diagram ── */
+#cc-diagram-wrap{margin:10px auto;max-width:480px;width:100%;display:none}
+#cc-diagram-label{font-size:0.44rem;letter-spacing:0.38em;color:rgba(201,168,76,0.42);text-transform:uppercase;margin-bottom:8px;text-align:center}
+#mini-piano-outer{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+#mini-piano-outer::-webkit-scrollbar{display:none}
+#mini-piano{position:relative;display:flex;margin:0 auto}
+
+/* ── Unlock flash banner ── */
+#unlock-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.85);background:rgba(0,0,0,0.97);border:1px solid rgba(201,168,76,0.6);padding:28px 44px;text-align:center;z-index:600;display:none;opacity:0;transition:opacity 0.3s,transform 0.3s;pointer-events:none}
+#unlock-banner.show{display:block;opacity:1;transform:translate(-50%,-50%) scale(1)}
+#unlock-banner-text{font-size:clamp(1rem,4vw,1.5rem);letter-spacing:0.4em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 30px rgba(201,168,76,0.7)}
+
+@media(max-width:768px){
+  #diff-tabs{justify-content:flex-start;padding-left:4px}
+  #cc-options{gap:8px}
+  .diff-tab{padding:8px 14px;font-size:0.55rem}
+}
 </style>
 <style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
 <style id="lb-styles">
@@ -319,37 +366,49 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 
 <!-- GAME SCREEN -->
 <div id="gs" class="scr">
+  <!-- Difficulty tabs -->
+  <div id="diff-tabs">
+    <button class="diff-tab active" data-diff="initiate">Initiate</button>
+    <button class="diff-tab locked" data-diff="adept" id="tab-adept">Adept</button>
+    <button class="diff-tab locked" data-diff="oracle" id="tab-oracle">Oracle</button>
+  </div>
+
+  <!-- HUD -->
   <div id="cc-header">
-    <div id="cc-level-lbl">LEVEL 1</div>
+    <div id="cc-level-lbl">INITIATE</div>
     <div id="cc-score-lbl">SCORE 0</div>
   </div>
-  <div id="cc-level-dots"></div>
-  <div id="cc-mode-badge">BUILD</div>
-  <div id="cc-chord-name">C MAJOR</div>
-  <div id="cc-chord-sub">CLICK THE NOTES THAT FORM THIS CHORD</div>
-  <div id="cc-chord-progress"></div>
-  <div id="cc-instruct">CLICK THE CORRECT PIANO KEYS · THEN SUBMIT</div>
-  <div id="cc-listen-indicator"></div>
-  <div id="cc-octave-hint"></div>
-  <!-- Reverse mode options -->
-  <div id="cc-options" style="display:none"></div>
-  <!-- Piano -->
-  <div id="piano-outer"><div id="piano"></div></div>
-  <div id="cc-selected">NO NOTES SELECTED</div>
-  <div id="cc-controls">
-    <button id="cc-play-btn">▶ PLAY CHORD</button>
-    <button id="cc-hint-btn">HINT (−25 PTS)</button>
-    <button id="cc-clear-btn">CLEAR</button>
-    <button id="cc-submit-btn">SUBMIT</button>
-  </div>
   <div id="cc-streak"></div>
-  <div id="cc-theory">
-    <div id="cc-theory-header">✦ CHORD THEORY ✦</div>
-    <div id="cc-theory-chord"></div>
-    <div id="cc-theory-intervals"></div>
-    <div id="cc-theory-desc"></div>
-    <div id="cc-theory-voice"></div>
+
+  <!-- Progress bar toward next unlock -->
+  <div id="cc-progress-wrap">
+    <div id="cc-progress-bar"><div id="cc-progress-inner"></div></div>
+    <div id="cc-progress-label"></div>
   </div>
+
+  <!-- Round counter -->
+  <div id="cc-chord-progress"></div>
+
+  <!-- Listen + Replay -->
+  <div id="cc-listen-wrap">
+    <div id="cc-listen-indicator"></div>
+    <div id="cc-replay-dots">●●●</div>
+    <button id="cc-replay-btn" disabled>↺ Replay</button>
+  </div>
+
+  <!-- Answer options -->
+  <div id="cc-options"></div>
+
+  <!-- Explanation after answer -->
+  <div id="cc-explanation"></div>
+
+  <!-- Mini piano diagram after answer -->
+  <div id="cc-diagram-wrap">
+    <div id="cc-diagram-label"></div>
+    <div id="mini-piano-outer"><div id="mini-piano"></div></div>
+  </div>
+
+  <!-- Feedback -->
   <div id="cc-feedback"></div>
 </div>
 
@@ -357,10 +416,15 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 <div id="os" class="scr">
   <div class="eyebrow">The conjuration is complete</div>
   <div class="score-big" id="finalScore">0</div>
-  <div class="score-lbl">correct notes</div>
+  <div class="score-lbl">Points</div>
   <div id="os-result"></div>
   <button class="btn" id="restartBtn">Conjure Again</button>
   <button id="lb-btn-over">The Cosmic Scrolls</button>
+</div>
+
+<!-- UNLOCK BANNER -->
+<div id="unlock-banner">
+  <div id="unlock-banner-text"></div>
 </div>
 
 <!-- LEADERBOARD MODALS -->
@@ -938,75 +1002,90 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 <script>
 (function(){
 'use strict';
+// ── Note/Interval data ──────────────────────────────────
 var NOTES_ALL=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-var ROM_LVL=['I','II','III','IV','V','VI','VII'];
 
 var INTERVALS={
   'MAJOR':[0,4,7],
   'MINOR':[0,3,7],
-  'SUS2':[0,2,7],
-  'SUS4':[0,5,7],
-  'POWER':[0,7],
+  'DIMINISHED':[0,3,6],
+  'AUGMENTED':[0,4,8],
   'DOMINANT 7':[0,4,7,10],
   'MAJOR 7':[0,4,7,11],
   'MINOR 7':[0,3,7,10],
-  'MIN/MAJ 7':[0,3,7,11],
-  'DIMINISHED':[0,3,6],
-  'AUGMENTED':[0,4,8],
-  'DIM 7':[0,3,6,9],
-  'HALF-DIM 7':[0,3,6,10]
+  'HALF-DIM 7':[0,3,6,10],
+  'SUS2':[0,2,7],
+  'SUS4':[0,5,7],
+  'ADD9':[0,2,4,7]
 };
 
-var THEORY_DATA={
-  'MAJOR':{inter:'0 · 4 · 7',desc:'Root · Major Third · Perfect Fifth',voice:'The foundation of light. Open, stable, resolute.'},
-  'MINOR':{inter:'0 · 3 · 7',desc:'Root · Minor Third · Perfect Fifth',voice:'Depth, introspection, the color of shadow.'},
-  'SUS2':{inter:'0 · 2 · 7',desc:'Root · Major 2nd · Perfect Fifth',voice:'Suspended between earth and sky — yearning, unresolved.'},
-  'SUS4':{inter:'0 · 5 · 7',desc:'Root · Perfect 4th · Perfect Fifth',voice:'Tension that leans toward resolution. The held breath.'},
-  'POWER':{inter:'0 · 7',desc:'Root · Perfect Fifth',voice:'Raw. Neutral. Neither major nor minor. Pure resonance.'},
-  'DOMINANT 7':{inter:'0 · 4 · 7 · 10',desc:'Root · Major 3rd · P5 · Minor 7th',voice:'The dominant seventh pulls toward resolution — tension at its most magnetic.'},
-  'MAJOR 7':{inter:'0 · 4 · 7 · 11',desc:'Root · Major 3rd · P5 · Major 7th',voice:'Luminous. Suspended. Jazz and starlight.'},
-  'MINOR 7':{inter:'0 · 3 · 7 · 10',desc:'Root · Minor 3rd · P5 · Minor 7th',voice:'Moonlit water. Melancholy without despair.'},
-  'MIN/MAJ 7':{inter:'0 · 3 · 7 · 11',desc:'Root · Minor 3rd · P5 · Major 7th',voice:'Two worlds in one chord — shadow and light in conflict.'},
-  'DIMINISHED':{inter:'0 · 3 · 6',desc:'Root · Minor Third · Diminished Fifth',voice:'Unstable symmetry. Tension without direction.'},
-  'AUGMENTED':{inter:'0 · 4 · 8',desc:'Root · Major Third · Augmented Fifth',voice:'Rises without landing. A chord that ascends forever.'},
-  'DIM 7':{inter:'0 · 3 · 6 · 9',desc:'Root · Min 3rd · Dim 5th · Dim 7th',voice:'Perfect symmetry of tension. Every note equidistant from the next.'},
-  'HALF-DIM 7':{inter:'0 · 3 · 6 · 10',desc:'Root · Min 3rd · Dim 5th · Min 7th',voice:'The half-diminished: darkness softened at the edge.'}
+var EXPLANATIONS={
+  'MAJOR':'Bright, happy. Root + major 3rd + perfect 5th.',
+  'MINOR':'Dark, melancholic. Root + minor 3rd + perfect 5th.',
+  'DIMINISHED':'Tense, unstable. Two minor thirds stacked.',
+  'AUGMENTED':'Mysterious, unresolved. Two major thirds stacked.',
+  'DOMINANT 7':'Bluesy tension. Wants to resolve down a fifth.',
+  'MAJOR 7':'Lush, jazzy. Major chord with a dreamy top note.',
+  'MINOR 7':'Smooth, soulful. Minor chord with a softer seventh.',
+  'HALF-DIM 7':'Darkness softened at the edge. Minor triad, dim fifth, minor seventh.',
+  'SUS2':'Floating, open. Fifth and major second replace the third.',
+  'SUS4':'Tension leaning forward. The fourth wants to fall back to the third.',
+  'ADD9':'Colorful and lush. Major triad enriched with the major ninth.'
 };
 
-/* ── Piano layout (C3–C5, 17 white keys, 14 black keys) ── */
-var WHITE_NOTES=['C3','D3','E3','F3','G3','A3','B3','C4','D4','E4','F4','G4','A4','B4','C5'];
+/* Piano layout C3–B4 (14 white keys, 10 black keys) */
+var WHITE_NOTES=['C3','D3','E3','F3','G3','A3','B3','C4','D4','E4','F4','G4','A4','B4'];
 var BLACK_DEFS=[
   {n:'C#3',p:0.65},{n:'D#3',p:1.65},{n:'F#3',p:3.65},{n:'G#3',p:4.65},{n:'A#3',p:5.65},
   {n:'C#4',p:7.65},{n:'D#4',p:8.65},{n:'F#4',p:10.65},{n:'G#4',p:11.65},{n:'A#4',p:12.65}
 ];
 
-/* ── Level pools, randomised fresh each game ── */
-var LEVEL_LABELS=['MAJOR TRIADS','MINOR · SUS CHORDS','SEVENTH CHORDS','DIM · AUG · POWER','FIRST INVERSIONS','SECOND INVERSIONS','EAR TRAINING'];
-var COMMON=['C','D','E','F','G','A','B'];
-var SHARPS=['C#','D#','F#','G#','A#'];
-var ALL_ROOTS=COMMON.concat(SHARPS);
+/* Difficulty configs */
+var ROOTS_NATURAL=['C','D','E','F','G','A','B'];
+var ROOTS_ALL=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+var DIFFS={
+  initiate:{
+    name:'Initiate',
+    sublabel:'Triads only · Root position',
+    types:['MAJOR','MINOR','DIMINISHED','AUGMENTED'],
+    inversions:[0],
+    roots:ROOTS_NATURAL,
+    choices:4,pts:10,unlockAt:10,unlocks:'adept'
+  },
+  adept:{
+    name:'Adept',
+    sublabel:'Triads + Sevenths · Root + 1st inversion',
+    types:['MAJOR','MINOR','DIMINISHED','AUGMENTED','DOMINANT 7','MAJOR 7','MINOR 7','HALF-DIM 7'],
+    inversions:[0,1],
+    roots:ROOTS_NATURAL,
+    choices:4,pts:20,unlockAt:15,unlocks:'oracle'
+  },
+  oracle:{
+    name:'Oracle',
+    sublabel:'All chords · All inversions · 5 choices',
+    types:['MAJOR','MINOR','DIMINISHED','AUGMENTED','DOMINANT 7','MAJOR 7','MINOR 7','HALF-DIM 7','SUS2','SUS4','ADD9'],
+    inversions:[0,1,2],
+    roots:ROOTS_ALL,
+    choices:5,pts:35,unlockAt:null,unlocks:null
+  }
+};
 
-function pickRandom(arr,n){return arr.slice().sort(function(){return Math.random()-0.5;}).slice(0,n);}
-function mkPool(roots,types,n,extra){
-  var pool=[];
-  roots.forEach(function(r){types.forEach(function(t){pool.push(Object.assign({r:r,t:t},extra||{}));});});
-  return pickRandom(pool,n);
-}
-function buildLevels(){
-  return [
-    mkPool(COMMON,['MAJOR'],6),
-    mkPool(COMMON,['MINOR','SUS2','SUS4'],6),
-    mkPool(COMMON,['DOMINANT 7','MAJOR 7','MINOR 7','MIN/MAJ 7'],6),
-    mkPool(COMMON,['DIMINISHED','AUGMENTED','POWER','DIM 7','HALF-DIM 7'],6),
-    mkPool(COMMON,['MAJOR','MINOR','DOMINANT 7','MAJOR 7'],6,{inv:1}),
-    mkPool(COMMON,['MAJOR','MINOR','MINOR 7'],6,{inv:2}),
-    mkPool(ALL_ROOTS,['MAJOR','MINOR','DOMINANT 7','MAJOR 7','MINOR 7','DIMINISHED','AUGMENTED','SUS4','HALF-DIM 7'],6,{rev:true})
-  ];
-}
+/* State */
+var state={
+  diff:'initiate',score:0,streak:0,correctCount:0,roundNum:0,MAX_ROUNDS:20,
+  replayLeft:3,currentChord:null,answered:false,playing:false,
+  unlocked:{initiate:true,adept:false,oracle:false}
+};
 
-var LEVELS=[];
+(function(){
+  try{var u=JSON.parse(localStorage.getItem('ccUnlocked')||'{}');
+    if(u.adept)state.unlocked.adept=true;
+    if(u.oracle)state.unlocked.oracle=true;
+  }catch(e){}
+})();
+function saveUnlocks(){try{localStorage.setItem('ccUnlocked',JSON.stringify(state.unlocked));}catch(e){}}
 
-/* ── Audio: rich multi-oscillator piano-like tone ── */
+/* ── Audio ── */
 var audioCtx=null;
 function getACtx(){
   if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
@@ -1020,440 +1099,354 @@ function noteFreq(name){
   var midi=(oct+1)*12+idx;
   return 440*Math.pow(2,(midi-69)/12);
 }
-function playNote(noteName,vol,delay){
-  vol=vol||0.28;delay=delay||0;
+function playNote(noteName,vol,startOffset){
+  vol=vol||0.32;startOffset=startOffset||0;
   try{
-    var c=getACtx(),freq=noteFreq(noteName),now=c.currentTime+delay;
-    /* Multi-oscillator: fundamental + 2nd harmonic + 3rd harmonic for warmth */
-    [[1,1.0,'triangle'],[2,0.5,'sine'],[3,0.25,'sine']].forEach(function(h){
+    var c=getACtx(),freq=noteFreq(noteName),now=c.currentTime+startOffset;
+    [[1,0.6,'triangle'],[2,0.35,'sine'],[3,0.15,'sine']].forEach(function(h){
       var osc=c.createOscillator(),g=c.createGain();
       osc.type=h[2];osc.frequency.value=freq*h[0];
-      var pk=vol*h[1]*0.38;
+      var pk=vol*h[1]*0.42;
       g.gain.setValueAtTime(0.001,now);
-      g.gain.linearRampToValueAtTime(pk,now+0.012);
-      g.gain.setValueAtTime(pk,now+0.06);
-      g.gain.exponentialRampToValueAtTime(0.001,now+0.8);
+      g.gain.linearRampToValueAtTime(pk,now+0.015);
+      g.gain.setValueAtTime(pk,now+0.08);
+      g.gain.exponentialRampToValueAtTime(0.001,now+1.5);
       osc.connect(g);g.connect(c.destination);
-      osc.start(now);osc.stop(now+0.85);
+      osc.start(now);osc.stop(now+1.6);
     });
   }catch(e){}
 }
-function playChord(noteNames,delay){
-  delay=delay||0;
-  noteNames.forEach(function(n){playNote(n,0.32,delay);});
+function playChordStrummed(noteNames,onDone){
+  state.playing=true;
+  setListenIndicator('\u266a LISTEN...');
+  document.getElementById('cc-replay-btn').disabled=true;
+  noteNames.forEach(function(n,i){playNote(n,0.32,i*0.03+0.05);});
+  var dur=(noteNames.length-1)*30+50+1650;
+  setTimeout(function(){
+    state.playing=false;
+    setListenIndicator('');
+    if(!state.answered)document.getElementById('cc-replay-btn').disabled=(state.replayLeft<=0);
+    if(onDone)onDone();
+  },dur);
 }
 function playSoundEffect(type){
   try{
     var c=getACtx(),now=c.currentTime;
     if(type==='correct'){
-      /* Ascending chime: 3 notes */
       [523,659,784].forEach(function(f,i){
         var o=c.createOscillator(),g=c.createGain();
         o.type='sine';o.frequency.value=f;
         g.gain.setValueAtTime(0.001,now+i*0.12);
-        g.gain.linearRampToValueAtTime(0.22,now+i*0.12+0.02);
-        g.gain.exponentialRampToValueAtTime(0.001,now+i*0.12+0.18);
-        o.connect(g);g.connect(c.destination);
-        o.start(now+i*0.12);o.stop(now+i*0.12+0.2);
+        g.gain.linearRampToValueAtTime(0.2,now+i*0.12+0.02);
+        g.gain.exponentialRampToValueAtTime(0.001,now+i*0.12+0.22);
+        o.connect(g);g.connect(c.destination);o.start(now+i*0.12);o.stop(now+i*0.12+0.25);
       });
     } else if(type==='wrong'){
-      /* Low buzz */
       var o=c.createOscillator(),g=c.createGain();
       o.type='sawtooth';o.frequency.value=90;
-      g.gain.setValueAtTime(0.001,now);
-      g.gain.linearRampToValueAtTime(0.28,now+0.02);
+      g.gain.setValueAtTime(0.001,now);g.gain.linearRampToValueAtTime(0.25,now+0.02);
       g.gain.exponentialRampToValueAtTime(0.001,now+0.35);
-      o.connect(g);g.connect(c.destination);
-      o.start(now);o.stop(now+0.38);
-    } else if(type==='hint'){
-      /* Soft tick */
-      var o=c.createOscillator(),g=c.createGain();
-      o.type='sine';o.frequency.value=700;
-      g.gain.setValueAtTime(0.001,now);
-      g.gain.linearRampToValueAtTime(0.15,now+0.008);
-      g.gain.exponentialRampToValueAtTime(0.001,now+0.12);
-      o.connect(g);g.connect(c.destination);
-      o.start(now);o.stop(now+0.15);
+      o.connect(g);g.connect(c.destination);o.start(now);o.stop(now+0.38);
     } else if(type==='levelup'){
-      /* Fanfare: 3-note ascending */
       [523,659,1047].forEach(function(f,i){
         var o=c.createOscillator(),g=c.createGain();
         o.type='triangle';o.frequency.value=f;
         g.gain.setValueAtTime(0.001,now+i*0.18);
-        g.gain.linearRampToValueAtTime(0.3,now+i*0.18+0.04);
-        g.gain.exponentialRampToValueAtTime(0.001,now+i*0.18+0.28);
-        o.connect(g);g.connect(c.destination);
-        o.start(now+i*0.18);o.stop(now+i*0.18+0.32);
+        g.gain.linearRampToValueAtTime(0.28,now+i*0.18+0.04);
+        g.gain.exponentialRampToValueAtTime(0.001,now+i*0.18+0.3);
+        o.connect(g);g.connect(c.destination);o.start(now+i*0.18);o.stop(now+i*0.18+0.34);
       });
     }
   }catch(e){}
 }
 
-/* ── Compute chord MIDI notes (canonical display/play octave) ── */
-function getChordKeys(root,type,inv){
+/* ── Chord notes ── */
+function getChordNotes(root,type,inv){
   var rIdx=NOTES_ALL.indexOf(root);
   var ints=INTERVALS[type];
-  var rootMidi=60+rIdx; /* C4 = 60 */
+  var rootMidi=60+rIdx;
   var notes=ints.map(function(st){return rootMidi+st;});
-  /* Shift to fit C3(48)–B4(71) range */
   while(Math.max.apply(null,notes)>71){notes=notes.map(function(m){return m-12;});}
   while(Math.min.apply(null,notes)<48){notes=notes.map(function(m){return m+12;});}
   if(inv===1){
     notes[0]+=12;notes.sort(function(a,b){return a-b;});
     while(Math.max.apply(null,notes)>71){notes=notes.map(function(m){return m-12;});}
-    while(Math.min.apply(null,notes)<48){notes=notes.map(function(m){return m+12;});}
   } else if(inv===2){
     notes[notes.length-1]-=12;notes.sort(function(a,b){return a-b;});
-    while(Math.max.apply(null,notes)>71){notes=notes.map(function(m){return m-12;});}
     while(Math.min.apply(null,notes)<48){notes=notes.map(function(m){return m+12;});}
   }
-  return notes.map(function(m){
-    return NOTES_ALL[m%12]+(Math.floor(m/12)-1);
-  });
+  return notes.map(function(m){return NOTES_ALL[m%12]+(Math.floor(m/12)-1);});
 }
 
-/* ── Piano DOM ── */
-var keyEls={};
-function buildPiano(){
-  var outer=document.getElementById('piano-outer');
-  var piano=document.getElementById('piano');
-  piano.innerHTML='';keyEls={};
-  var w=outer.clientWidth||560;
-  var wkw=Math.max(24,Math.min(40,Math.floor(w/15)));
-  var wkh=Math.round(wkw*4.0);
-  var bkw=Math.round(wkw*0.62);
-  var bkh=Math.round(wkh*0.62);
-  var lblSz=Math.max(0.34,Math.min(0.5,wkw/80))+'rem';
-  piano.style.cssText='position:relative;display:flex;width:'+(wkw*15)+'px;height:'+wkh+'px;';
+/* ── Mini piano ── */
+var miniKeyEls={};
+function buildMiniPiano(){
+  var outer=document.getElementById('mini-piano-outer');
+  var piano=document.getElementById('mini-piano');
+  if(!piano)return;
+  piano.innerHTML='';miniKeyEls={};
+  var w=outer?outer.clientWidth||420:420;
+  var wkw=Math.max(18,Math.min(32,Math.floor(w/14)));
+  var wkh=Math.round(wkw*3.4);
+  var bkw=Math.round(wkw*0.6);
+  var bkh=Math.round(wkh*0.6);
+  var lblSz=Math.max(0.28,Math.min(0.42,wkw/72))+'rem';
+  piano.style.cssText='position:relative;display:flex;width:'+(wkw*14)+'px;height:'+wkh+'px;';
   WHITE_NOTES.forEach(function(note){
     var el=document.createElement('div');
     el.className='wk';el.dataset.note=note;
-    el.style.cssText='width:'+wkw+'px;height:'+wkh+'px;border-right:1px solid rgba(201,168,76,0.2);border-left:1px solid rgba(201,168,76,0.2);border-bottom:1px solid rgba(201,168,76,0.25);flex-shrink:0;';
+    el.style.cssText='width:'+wkw+'px;height:'+wkh+'px;border-right:1px solid rgba(201,168,76,0.18);border-left:1px solid rgba(201,168,76,0.18);border-bottom:1px solid rgba(201,168,76,0.22);flex-shrink:0;pointer-events:none;';
     var lbl=document.createElement('div');lbl.className='k-lbl';lbl.style.fontSize=lblSz;
     lbl.textContent=note.replace(/\d/,'');
-    el.appendChild(lbl);
-    el.addEventListener('click',function(){handleKeyClick(note,el);});
-    piano.appendChild(el);keyEls[note]=el;
+    el.appendChild(lbl);piano.appendChild(el);miniKeyEls[note]=el;
   });
   BLACK_DEFS.forEach(function(bd){
     var el=document.createElement('div');
     el.className='bk';el.dataset.note=bd.n;
     var left=Math.round(bd.p*wkw-bkw/2);
-    el.style.cssText='left:'+left+'px;width:'+bkw+'px;height:'+bkh+'px;';
+    el.style.cssText='left:'+left+'px;width:'+bkw+'px;height:'+bkh+'px;pointer-events:none;';
     var lbl=document.createElement('div');lbl.className='k-lbl';
-    lbl.style.fontSize=Math.max(0.28,Math.min(0.42,wkw/90))+'rem';
+    lbl.style.fontSize=Math.max(0.24,Math.min(0.36,wkw/82))+'rem';
     lbl.textContent=bd.n.replace(/\d/,'');
-    el.appendChild(lbl);
-    el.addEventListener('click',function(){handleKeyClick(bd.n,el);});
-    piano.appendChild(el);keyEls[bd.n]=el;
+    el.appendChild(lbl);piano.appendChild(el);miniKeyEls[bd.n]=el;
   });
 }
-
-/* ── Game state ── */
-var lvlIdx=0,chordIdx=0,totalScore=0,streak=0,selectedNotes=[],submitting=false,isReverse=false;
-var currentKeys=[];
-var hintUsed=false,prevLvlIdx=0;
-
-function show(id){
-  ['ss','gs','os'].forEach(function(s){document.getElementById(s).classList.remove('active');});
-  document.getElementById(id).classList.add('active');
+function highlightMiniPiano(noteNames){
+  Object.keys(miniKeyEls).forEach(function(n){
+    var el=miniKeyEls[n];
+    el.className=n.indexOf('#')!==-1?'bk':'wk';
+  });
+  noteNames.forEach(function(n){var el=miniKeyEls[n];if(el)el.classList.add('k-correct');});
 }
-function updateScoreDisplay(){
-  document.getElementById('cc-score-lbl').textContent='SCORE '+totalScore;
+
+/* ── Options ── */
+function shuffle(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+function generateOptions(correctRoot,correctType,correctInv,numChoices){
+  var d=DIFFS[state.diff];
+  var allCombos=[];
+  d.roots.forEach(function(r){
+    d.types.forEach(function(t){
+      if(!(r===correctRoot&&t===correctType)){
+        allCombos.push({root:r,type:t,inv:0,label:r+' '+t,isCorrect:false});
+      }
+    });
+  });
+  var wrongs=shuffle(allCombos).slice(0,numChoices-1);
+  var invLbl=correctInv?' (inv)':'';
+  var correct={root:correctRoot,type:correctType,inv:correctInv,label:correctRoot+' '+correctType+invLbl,isCorrect:true};
+  return shuffle([correct].concat(wrongs));
+}
+
+/* ── UI helpers ── */
+function setListenIndicator(txt){var el=document.getElementById('cc-listen-indicator');if(el)el.textContent=txt||'';}
+function updateHUD(){
+  var d=DIFFS[state.diff];
+  document.getElementById('cc-level-lbl').textContent=d.name.toUpperCase();
+  document.getElementById('cc-score-lbl').textContent='SCORE '+state.score.toLocaleString();
+  var cp=document.getElementById('cc-chord-progress');
+  if(cp)cp.textContent='ROUND '+state.roundNum+' / '+state.MAX_ROUNDS;
+  updateStreakDisplay();updateProgressBar();updateReplayDots();updateDiffTabs();
 }
 function updateStreakDisplay(){
-  var el=document.getElementById('cc-streak');
-  if(!el)return;
-  if(streak<=0){el.textContent='';el.className='';return;}
-  el.textContent='✦ STREAK ×'+streak+(streak>=5?' — SCORCHING':'');
-  el.className=streak>=5?'streak-fire':'streak-on';
+  var el=document.getElementById('cc-streak');if(!el)return;
+  if(state.streak<=0){el.textContent='';el.className='';return;}
+  if(state.streak>=5){el.textContent='\u2726 ON FIRE \u2726 \xd7'+state.streak;el.className='streak-fire';}
+  else{el.textContent='STREAK \xd7'+state.streak;el.className='streak-on';}
 }
-function updateLevelDots(){
-  var el=document.getElementById('cc-level-dots');if(!el)return;
-  el.innerHTML='';
-  for(var i=0;i<LEVELS.length;i++){
-    var d=document.createElement('div');
-    d.className='level-dot'+(i<lvlIdx?' ld-done':i===lvlIdx?' ld-cur':'');
-    el.appendChild(d);
-  }
+function updateProgressBar(){
+  var d=DIFFS[state.diff];
+  var wrap=document.getElementById('cc-progress-wrap');
+  var inner=document.getElementById('cc-progress-inner');
+  var lbl=document.getElementById('cc-progress-label');
+  if(!d.unlockAt){if(wrap)wrap.style.visibility='hidden';return;}
+  if(wrap)wrap.style.visibility='visible';
+  var pct=Math.min(100,Math.round(state.correctCount/d.unlockAt*100));
+  if(inner)inner.style.width=pct+'%';
+  var nextName=DIFFS[d.unlocks]?DIFFS[d.unlocks].name:'';
+  if(lbl)lbl.textContent=state.correctCount+' / '+d.unlockAt+' to unlock '+nextName;
 }
-function clearKeys(){
-  Object.keys(keyEls).forEach(function(n){
-    var el=keyEls[n];el.className=el.dataset.note&&el.dataset.note.length>2&&el.dataset.note.indexOf('#')!==-1?'bk':'wk';
-    if(el.className==='wk'&&BLACK_DEFS.some(function(b){return b.n===n;}))el.className='bk';
+function updateReplayDots(){
+  var el=document.getElementById('cc-replay-dots');if(!el)return;
+  var dots='';for(var i=0;i<3;i++){dots+=i<state.replayLeft?'\u25cf':'\u25cb';}
+  el.textContent=dots;
+}
+function updateDiffTabs(){
+  document.querySelectorAll('.diff-tab').forEach(function(btn){
+    var d=btn.dataset.diff;
+    btn.classList.remove('active','locked');
+    if(d===state.diff)btn.classList.add('active');
+    else if(!state.unlocked[d])btn.classList.add('locked');
   });
-  /* simpler: re-check against class that was set */
-  Object.keys(keyEls).forEach(function(n){
-    var el=keyEls[n];
-    var isBlack=n.indexOf('#')!==-1;
-    el.className=isBlack?'bk':'wk';
-  });
-  selectedNotes=[];
-  document.getElementById('cc-selected').textContent='NO NOTES SELECTED';
 }
-function handleKeyClick(note,el){
-  if(submitting||isReverse)return;
-  if(document.getElementById('piano').classList.contains('piano-disabled'))return;
-  var idx=selectedNotes.indexOf(note);
-  if(idx===-1){
-    /* Prevent selecting two notes of the same pitch class */
-    var pc=note.replace(/\d/g,'');
-    var clash=selectedNotes.filter(function(n){return n.replace(/\d/g,'')=== pc;});
-    if(clash.length){
-      /* swap octave: deselect old, select new */
-      clash.forEach(function(old){
-        selectedNotes.splice(selectedNotes.indexOf(old),1);
-        var oel=keyEls[old];if(oel){var ob=old.indexOf('#')!==-1;oel.className=ob?'bk':'wk';}
-      });
-    }
-    selectedNotes.push(note);
-    el.classList.add('k-sel');
-    playNote(note,0.22);
+function setFeedback(txt,cls){var el=document.getElementById('cc-feedback');if(el){el.textContent=txt;el.className=cls||'';}}
+function showExplanation(type){
+  var el=document.getElementById('cc-explanation');if(!el)return;
+  el.textContent=EXPLANATIONS[type]||'';el.className='show';
+}
+function hideExplanation(){var el=document.getElementById('cc-explanation');if(el){el.textContent='';el.className='';}}
+function showUnlockBanner(diffName){
+  var b=document.getElementById('unlock-banner'),t=document.getElementById('unlock-banner-text');
+  if(!b||!t)return;
+  t.textContent=diffName.toUpperCase()+' UNLOCKED \u2726';
+  b.classList.add('show');b.style.display='block';
+  setTimeout(function(){b.classList.remove('show');setTimeout(function(){b.style.display='none';},350);},2200);
+}
+
+/* ── Diagram ── */
+function showDiagram(noteNames,root,type,inv){
+  var wrap=document.getElementById('cc-diagram-wrap');
+  var lbl=document.getElementById('cc-diagram-label');
+  if(!wrap)return;
+  var invLbl=inv===1?' \u00b7 1st inv':inv===2?' \u00b7 2nd inv':'';
+  if(lbl)lbl.textContent=root+' '+type+invLbl+' \u2014 '+noteNames.map(function(n){return n.replace(/\d/,'');}).join(' \u00b7 ');
+  highlightMiniPiano(noteNames);
+  wrap.style.display='block';
+}
+function clearDiagram(){
+  var wrap=document.getElementById('cc-diagram-wrap');
+  if(wrap)wrap.style.display='none';
+  Object.keys(miniKeyEls).forEach(function(n){
+    var el=miniKeyEls[n];if(el)el.className=n.indexOf('#')!==-1?'bk':'wk';
+  });
+}
+
+/* ── Round logic ── */
+function newRound(){
+  state.roundNum++;
+  if(state.roundNum>state.MAX_ROUNDS){endGame();return;}
+  state.answered=false;state.replayLeft=3;
+  clearDiagram();hideExplanation();setFeedback('');
+  var d=DIFFS[state.diff];
+  var root=d.roots[Math.floor(Math.random()*d.roots.length)];
+  var type=d.types[Math.floor(Math.random()*d.types.length)];
+  var inv=d.inversions[Math.floor(Math.random()*d.inversions.length)];
+  var notes=getChordNotes(root,type,inv);
+  state.currentChord={root:root,type:type,inv:inv,notes:notes};
+  var opts=generateOptions(root,type,inv,d.choices);
+  buildOptions(opts);
+  updateHUD();
+  document.getElementById('cc-replay-btn').disabled=true;
+  setAnswerButtonsLocked(true);
+  setTimeout(function(){
+    playChordStrummed(notes,function(){setAnswerButtonsLocked(false);});
+  },400);
+}
+
+function buildOptions(opts){
+  var grid=document.getElementById('cc-options');
+  grid.innerHTML='';
+  grid.className=opts.length===5?'five-cols':'';
+  opts.forEach(function(opt){
+    var btn=document.createElement('button');
+    btn.className='cc-opt-btn';
+    btn.textContent=opt.label;
+    btn.addEventListener('click',function(){if(!state.answered&&!state.playing)handleAnswer(opt,opts);});
+    grid.appendChild(btn);
+  });
+}
+function setAnswerButtonsLocked(locked){
+  document.querySelectorAll('.cc-opt-btn').forEach(function(b){b.disabled=locked;});
+}
+
+function handleAnswer(chosen,opts){
+  if(state.answered||state.playing)return;
+  state.answered=true;
+  setAnswerButtonsLocked(true);
+  document.getElementById('cc-replay-btn').disabled=true;
+  var isCorrect=chosen.isCorrect;
+  document.querySelectorAll('.cc-opt-btn').forEach(function(btn,i){
+    var opt=opts[i];
+    if(opt.isCorrect)btn.classList.add('opt-correct');
+    else if(opt===chosen&&!isCorrect)btn.classList.add('opt-wrong');
+    else btn.classList.add('opt-dim');
+  });
+  if(isCorrect){
+    var bonus=state.streak>=5?Math.floor(DIFFS[state.diff].pts*0.5):0;
+    state.score+=DIFFS[state.diff].pts+bonus;
+    state.streak++;state.correctCount++;
+    setFeedback('+'+DIFFS[state.diff].pts+(bonus?' +'+bonus+' FIRE BONUS':''),'fb-correct');
+    playSoundEffect('correct');
+    checkUnlock();
   } else {
-    selectedNotes.splice(idx,1);
-    el.className=note.indexOf('#')!==-1?'bk':'wk';
+    state.streak=0;
+    setFeedback('\u2014 '+state.currentChord.root+' '+state.currentChord.type,'fb-wrong');
+    playSoundEffect('wrong');
   }
-  updateSelectedDisplay();
-}
-function updateSelectedDisplay(){
-  var el=document.getElementById('cc-selected');
-  if(!selectedNotes.length){el.textContent='NO NOTES SELECTED';return;}
-  /* Sort by pitch class order (C,C#,D…) */
-  var order=NOTES_ALL;
-  el.textContent=selectedNotes.slice().sort(function(a,b){
-    return order.indexOf(a.replace(/\d/g,''))-order.indexOf(b.replace(/\d/g,''));
-  }).map(function(n){return n.replace(/\d/g,'');}).join(' · ');
-}
-function showTheory(root,type,keys,inv){
-  var td=THEORY_DATA[type];if(!td)return;
-  var invLabel=inv===1?' (1st Inversion)':inv===2?' (2nd Inversion)':'';
-  document.getElementById('cc-theory-chord').textContent=root+' '+type+invLabel+' = '+keys.map(function(k){return k.replace(/\d/g,'');}).join(' · ');
-  document.getElementById('cc-theory-intervals').textContent=td.inter+' semitones';
-  document.getElementById('cc-theory-desc').textContent=td.desc;
-  document.getElementById('cc-theory-voice').textContent=td.voice;
-  document.getElementById('cc-theory').style.display='block';
-}
-function hideTheory(){document.getElementById('cc-theory').style.display='none';}
-
-function setListenIndicator(txt){
-  var el=document.getElementById('cc-listen-indicator');
-  if(el)el.textContent=txt||'';
+  updateHUD();
+  showExplanation(state.currentChord.type);
+  showDiagram(state.currentChord.notes,state.currentChord.root,state.currentChord.type,state.currentChord.inv);
+  playChordStrummed(state.currentChord.notes);
+  setTimeout(function(){newRound();},2800);
 }
 
-function setFeedback(txt,cls){
-  var el=document.getElementById('cc-feedback');
-  el.textContent=txt;el.className=cls||'';
-}
-
-function loadChord(){
-  if(chordIdx>=LEVELS[lvlIdx].length){
-    var prevLvl=lvlIdx;
-    lvlIdx++;
-    if(lvlIdx>=LEVELS.length){endGame();return;}
-    chordIdx=0;
-    if(lvlIdx>prevLvl)playSoundEffect('levelup');
-  }
-  var ex=LEVELS[lvlIdx][chordIdx];
-  submitting=false;isReverse=!!ex.rev;
-  hintUsed=false;
-  var hBtn=document.getElementById('cc-hint-btn');
-  if(hBtn){hBtn.disabled=false;hBtn.textContent='HINT (−25 PTS)';}
-  clearKeys();hideTheory();setFeedback('');setListenIndicator('');
-  currentKeys=getChordKeys(ex.r,ex.t,ex.inv);
-  window.scrollTo(0,0);
-  updateLevelDots();
-
-  document.getElementById('cc-level-lbl').textContent='LEVEL '+ROM_LVL[lvlIdx]+' — '+LEVEL_LABELS[lvlIdx];
-  document.getElementById('cc-chord-progress').textContent='CHORD '+(chordIdx+1)+' OF '+LEVELS[lvlIdx].length;
-  var invLbl=ex.inv===2?' (2ND INVERSION)':ex.inv===1?' (1ST INVERSION)':'';
-  document.getElementById('cc-mode-badge').textContent=isReverse?'EAR TRAINING':ex.inv?'BUILD — INVERSION':'BUILD';
-
-  var piano=document.getElementById('piano');
-  var opts=document.getElementById('cc-options');
-  var controls=document.getElementById('cc-controls');
-  var pianoOuter=document.getElementById('piano-outer');
-  var octHint=document.getElementById('cc-octave-hint');
-
-  if(isReverse){
-    document.getElementById('cc-chord-name').textContent='IDENTIFY THE CHORD';
-    document.getElementById('cc-chord-sub').textContent='LISTEN · THEN NAME THE CHORD';
-    document.getElementById('cc-instruct').textContent='';
-    if(octHint)octHint.textContent='';
-    pianoOuter.style.display='none';
-    document.getElementById('cc-selected').style.display='none';
-    controls.style.display='none';
-    opts.style.display='flex';opts.innerHTML='';
-    /* 4 options: correct + 3 distractors of same family */
-    var correct=ex.r+' '+ex.t;
-    var allCombos=[];
-    ALL_ROOTS.forEach(function(r){
-      Object.keys(INTERVALS).forEach(function(ty){allCombos.push(r+' '+ty);});
-    });
-    var wrongs=allCombos.filter(function(c){return c!==correct;}).sort(function(){return Math.random()-0.5;}).slice(0,3);
-    [correct].concat(wrongs).sort(function(){return Math.random()-0.5;}).forEach(function(opt){
-      var btn=document.createElement('button');btn.className='cc-opt-btn';btn.textContent=opt;
-      btn.addEventListener('click',function(){handleReverseAnswer(opt,correct,ex);});
-      opts.appendChild(btn);
-    });
-    setTimeout(function(){playChord(currentKeys);},700);
-    document.getElementById('cc-play-btn').style.display='block';
-    document.getElementById('cc-play-btn').onclick=function(){playChord(currentKeys);};
-  } else {
-    document.getElementById('cc-chord-name').textContent=ex.r+' '+ex.t+invLbl;
-    document.getElementById('cc-chord-sub').textContent='CLICK THE NOTES THAT FORM THIS CHORD';
-    var instrTxt='CLICK THE CORRECT PIANO KEYS · THEN SUBMIT';
-    if(ex.inv===1)instrTxt='THE THIRD IS IN THE BASS — BUILD UPWARD';
-    if(ex.inv===2)instrTxt='THE FIFTH IS IN THE BASS — BUILD UPWARD';
-    document.getElementById('cc-instruct').textContent=instrTxt;
-    if(octHint)octHint.textContent='ANY OCTAVE IS ACCEPTED';
-    pianoOuter.style.display='';
-    document.getElementById('cc-selected').style.display='';
-    controls.style.display='flex';opts.style.display='none';
-    piano.classList.remove('piano-disabled');
-    document.getElementById('cc-submit-btn').disabled=false;
-    document.getElementById('cc-play-btn').style.display='inline-block';
-    document.getElementById('cc-play-btn').onclick=function(){playChord(currentKeys);};
-    /* Auto-play the target chord after 1 second so player can hear it */
-    setListenIndicator('♪ LISTEN...');
-    setTimeout(function(){
-      playChord(currentKeys);
-      setTimeout(function(){setListenIndicator('');},800);
-    },1000);
+function checkUnlock(){
+  var d=DIFFS[state.diff];
+  if(!d.unlockAt||!d.unlocks)return;
+  if(state.correctCount>=d.unlockAt&&!state.unlocked[d.unlocks]){
+    state.unlocked[d.unlocks]=true;saveUnlocks();
+    playSoundEffect('levelup');
+    showUnlockBanner(DIFFS[d.unlocks].name);
+    updateDiffTabs();
   }
 }
 
-function handleReverseAnswer(chosen,correct,ex){
-  document.querySelectorAll('.cc-opt-btn').forEach(function(btn){
-    btn.disabled=true;
-    if(btn.textContent===correct)btn.classList.add('opt-correct');
-    else if(btn.textContent===chosen&&chosen!==correct)btn.classList.add('opt-wrong');
-  });
-  var ok=chosen===correct;
-  if(ok){totalScore++;streak++;}else{streak=0;}
-  setFeedback(ok?'CORRECT · +1':'THE ANSWER WAS '+correct,ok?'fb-correct':'fb-wrong');
-  if(ok)playSoundEffect('correct'); else playSoundEffect('wrong');
-  updateScoreDisplay();updateStreakDisplay();
-  playChord(currentKeys);showTheory(ex.r,ex.t,currentKeys,null);
-  document.getElementById('cc-play-btn').style.display='inline-block';
-  document.getElementById('cc-controls').style.display='flex';
-  setTimeout(function(){setFeedback('');hideTheory();chordIdx++;loadChord();},2800);
+function switchDiff(diff){
+  if(!state.unlocked[diff])return;
+  state.diff=diff;state.score=0;state.streak=0;state.correctCount=0;state.roundNum=0;
+  clearDiagram();hideExplanation();setFeedback('');
+  updateHUD();newRound();
 }
 
-function submitChord(){
-  if(submitting||selectedNotes.length===0)return;
-  var ex=LEVELS[lvlIdx][chordIdx];
-  submitting=true;
-  document.getElementById('cc-submit-btn').disabled=true;
-  document.getElementById('piano').classList.add('piano-disabled');
-
-  /* ── Pitch-class matching: any octave is correct ── */
-  var correctPCs=currentKeys.map(function(n){return n.replace(/\d/g,'');});
-  /* Track which pitch classes the player covered */
-  var coveredPCs={};
-  selectedNotes.forEach(function(n){
-    var pc=n.replace(/\d/g,'');
-    var el=keyEls[n];if(!el)return;
-    el.classList.remove('k-sel');
-    if(correctPCs.indexOf(pc)!==-1){
-      el.classList.add('k-correct');
-      coveredPCs[pc]=true;
-    } else {
-      el.classList.add('k-wrong');
-    }
-  });
-  /* Mark ALL piano keys for missed pitch classes */
-  correctPCs.forEach(function(pc){
-    if(!coveredPCs[pc]){
-      Object.keys(keyEls).forEach(function(noteName){
-        if(noteName.replace(/\d/g,'')=== pc) keyEls[noteName].classList.add('k-missed');
-      });
-    }
-  });
-
-  var correctCount=Object.keys(coveredPCs).length;
-  var totalNotes=correctPCs.length;
-  var perfect=correctCount===totalNotes&&selectedNotes.every(function(n){
-    return correctPCs.indexOf(n.replace(/\d/g,''))!==-1;
-  });
-  totalScore+=correctCount;
-  if(perfect){streak++;}else{streak=0;}
-  updateScoreDisplay();updateStreakDisplay();
-  var msg=perfect?'PERFECT · ALL NOTES CORRECT':correctCount+' OF '+totalNotes+' PITCH CLASSES CORRECT';
-  setFeedback(msg,perfect?'fb-correct':correctCount>0?'':'fb-wrong');
-  if(perfect)playSoundEffect('correct'); else playSoundEffect('wrong');
-  showTheory(ex.r,ex.t,currentKeys,ex.inv);
-  playChord(currentKeys);
-  setTimeout(function(){setFeedback('');hideTheory();chordIdx++;loadChord();},2800);
+/* ── Show/hide screens ── */
+function show(id){
+  ['ss','gs','os'].forEach(function(s){var e=document.getElementById(s);if(e)e.classList.remove('active');});
+  var el=document.getElementById(id);if(el)el.classList.add('active');
 }
 
 function startGame(){
-  LEVELS=buildLevels();
-  lvlIdx=0;chordIdx=0;totalScore=0;streak=0;submitting=false;
-  updateStreakDisplay();
+  state.score=0;state.streak=0;state.correctCount=0;state.roundNum=0;
+  state.answered=false;state.playing=false;
   show('gs');
-  buildPiano();
-  loadChord();
-  var resizeTimer;
-  window.addEventListener('resize',function(){
-    clearTimeout(resizeTimer);resizeTimer=setTimeout(buildPiano,200);
-  });
+  buildMiniPiano();
+  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(buildMiniPiano,250);});
+  updateDiffTabs();newRound();
 }
 
 function endGame(){
   show('os');
-  document.getElementById('finalScore').textContent=totalScore;
-  var maxPossible=LEVELS.reduce(function(s,l){return s+l.reduce(function(a,ex){return a+INTERVALS[ex.t].length;},0);},0);
-  var pct=Math.round(totalScore/Math.max(maxPossible,1)*100);
-  var msg;
-  if(pct>=90)msg='MASTER OF HARMONY · THE CHORDS OBEY YOUR HANDS';
-  else if(pct>=70)msg='YOUR THEORY DEEPENS · THE INTERVALS REVEAL THEMSELVES';
-  else if(pct>=50)msg='THE CHORDS ARE BEGINNING TO SPEAK TO YOU';
-  else if(pct>=30)msg='THE PATTERNS EMERGE SLOWLY · KEEP LISTENING';
-  else msg='THE HARMONY ELUDES YOU STILL · RETURN AND LISTEN DEEPLY';
-  document.getElementById('os-result').textContent=msg+'\n'+pct+'% ACCURACY';
-  if(typeof lbOnGameOver==='function')lbOnGameOver(totalScore);
-}
-
-function doHint(){
-  if(hintUsed||submitting||isReverse)return;
-  var ex=LEVELS[lvlIdx][chordIdx];
-  var rootNote=currentKeys[0]; /* root note of the chord */
-  var rootEl=keyEls[rootNote];
-  if(rootEl){
-    rootEl.classList.add('k-hint');
-    playSoundEffect('hint');
-    hintUsed=true;
-    totalScore=Math.max(0,totalScore-25);
-    updateScoreDisplay();
-    var hBtn=document.getElementById('cc-hint-btn');
-    if(hBtn){hBtn.disabled=true;hBtn.textContent='HINT (USED)';}
-    setTimeout(function(){rootEl.classList.remove('k-hint');},2000);
-  }
+  document.getElementById('finalScore').textContent=state.score.toLocaleString();
+  var d=DIFFS[state.diff];
+  document.getElementById('os-result').textContent=
+    d.name+' \u00b7 '+state.MAX_ROUNDS+' rounds \u00b7 streak '+state.streak;
+  if(typeof lbOnGameOver==='function')lbOnGameOver(state.score);
 }
 
 document.addEventListener('DOMContentLoaded',function(){
-  document.getElementById('startBtn').addEventListener('click',startGame);
+  document.getElementById('startBtn').addEventListener('click',function(){getACtx();startGame();});
   document.getElementById('restartBtn').addEventListener('click',function(){
-    document.getElementById('os').classList.remove('active');startGame();
+    document.getElementById('os').classList.remove('active');getACtx();startGame();
   });
-  document.getElementById('cc-submit-btn').addEventListener('click',submitChord);
-  document.getElementById('cc-clear-btn').addEventListener('click',function(){
-    if(submitting)return;clearKeys();
+  document.getElementById('cc-replay-btn').addEventListener('click',function(){
+    if(state.answered||state.playing||state.replayLeft<=0)return;
+    getACtx();state.replayLeft--;updateReplayDots();
+    playChordStrummed(state.currentChord.notes);
   });
-  var hintBtn=document.getElementById('cc-hint-btn');
-  if(hintBtn)hintBtn.addEventListener('click',doHint);
-  /* Keyboard shortcuts */
-  document.addEventListener('keydown',function(e){
-    if(document.getElementById('gs').classList.contains('active')){
-      if(e.code==='Space'){e.preventDefault();playChord(currentKeys);}
-      if(e.code==='Enter'){e.preventDefault();submitChord();}
-      if(e.code==='Backspace'){e.preventDefault();if(!submitting)clearKeys();}
-    }
+  document.querySelectorAll('.diff-tab').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var d=btn.dataset.diff;
+      if(!state.unlocked[d])return;
+      if(d===state.diff)return;
+      getACtx();switchDiff(d);
+    });
   });
 });
+
 })();
-</script>
-<!-- mobile-audit-fixes --><style>@media(max-width:768px){#piano-outer{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}#cc-chord-name{font-size:clamp(1.4rem,6vw,2.4rem)}.cc-opt-btn{min-width:140px;min-height:44px;padding:12px 14px}.btn{min-height:44px;padding:12px 28px}#cc-submit-btn,#cc-clear-btn,#cc-play-btn{min-height:44px}#back{min-height:44px;display:flex;align-items:center}}@media(hover:none){.wk:hover,.bk:hover{background:initial!important}}</style>
+</script>ile-audit-fixes --><style>@media(max-width:768px){#piano-outer{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}#cc-chord-name{font-size:clamp(1.4rem,6vw,2.4rem)}.cc-opt-btn{min-width:140px;min-height:44px;padding:12px 14px}.btn{min-height:44px;padding:12px 28px}#cc-submit-btn,#cc-clear-btn,#cc-play-btn{min-height:44px}#back{min-height:44px;display:flex;align-items:center}}@media(hover:none){.wk:hover,.bk:hover{background:initial!important}}</style>
 <!-- footer-single-line-mobile -->
 
 <style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;gap:0!important;background:transparent;padding:16px 24px 20px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10;}.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none;white-space:nowrap!important;}.hp-footer a:hover{color:#c9a84c!important;}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4);white-space:nowrap!important;}@media(max-width:768px){.hp-footer{padding:8px 12px 20px!important;font-size:0.7rem!important;flex-direction:row!important;flex-wrap:nowrap!important;}}</style>
