@@ -3046,6 +3046,24 @@ document.addEventListener('DOMContentLoaded', function(){
   var savedNatalChart = null;
   var _lastNatalResult = null;
 
+  // ── Hero reveal helper ──────────────────────────────────────────────
+  // Called from all four paths that make the hero visible. Guards against
+  // double-reveal and applies a 0.2s opacity fade consistent with the page
+  // enter animation.
+  var _heroRevealed = false;
+  var _heroTimer = null;
+  function _revealHero(el) {
+    if (!el || _heroRevealed) return;
+    _heroRevealed = true;
+    if (_heroTimer) { clearTimeout(_heroTimer); _heroTimer = null; }
+    el.style.transition = 'opacity 0.2s ease';
+    el.style.opacity = '0';
+    el.style.visibility = 'visible';
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { el.style.opacity = '1'; });
+    });
+  }
+
   // Loading messages cycle
   var loadingMsgs = [
     'THE STARS ARE BEING CONSULTED',
@@ -3164,13 +3182,21 @@ document.addEventListener('DOMContentLoaded', function(){
       } else {
         _showInitialAvatar(cachedName);
       }
-      if (heroEl) heroEl.style.visibility = 'visible';
+      _revealHero(heroEl);
     }
-    // If no cache: keep hero hidden — Firestore resolve (below) will show it
+    // If no cache: Firestore resolve (below) will show it.
+    // Safety net: reveal after 8s regardless so the page is never permanently blank.
+    _heroTimer = setTimeout(function() {
+      var fb = (user.displayName || user.email || '?').split('@')[0];
+      document.getElementById('display-name').textContent = fb.toUpperCase();
+      _showInitialAvatar(fb);
+      _revealHero(document.querySelector('.profile-hero'));
+    }, 8000);
 
     // ── STEP 4: Firestore fetch ─────────────────────────────────────
     db.collection('users').doc(user.uid).get()
       .then(function(doc){
+        clearTimeout(_heroTimer);
         var data = doc.exists ? doc.data() : {};
         dossierData = data;
         renderViewMode(data, user);  // updates display-name and makes hero visible
@@ -3221,13 +3247,14 @@ document.addEventListener('DOMContentLoaded', function(){
       })
       .catch(function(e){
         console.error('Profile load error:', e);
+        clearTimeout(_heroTimer);
         // Firestore failed — if we had cache the hero is already visible and correct
         if (!cachedName) {
           // Last resort: show auth fallback so page isn't permanently blank
           var fb = (user.displayName || user.email || '?').split('@')[0];
           document.getElementById('display-name').textContent = fb.toUpperCase();
           _showInitialAvatar(fb);
-          if (heroEl) heroEl.style.visibility = 'visible';
+          _revealHero(heroEl);
         }
         loadFavorites(user.uid);
       });
@@ -3264,7 +3291,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     // Hero is now populated with correct data — make it visible
     var heroEl = document.querySelector('.profile-hero');
-    if (heroEl) heroEl.style.visibility = 'visible';
+    _revealHero(heroEl);
     setField('v-username', data.username);
     setField('v-dob', data.dateOfBirth);
     setField('v-tob', data.timeOfBirth);
