@@ -315,12 +315,22 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
      GAME SCREEN
 ════════════════════════════════════ -->
 <div id="gs" class="scr off">
+  <!-- Difficulty tabs -->
+  <div id="po-diff-tabs">
+    <button class="po-diff-tab active" data-diff="initiate">Initiate</button>
+    <button class="po-diff-tab locked" data-diff="adept" id="po-tab-adept">Adept</button>
+    <button class="po-diff-tab locked" data-diff="oracle" id="po-tab-oracle">Oracle</button>
+  </div>
+
   <div id="po-hud">
-    <div id="po-round">ROUND I / X</div>
-    <div id="po-lives">✦ ✦ ✦</div>
+    <div id="po-round">ROUND 1 / 20</div>
     <div id="po-score">SCORE 0</div>
   </div>
-  <div id="po-diff-badge"></div>
+  <div id="po-streak"></div>
+  <div id="po-progress-wrap">
+    <div id="po-progress-bar"><div id="po-progress-inner"></div></div>
+    <div id="po-progress-label"></div>
+  </div>
 
   <div id="wave-wrap">
     <canvas id="wc" height="100"></canvas>
@@ -331,7 +341,8 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
     <div id="po-msg">THE ORACLE SPEAKS</div>
     <div id="po-sub">LISTEN CLOSELY</div>
     <div id="note-reveal"></div>
-    <button id="po-replay">HEAR AGAIN</button>
+    <div id="po-replay-dots">●●●</div>
+    <button id="po-replay" style="display:none">↺ HEAR AGAIN</button>
   </div>
 
   <!-- Natural notes row: C D E F G A B -->
@@ -353,15 +364,19 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
       <button class="note-btn" id="nb-Gs" disabled>G#</button>
       <button class="note-btn" id="nb-As" disabled>A#</button>
     </div>
+    <!-- Explanation after answer -->
+    <div id="po-explanation"></div>
   </div>
 
-  <!-- Interval answer area (rounds 11+) -->
+  <!-- Interval answer area (Oracle diff) -->
   <div id="interval-area">
     <div id="interval-label">IDENTIFY THE INTERVAL</div>
     <div class="interval-row" id="interval-row-1"></div>
     <div class="interval-row" id="interval-row-2"></div>
   </div>
 </div>
+<!-- Pulse ring -->
+<div id="po-pulse"></div>
 
 <!-- ══════════════════════════════════
      END SCREEN
@@ -484,58 +499,107 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 (function(){
 'use strict';
 
-// ── Note data ──────────────────────────────────────────────
 var NOTES_ALL = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 var NOTES_NAT = ['C','D','E','F','G','A','B'];
-var ROM = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV'];
 
-// Intervals for rounds 11+
-var INTERVALS = [
-  {name:'Minor 2nd',  semitones:1},
-  {name:'Major 2nd',  semitones:2},
-  {name:'Minor 3rd',  semitones:3},
-  {name:'Major 3rd',  semitones:4},
-  {name:'Perfect 4th',semitones:5},
-  {name:'Tritone',    semitones:6},
-  {name:'Perfect 5th',semitones:7},
-  {name:'Minor 6th',  semitones:8},
-  {name:'Major 6th',  semitones:9},
-  {name:'Octave',     semitones:12}
+var NOTE_INFO = {
+  'C':  {desc:'The tonic — foundation of Western harmony. C major is the first scale most students learn.'},
+  'C#': {desc:'A half-step above C. Adds darkness and jazz colour. Enharmonic with D♭.'},
+  'D':  {desc:'Bright and resonant. D major carries a heroic, triumphant character.'},
+  'D#': {desc:'Warm and expressive. The minor third of C — at the heart of minor harmony. Enharmonic with E♭.'},
+  'E':  {desc:'Warm and intimate. The major third of C, defining the brightness of C major.'},
+  'F':  {desc:'The subdominant of C — a pivotal note in harmony, pulling gently toward resolution.'},
+  'F#': {desc:'The tritone from C — the most dissonant interval in Western music. Enharmonic with G♭.'},
+  'G':  {desc:'The dominant — strong and resolving. Melody naturally wants to return home from here.'},
+  'G#': {desc:'Lush and bittersweet. The minor sixth above C. Common in romantic and jazz idioms. Enharmonic with A♭.'},
+  'A':  {desc:'A440 — the universal tuning standard. Every orchestra in the world tunes to this pitch.'},
+  'A#': {desc:'An ornamental blues note. A half-step below the tonic B. Enharmonic with B♭.'},
+  'B':  {desc:'The leading tone — just a half-step below the octave, creating powerful upward pull.'}
+};
+
+var INTERVALS_DATA = [
+  {name:'Minor 2nd',  semitones:1, desc:'The smallest Western interval. Creates maximum dissonance — the sound of suspense.'},
+  {name:'Major 2nd',  semitones:2, desc:'A whole step — the building block of major and minor scales.'},
+  {name:'Minor 3rd',  semitones:3, desc:'The sound of melancholy. Found at the heart of every minor chord.'},
+  {name:'Major 3rd',  semitones:4, desc:'Bright and happy — the defining interval of a major chord.'},
+  {name:'Perfect 4th',semitones:5, desc:'Strong and stable. The opening of "Here Comes the Bride."'},
+  {name:'Tritone',    semitones:6, desc:'The devil's interval — exactly halfway through the octave. Maximally dissonant.'},
+  {name:'Perfect 5th',semitones:7, desc:'Pure and powerful. Heard in Superman's theme and countless fanfares.'},
+  {name:'Minor 6th',  semitones:8, desc:'Expressive and yearning. Creates a deep sense of longing.'},
+  {name:'Major 6th',  semitones:9, desc:'Sweet and singing. The opening of "My Bonnie Lies Over the Ocean."'},
+  {name:'Octave',     semitones:12,desc:'Perfect equivalence — the same note doubled in frequency. The most consonant interval.'}
 ];
-// Subset used as choices
 var INTERVAL_POOL = ['Perfect 5th','Minor 3rd','Major 2nd','Tritone','Octave','Major 3rd','Perfect 4th'];
 
-// ── Audio ──────────────────────────────────────────────────
+/* Difficulty configs */
+var DIFFS = {
+  initiate:{name:'Initiate',sublabel:'Natural notes only',pool:'nat',pts:10,unlockAt:10,unlocks:'adept'},
+  adept:   {name:'Adept',   sublabel:'All 12 chromatic notes',pool:'all',pts:20,unlockAt:15,unlocks:'oracle'},
+  oracle:  {name:'Oracle',  sublabel:'Identify intervals',pool:'interval',pts:35,unlockAt:null,unlocks:null}
+};
+var MAX_ROUNDS = 20;
+
+/* State */
+var state = {
+  diff:'initiate',score:0,streak:0,correctCount:0,roundNum:0,replayLeft:3,
+  isListening:false,isPlaying:false,answered:false,
+  correctNote:null,correctOctave:null,correctFreq:0,
+  correctInterval:null,
+  unlocked:{initiate:true,adept:false,oracle:false}
+};
+
+(function(){
+  try{var u=JSON.parse(localStorage.getItem('poUnlocked')||'{}');
+    if(u.adept)state.unlocked.adept=true;
+    if(u.oracle)state.unlocked.oracle=true;
+  }catch(e){}
+})();
+function saveUnlocks(){try{localStorage.setItem('poUnlocked',JSON.stringify(state.unlocked));}catch(e){}}
+
+/* ── Audio ── */
 var audioCtx = null;
 function getAC() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === 'suspended') audioCtx.resume();
   return audioCtx;
 }
-
 function noteFreq(name, octave) {
   var idx = NOTES_ALL.indexOf(name);
   var midi = (octave + 1) * 12 + idx;
   return 440 * Math.pow(2, (midi - 69) / 12);
 }
 
+/* Warm tone: sine + triangle blend, 1.5s sustain, simple delay reverb */
 function playTone(freq, dur, delay, vol) {
-  delay = delay || 0; vol = vol || 0.28;
+  delay = delay || 0; vol = vol || 0.28; dur = dur || 1.5;
   var c = getAC();
   var now = c.currentTime + delay;
-  [[1, vol], [2, vol * 0.36], [3, vol * 0.18]].forEach(function(h) {
+  /* Main tone: triangle + sine blend */
+  [[1, vol, 'triangle'], [2, vol*0.3, 'sine'], [3, vol*0.12, 'sine']].forEach(function(h) {
     var osc = c.createOscillator(), g = c.createGain();
-    osc.type = 'sine'; osc.frequency.value = freq * h[0];
+    osc.type = h[2]; osc.frequency.value = freq * h[0];
     g.gain.setValueAtTime(0.001, now);
-    g.gain.linearRampToValueAtTime(h[1], now + 0.04);
-    g.gain.setValueAtTime(h[1], now + Math.max(0.05, dur - 0.22));
+    g.gain.linearRampToValueAtTime(h[1], now + 0.03);
+    g.gain.setValueAtTime(h[1], now + Math.max(0.05, dur - 0.4));
     g.gain.linearRampToValueAtTime(0.001, now + dur);
     osc.connect(g); g.connect(c.destination);
-    osc.start(now); osc.stop(now + dur + 0.02);
+    osc.start(now); osc.stop(now + dur + 0.05);
+  });
+  /* Simple delay reverb: 2 taps at 120ms and 240ms */
+  [0.12, 0.24].forEach(function(tap, i) {
+    var osc2 = c.createOscillator(), g2 = c.createGain();
+    osc2.type = 'sine'; osc2.frequency.value = freq;
+    var tapVol = vol * (0.15 - i * 0.05);
+    var tapStart = now + tap;
+    var tapDur = dur * 0.5;
+    g2.gain.setValueAtTime(0.001, tapStart);
+    g2.gain.linearRampToValueAtTime(tapVol, tapStart + 0.02);
+    g2.gain.exponentialRampToValueAtTime(0.001, tapStart + tapDur);
+    osc2.connect(g2); g2.connect(c.destination);
+    osc2.start(tapStart); osc2.stop(tapStart + tapDur + 0.05);
   });
 }
 
-// Correct: ascending 2-note chime (C5 → E5)
 function playCorrectChime() {
   var c = getAC(), now = c.currentTime;
   [[523.25, 0], [659.25, 0.16]].forEach(function(p) {
@@ -544,43 +608,25 @@ function playCorrectChime() {
     var t = now + p[1];
     g.gain.setValueAtTime(0.001, t);
     g.gain.linearRampToValueAtTime(0.32, t + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
     osc.connect(g); g.connect(c.destination);
-    osc.start(t); osc.stop(t + 0.2);
+    osc.start(t); osc.stop(t + 0.25);
   });
 }
-
-// Wrong: low buzz/thud at 180Hz
 function playWrongBuzz() {
   var c = getAC(), now = c.currentTime;
   var osc = c.createOscillator(), g = c.createGain();
-  osc.type = 'sawtooth'; osc.frequency.value = 180;
+  osc.type = 'sawtooth'; osc.frequency.value = 160;
   g.gain.setValueAtTime(0.001, now);
-  g.gain.linearRampToValueAtTime(0.22, now + 0.02);
+  g.gain.linearRampToValueAtTime(0.2, now + 0.02);
   g.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
   osc.connect(g); g.connect(c.destination);
   osc.start(now); osc.stop(now + 0.35);
 }
 
-// Round complete: ascending 3-note chime
-function playRoundChime() {
-  var c = getAC(), now = c.currentTime;
-  [[440, 0], [523.25, 0.18], [659.25, 0.36]].forEach(function(p) {
-    var osc = c.createOscillator(), g = c.createGain();
-    osc.type = 'sine'; osc.frequency.value = p[0];
-    var t = now + p[1];
-    g.gain.setValueAtTime(0.001, t);
-    g.gain.linearRampToValueAtTime(0.28, t + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
-    osc.connect(g); g.connect(c.destination);
-    osc.start(t); osc.stop(t + 0.25);
-  });
-}
-
-// ── Wave canvas ────────────────────────────────────────────
+/* ── Wave canvas ── */
 var wPhase = 0, wActive = false, wDecay = 0, wRAF = null;
 var wCanvas = null, wCtx2d = null, wFreq = 440;
-
 function initCanvas() {
   wCanvas = document.getElementById('wc');
   if (!wCanvas) return;
@@ -590,39 +636,32 @@ function initCanvas() {
   if (wRAF) cancelAnimationFrame(wRAF);
   animWave();
 }
-
 function resizeCanvas() {
   if (!wCanvas) return;
   var el = wCanvas.parentElement;
   var w = Math.min(el ? el.clientWidth : 560, 560);
-  wCanvas.width = w;
-  wCanvas.height = 100;
+  wCanvas.width = w; wCanvas.height = 100;
 }
-
 function animWave() {
   if (!wCtx2d || !wCanvas) return;
   var W = wCanvas.width, H = wCanvas.height;
   wCtx2d.clearRect(0, 0, W, H);
   var alpha = wActive ? 1 : wDecay;
   if (!wActive && wDecay > 0) wDecay = Math.max(0, wDecay - 0.014);
-  // Wave speed correlates with frequency
   var speedMult = Math.max(0.8, Math.min(3.5, wFreq / 261.6));
   if (alpha > 0.01) {
     var amp = H * 0.35 * alpha;
     wCtx2d.shadowColor = '#c9a84c';
     wCtx2d.strokeStyle = 'rgba(201,168,76,' + (alpha * 0.82) + ')';
-    wCtx2d.lineWidth = 2.5;
-    wCtx2d.shadowBlur = alpha * 14;
+    wCtx2d.lineWidth = 2.5; wCtx2d.shadowBlur = alpha * 14;
     wCtx2d.beginPath();
     for (var x = 0; x <= W; x++) {
       var y = H / 2 + amp * Math.sin(2 * Math.PI * 3 * x / W + wPhase);
       x === 0 ? wCtx2d.moveTo(x, y) : wCtx2d.lineTo(x, y);
     }
     wCtx2d.stroke();
-    // Harmonic
     wCtx2d.strokeStyle = 'rgba(201,168,76,' + (alpha * 0.22) + ')';
-    wCtx2d.lineWidth = 1.5;
-    wCtx2d.shadowBlur = 0;
+    wCtx2d.lineWidth = 1.5; wCtx2d.shadowBlur = 0;
     wCtx2d.beginPath();
     for (var x2 = 0; x2 <= W; x2++) {
       var y2 = H / 2 + amp * 0.45 * Math.sin(2 * Math.PI * 6 * x2 / W + wPhase * 1.5 + 1.2);
@@ -633,10 +672,8 @@ function animWave() {
   if (wActive) wPhase += 0.032 * speedMult;
   wRAF = requestAnimationFrame(animWave);
 }
-
 function activateWave(durSec, freq) {
-  wFreq = freq || 440;
-  wActive = true; wDecay = 1;
+  wFreq = freq || 440; wActive = true; wDecay = 1;
   var hzEl = document.getElementById('hz-display');
   if (hzEl) { hzEl.textContent = freq ? freq.toFixed(1) + ' Hz' : ''; hzEl.style.opacity = '1'; }
   setTimeout(function() {
@@ -645,10 +682,9 @@ function activateWave(durSec, freq) {
   }, durSec * 1000);
 }
 
-// ── Learning mode wave ─────────────────────────────────────
+/* ── Learning mode canvas ── */
 var lwPhase = 0, lwActive = false, lwDecay = 0, lwRAF = null;
 var lwCanvas = null, lwCtx = null, lwFreqVal = 440;
-
 function initLearnCanvas() {
   lwCanvas = document.getElementById('learn-wc');
   if (!lwCanvas) return;
@@ -656,7 +692,6 @@ function initLearnCanvas() {
   if (lwRAF) cancelAnimationFrame(lwRAF);
   animLearnWave();
 }
-
 function animLearnWave() {
   if (!lwCtx || !lwCanvas) return;
   var W = lwCanvas.width, H = lwCanvas.height;
@@ -667,9 +702,7 @@ function animLearnWave() {
   if (alpha > 0.01) {
     var amp = H * 0.38 * alpha;
     lwCtx.strokeStyle = 'rgba(201,168,76,' + (alpha * 0.85) + ')';
-    lwCtx.lineWidth = 2;
-    lwCtx.shadowColor = '#c9a84c';
-    lwCtx.shadowBlur = alpha * 10;
+    lwCtx.lineWidth = 2; lwCtx.shadowColor = '#c9a84c'; lwCtx.shadowBlur = alpha * 10;
     lwCtx.beginPath();
     for (var x = 0; x <= W; x++) {
       var y = H / 2 + amp * Math.sin(2 * Math.PI * 3 * x / W + lwPhase);
@@ -677,112 +710,46 @@ function animLearnWave() {
     }
     lwCtx.stroke();
   }
-  if (lwActive) lwPhase += 0.035 * speedMult;
+  if (lwActive) lwPhase += 0.026 * speedMult;
   lwRAF = requestAnimationFrame(animLearnWave);
 }
 
-// ── Game state ─────────────────────────────────────────────
-var round = 0, lives = 3, score = 0, streak = 0;
-var isListening = false, correctNote = '', correctOctave = 0;
-var replayCount = 0, maxReplays = 2;
-var replayIsSeq = false, replayFirstFreq = 0, replaySecondFreq = 0, replayDurVal = 0;
-// Interval mode state
-var isIntervalMode = false, correctInterval = null, replayInterval1Freq = 0, replayInterval2Freq = 0;
-var currentAnswerButtons = []; // track which buttons are active
-
-// ── Difficulty curve ───────────────────────────────────────
-function getDiffLabel(r) {
-  if (r <= 5) return 'EASY';
-  if (r <= 10) return 'MEDIUM';
-  return 'HARD';
-}
-function getNoteDur(r) {
-  if (r <= 5) return 2.0;
-  if (r <= 10) return 1.0;
-  return 0.5;
-}
-function getDiffColor(r) {
-  if (r <= 5) return '#02E127';
-  if (r <= 10) return '#c9a84c';
-  return '#FB3838';
-}
-
-// ── HUD ────────────────────────────────────────────────────
-function updateHUD() {
-  var r = Math.max(0, Math.min(round - 1, ROM.length - 1));
-  document.getElementById('po-round').textContent = 'ROUND ' + ROM[r] + ' / X';
-  var lh = '';
-  for (var i = 0; i < 3; i++) {
-    lh += i < lives ? '✦ ' : '<span style="opacity:0.15">✦ </span>';
-  }
-  document.getElementById('po-lives').innerHTML = lh.trim();
-  document.getElementById('po-score').textContent = 'SCORE ' + score + (streak > 1 ? ' · ×' + streak : '');
-  var badge = document.getElementById('po-diff-badge');
-  badge.textContent = getDiffLabel(round);
-  badge.style.color = getDiffColor(round);
-}
-
-function setMsg(main, sub) {
-  document.getElementById('po-msg').textContent = main;
-  document.getElementById('po-sub').textContent = sub || '';
-}
-
-// ── Note reveal after answer ───────────────────────────────
-function showNoteReveal(noteName, freqHz, isCorrect) {
-  var el = document.getElementById('note-reveal');
-  el.textContent = noteName + ' · ' + freqHz.toFixed(1) + ' Hz';
-  el.className = 'show ' + (isCorrect ? 'correct' : 'wrong');
-}
-function hideNoteReveal() {
-  var el = document.getElementById('note-reveal');
-  el.className = '';
-  el.textContent = '';
-}
-
-// ── Note grid buttons (2-row layout) ──────────────────────
+/* ── Note grid ── */
 var ALL_BTNS = {};
 function setupNoteButtons() {
-  var naturals = ['C','D','E','F','G','A','B'];
-  var sharps   = ['C#','D#','F#','G#','A#'];
-  var idMap    = {'C':'nb-C','C#':'nb-Cs','D':'nb-D','D#':'nb-Ds','E':'nb-E',
-                  'F':'nb-F','F#':'nb-Fs','G':'nb-G','G#':'nb-Gs','A':'nb-A','A#':'nb-As','B':'nb-B'};
+  var idMap = {'C':'nb-C','C#':'nb-Cs','D':'nb-D','D#':'nb-Ds','E':'nb-E',
+               'F':'nb-F','F#':'nb-Fs','G':'nb-G','G#':'nb-Gs','A':'nb-A','A#':'nb-As','B':'nb-B'};
   NOTES_ALL.forEach(function(note) {
     var btn = document.getElementById(idMap[note]);
     if (btn) { ALL_BTNS[note] = btn; btn.textContent = note; }
   });
 }
-
-function setNoteGridEnabled(enabled) {
+function setAllNoteButtonsEnabled(enabled) {
+  var d = DIFFS[state.diff];
+  var pool = d.pool === 'nat' ? NOTES_NAT : NOTES_ALL;
   NOTES_ALL.forEach(function(note) {
-    if (ALL_BTNS[note]) ALL_BTNS[note].disabled = !enabled;
-  });
-}
-
-function resetNoteButtonStyles() {
-  NOTES_ALL.forEach(function(note) {
-    if (ALL_BTNS[note]) { ALL_BTNS[note].className = 'note-btn'; ALL_BTNS[note].disabled = true; }
-  });
-}
-
-// For round 1-10 (note picking mode): show only 4 choices
-function showNoteChoices(choiceArr, enabled) {
-  // Reset all
-  resetNoteButtonStyles();
-  // Show only choices
-  choiceArr.forEach(function(note) {
     var btn = ALL_BTNS[note];
-    if (btn) { btn.className = 'note-btn'; btn.disabled = !enabled; }
-  });
-  // Dim non-choices
-  NOTES_ALL.forEach(function(note) {
-    if (choiceArr.indexOf(note) === -1 && ALL_BTNS[note]) {
-      ALL_BTNS[note].className = 'note-btn nb-dim';
-      ALL_BTNS[note].disabled = true;
+    if (!btn) return;
+    if (pool.indexOf(note) !== -1) {
+      btn.disabled = !enabled;
+      btn.className = 'note-btn';
+    } else {
+      btn.disabled = true;
+      btn.className = 'note-btn nb-dim';
     }
   });
+  // Show/hide sharps row
+  var sharpsRow = document.getElementById('sharps-row');
+  if (sharpsRow) sharpsRow.style.display = (d.pool === 'nat') ? 'none' : 'flex';
+}
+function resetNoteStyles() {
+  NOTES_ALL.forEach(function(note) {
+    var btn = ALL_BTNS[note];
+    if (btn) { btn.className = 'note-btn'; btn.disabled = true; }
+  });
 }
 
-// ── Interval area ─────────────────────────────────────────
+/* ── Interval buttons ── */
 function showIntervalButtons(choices, enabled) {
   document.getElementById('note-grid-area').style.display = 'none';
   var area = document.getElementById('interval-area');
@@ -799,101 +766,202 @@ function showIntervalButtons(choices, enabled) {
     (i < 4 ? row1 : row2).appendChild(btn);
   });
 }
-
 function hideIntervalButtons() {
   document.getElementById('interval-area').style.display = 'none';
   document.getElementById('note-grid-area').style.display = 'flex';
 }
-
 function setIntervalEnabled(enabled) {
-  document.querySelectorAll('.interval-btn').forEach(function(btn) {
-    btn.disabled = !enabled;
-  });
+  document.querySelectorAll('.interval-btn').forEach(function(btn) { btn.disabled = !enabled; });
 }
 
-// ── Answer handlers ────────────────────────────────────────
-function handleNoteAnswer(chosen) {
-  if (!isListening) return;
-  isListening = false;
-  document.getElementById('po-replay').style.display = 'none';
-  setNoteGridEnabled(false);
-  var freq = noteFreq(correctNote, correctOctave);
-  var correct = (chosen === correctNote);
-  showNoteReveal(correctNote + correctOctave, freq, correct);
-  if (correct) {
-    streak++;
-    score += 100;
-    if (ALL_BTNS[correctNote]) ALL_BTNS[correctNote].className = 'note-btn nb-correct';
-    setMsg('YOUR EAR IS ATTUNED', streak > 2 ? '+ 100 · STREAK ×' + streak : '+ 100 POINTS');
-    flashRing(true);
-    playCorrectChime();
+/* ── HUD helpers ── */
+function setMsg(main, sub) {
+  document.getElementById('po-msg').textContent = main;
+  document.getElementById('po-sub').textContent = sub || '';
+}
+function updateHUD() {
+  document.getElementById('po-round').textContent = 'ROUND ' + state.roundNum + ' / ' + MAX_ROUNDS;
+  document.getElementById('po-score').textContent = 'SCORE ' + state.score.toLocaleString();
+  updateStreakDisplay(); updateProgressBar(); updateReplayDots(); updateDiffTabs();
+}
+function updateStreakDisplay() {
+  var el = document.getElementById('po-streak'); if (!el) return;
+  if (state.streak <= 0) { el.textContent = ''; el.className = ''; return; }
+  if (state.streak >= 5) {
+    el.textContent = '✦ TUNED IN ✦ ×' + state.streak;
+    el.className = 'streak-fire';
   } else {
-    streak = 0; lives--;
-    if (ALL_BTNS[chosen]) ALL_BTNS[chosen].className = 'note-btn nb-wrong';
-    if (ALL_BTNS[correctNote]) ALL_BTNS[correctNote].className = 'note-btn nb-correct';
-    setMsg('THE PITCH ELUDES YOU', 'THE NOTE WAS ' + correctNote + correctOctave);
-    flashRing(false);
-    playWrongBuzz();
+    el.textContent = 'STREAK ×' + state.streak;
+    el.className = 'streak-on';
+  }
+}
+function updateProgressBar() {
+  var d = DIFFS[state.diff];
+  var wrap = document.getElementById('po-progress-wrap');
+  var inner = document.getElementById('po-progress-inner');
+  var lbl = document.getElementById('po-progress-label');
+  if (!d.unlockAt) { if (wrap) wrap.style.visibility = 'hidden'; return; }
+  if (wrap) wrap.style.visibility = 'visible';
+  var pct = Math.min(100, Math.round(state.correctCount / d.unlockAt * 100));
+  if (inner) inner.style.width = pct + '%';
+  var nextName = DIFFS[d.unlocks] ? DIFFS[d.unlocks].name : '';
+  if (lbl) lbl.textContent = state.correctCount + ' / ' + d.unlockAt + ' to unlock ' + nextName;
+}
+function updateReplayDots() {
+  var el = document.getElementById('po-replay-dots'); if (!el) return;
+  var dots = ''; for (var i = 0; i < 3; i++) { dots += i < state.replayLeft ? '●' : '○'; }
+  el.textContent = dots;
+}
+function updateDiffTabs() {
+  document.querySelectorAll('.po-diff-tab').forEach(function(btn) {
+    var d = btn.dataset.diff;
+    btn.classList.remove('active', 'locked');
+    if (d === state.diff) btn.classList.add('active');
+    else if (!state.unlocked[d]) btn.classList.add('locked');
+  });
+}
+function showNoteReveal(text, isCorrect) {
+  var el = document.getElementById('note-reveal');
+  el.textContent = text;
+  el.className = 'show ' + (isCorrect ? 'correct' : 'wrong');
+}
+function hideNoteReveal() {
+  var el = document.getElementById('note-reveal');
+  el.className = ''; el.textContent = '';
+}
+function showExplanation(text) {
+  var el = document.getElementById('po-explanation');
+  if (el) { el.textContent = text; el.className = 'show'; }
+}
+function hideExplanation() {
+  var el = document.getElementById('po-explanation');
+  if (el) { el.textContent = ''; el.className = ''; }
+}
+function triggerPulse(ok) {
+  var p = document.getElementById('po-pulse'); if (!p) return;
+  p.className = '';
+  void p.offsetWidth; // reflow
+  p.className = ok ? 'pulse-ok' : 'pulse-bad';
+}
+
+/* ── Replay ── */
+var replayData = null;
+function handleReplay() {
+  if (!state.isListening || state.replayLeft <= 0) return;
+  state.replayLeft--;
+  updateReplayDots();
+  var btn = document.getElementById('po-replay');
+  if (btn) btn.style.display = 'none';
+  state.isListening = false;
+  if (DIFFS[state.diff].pool === 'interval') {
+    setIntervalEnabled(false);
+    setMsg('THE ORACLE SPEAKS AGAIN', '');
+    activateWave(1.6, replayData.freq1);
+    playTone(replayData.freq1, 1.0, 0);
+    setTimeout(function() { activateWave(1.0, replayData.freq2); playTone(replayData.freq2, 1.0, 0); }, 1100);
+    setTimeout(function() {
+      setMsg('NAME THE INTERVAL', '');
+      setIntervalEnabled(true); state.isListening = true;
+      if (state.replayLeft > 0) { if (btn) btn.style.display = 'inline-block'; }
+    }, 2300);
+  } else {
+    setAllNoteButtonsEnabled(false);
+    setMsg('THE ORACLE SPEAKS AGAIN', '');
+    activateWave(1.5, replayData.freq2);
+    playTone(replayData.freq2, 1.5, 0);
+    setTimeout(function() {
+      setMsg('WHAT NOTE DO YOU HEAR?', '');
+      setAllNoteButtonsEnabled(true); state.isListening = true;
+      if (state.replayLeft > 0) { if (btn) btn.style.display = 'inline-block'; }
+    }, 2000);
+  }
+}
+
+/* ── Answer handlers ── */
+function handleNoteAnswer(chosen) {
+  if (!state.isListening || state.answered) return;
+  state.isListening = false; state.answered = true;
+  document.getElementById('po-replay').style.display = 'none';
+  setAllNoteButtonsEnabled(false);
+  var correct = (chosen === state.correctNote);
+  var freq = state.correctFreq;
+  var noteInfo = NOTE_INFO[state.correctNote] || {desc:''};
+  showNoteReveal(state.correctNote + state.correctOctave + ' · ' + freq.toFixed(1) + ' Hz', correct);
+  if (ALL_BTNS[state.correctNote]) ALL_BTNS[state.correctNote].className = 'note-btn nb-correct';
+  if (!correct && ALL_BTNS[chosen]) ALL_BTNS[chosen].className = 'note-btn nb-wrong';
+  if (correct) {
+    var bonus = state.streak >= 5 ? Math.floor(DIFFS[state.diff].pts * 0.5) : 0;
+    state.score += DIFFS[state.diff].pts + bonus;
+    state.streak++; state.correctCount++;
+    setMsg('✦ YOUR EAR IS ATTUNED', '+' + DIFFS[state.diff].pts + (bonus ? ' +' + bonus + ' FIRE BONUS' : '') + ' PTS');
+    playCorrectChime(); triggerPulse(true);
+    checkUnlock();
+  } else {
+    state.streak = 0;
+    setMsg('THE PITCH ELUDES YOU', 'THE NOTE WAS ' + state.correctNote + state.correctOctave);
+    playWrongBuzz(); triggerPulse(false);
   }
   updateHUD();
+  showExplanation(noteInfo.desc);
   setTimeout(function() {
-    hideNoteReveal();
-    if (lives <= 0 || round >= 10) { endGame(); }
-    else { startRound(); }
-  }, 1800);
+    hideNoteReveal(); hideExplanation(); resetNoteStyles();
+    if (state.roundNum >= MAX_ROUNDS) { endGame(); } else { startRound(); }
+  }, 2200);
 }
 
 function handleIntervalAnswer(chosenName) {
-  if (!isListening) return;
-  isListening = false;
+  if (!state.isListening || state.answered) return;
+  state.isListening = false; state.answered = true;
   document.getElementById('po-replay').style.display = 'none';
   setIntervalEnabled(false);
-  var correct = (chosenName === correctInterval.name);
+  var correct = (chosenName === state.correctInterval.name);
   document.querySelectorAll('.interval-btn').forEach(function(btn) {
-    if (btn.dataset.interval === correctInterval.name) btn.className = 'interval-btn nb-correct';
+    if (btn.dataset.interval === state.correctInterval.name) btn.className = 'interval-btn nb-correct';
     else if (btn.dataset.interval === chosenName && !correct) btn.className = 'interval-btn nb-wrong';
     else btn.className = 'interval-btn nb-dim';
   });
   if (correct) {
-    streak++;
-    score += 150;
-    setMsg('THE INTERVAL REVEALED', '+ 150 POINTS · ' + correctInterval.name.toUpperCase());
-    flashRing(true);
-    playRoundChime();
+    var bonus = state.streak >= 5 ? Math.floor(DIFFS[state.diff].pts * 0.5) : 0;
+    state.score += DIFFS[state.diff].pts + bonus;
+    state.streak++; state.correctCount++;
+    setMsg('✦ THE INTERVAL REVEALED', '+' + DIFFS[state.diff].pts + (bonus ? ' +' + bonus : '') + ' PTS');
+    playCorrectChime(); triggerPulse(true);
+    checkUnlock();
   } else {
-    streak = 0; lives--;
-    setMsg('NOT QUITE', 'THE INTERVAL WAS ' + correctInterval.name.toUpperCase());
-    flashRing(false);
-    playWrongBuzz();
+    state.streak = 0;
+    setMsg('NOT QUITE', 'THE INTERVAL WAS ' + state.correctInterval.name.toUpperCase());
+    playWrongBuzz(); triggerPulse(false);
   }
   updateHUD();
+  showExplanation(state.correctInterval.desc);
   setTimeout(function() {
-    hideIntervalButtons();
-    if (lives <= 0) { endGame(); }
-    else { startRound(); }
-  }, 1800);
+    hideExplanation();
+    if (state.roundNum >= MAX_ROUNDS) { endGame(); } else { startRound(); }
+  }, 2200);
 }
 
-function flashRing(ok) {
-  var r = document.getElementById('note-grid-area');
-  r.style.transition = 'box-shadow 0.06s';
-  r.style.boxShadow = ok ? '0 0 45px rgba(2,225,39,0.5)' : '0 0 45px rgba(251,56,56,0.5)';
-  setTimeout(function() {
-    r.style.boxShadow = '0 0 0 transparent';
-    setTimeout(function() { r.style.boxShadow = ''; r.style.transition = ''; }, 320);
-  }, 220);
+function checkUnlock() {
+  var d = DIFFS[state.diff];
+  if (!d.unlockAt || !d.unlocks) return;
+  if (state.correctCount >= d.unlockAt && !state.unlocked[d.unlocks]) {
+    state.unlocked[d.unlocks] = true; saveUnlocks();
+    updateDiffTabs();
+    // Show brief unlock message
+    var unlockName = DIFFS[d.unlocks].name;
+    var sub = document.getElementById('po-sub');
+    if (sub) { sub.textContent = unlockName.toUpperCase() + ' UNLOCKED ✦'; }
+    setTimeout(function() { if (sub) sub.textContent = ''; }, 1800);
+  }
 }
 
-// ── Round logic ────────────────────────────────────────────
+/* ── Round logic ── */
 function startRound() {
-  round++;
+  state.roundNum++;
+  state.answered = false; state.replayLeft = 3;
+  hideNoteReveal(); hideExplanation();
   updateHUD();
-  hideNoteReveal();
-  isIntervalMode = (round > 10);
-  replayCount = 0;
-  document.getElementById('po-replay').style.display = 'none';
-
-  if (isIntervalMode) {
+  var d = DIFFS[state.diff];
+  if (d.pool === 'interval') {
     startIntervalRound();
   } else {
     startNoteRound();
@@ -902,195 +970,99 @@ function startRound() {
 
 function startNoteRound() {
   hideIntervalButtons();
-  var dur = getNoteDur(round);
-  replayDurVal = dur; replayIsSeq = false;
-  var useSeq = (round >= 7);
-  var pool = (round >= 4) ? NOTES_ALL : NOTES_NAT;
-  correctNote = pool[0 | Math.random() * pool.length];
+  var pool = DIFFS[state.diff].pool === 'nat' ? NOTES_NAT : NOTES_ALL;
+  state.correctNote = pool[0 | Math.random() * pool.length];
   var octs = [3, 4, 5];
-  correctOctave = octs[0 | Math.random() * 3];
-  // Build wrong answers
-  var wrong = [];
-  if (round >= 7) {
-    var ci = NOTES_ALL.indexOf(correctNote);
-    var byDist = NOTES_ALL.map(function(_, i) { return i; })
-      .filter(function(i) { return i !== ci; })
-      .sort(function(a, b) {
-        var da = Math.min(Math.abs(a - ci), 12 - Math.abs(a - ci));
-        var db = Math.min(Math.abs(b - ci), 12 - Math.abs(b - ci));
-        return da - db;
-      });
-    var nearPool = byDist.slice(0, 6).map(function(i) { return NOTES_ALL[i]; });
-    while (wrong.length < 3) {
-      var np = nearPool.splice(0 | Math.random() * nearPool.length, 1)[0];
-      wrong.push(np);
-    }
-  } else {
-    var wrongPool = NOTES_ALL.filter(function(n) { return n !== correctNote; });
-    while (wrong.length < 3) {
-      var w = wrongPool[0 | Math.random() * wrongPool.length];
-      if (wrong.indexOf(w) === -1) wrong.push(w);
-    }
-  }
-  var choices = wrong.concat(correctNote).sort(function() { return Math.random() - 0.5; });
-  showNoteChoices(choices, false);
-  NOTES_ALL.forEach(function(note) {
+  state.correctOctave = octs[0 | Math.random() * 3];
+  state.correctFreq = noteFreq(state.correctNote, state.correctOctave);
+  replayData = {freq2: state.correctFreq, freq1: 0};
+  setAllNoteButtonsEnabled(false);
+  // Set up click handlers
+  pool.forEach(function(note) {
     var btn = ALL_BTNS[note];
-    if (btn && choices.indexOf(note) !== -1) {
-      btn.onclick = (function(n) { return function() { handleNoteAnswer(n); }; })(note);
-    }
+    if (btn) btn.onclick = (function(n) { return function() { if(!state.answered)handleNoteAnswer(n); }; })(note);
   });
-
-  var freq1 = 0, freq2 = noteFreq(correctNote, correctOctave);
-  replaySecondFreq = freq2;
-  if (useSeq) {
-    var firstNote = pool[0 | Math.random() * pool.length];
-    var firstOct = octs[0 | Math.random() * 3];
-    freq1 = noteFreq(firstNote, firstOct);
-    replayFirstFreq = freq1; replayIsSeq = true;
-    setMsg('THE ORACLE SPEAKS', 'IDENTIFY THE SECOND NOTE');
-    playTone(freq1, dur, 0);
-    activateWave(dur * 2.8, freq1);
-    setTimeout(function() { playTone(freq2, dur, 0); activateWave(dur, freq2); }, (dur + 0.38) * 1000);
-    setTimeout(function() {
-      setMsg('WHAT IS THE SECOND NOTE?', '');
-      showNoteChoices(choices, true);
-      isListening = true;
-      document.getElementById('po-replay').style.display = 'inline-block';
-    }, (dur * 2 + 0.55) * 1000);
-  } else {
-    replayFirstFreq = 0;
-    setMsg('THE ORACLE SPEAKS', 'LISTEN CLOSELY');
-    playTone(freq2, dur, 0);
-    activateWave(dur, freq2);
-    setTimeout(function() {
-      setMsg('WHAT NOTE DO YOU HEAR?', '');
-      showNoteChoices(choices, true);
-      isListening = true;
-      document.getElementById('po-replay').style.display = 'inline-block';
-    }, (dur + 0.42) * 1000);
-  }
+  setMsg('THE ORACLE SPEAKS', 'LISTEN CLOSELY');
+  activateWave(1.5, state.correctFreq);
+  playTone(state.correctFreq, 1.5, 0);
+  setTimeout(function() {
+    setMsg('WHAT NOTE DO YOU HEAR?', '');
+    setAllNoteButtonsEnabled(true);
+    state.isListening = true;
+    var btn = document.getElementById('po-replay');
+    if (btn) btn.style.display = 'inline-block';
+  }, 1900);
 }
 
 function startIntervalRound() {
-  // Pick a random interval from pool
   var corrName = INTERVAL_POOL[0 | Math.random() * INTERVAL_POOL.length];
-  correctInterval = INTERVALS.filter(function(iv) { return iv.name === corrName; })[0];
-  // Pick root note
+  state.correctInterval = INTERVALS_DATA.filter(function(iv) { return iv.name === corrName; })[0];
   var rootNote = NOTES_ALL[0 | Math.random() * NOTES_ALL.length];
   var rootOct = 3 + (0 | Math.random() * 2);
   var rootFreq = noteFreq(rootNote, rootOct);
-  // Second note = root + semitones
   var rootMidi = (rootOct + 1) * 12 + NOTES_ALL.indexOf(rootNote);
-  var secondMidi = rootMidi + correctInterval.semitones;
+  var secondMidi = rootMidi + state.correctInterval.semitones;
   var secondNote = NOTES_ALL[secondMidi % 12];
   var secondOct = Math.floor(secondMidi / 12) - 1;
   var secondFreq = noteFreq(secondNote, secondOct);
-  replayInterval1Freq = rootFreq; replayInterval2Freq = secondFreq;
-  replayDurVal = 0.8; replayIsSeq = true;
-  replayFirstFreq = rootFreq; replaySecondFreq = secondFreq;
-  // Build choices: correct + 3 wrong
+  replayData = {freq1: rootFreq, freq2: secondFreq};
   var wrongChoices = INTERVAL_POOL.filter(function(n) { return n !== corrName; });
-  var wrongs = [];
-  while (wrongs.length < 3) {
+  var wrongs = []; while (wrongs.length < 3) {
     var wi = 0 | Math.random() * wrongChoices.length;
     if (wrongs.indexOf(wrongChoices[wi]) === -1) wrongs.push(wrongChoices[wi]);
   }
   var choices = wrongs.concat(corrName).sort(function() { return Math.random() - 0.5; });
   showIntervalButtons(choices, false);
   document.querySelectorAll('.interval-btn').forEach(function(btn) {
-    btn.onclick = (function(name) { return function() { handleIntervalAnswer(name); }; })(btn.dataset.interval);
+    btn.onclick = (function(name) { return function() { if(!state.answered)handleIntervalAnswer(name); }; })(btn.dataset.interval);
   });
   setMsg('THE ORACLE PLAYS AN INTERVAL', 'LISTEN TO BOTH NOTES');
-  playTone(rootFreq, 0.8, 0);
-  activateWave(1.6, rootFreq);
-  setTimeout(function() { playTone(secondFreq, 0.8, 0); activateWave(0.8, secondFreq); }, 1000);
+  activateWave(1.6, rootFreq); playTone(rootFreq, 1.0, 0);
+  setTimeout(function() { activateWave(1.0, secondFreq); playTone(secondFreq, 1.0, 0); }, 1100);
   setTimeout(function() {
     setMsg('NAME THE INTERVAL', '');
-    setIntervalEnabled(true);
-    isListening = true;
-    document.getElementById('po-replay').style.display = 'inline-block';
-  }, 2200);
+    setIntervalEnabled(true); state.isListening = true;
+    var btn = document.getElementById('po-replay');
+    if (btn) btn.style.display = 'inline-block';
+  }, 2300);
 }
 
-// ── Game flow ──────────────────────────────────────────────
+/* ── Game flow ── */
+function switchDiff(diff) {
+  if (!state.unlocked[diff]) return;
+  state.diff = diff; state.score = 0; state.streak = 0; state.correctCount = 0; state.roundNum = 0;
+  hideIntervalButtons(); hideNoteReveal(); hideExplanation();
+  document.getElementById('po-replay').style.display = 'none';
+  updateHUD(); startRound();
+}
+
 function startGame() {
-  round = 0; lives = 3; score = 0; streak = 0; replayCount = 0; isListening = false;
-  resetNoteButtonStyles();
-  hideIntervalButtons();
-  hideNoteReveal();
+  state.score = 0; state.streak = 0; state.correctCount = 0; state.roundNum = 0;
+  state.isListening = false; state.answered = false;
+  resetNoteStyles(); hideIntervalButtons(); hideNoteReveal(); hideExplanation();
   document.getElementById('ss').classList.add('off');
   document.getElementById('os').classList.add('off');
-  document.getElementById('learn-scr').classList.add('off');
+  if (document.getElementById('learn-scr')) document.getElementById('learn-scr').classList.add('off');
   document.getElementById('gs').classList.remove('off');
-  initCanvas();
-  startRound();
+  initCanvas(); updateDiffTabs(); updateHUD(); startRound();
 }
 
 function endGame() {
   document.getElementById('gs').classList.add('off');
   document.getElementById('os').classList.remove('off');
-  document.getElementById('finalScore').textContent = score;
+  document.getElementById('finalScore').textContent = state.score.toLocaleString();
+  var d = DIFFS[state.diff];
   var msg;
-  if (score >= 1000) msg = 'PERFECT PITCH · THE COSMOS RESONATES';
-  else if (score >= 800) msg = 'YOUR EAR IS ATTUNED TO THE FREQUENCIES';
-  else if (score >= 600) msg = 'THE ORACLE ACKNOWLEDGES YOUR GROWING SENSE';
-  else if (score >= 400) msg = 'THE TONES SLIP THROUGH YOUR FINGERS STILL';
+  if (state.score >= d.pts * 17) msg = 'PERFECT PITCH · THE COSMOS RESONATES';
+  else if (state.score >= d.pts * 13) msg = 'YOUR EAR IS ATTUNED TO THE FREQUENCIES';
+  else if (state.score >= d.pts * 9) msg = 'THE ORACLE ACKNOWLEDGES YOUR GROWING SENSE';
   else msg = 'THE PITCH ELUDES YOU · RETURN AND LISTEN DEEPER';
   document.getElementById('os-narrator').textContent = msg;
-  if (typeof lbOnGameOver === 'function') lbOnGameOver(score);
+  if (typeof lbOnGameOver === 'function') lbOnGameOver(state.score);
 }
 
-// ── Replay logic ───────────────────────────────────────────
-function handleReplay() {
-  if (!isListening || replayCount >= maxReplays) return;
-  replayCount++;
-  score = Math.max(0, score - 15);
-  updateHUD();
-  document.getElementById('po-replay').style.display = 'none';
-  isListening = false;
-  if (isIntervalMode) {
-    setIntervalEnabled(false);
-    setMsg('THE ORACLE SPEAKS AGAIN', 'REPLAY ' + replayCount + ' / ' + maxReplays + ' · −15');
-    playTone(replayInterval1Freq, replayDurVal, 0);
-    activateWave(replayDurVal * 2, replayInterval1Freq);
-    setTimeout(function() { playTone(replayInterval2Freq, replayDurVal, 0); activateWave(replayDurVal, replayInterval2Freq); }, 1000);
-    setTimeout(function() {
-      setMsg('NAME THE INTERVAL', '');
-      setIntervalEnabled(true);
-      isListening = true;
-      if (replayCount < maxReplays) document.getElementById('po-replay').style.display = 'inline-block';
-    }, 2200);
-  } else if (replayIsSeq) {
-    setNoteGridEnabled(false);
-    setMsg('THE ORACLE SPEAKS AGAIN', 'REPLAY ' + replayCount + ' / ' + maxReplays + ' · −15');
-    playTone(replayFirstFreq, replayDurVal, 0);
-    activateWave(replayDurVal * 2.8, replayFirstFreq);
-    setTimeout(function() { playTone(replaySecondFreq, replayDurVal, 0); activateWave(replayDurVal, replaySecondFreq); }, (replayDurVal + 0.38) * 1000);
-    setTimeout(function() {
-      setMsg('WHAT IS THE SECOND NOTE?', '');
-      setNoteGridEnabled(true);
-      isListening = true;
-      if (replayCount < maxReplays) document.getElementById('po-replay').style.display = 'inline-block';
-    }, (replayDurVal * 2 + 0.55) * 1000);
-  } else {
-    setNoteGridEnabled(false);
-    setMsg('THE ORACLE SPEAKS AGAIN', 'REPLAY ' + replayCount + ' / ' + maxReplays + ' · −15');
-    playTone(replaySecondFreq, replayDurVal, 0);
-    activateWave(replayDurVal, replaySecondFreq);
-    setTimeout(function() {
-      setMsg('WHAT NOTE DO YOU HEAR?', '');
-      setNoteGridEnabled(true);
-      isListening = true;
-      if (replayCount < maxReplays) document.getElementById('po-replay').style.display = 'inline-block';
-    }, (replayDurVal + 0.42) * 1000);
-  }
-}
-
-// ── Learning Mode ─────────────────────────────────────────
-var learnPlayTimeout = null;
-var currentLearnBtn = null;
-
+/* ── Learning mode (kept intact) ── */
+var learnPlayTimeout = null, currentLearnBtn = null;
 function openLearnMode() {
   document.getElementById('ss').classList.add('off');
   document.getElementById('gs').classList.add('off');
@@ -1098,58 +1070,47 @@ function openLearnMode() {
   document.getElementById('learn-scr').classList.remove('off');
   initLearnCanvas();
 }
-
 function closeLearnMode() {
   document.getElementById('learn-scr').classList.add('off');
   document.getElementById('ss').classList.remove('off');
 }
-
 function playLearnNote(note, octave, freq, btn) {
-  getAC(); // ensure context running
+  getAC();
   if (currentLearnBtn) currentLearnBtn.classList.remove('playing');
   if (learnPlayTimeout) clearTimeout(learnPlayTimeout);
-  currentLearnBtn = btn;
-  btn.classList.add('playing');
+  currentLearnBtn = btn; btn.classList.add('playing');
   var hzEl = document.getElementById('learn-hz');
   if (hzEl) hzEl.textContent = note + octave + ' · ' + freq.toFixed(1) + ' Hz';
-  // Pure sine wave for 1.5s
-  var c = getAC();
-  var now = c.currentTime;
-  var osc = c.createOscillator(), g = c.createGain();
-  osc.type = 'sine'; osc.frequency.value = freq;
-  g.gain.setValueAtTime(0.001, now);
-  g.gain.linearRampToValueAtTime(0.3, now + 0.04);
-  g.gain.setValueAtTime(0.3, now + 1.2);
-  g.gain.linearRampToValueAtTime(0.001, now + 1.5);
-  osc.connect(g); g.connect(c.destination);
-  osc.start(now); osc.stop(now + 1.55);
+  playTone(freq, 1.5, 0, 0.3);
   lwFreqVal = freq; lwActive = true; lwDecay = 1;
   learnPlayTimeout = setTimeout(function() {
-    lwActive = false;
-    if (btn) btn.classList.remove('playing');
-    currentLearnBtn = null;
+    lwActive = false; if (btn) btn.classList.remove('playing'); currentLearnBtn = null;
   }, 1500);
 }
 
-// ── Init ──────────────────────────────────────────────────
+/* ── Init ── */
 document.addEventListener('DOMContentLoaded', function() {
   setupNoteButtons();
-
   document.getElementById('startBtn').addEventListener('click', function() { getAC(); startGame(); });
   document.getElementById('restartBtn').addEventListener('click', function() {
-    document.getElementById('os').classList.add('off');
-    getAC(); startGame();
+    document.getElementById('os').classList.add('off'); getAC(); startGame();
   });
-  document.getElementById('learnBtn').addEventListener('click', function() { getAC(); openLearnMode(); });
-  document.getElementById('learnBack').addEventListener('click', closeLearnMode);
+  if (document.getElementById('learnBtn'))
+    document.getElementById('learnBtn').addEventListener('click', function() { getAC(); openLearnMode(); });
+  if (document.getElementById('learnBack'))
+    document.getElementById('learnBack').addEventListener('click', closeLearnMode);
   document.getElementById('po-replay').addEventListener('click', handleReplay);
-
-  // Learning mode note buttons
+  document.querySelectorAll('.po-diff-tab').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var d = btn.dataset.diff;
+      if (!state.unlocked[d] || d === state.diff) return;
+      getAC(); switchDiff(d);
+    });
+  });
   document.querySelectorAll('.learn-btn').forEach(function(btn) {
     var note = btn.dataset.note;
     var oct = parseInt(btn.dataset.oct);
     var freq = noteFreq(note, oct);
-    // Update Hz in button
     var hzSpan = btn.querySelector('.lhz');
     if (hzSpan) hzSpan.textContent = freq.toFixed(1) + ' Hz';
     btn.addEventListener('click', function() { playLearnNote(note, oct, freq, btn); });
@@ -1158,9 +1119,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 })();
-</script>
-
-<!-- mobile-audit-fixes -->
+</script>bile-audit-fixes -->
 <style>
 @media(max-width:768px){
   .note-btn{min-width:44px!important;min-height:56px!important;font-size:0.85rem!important}
