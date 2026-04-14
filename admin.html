@@ -154,11 +154,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .field-input,.field-textarea,.field-select,.search-input{font-size:16px;}
 }
 
-/* Footer */
-.hp-footer{background:transparent;text-align:center;padding:16px 24px 20px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10}
-.hp-footer a{color:rgba(201,168,76,0.75);text-decoration:none;transition:color 0.2s}
-.hp-footer a:hover{color:#c9a84c}
-.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.6)}
 
 /* Member table */
 .member-table{width:100%;border-collapse:collapse;font-size:0.7rem;}
@@ -3351,7 +3346,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       // Wrap plain text in minimal HTML for MailerLite
       var htmlBody = '<html><body style="font-family:Georgia,serif;color:#1a1a1a;max-width:600px;margin:0 auto;padding:40px 20px;">'
         + '<p style="white-space:pre-wrap;">' + body.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}) + '</p>'
-        + '<!-- footer-single-line-mobile --><style>.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important}@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important}.hp-footer-mark{margin:0 8px!important;color:rgba(201,168,76,0.6)!important}}</style></body></html>';
+        + '<!-- footer-single-line-mobile --></body></html>';
 
       var payload = {
         name: subject + ' — ' + new Date().toISOString().slice(0,10),
@@ -5634,6 +5629,6 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 <script>(function(){var _b=document.getElementById('sw-update-banner');if(_b){_b.innerHTML='<span>SITE UPDATED \u00b7 REFRESH FOR THE LATEST TRANSMISSIONS</span><span style="display:flex;gap:10px;align-items:center;"><button onclick="location.reload()" style="background:#0a0702;color:#c9a84c;border:none;padding:5px 14px;font-size:12px;font-weight:700;letter-spacing:0.06em;cursor:pointer;border-radius:2px;">REFRESH</button></span>';}if('serviceWorker' in navigator){navigator.serviceWorker.addEventListener('message',function(e){if(e&&e.data&&e.data.type==='UPDATE'){var b=document.getElementById('sw-update-banner');if(b){b.style.opacity='1';b.style.pointerEvents='auto';b.style.transform='translateY(0)';}}});}})();</script>
 
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
-<!-- footer-single-line-mobile --><style>.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important}@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important}.hp-footer-mark{margin:0 8px!important;color:rgba(201,168,76,0.6)!important}}</style>
+<!-- footer-single-line-mobile --><style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;color:rgba(201,168,76,0.75)!important;font-family:'Luminari',serif;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important}.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important}.hp-footer a:hover{color:#c9a84c!important}.hp-footer-mark{margin:0 8px!important;color:rgba(201,168,76,0.6)!important}</style>
 </body>
 </html>
