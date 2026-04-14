@@ -2672,21 +2672,24 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   window.deleteLbScore = function(id){
     if(!confirm('Delete this score from the scrolls?')) return;
-    var ref = db.collection('leaderboards').doc(lbCurrentGame).collection('scores').doc(id);
-    ref.delete().then(function(){
-      var row=document.getElementById('lb-row-'+id);
-      if(row) row.remove();
-      lbAllScores=lbAllScores.filter(function(s){return s.id!==id;});
-      renderLbStats();
-    }).catch(function(){
-      // Fallback flat delete
-      db.collection('leaderboards').doc(id).delete().then(function(){
-        var row=document.getElementById('lb-row-'+id);
-        if(row) row.remove();
+    var statusEl = document.getElementById('lb-status');
+    var rowEl = document.getElementById('lb-row-'+id);
+    if(rowEl){ rowEl.style.opacity='0.4'; rowEl.style.pointerEvents='none'; }
+    db.collection('leaderboards').doc(lbCurrentGame).collection('scores').doc(id).delete()
+      .then(function(){
+        if(rowEl) rowEl.remove();
         lbAllScores=lbAllScores.filter(function(s){return s.id!==id;});
         renderLbStats();
-      }).catch(function(e){ alert('Error: '+e.message); });
-    });
+        if(statusEl){ statusEl.textContent='Score deleted \u2726'; statusEl.className='status-msg status-ok'; }
+      })
+      .catch(function(e){
+        console.error('deleteLbScore error:', e);
+        if(rowEl){ rowEl.style.opacity=''; rowEl.style.pointerEvents=''; }
+        if(statusEl){
+          statusEl.textContent='Delete failed: '+(e.message||e.code||String(e));
+          statusEl.className='status-msg status-err';
+        }
+      });
   };
 
   /* ══════════════ SECTION 12: CACHE BUST ══════════════ */
@@ -3786,7 +3789,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   /* ══════════════ UI: TABS ══════════════ */
   function initTabs() {
-    document.querySelectorAll('.tab-btn').forEach(function(btn){
+    document.querySelectorAll('.tab-btn[data-tab]').forEach(function(btn){
       btn.addEventListener('click', function(){
         var target = this.getAttribute('data-tab');
         var section = this.closest('.adm-section');
