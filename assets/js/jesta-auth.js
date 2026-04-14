@@ -78,7 +78,8 @@
       }, 100);
       return;
     }
-    var lastCheck = parseInt(localStorage.getItem('lastNotifCheck') || '0', 10);
+    var lastCheck = 0;
+    try { lastCheck = parseInt(localStorage.getItem('lastNotifCheck') || '0', 10); } catch(e) {}
     window.jestaDB.collection('notifications')
       .orderBy('timestamp', 'desc')
       .limit(1)
@@ -129,7 +130,6 @@
     }
     // Only attach once per page load
     if (_badgeUnsub) return;
-    var now = firebase.firestore ? firebase.firestore.Timestamp.now() : new Date();
     // Query badges that either have no expiresAt or haven't expired yet
     // We fetch all and filter client-side to avoid a compound index requirement
     _badgeUnsub = window.jestaDB.collection('navBadges').onSnapshot(function (snap) {
@@ -206,7 +206,7 @@
   }
 
   window._jDismissNotif = function (id, uid) {
-    localStorage.setItem('lastNotifCheck', String(Date.now()));
+    try { localStorage.setItem('lastNotifCheck', String(Date.now())); } catch(e) {}
     if (window.jestaDB) {
       window.jestaDB.collection('notifications').doc(id).update({
         seen: firebase.firestore.FieldValue.arrayUnion(uid)
@@ -235,7 +235,8 @@
     if (user) {
       var CACHE_KEY = 'jesta_uname_' + user.uid;
       var PHOTO_KEY = 'jesta_photo_' + user.uid;
-      var cached = localStorage.getItem(CACHE_KEY);
+      var cached = null;
+      try { cached = localStorage.getItem(CACHE_KEY); } catch(e) {}
       var fallback = (user.displayName || user.email || '').split('@')[0];
 
       if (cached) {
@@ -257,8 +258,8 @@
             // Prefer Firestore photoURL; only fall back to user.photoURL if it's not a Google default
             var fsPhoto = doc.exists && doc.data().photoURL;
             var photo = fsPhoto || (!_isNavGoogleDefault(user.photoURL) ? user.photoURL : '');
-            localStorage.setItem(CACHE_KEY, name);
-            if (photo) localStorage.setItem(PHOTO_KEY, photo);
+            try { localStorage.setItem(CACHE_KEY, name); } catch(e) {}
+            if (photo) { try { localStorage.setItem(PHOTO_KEY, photo); } catch(e) {} }
             if (!cached || name !== cached) {
               renderAuthNav(wrap, mobWrap, name);
               if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = name.length > 10 ? name.slice(0,9)+'\u2026' : name; }
@@ -398,7 +399,8 @@
   // ── Cookie consent banner ────────────────────────────────────
   function initCookieBanner() {
     if (document.getElementById('ck-banner')) return; // already present
-    var v = localStorage.getItem('cookieAccepted');
+    var v = null;
+    try { v = localStorage.getItem('cookieAccepted'); } catch(e) {}
     // Inject CSS
     var cs = document.createElement('style');
     cs.id = 'ck-styles';
@@ -430,11 +432,11 @@
     // Init
     if (!v) { banner.classList.remove('ck-hidden'); }
     document.getElementById('ck-accept').addEventListener('click', function () {
-      localStorage.setItem('cookieAccepted', 'true');
+      try { localStorage.setItem('cookieAccepted', 'true'); } catch(e) {}
       banner.classList.add('ck-hidden');
     });
     document.getElementById('ck-decline').addEventListener('click', function () {
-      localStorage.setItem('cookieAccepted', 'false');
+      try { localStorage.setItem('cookieAccepted', 'false'); } catch(e) {}
       banner.classList.add('ck-hidden');
     });
   }
