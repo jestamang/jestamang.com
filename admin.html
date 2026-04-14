@@ -4651,9 +4651,9 @@ document.getElementById('alm-add-clear-btn').addEventListener('click', function(
 /* ── Boot ── */
 (function(){
   almInitAddForm();
-  var _t=0,_iv=setInterval(function(){
-    if(window.jestaDB){ clearInterval(_iv); almLoad(); }
-    else if(++_t>80){ clearInterval(_iv); var c=document.getElementById('alm-list-inner'); if(c) c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>'; }
+  var _jt=0,_jiv=setInterval(function(){
+    if(window.jestaDB){ clearInterval(_jiv); almLoad(); }
+    else if(++_jt>80){ clearInterval(_jiv); var c=document.getElementById('alm-list-inner'); if(c) c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>'; }
   },100);
 })();
 })();</script>
@@ -4884,9 +4884,9 @@ function entLoad(){
 /* ── Boot ── */
 (function(){
   entInitAddForm();
-  var _t=0,_iv=setInterval(function(){
-    if(window.jestaDB){clearInterval(_iv);entLoad();}
-    else if(++_t>80){clearInterval(_iv);var c=document.getElementById('ent-list-inner');if(c)c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
+  var _jt=0,_jiv=setInterval(function(){
+    if(window.jestaDB){clearInterval(_jiv);entLoad();}
+    else if(++_jt>80){clearInterval(_jiv);var c=document.getElementById('ent-list-inner');if(c)c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
   },100);
 })();
 })();</script>
@@ -5113,9 +5113,9 @@ function lymLoad(){
 /* ── Boot ── */
 (function(){
   lymInitAddForm();
-  var _t=0,_iv=setInterval(function(){
-    if(window.jestaDB){clearInterval(_iv);lymLoad();}
-    else if(++_t>80){clearInterval(_iv);var c=document.getElementById('lym-list-inner');if(c)c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
+  var _jt=0,_jiv=setInterval(function(){
+    if(window.jestaDB){clearInterval(_jiv);lymLoad();}
+    else if(++_jt>80){clearInterval(_jiv);var c=document.getElementById('lym-list-inner');if(c)c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
   },100);
 })();
 })();</script>
@@ -5272,9 +5272,9 @@ function capPublish(){
   if(saveBtn)    saveBtn.addEventListener('click', capSave);
   if(clearBtn)   clearBtn.addEventListener('click', capClear);
   if(publishBtn) publishBtn.addEventListener('click', capPublish);
-  var _t=0, _iv=setInterval(function(){
-    if(window.jestaDB){ clearInterval(_iv); capLoad(); }
-    else if(++_t>80){ clearInterval(_iv); var el=document.getElementById('cap-list-inner'); if(el) el.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>'; }
+  var _jt=0, _jiv=setInterval(function(){
+    if(window.jestaDB){ clearInterval(_jiv); capLoad(); }
+    else if(++_jt>80){ clearInterval(_jiv); var el=document.getElementById('cap-list-inner'); if(el) el.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>'; }
   },100);
 })();
 })();</script>
@@ -5464,9 +5464,9 @@ function tseLoad(){
   });
 
   /* Boot: poll for jestaDB then load */
-  var _t=0,_iv=setInterval(function(){
-    if(window.jestaDB){clearInterval(_iv);tseLoad();}
-    else if(++_t>80){clearInterval(_iv);var w=document.getElementById('tse-rules-wrap');if(w)w.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
+  var _jt=0,_jiv=setInterval(function(){
+    if(window.jestaDB){clearInterval(_jiv);tseLoad();}
+    else if(++_jt>80){clearInterval(_jiv);var w=document.getElementById('tse-rules-wrap');if(w)w.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
   },100);
 })();
 })();</script>
@@ -5581,9 +5581,9 @@ function tseLoad(){
 
   function loadFromFirestore() {
     if (!window.jestaDB) {
-      var _t=0, _iv=setInterval(function(){
-        if(window.jestaDB){clearInterval(_iv);loadFromFirestore();}
-        else if(++_t>80){clearInterval(_iv);setVals(TD);attachListeners();}
+      var _jt=0, _jiv=setInterval(function(){
+        if(window.jestaDB){clearInterval(_jiv);loadFromFirestore();}
+        else if(++_jt>80){clearInterval(_jiv);setVals(TD);attachListeners();}
       },100);
       return;
     }
