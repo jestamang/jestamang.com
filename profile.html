@@ -1735,10 +1735,10 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <div class="nc-divider" style="margin-top:36px;">&#10022; Share &#10022;</div>
       <div class="natal-share-row">
         <button class="btn-gold" id="natal-share-btn" style="padding:13px 28px;">Share My Dossier</button>
-        <button class="btn-share-url" id="natal-share-url-btn">SHARE THIS CHART &#10022;</button>
+        <button class="btn-share-url" id="natal-share-url-btn">COPY MY CHART &#10022;</button>
         <button class="btn-dl-chart" id="natal-dl-btn" title="Download chart as PNG">&#11015; Download Chart</button>
-        <span class="natal-copied-msg" id="natal-copied-msg">Link copied to the cosmic record &#10022;</span>
-        <span class="natal-copied-msg" id="natal-chart-url-msg">CHART LINK COPIED TO CLIPBOARD &#10022;</span>
+        <span class="natal-copied-msg" id="natal-copied-msg"></span>
+        <span class="natal-copied-msg" id="natal-chart-url-msg">CHART COPIED TO CLIPBOARD &#10022;</span>
       </div>
       <div class="natal-share-note">Chart calculated using Meeus astronomical algorithms. For ceremonial purposes only.</div>
 
@@ -3044,6 +3044,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var dossierData = {};
   var editMode = false;
   var savedNatalChart = null;
+  var _lastNatalResult = null;
 
   // Loading messages cycle
   var loadingMsgs = [
@@ -3649,76 +3650,94 @@ document.addEventListener('DOMContentLoaded', function(){
 
   document.getElementById('natal-share-btn').addEventListener('click', function(){
     if(!currentUser) return;
-    var shareUrl = window.location.origin + '/profile.html';
     var userName = (dossierData && dossierData.username) ||
                    (currentUser.displayName || currentUser.email.split('@')[0]);
-    var sunSign = (dossierData && dossierData.sunSign) || '';
-    var moonSign = (dossierData && dossierData.moonSign) || '';
-    var rising = (dossierData && dossierData.risingSign) || '';
-    var chartText = [sunSign && ('☀ ' + sunSign), moonSign && ('☽ ' + moonSign), rising && ('↑ ' + rising)]
-      .filter(Boolean).join('  ');
-    var shareData = {
-      title: userName.toUpperCase() + ' — Celestial Dossier',
-      text: (chartText ? chartText + '\n\n' : '') + 'My Zodiac chart on Jestamang ✦',
-      url: shareUrl
-    };
-    if(navigator.share && navigator.canShare && navigator.canShare(shareData)){
-      navigator.share(shareData).catch(function(){});
-    } else if(navigator.share){
-      navigator.share({ title: shareData.title, url: shareUrl }).catch(function(){});
+    var initiationDate = '';
+    var ct = currentUser.metadata && currentUser.metadata.creationTime;
+    if(ct){
+      var d = new Date(ct);
+      var months = ['January','February','March','April','May','June','July',
+                    'August','September','October','November','December'];
+      initiationDate = months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    }
+    var shareText = '\u2756 ' + userName.toUpperCase() + ' \u2756\n' +
+                    'Initiated into the Jestamang Inner Circle\n' +
+                    (initiationDate ? initiationDate + '\n' : '') +
+                    '\njestamang.com/members.html';
+    var shareUrl = 'https://jestamang.com/members.html';
+    if(navigator.share){
+      navigator.share({ title: userName.toUpperCase() + ' \u2756 Jestamang Inner Circle', text: shareText, url: shareUrl })
+        .then(function(){ showDossierMsg('DOSSIER SHARED \u2756'); })
+        .catch(function(err){
+          if(err && err.name !== 'AbortError'){ doCopyDossier(shareText); }
+        });
     } else {
-      // Fallback: clipboard
-      var copyText = shareData.text + '\n' + shareUrl;
-      if(navigator.clipboard){
-        navigator.clipboard.writeText(copyText).then(showCopied).catch(function(){ fallbackCopy(copyText); });
-      } else {
-        fallbackCopy(copyText);
-      }
+      doCopyDossier(shareText);
     }
   });
 
-  function showCopied(){
-    var msg = document.getElementById('natal-copied-msg');
-    msg.textContent = 'Dossier shared \u2756';
-    msg.classList.add('show');
-    setTimeout(function(){ msg.classList.remove('show'); }, 2500);
+  function doCopyDossier(text){
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(text)
+        .then(function(){ showDossierMsg('DOSSIER COPIED TO CLIPBOARD \u2756'); })
+        .catch(function(){ fallbackCopyDossier(text); });
+    } else {
+      fallbackCopyDossier(text);
+    }
   }
-  function fallbackCopy(text){
+  function fallbackCopyDossier(text){
     var ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); showCopied(); } catch(e){}
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); showDossierMsg('DOSSIER COPIED TO CLIPBOARD \u2756'); } catch(e){}
     document.body.removeChild(ta);
   }
+  function showDossierMsg(msg){
+    var el = document.getElementById('natal-copied-msg');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(function(){ el.classList.remove('show'); }, 2500);
+  }
 
-  // ── Share Chart via URL ──────────────────────────────────────
+  // ── Copy My Chart ──────────────────────────────────────
   var _sharedBirthData = null; // holds {dob,tob,pob,lat,lng} when loaded from URL
 
   document.getElementById('natal-share-url-btn').addEventListener('click', function(){
-    var dob = document.getElementById('nc-dob').value;
-    var tob = document.getElementById('nc-tob').value;
-    var pob = document.getElementById('nc-pob').value;
-    if(!dob || !pob){ return; }
-    var params = new URLSearchParams({ d: dob, t: tob||'', p: pob });
-    if(_pobLat !== null) params.set('lat', _pobLat.toFixed(5));
-    if(_pobLng !== null) params.set('lng', _pobLng.toFixed(5));
-    var url = window.location.origin + '/profile.html?' + params.toString();
+    if(!_lastNatalResult) return;
+    var userName = (dossierData && dossierData.username) ||
+                   (currentUser && (currentUser.displayName || currentUser.email.split('@')[0])) ||
+                   'Member';
+    var pl = _lastNatalResult.planets;
+    var asc = _lastNatalResult.ascData;
+    function sign(key){ return pl && pl[key] ? pl[key].sign : '—'; }
+    var chartText =
+      '\u2756 MY NATAL CHART \u2756\n' +
+      userName.toUpperCase() + '\n\n' +
+      '\u2609 Sun: '      + sign('Sun')     + '\n' +
+      '\u263D Moon: '     + sign('Moon')    + '\n' +
+      '\u2191 Rising: '   + (asc ? asc.sign : '—') + '\n' +
+      '\u263F Mercury: '  + sign('Mercury') + '\n' +
+      '\u2640 Venus: '    + sign('Venus')   + '\n' +
+      '\u2642 Mars: '     + sign('Mars')    + '\n' +
+      '\u2643 Jupiter: '  + sign('Jupiter') + '\n' +
+      '\u2644 Saturn: '   + sign('Saturn')  + '\n' +
+      '\u2645 Uranus: '   + sign('Uranus')  + '\n' +
+      '\u2646 Neptune: '  + sign('Neptune') + '\n' +
+      '\u2647 Pluto: '    + sign('Pluto')   + '\n\n' +
+      'Calculated at jestamang.com';
     var msg = document.getElementById('natal-chart-url-msg');
-    function showUrlCopied(){ msg.classList.add('show'); setTimeout(function(){ msg.classList.remove('show'); }, 2200); }
+    function showChartCopied(){ msg.classList.add('show'); setTimeout(function(){ msg.classList.remove('show'); }, 2200); }
     if(navigator.clipboard){
-      navigator.clipboard.writeText(url).then(showUrlCopied).catch(function(){
-        var ta=document.createElement('textarea'); ta.value=url; ta.style.position='fixed'; ta.style.opacity='0';
+      navigator.clipboard.writeText(chartText).then(showChartCopied).catch(function(){
+        var ta=document.createElement('textarea'); ta.value=chartText; ta.style.position='fixed'; ta.style.opacity='0';
         document.body.appendChild(ta); ta.select();
-        try{ document.execCommand('copy'); showUrlCopied(); }catch(e){}
+        try{ document.execCommand('copy'); showChartCopied(); }catch(e){}
         document.body.removeChild(ta);
       });
     } else {
-      var ta=document.createElement('textarea'); ta.value=url; ta.style.position='fixed'; ta.style.opacity='0';
+      var ta=document.createElement('textarea'); ta.value=chartText; ta.style.position='fixed'; ta.style.opacity='0';
       document.body.appendChild(ta); ta.select();
-      try{ document.execCommand('copy'); showUrlCopied(); }catch(e){}
+      try{ document.execCommand('copy'); showChartCopied(); }catch(e){}
       document.body.removeChild(ta);
     }
   });
@@ -4270,6 +4289,7 @@ document.addEventListener('DOMContentLoaded', function(){
           interpEl:        document.getElementById('nr-interpretation'),
         });
 
+        _lastNatalResult = result;
         document.getElementById('natal-result').style.display = 'block';
         document.getElementById('natal-form-area').style.display = 'none';
         // Show save section
