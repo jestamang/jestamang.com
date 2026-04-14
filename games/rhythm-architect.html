@@ -65,7 +65,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 #hud-lives{font-size:1.1rem;letter-spacing:0.12em;color:#c9a84c;min-width:60px;text-align:right}
 
 /* ── Question counter ── */
-#q-counter{font-size:0.55rem;letter-spacing:0.4em;color:rgba(201,168,76,0.28);text-transform:uppercase;margin-bottom:6px;min-height:1em}
+#q-counter{font-size:0.55rem;letter-spacing:0.4em;color:rgba(201,168,76,0.28);text-transform:uppercase;margin-bottom:2px;min-height:1em}
+#hud-pool{font-size:0.48rem;letter-spacing:0.28em;color:rgba(201,168,76,0.32);text-transform:uppercase;margin-bottom:8px;min-height:1em;text-align:center}
 
 /* ── Beat visualizer ── */
 #viz-wrap{position:relative;width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center;margin:10px 0 14px}
@@ -82,6 +83,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .bd{width:14px;height:14px;border-radius:50%;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.2);transition:all 0.08s;flex-shrink:0}
 .bd.bd-accent{width:20px;height:20px;background:rgba(201,168,76,0.18);border:1px solid rgba(201,168,76,0.4);box-shadow:0 0 8px rgba(201,168,76,0.15)}
 .bd.bd-sub{width:8px;height:8px;background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.12)}
+.bd.bd-snare{width:16px;height:16px;background:rgba(120,0,222,0.22);border:1px solid rgba(120,0,222,0.55);box-shadow:0 0 6px rgba(120,0,222,0.2)}
 .bd.lit{background:rgba(201,168,76,0.85)!important;border-color:#c9a84c!important;box-shadow:0 0 16px rgba(201,168,76,0.7)!important;transform:scale(1.35)!important}
 .bd.bd-accent.lit{transform:scale(1.5)!important;box-shadow:0 0 28px rgba(201,168,76,0.9)!important}
 .bd-sep{width:1px;height:18px;background:rgba(201,168,76,0.2);flex-shrink:0;margin:0 2px}
@@ -239,6 +241,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   </div>
 
   <div id="q-counter"></div>
+  <div id="hud-pool"></div>
 
   <div id="viz-wrap">
     <div id="pulse-ring"><span id="pulse-label">Listen</span></div>
@@ -480,6 +483,27 @@ function playAccentHat(t, vel){
   src.start(t);src.stop(t+0.15);
 }
 
+function playSnare(t, vel){
+  var c=getAC();
+  var buf=getNoiseBuf();
+  var src=c.createBufferSource();
+  src.buffer=buf;
+  var hp=c.createBiquadFilter();
+  hp.type='highpass';hp.frequency.value=300;hp.Q.value=0.5;
+  var g=c.createGain();
+  g.gain.setValueAtTime((vel||0.7)*0.65,t);
+  g.gain.exponentialRampToValueAtTime(0.001,t+0.2);
+  src.connect(hp);hp.connect(g);g.connect(c.destination);
+  src.start(t);src.stop(t+0.22);
+  var osc=c.createOscillator();
+  osc.type='triangle';osc.frequency.value=200;
+  var g2=c.createGain();
+  g2.gain.setValueAtTime((vel||0.7)*0.25,t);
+  g2.gain.exponentialRampToValueAtTime(0.001,t+0.1);
+  osc.connect(g2);g2.connect(c.destination);
+  osc.start(t);osc.stop(t+0.12);
+}
+
 // ── Time Signature Data ───────────────────────────────
 var TIME_SIGS = {
   '4/4':   {label:'4/4',   desc:'Four beats per bar',          beatsPerBar:4, subdivPerBeat:2, bpm:90,  expl:'Four beats per bar — the most common time signature in Western music. ONE two three four.'},
@@ -554,9 +578,31 @@ function generateEvents(sig, forDots){
   var dotIdx=0;
   for(var bar=0;bar<BARS;bar++){
     for(var beat=0;beat<beats;beat++){
-      var barBeat1=(beat===0);
+      var btype;
+      if(beat===0){
+        btype='kick';
+      } else if((sig==='4/4'||sig==='straight'||sig==='12/8')&&beat===2){
+        btype='snare';
+      } else if((sig==='2/4'||sig==='2/2')&&beat===1){
+        btype='snare';
+      } else if(sig==='5/4'&&beat===3){
+        btype='snare';
+      } else if(sig==='7/8'&&(beat===2||beat===4)){
+        btype='accent';
+      } else if(sig==='5/8'&&beat===3){
+        btype='accent';
+      } else if(sig==='7/8'||sig==='5/8'){
+        btype='hat';
+      } else {
+        btype='accent';
+      }
       var tBeat = bar*beats*beatDur + beat*beatDur;
-      events.push({t:tBeat, isKick:barBeat1, loud:barBeat1, isGroupAccent:!barBeat1, dotIdx:dotIdx++});
+      events.push({t:tBeat,
+        isKick:(btype==='kick'),
+        isSnare:(btype==='snare'),
+        isGroupAccent:(btype==='accent'),
+        loud:(btype==='kick'||btype==='snare'),
+        dotIdx:dotIdx++});
       for(var sub=1;sub<subdiv;sub++){
         events.push({t:tBeat + sub*(beatDur/subdiv), isKick:false, loud:false, isSub:true, dotIdx:dotIdx++});
       }
@@ -597,6 +643,7 @@ function buildBeatDots(sig){
     var dot=document.createElement('div');
     var cls='bd';
     if(ev.isKick) cls+=' bd-accent';
+    else if(ev.isSnare) cls+=' bd-snare';
     else if(ev.isSub) cls+=' bd-sub';
     dot.className=cls;
     dot.id='bd-'+i;
@@ -647,6 +694,8 @@ function updateHUD(){
   var hearts=['♦♦♦','♦♦◇','♦◇◇','◇◇◇'];
   document.getElementById('hud-lives').textContent=hearts[Math.max(0,3-state.lives)]||'◇◇◇';
   document.getElementById('q-counter').textContent='Q '+(state.qNum)+' / '+state.MAX_Q;
+  var poolEl=document.getElementById('hud-pool');
+  if(poolEl){poolEl.textContent='Pool: '+l.active.map(function(s){return TIME_SIGS[s]?TIME_SIGS[s].label:s;}).join(' · ');}
 }
 
 function setStateLabel(text, cls){
@@ -707,7 +756,8 @@ function playPattern(sig, onDone){
 
   // Schedule audio
   events.forEach(function(ev){
-    if(ev.isKick) playKick(startT+ev.t, ev.loud||ev.isKick);
+    if(ev.isKick) playKick(startT+ev.t, true);
+    else if(ev.isSnare) playSnare(startT+ev.t, 0.7);
     else if(ev.isGroupAccent) playAccentHat(startT+ev.t, 0.8);
     else playHat(startT+ev.t, ev.loud?0.75:0.35);
   });
