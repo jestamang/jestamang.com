@@ -72,9 +72,9 @@
   // ── In-app notification banner ────────────────────────────────
   function checkNotifications(user) {
     if (!window.jestaDB) {
-      var _t = 0, _iv = setInterval(function () {
-        if (window.jestaDB) { clearInterval(_iv); checkNotifications(user); }
-        else if (++_t > 80) { clearInterval(_iv); }
+      var _jt = 0, _jiv = setInterval(function () {
+        if (window.jestaDB) { clearInterval(_jiv); checkNotifications(user); }
+        else if (++_jt > 80) { clearInterval(_jiv); }
       }, 100);
       return;
     }
@@ -122,9 +122,9 @@
 
   function checkNavBadges() {
     if (!window.jestaDB) {
-      var _t = 0, _iv = setInterval(function () {
-        if (window.jestaDB) { clearInterval(_iv); checkNavBadges(); }
-        else if (++_t > 80) { clearInterval(_iv); }
+      var _jt = 0, _jiv = setInterval(function () {
+        if (window.jestaDB) { clearInterval(_jiv); checkNavBadges(); }
+        else if (++_jt > 80) { clearInterval(_jiv); }
       }, 100);
       return;
     }
@@ -169,9 +169,9 @@
     var isAdmin = user && user.email === 'thejestamang@gmail.com';
     if (isAdmin) return;
     if (!window.jestaDB) {
-      var _t = 0, _iv = setInterval(function () {
-        if (window.jestaDB) { clearInterval(_iv); checkMaintenance(user); }
-        else if (++_t > 80) { clearInterval(_iv); }
+      var _jt = 0, _jiv = setInterval(function () {
+        if (window.jestaDB) { clearInterval(_jiv); checkMaintenance(user); }
+        else if (++_jt > 80) { clearInterval(_jiv); }
       }, 100);
       return;
     }
@@ -292,10 +292,10 @@
       if (window.jestaDB) {
         _doFetch();
       } else {
-        var _t = 0, _iv = setInterval(function () {
-          if (window.jestaDB) { clearInterval(_iv); _doFetch(); }
-          else if (++_t > 80) {
-            clearInterval(_iv);
+        var _jt = 0, _jiv = setInterval(function () {
+          if (window.jestaDB) { clearInterval(_jiv); _doFetch(); }
+          else if (++_jt > 80) {
+            clearInterval(_jiv);
             if (!cached) {
               renderAuthNav(wrap, mobWrap, fallback);
               if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = fallback.length > 10 ? fallback.slice(0,9)+'\u2026' : fallback; }
@@ -353,22 +353,22 @@
       r.style.setProperty('--card-padding',        (d.cardPadding      || TD.cardPadding) + 'px');
       r.style.setProperty('--heading-size',        d.headingSize       || TD.headingSize);
     }
-    var _t = 0, _iv = setInterval(function () {
+    var _jt = 0, _jiv = setInterval(function () {
       if (window.jestaDB) {
-        clearInterval(_iv);
+        clearInterval(_jiv);
         window.jestaDB.collection('siteConfig').doc('theme').get()
           .then(function (doc) { if (doc.exists) applyTheme(doc.data()); })
           .catch(function () {});
-      } else if (++_t > 80) { clearInterval(_iv); }
+      } else if (++_jt > 80) { clearInterval(_jiv); }
     }, 100);
   })();
 
   // ── Sitewide text style loader ───────────────────────────────
   (function () {
     var currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    var _t = 0, _iv = setInterval(function () {
+    var _jt = 0, _jiv = setInterval(function () {
       if (window.jestaDB) {
-        clearInterval(_iv);
+        clearInterval(_jiv);
         window.jestaDB.collection('siteConfig').doc('textStyles').get()
           .then(function (doc) {
             if (!doc.exists) return;
@@ -392,7 +392,7 @@
             }
           })
           .catch(function () {});
-      } else if (++_t > 80) { clearInterval(_iv); }
+      } else if (++_jt > 80) { clearInterval(_jiv); }
     }, 100);
   })();
 
@@ -468,10 +468,9 @@
 
   // ── Sitewide Caption Loader ───────────────────────────────────
   (function () {
-    var _t = 0;
-    var _iv = setInterval(function () {
+    var _jt = 0, _jiv = setInterval(function () {
       if (window.jestaDB) {
-        clearInterval(_iv);
+        clearInterval(_jiv);
         var currentPage = window.location.pathname.split('/').pop() || 'index.html';
         window.jestaDB.collection('siteConfig').doc('captions').get()
           .then(function (doc) {
@@ -487,8 +486,8 @@
             });
           })
           .catch(function () { /* no captions or offline — hardcoded text remains */ });
-      } else if (++_t > 80) {
-        clearInterval(_iv);
+      } else if (++_jt > 80) {
+        clearInterval(_jiv);
       }
     }, 100);
   }());

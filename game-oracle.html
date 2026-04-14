@@ -608,11 +608,9 @@ function _shareFallback(text,btn){
 var ACTIVE_CARDS = null;
 
 function loadSigilCards(callback) {
-  var tries = 0;
-  var poll = setInterval(function() {
-    tries++;
+  var _jt = 0, _jiv = setInterval(function() {
     if (window.jestaDB) {
-      clearInterval(poll);
+      clearInterval(_jiv);
       window.jestaDB.collection('sigilCards').doc('cards').get()
         .then(function(doc) {
           if (doc.exists && doc.data().cards && doc.data().cards.length > 0) {
@@ -624,7 +622,7 @@ function loadSigilCards(callback) {
         .catch(function() { callback(CARDS_DEFAULT); });
       return;
     }
-    if (tries > 80) { clearInterval(poll); callback(CARDS_DEFAULT); }
+    if (++_jt > 80) { clearInterval(_jiv); callback(CARDS_DEFAULT); }
   }, 100);
 }
 
