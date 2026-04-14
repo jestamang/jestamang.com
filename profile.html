@@ -943,7 +943,7 @@ body::before{
 .asp-square      {color:#e04848;}
 .asp-opposition  {color:#8050dd;}
 .asp-conjunction {color:#c9a84c;}
-.asp-sextile     {color:#4fa8e0;}
+.asp-sextile     {color:#7800DE;}
 .asp-quincunx    {color:#d49830;}
 .asp-symbol      {font-size:1rem;min-width:22px;text-align:center;display:inline-block;}
 .asp-label {
@@ -1735,10 +1735,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <div class="nc-divider" style="margin-top:36px;">&#10022; Share &#10022;</div>
       <div class="natal-share-row">
         <button class="btn-gold" id="natal-share-btn" style="padding:13px 28px;">Share My Dossier</button>
-        <button class="btn-share-url" id="natal-share-url-btn">COPY MY CHART &#10022;</button>
-        <button class="btn-dl-chart" id="natal-dl-btn" title="Download chart as PNG">&#11015; Download Chart</button>
+        <button class="btn-dl-chart" id="natal-dl-btn" title="Download chart as PDF">DOWNLOAD MY CHART &#10022;</button>
         <span class="natal-copied-msg" id="natal-copied-msg"></span>
-        <span class="natal-copied-msg" id="natal-chart-url-msg">CHART COPIED TO CLIPBOARD &#10022;</span>
+        <span class="natal-copied-msg" id="natal-pdf-msg"></span>
       </div>
       <div class="natal-share-note">Chart calculated using Meeus astronomical algorithms. For ceremonial purposes only.</div>
 
@@ -1907,6 +1906,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
 
@@ -2551,7 +2551,7 @@ var NC = (function(){
 
   var ELEMENT_COLORS={
     Fire: 'rgba(160,45,20,0.26)',Earth:'rgba(35,110,30,0.23)',
-    Air:  'rgba(30,85,170,0.25)',Water:'rgba(20,45,150,0.25)',
+    Air:  'rgba(120,0,222,0.22)',Water:'rgba(100,0,180,0.22)',
   };
   var SIGN_ELEMENT={
     Aries:'Fire',Taurus:'Earth',Gemini:'Air',Cancer:'Water',
@@ -2561,14 +2561,14 @@ var NC = (function(){
 
   var PLANET_INFO={
     Sun:         {glyph:'\u2609',color:'#f0c040'},
-    Moon:        {glyph:'\u263D',color:'#c8d8f0'},
-    Mercury:     {glyph:'\u263F',color:'#90b8d0'},
+    Moon:        {glyph:'\u263D',color:'#d4b0f8'},
+    Mercury:     {glyph:'\u263F',color:'#a878d8'},
     Venus:       {glyph:'\u2640',color:'#f0a0c8'},
     Mars:        {glyph:'\u2642',color:'#e04848'},
     Jupiter:     {glyph:'\u2643',color:'#c09848'},
     Saturn:      {glyph:'\u2644',color:'#b0b0c8'},
     Uranus:      {glyph:'\u26E2',color:'#60d0c8'},
-    Neptune:     {glyph:'\u2646',color:'#5888d8'},
+    Neptune:     {glyph:'\u2646',color:'#7800DE'},
     Pluto:       {glyph:'\u2647',color:'#a060b0'},
     'North Node':{glyph:'\u260A',color:'#c9a84c'},
     'South Node':{glyph:'\u260B',color:'#c9a84c'},
@@ -3650,6 +3650,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   document.getElementById('natal-share-btn').addEventListener('click', function(){
     if(!currentUser) return;
+    var btn = this;
     var userName = (dossierData && dossierData.username) ||
                    (currentUser.displayName || currentUser.email.split('@')[0]);
     var initiationDate = '';
@@ -3660,38 +3661,36 @@ document.addEventListener('DOMContentLoaded', function(){
                     'August','September','October','November','December'];
       initiationDate = months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
     }
-    var shareText = '\u2756 ' + userName.toUpperCase() + ' \u2756\n' +
-                    'Initiated into the Jestamang Inner Circle\n' +
-                    (initiationDate ? initiationDate + '\n' : '') +
-                    '\njestamang.com/members.html';
-    var shareUrl = 'https://jestamang.com/members.html';
-    if(navigator.share){
-      navigator.share({ title: userName.toUpperCase() + ' \u2756 Jestamang Inner Circle', text: shareText, url: shareUrl })
-        .then(function(){ showDossierMsg('DOSSIER SHARED \u2756'); })
-        .catch(function(err){
-          if(err && err.name !== 'AbortError'){ doCopyDossier(shareText); }
-        });
-    } else {
-      doCopyDossier(shareText);
-    }
+    btn.disabled = true;
+    btn.textContent = 'Generating\u2026';
+    generateNatalPDF(function(pdfBlob, uName){
+      btn.disabled = false;
+      btn.textContent = 'Share My Dossier';
+      if(!pdfBlob){ showDossierMsg('PDF generation failed'); return; }
+      var shareTitle = 'Dossier';
+      var pdfFile = new File([pdfBlob], 'jestamang-dossier-' + (uName||'member').toLowerCase().replace(/[^a-z0-9]+/g,'-') + '.pdf', {type:'application/pdf'});
+      if(navigator.canShare && navigator.canShare({files:[pdfFile]})){
+        navigator.share({ files:[pdfFile], title: shareTitle })
+          .then(function(){ showDossierMsg('DOSSIER SHARED \u2756'); })
+          .catch(function(err){
+            if(err && err.name !== 'AbortError'){
+              var a=document.createElement('a');
+              a.href=URL.createObjectURL(pdfBlob);
+              a.download=pdfFile.name;
+              a.click();
+              showDossierMsg('DOSSIER DOWNLOADED \u2756');
+            }
+          });
+      } else {
+        var a=document.createElement('a');
+        a.href=URL.createObjectURL(pdfBlob);
+        a.download=pdfFile.name;
+        a.click();
+        showDossierMsg('DOSSIER DOWNLOADED \u2756');
+      }
+    });
   });
 
-  function doCopyDossier(text){
-    if(navigator.clipboard){
-      navigator.clipboard.writeText(text)
-        .then(function(){ showDossierMsg('DOSSIER COPIED TO CLIPBOARD \u2756'); })
-        .catch(function(){ fallbackCopyDossier(text); });
-    } else {
-      fallbackCopyDossier(text);
-    }
-  }
-  function fallbackCopyDossier(text){
-    var ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); showDossierMsg('DOSSIER COPIED TO CLIPBOARD \u2756'); } catch(e){}
-    document.body.removeChild(ta);
-  }
   function showDossierMsg(msg){
     var el = document.getElementById('natal-copied-msg');
     el.textContent = msg;
@@ -3699,48 +3698,7 @@ document.addEventListener('DOMContentLoaded', function(){
     setTimeout(function(){ el.classList.remove('show'); }, 2500);
   }
 
-  // ── Copy My Chart ──────────────────────────────────────
   var _sharedBirthData = null; // holds {dob,tob,pob,lat,lng} when loaded from URL
-
-  document.getElementById('natal-share-url-btn').addEventListener('click', function(){
-    if(!_lastNatalResult) return;
-    var userName = (dossierData && dossierData.username) ||
-                   (currentUser && (currentUser.displayName || currentUser.email.split('@')[0])) ||
-                   'Member';
-    var pl = _lastNatalResult.planets;
-    var asc = _lastNatalResult.ascData;
-    function sign(key){ return pl && pl[key] ? pl[key].sign : '—'; }
-    var chartText =
-      '\u2756 MY NATAL CHART \u2756\n' +
-      userName.toUpperCase() + '\n\n' +
-      '\u2609 Sun: '      + sign('Sun')     + '\n' +
-      '\u263D Moon: '     + sign('Moon')    + '\n' +
-      '\u2191 Rising: '   + (asc ? asc.sign : '—') + '\n' +
-      '\u263F Mercury: '  + sign('Mercury') + '\n' +
-      '\u2640 Venus: '    + sign('Venus')   + '\n' +
-      '\u2642 Mars: '     + sign('Mars')    + '\n' +
-      '\u2643 Jupiter: '  + sign('Jupiter') + '\n' +
-      '\u2644 Saturn: '   + sign('Saturn')  + '\n' +
-      '\u2645 Uranus: '   + sign('Uranus')  + '\n' +
-      '\u2646 Neptune: '  + sign('Neptune') + '\n' +
-      '\u2647 Pluto: '    + sign('Pluto')   + '\n\n' +
-      'Calculated at jestamang.com';
-    var msg = document.getElementById('natal-chart-url-msg');
-    function showChartCopied(){ msg.classList.add('show'); setTimeout(function(){ msg.classList.remove('show'); }, 2200); }
-    if(navigator.clipboard){
-      navigator.clipboard.writeText(chartText).then(showChartCopied).catch(function(){
-        var ta=document.createElement('textarea'); ta.value=chartText; ta.style.position='fixed'; ta.style.opacity='0';
-        document.body.appendChild(ta); ta.select();
-        try{ document.execCommand('copy'); showChartCopied(); }catch(e){}
-        document.body.removeChild(ta);
-      });
-    } else {
-      var ta=document.createElement('textarea'); ta.value=chartText; ta.style.position='fixed'; ta.style.opacity='0';
-      document.body.appendChild(ta); ta.select();
-      try{ document.execCommand('copy'); showChartCopied(); }catch(e){}
-      document.body.removeChild(ta);
-    }
-  });
 
   // Auto-load chart from URL params on page load
   (function(){
@@ -3861,110 +3819,207 @@ document.addEventListener('DOMContentLoaded', function(){
   // Render saved charts on load
   renderSavedChartsList();
 
-  // ── Download Chart as PNG ────────────────────────────────────
-  document.getElementById('natal-dl-btn').addEventListener('click', function(){
-    var btn = this;
+  // ── generateNatalPDF — build a 2-page PDF from the chart SVG ──
+  function generateNatalPDF(onDone){
     var svgEl = document.querySelector('#nr-wheel svg');
-    if(!svgEl){ return; }
+    if(!svgEl || !_lastNatalResult){ if(onDone) onDone(null, null); return; }
 
-    btn.disabled = true;
-    btn.textContent = 'Rendering\u2026';
+    var name = (document.getElementById('nr-name') && document.getElementById('nr-name').textContent || 'Member').trim();
+    var sunSub = (document.getElementById('nr-sun-sub') && document.getElementById('nr-sun-sub').textContent || '').trim();
+    var userName = (dossierData && dossierData.username) ||
+                   (currentUser && (currentUser.displayName || currentUser.email.split('@')[0])) || 'Member';
+    var dob = (document.getElementById('nc-dob') && document.getElementById('nc-dob').value) || '';
+    var pob = (document.getElementById('nc-pob') && document.getElementById('nc-pob').value) || '';
 
-    var name = (document.getElementById('nr-name').textContent || 'Member').trim();
-    var sunSub = (document.getElementById('nr-sun-sub').textContent || '').trim();
-
-    // Serialize SVG to blob URL
     var svgStr = new XMLSerializer().serializeToString(svgEl);
-    // Inject white background rect so filters don't bleed on transparent canvas
     svgStr = svgStr.replace('<svg ', '<svg style="background:#020100;" ');
-    var blob = new Blob([svgStr], {type:'image/svg+xml;charset=utf-8'});
-    var svgUrl = URL.createObjectURL(blob);
+    var svgBlob = new Blob([svgStr], {type:'image/svg+xml;charset=utf-8'});
+    var svgUrl = URL.createObjectURL(svgBlob);
 
-    var W = 600, H = 780, SCALE = 2;
+    var CHART_PX = 560;
     var img = new Image();
     img.onload = function(){
+      // Render SVG → canvas
       var canvas = document.createElement('canvas');
-      canvas.width  = W * SCALE;
-      canvas.height = H * SCALE;
+      canvas.width = CHART_PX * 2; canvas.height = CHART_PX * 2;
       var ctx = canvas.getContext('2d');
-      ctx.scale(SCALE, SCALE);
-
-      // Background
+      ctx.scale(2, 2);
       ctx.fillStyle = '#020100';
-      ctx.fillRect(0, 0, W, H);
+      ctx.fillRect(0, 0, CHART_PX, CHART_PX);
+      ctx.drawImage(img, 0, 0, CHART_PX, CHART_PX);
+      URL.revokeObjectURL(svgUrl);
+      var chartImgData = canvas.toDataURL('image/png');
 
-      // Outer border
-      ctx.strokeStyle = 'rgba(201,168,76,0.3)';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(14, 14, W-28, H-28);
+      var doc = new window.jspdf.jsPDF({orientation:'portrait', unit:'pt', format:'letter'});
+      var PW = 612, PH = 792;
 
-      // Top star ornament
-      ctx.fillStyle = 'rgba(201,168,76,0.35)';
-      ctx.font = '18px serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('\u2726', W/2, 42);
+      // ── Page 1: Chart wheel ──────────────────────────────────────
+      doc.setFillColor(2,1,0);
+      doc.rect(0,0,PW,PH,'F');
+
+      // Gold outer border
+      doc.setDrawColor(201,168,76);
+      doc.setLineWidth(0.6);
+      doc.roundedRect(14,14,PW-28,PH-28,2,2,'S');
+
+      // Star ornament
+      doc.setTextColor(201,168,76);
+      doc.setFontSize(16);
+      doc.text('\u2726', PW/2, 44, {align:'center'});
 
       // Name
-      ctx.fillStyle = '#c9a84c';
-      ctx.font = 'bold 24px serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(name.toUpperCase(), W/2, 72);
+      doc.setFontSize(20);
+      doc.setFont('georgia','bold');
+      doc.text(name.toUpperCase(), PW/2, 70, {align:'center'});
 
-      // Sun / rising sub-line
+      // Sub-line
       if(sunSub){
-        ctx.fillStyle = 'rgba(255,255,255,0.6)';
-        ctx.font = '13px serif';
-        ctx.fillText(sunSub, W/2, 92);
+        doc.setFontSize(10);
+        doc.setFont('georgia','normal');
+        doc.setTextColor(255,255,255);
+        doc.text(sunSub, PW/2, 88, {align:'center'});
       }
 
       // Hairline divider
-      ctx.strokeStyle = 'rgba(201,168,76,0.22)';
-      ctx.lineWidth = 0.5;
-      ctx.beginPath(); ctx.moveTo(50, 106); ctx.lineTo(W-50, 106); ctx.stroke();
+      doc.setDrawColor(201,168,76);
+      doc.setLineWidth(0.4);
+      var divY1 = sunSub ? 100 : 88;
+      doc.line(50, divY1, PW-50, divY1);
 
-      // Chart wheel — centred, square
-      var chartSize = 500;
-      var chartX = (W - chartSize) / 2;
-      var chartY = 114;
-      ctx.drawImage(img, chartX, chartY, chartSize, chartSize);
+      // Chart image — centred square
+      var cSize = 470;
+      var cX = (PW - cSize)/2;
+      var cY = divY1 + 10;
+      doc.addImage(chartImgData,'PNG', cX, cY, cSize, cSize);
 
       // Bottom hairline
-      ctx.strokeStyle = 'rgba(201,168,76,0.22)';
-      ctx.lineWidth = 0.5;
-      var divY = chartY + chartSize + 10;
-      ctx.beginPath(); ctx.moveTo(50, divY); ctx.lineTo(W-50, divY); ctx.stroke();
+      var divY2 = cY + cSize + 10;
+      doc.setDrawColor(201,168,76);
+      doc.setLineWidth(0.4);
+      doc.line(50, divY2, PW-50, divY2);
 
       // Wordmark
-      ctx.fillStyle = 'rgba(201,168,76,0.5)';
-      ctx.font = '11px serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('J  E  S  T  A  M  A  N  G', W/2, divY + 24);
+      doc.setFontSize(9);
+      doc.setFont('georgia','normal');
+      doc.setTextColor(201,168,76);
+      doc.text('J  E  S  T  A  M  A  N  G', PW/2, divY2+18, {align:'center'});
+      doc.setFontSize(12);
+      doc.text('\u2726', PW/2, divY2+34, {align:'center'});
 
-      // Bottom star
-      ctx.fillStyle = 'rgba(201,168,76,0.25)';
-      ctx.font = '14px serif';
-      ctx.fillText('\u2726', W/2, divY + 42);
+      // ── Page 2: Planet positions ─────────────────────────────────
+      doc.addPage();
+      doc.setFillColor(2,1,0);
+      doc.rect(0,0,PW,PH,'F');
+      doc.setDrawColor(201,168,76);
+      doc.setLineWidth(0.6);
+      doc.roundedRect(14,14,PW-28,PH-28,2,2,'S');
 
-      URL.revokeObjectURL(svgUrl);
+      var pl = _lastNatalResult.planets;
+      var asc = _lastNatalResult.ascData;
+      function psign(key){ return pl && pl[key] ? pl[key].sign : '\u2014'; }
 
-      // Trigger download
-      var date = new Date().toISOString().split('T')[0];
-      var slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-      var link = document.createElement('a');
-      link.download = 'jestamang-chart-' + slug + '-' + date + '.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      var y = 60;
+      // Page title
+      doc.setTextColor(201,168,76);
+      doc.setFont('georgia','bold');
+      doc.setFontSize(15);
+      doc.text('NATAL CHART \u2014 ' + userName.toUpperCase(), PW/2, y, {align:'center'});
+      y += 22;
 
-      btn.disabled = false;
-      btn.innerHTML = '\u2B07 Download Chart';
+      // Birth data sub-line
+      var datePlace = (dob||'') + (dob&&pob?' \u00B7 ':'') + (pob||'');
+      if(datePlace){
+        doc.setFont('georgia','normal');
+        doc.setFontSize(9);
+        doc.setTextColor(200,200,200);
+        doc.text(datePlace, PW/2, y, {align:'center'});
+        y += 14;
+      }
+
+      // Divider
+      y += 10;
+      doc.setDrawColor(201,168,76);
+      doc.setLineWidth(0.4);
+      doc.line(60, y, PW-60, y);
+      y += 26;
+
+      // Planet rows
+      var planetRows = [
+        {sym:'Sun',     val: psign('Sun')},
+        {sym:'Moon',    val: psign('Moon')},
+        {sym:'Rising',  val: asc ? asc.sign : '\u2014'},
+        {sym:'Mercury', val: psign('Mercury')},
+        {sym:'Venus',   val: psign('Venus')},
+        {sym:'Mars',    val: psign('Mars')},
+        {sym:'Jupiter', val: psign('Jupiter')},
+        {sym:'Saturn',  val: psign('Saturn')},
+        {sym:'Uranus',  val: psign('Uranus')},
+        {sym:'Neptune', val: psign('Neptune')},
+        {sym:'Pluto',   val: psign('Pluto')},
+      ];
+
+      doc.setFontSize(12);
+      var labelX = 160, valueX = 310;
+      planetRows.forEach(function(row){
+        doc.setFont('georgia','bold');
+        doc.setTextColor(201,168,76);
+        doc.text(row.sym + ':', labelX, y, {align:'right'});
+        doc.setFont('georgia','normal');
+        doc.setTextColor(240,230,210);
+        doc.text(row.val, valueX, y, {align:'left'});
+        y += 24;
+      });
+
+      // Footer divider
+      y += 10;
+      doc.setDrawColor(201,168,76);
+      doc.setLineWidth(0.4);
+      doc.line(60, y, PW-60, y);
+      y += 18;
+
+      // Footer text
+      doc.setFontSize(8);
+      doc.setFont('georgia','normal');
+      doc.setTextColor(120,0,222);
+      doc.text('Generated by Jestamang \u00B7 jestamang.com', PW/2, y, {align:'center'});
+
+      var pdfBlob = doc.output('blob');
+      if(onDone) onDone(pdfBlob, userName);
     };
     img.onerror = function(){
       URL.revokeObjectURL(svgUrl);
-      btn.disabled = false;
-      btn.innerHTML = '\u2B07 Download Chart';
-      alert('Could not render chart. Try again.');
+      if(onDone) onDone(null, null);
     };
     img.src = svgUrl;
+  }
+
+  // ── Download My Chart (PDF) ──────────────────────────────────
+  document.getElementById('natal-dl-btn').addEventListener('click', function(){
+    if(!_lastNatalResult){ return; }
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Rendering\u2026';
+    generateNatalPDF(function(pdfBlob, uName){
+      btn.disabled = false;
+      btn.innerHTML = 'DOWNLOAD MY CHART \u2756';
+      if(!pdfBlob){
+        var msgEl = document.getElementById('natal-pdf-msg');
+        msgEl.textContent = 'Could not render PDF. Try again.';
+        msgEl.classList.add('show');
+        setTimeout(function(){ msgEl.classList.remove('show'); }, 2500);
+        return;
+      }
+      var date = new Date().toISOString().split('T')[0];
+      var slug = (uName||'member').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(pdfBlob);
+      a.download = 'jestamang-chart-' + slug + '-' + date + '.pdf';
+      a.click();
+      var msgEl = document.getElementById('natal-pdf-msg');
+      msgEl.textContent = 'CHART DOWNLOADED \u2756';
+      msgEl.classList.add('show');
+      setTimeout(function(){ msgEl.classList.remove('show'); }, 2200);
+    });
   });
 
   function setError(msg){
