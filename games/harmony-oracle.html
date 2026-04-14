@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="dns-prefetch" href="https://firestore.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harmony Oracle — Jestamang</title>
+<meta name="description" content="Harmony Oracle — an educational harmony identification game from Jestamang. Learn consonance, tonality, chord progressions, and full harmonic analysis across four levels.">
+<meta name="keywords" content="Jestamang, harmony, ear training, music theory, chord progression, consonance, dissonance, modal, educational music game">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jestamang.com/games/harmony-oracle.html">
+<meta property="og:site_name" content="Jestamang">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Harmony Oracle — Jestamang">
+<meta property="og:description" content="Harmony Oracle — identify consonance, tonality, chord progressions, and full harmonic analysis. Four levels of harmonic depth.">
+<meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
+<meta property="og:url" content="https://jestamang.com/games/harmony-oracle.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Harmony Oracle — Jestamang Games">
+<meta name="twitter:description" content="Identify consonance, tonality, chord progressions, and full harmonic analysis. Four levels of harmonic depth.">
+<meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
+
+<style>
+@font-face{font-family:'Luminari';src:url('../assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Luminari',serif;user-select:none;-webkit-user-select:none}
+
+/* ── Screens ── */
+.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;text-align:center;padding:24px;transition:opacity 0.3s}
+.scr.off{display:none}
+
+/* ── Typography ── */
+.eyebrow{font-size:clamp(0.58rem,1.8vw,0.78rem);letter-spacing:0.65em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:20px;font-family:'Luminari',serif}
+.big-title{font-size:clamp(2.6rem,10vw,6.5rem);letter-spacing:0.35em;color:#c9a84c;text-shadow:0 0 50px rgba(201,168,76,0.7),0 0 100px rgba(201,168,76,0.2);text-transform:uppercase;line-height:1.05;margin-bottom:16px;font-family:'Luminari',serif}
+.sub{font-size:clamp(0.68rem,2vw,0.88rem);letter-spacing:0.35em;color:rgba(255,255,255,0.32);text-transform:uppercase;margin-bottom:32px;line-height:2.1;font-family:'Luminari',serif}
+
+/* ── Buttons ── */
+.btn{font-family:'Luminari',serif;font-size:clamp(0.78rem,2.5vw,0.95rem);letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:15px 50px;cursor:pointer;transition:all 0.3s;min-height:52px;margin:5px}
+.btn:hover,.btn:active{background:rgba(201,168,76,0.1);border-color:#c9a84c;box-shadow:0 0 28px rgba(201,168,76,0.2)}
+.btn-learn{font-family:'Luminari',serif;font-size:clamp(0.68rem,2vw,0.82rem);letter-spacing:0.45em;text-transform:uppercase;color:rgba(201,168,76,0.65);background:none;border:1px solid rgba(201,168,76,0.28);padding:12px 38px;cursor:pointer;transition:all 0.3s;min-height:48px;margin:5px}
+.btn-learn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.6);background:rgba(201,168,76,0.07)}
+
+/* ── Back link ── */
+#back{position:fixed;top:12px;left:14px;z-index:30;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.3s;min-height:44px;display:flex;align-items:center}
+#back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
+
+/* ── Gold rule ── */
+.gold-rule{width:100px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.4),transparent);margin:16px auto}
+
+/* ── How to Play collapsible ── */
+#htp-wrap{width:100%;max-width:560px;margin-bottom:10px;text-align:left}
+#htp-toggle{background:none;border:1px solid rgba(201,168,76,0.22);color:rgba(201,168,76,0.55);font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.4em;text-transform:uppercase;padding:8px 16px;cursor:pointer;width:100%;text-align:left;transition:all 0.2s;min-height:40px}
+#htp-toggle:hover{border-color:rgba(201,168,76,0.45);color:#c9a84c}
+#htp-body{display:none;border:1px solid rgba(201,168,76,0.15);border-top:none;padding:14px 16px;font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.15em;color:rgba(240,230,210,0.45);line-height:2;text-transform:uppercase}
+#htp-body.open{display:block}
+
+/* ── Difficulty tabs ── */
+#ho-tabs{display:flex;gap:4px;width:100%;max-width:560px;margin-bottom:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+#ho-tabs::-webkit-scrollbar{display:none}
+.ho-tab{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;border:1px solid rgba(201,168,76,0.22);padding:9px 14px;cursor:pointer;transition:all 0.25s;white-space:nowrap;min-height:40px;flex-shrink:0}
+.ho-tab.active{color:#c9a84c;border-color:rgba(201,168,76,0.65);background:rgba(201,168,76,0.08);box-shadow:0 0 14px rgba(201,168,76,0.1)}
+.ho-tab.locked{color:rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.08);cursor:default;pointer-events:none}
+.ho-tab.locked:hover{background:none}
+
+/* ── HUD ── */
+#ho-hud{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:560px;margin-bottom:4px}
+#ho-score{font-size:clamp(0.6rem,1.8vw,0.72rem);letter-spacing:0.35em;color:#c9a84c;text-transform:uppercase;font-family:'Luminari',serif;transition:color 0.3s}
+#ho-streak{font-size:clamp(0.6rem,1.8vw,0.72rem);letter-spacing:0.3em;color:rgba(201,168,76,0.5);text-transform:uppercase;font-family:'Luminari',serif;min-width:80px;text-align:center;transition:all 0.3s}
+#ho-streak.on-fire{color:#c9a84c;text-shadow:0 0 18px rgba(201,168,76,0.8);animation:hoStreak 0.6s ease-in-out infinite alternate}
+@keyframes hoStreak{from{opacity:1}to{opacity:0.5}}
+#ho-level-badge{font-size:0.55rem;letter-spacing:0.45em;color:rgba(201,168,76,0.5);text-transform:uppercase;font-family:'Luminari',serif;margin-bottom:4px;min-height:1em}
+
+/* ── Progress bar ── */
+#ho-prog-wrap{width:100%;max-width:560px;margin-bottom:6px}
+#ho-prog-bar{width:100%;height:2px;background:rgba(201,168,76,0.1);position:relative;overflow:hidden}
+#ho-prog-inner{height:100%;background:rgba(201,168,76,0.55);width:0%;transition:width 0.4s ease}
+#ho-prog-label{font-size:0.52rem;letter-spacing:0.3em;color:rgba(201,168,76,0.3);text-transform:uppercase;font-family:'Luminari',serif;margin-top:3px;min-height:1em}
+
+/* ── Visualizer ── */
+#ho-viz-wrap{width:100%;max-width:560px;height:56px;margin-bottom:6px;display:flex;align-items:flex-end;gap:2px;justify-content:center}
+.ho-viz-bar{background:rgba(201,168,76,0.35);width:8px;min-height:2px;transition:height 0.05s linear;border-radius:1px 1px 0 0}
+
+/* ── Replay ── */
+#ho-replay-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;min-height:32px}
+#ho-replay-dots{font-size:0.75rem;letter-spacing:0.2em;color:rgba(201,168,76,0.45);min-width:48px}
+#ho-replay{font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.4);background:none;border:1px solid rgba(201,168,76,0.2);padding:7px 18px;cursor:pointer;transition:all 0.2s;min-height:40px}
+#ho-replay:hover{border-color:rgba(201,168,76,0.5);color:#c9a84c}
+#ho-replay:disabled{opacity:0.25;cursor:default;pointer-events:none}
+
+/* ── Message area ── */
+#ho-msg-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:44px;width:100%;max-width:560px}
+#ho-msg{font-size:clamp(0.65rem,2vw,0.78rem);letter-spacing:0.5em;color:rgba(255,255,255,0.4);text-transform:uppercase;font-family:'Luminari',serif}
+#ho-sub{font-size:clamp(0.55rem,1.5vw,0.63rem);letter-spacing:0.35em;color:rgba(201,168,76,0.3);text-transform:uppercase;min-height:1em;font-family:'Luminari',serif}
+
+/* ── Answer buttons ── */
+#ho-answers{width:100%;max-width:560px;display:grid;gap:8px;margin-top:6px}
+#ho-answers.grid-2{grid-template-columns:1fr 1fr}
+#ho-answers.grid-3{grid-template-columns:1fr 1fr 1fr}
+#ho-answers.grid-4{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}
+.ho-ans-btn{font-family:'Luminari',serif;font-size:clamp(0.75rem,2.2vw,0.88rem);letter-spacing:0.15em;color:rgba(201,168,76,0.75);background:rgba(4,2,10,0.85);border:1px solid rgba(201,168,76,0.25);cursor:pointer;transition:all 0.3s;padding:14px 10px;min-height:52px;text-transform:uppercase;text-align:center;line-height:1.4}
+.ho-ans-btn:not(:disabled):hover{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.6);color:#c9a84c;box-shadow:0 0 20px rgba(201,168,76,0.2)}
+.ho-ans-btn:disabled{cursor:default;pointer-events:none}
+.ho-ans-btn.ho-correct{background:rgba(2,225,39,0.12);border-color:#02E127;color:#02E127;box-shadow:0 0 24px rgba(2,225,39,0.4)}
+.ho-ans-btn.ho-wrong{background:rgba(251,56,56,0.12);border-color:#FB3838;color:#FB3838;box-shadow:0 0 18px rgba(251,56,56,0.35)}
+.ho-ans-btn.ho-dim{opacity:0.18}
+
+/* ── Explanation panel ── */
+#ho-explain{width:100%;max-width:560px;min-height:0;overflow:hidden;transition:max-height 0.35s ease,opacity 0.35s ease;max-height:0;opacity:0}
+#ho-explain.show{max-height:200px;opacity:1}
+#ho-explain-inner{border:1px solid rgba(201,168,76,0.18);padding:12px 16px;margin-top:8px;text-align:left}
+#ho-explain-label{font-size:0.58rem;letter-spacing:0.4em;color:#c9a84c;text-transform:uppercase;font-family:'Luminari',serif;margin-bottom:6px}
+#ho-explain-text{font-size:0.65rem;letter-spacing:0.12em;color:rgba(240,230,210,0.55);line-height:1.9;font-family:'Luminari',serif}
+
+/* ── End screen ── */
+.score-big{font-size:clamp(3rem,12vw,7rem);letter-spacing:0.3em;color:#c9a84c;text-shadow:0 0 40px rgba(201,168,76,0.7);margin-bottom:4px;font-family:'Luminari',serif}
+.score-lbl{font-size:clamp(0.62rem,1.8vw,0.78rem);letter-spacing:0.5em;color:rgba(255,255,255,0.28);text-transform:uppercase;margin-bottom:8px;font-family:'Luminari',serif}
+#os-narrator{font-size:clamp(0.63rem,1.8vw,0.75rem);letter-spacing:0.3em;color:rgba(255,255,255,0.22);text-transform:uppercase;margin-bottom:38px;line-height:2;font-family:'Luminari',serif}
+
+/* ── Game screen layout ── */
+#gs{justify-content:space-between;padding:clamp(52px,10vw,68px) 16px clamp(12px,3vw,24px);overflow-y:auto;scrollbar-width:none}
+#gs::-webkit-scrollbar{display:none}
+
+@media(max-width:768px){
+  #ho-tabs{gap:3px}
+  .ho-tab{font-size:0.55rem;letter-spacing:0.2em;padding:8px 10px}
+  #ho-answers.grid-3{grid-template-columns:1fr 1fr}
+  .ho-ans-btn{min-height:48px;font-size:0.72rem;padding:12px 8px}
+  #ho-viz-wrap{height:40px}
+  .ho-viz-bar{width:6px}
+  #htp-body{font-size:0.58rem}
+  #gs{padding-top:56px}
+}
+@media(max-width:400px){
+  #ho-answers.grid-4{grid-template-columns:1fr 1fr}
+  .ho-ans-btn{font-size:0.68rem;min-height:44px}
+}
+</style>
+<style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
+<style id="lb-styles">
+#lb-btn-hud{position:fixed;top:12px;right:62px;z-index:500;background:rgba(0,0,0,0.65);border:1px solid rgba(201,168,76,0.42);color:rgba(201,168,76,0.85);font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;padding:7px 12px;cursor:pointer;transition:background 0.3s,border-color 0.3s;display:none;min-height:44px;white-space:nowrap;align-items:center}
+#lb-btn-hud:hover{background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.7);color:#c9a84c}
+#lb-btn-over{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:11px 28px;cursor:pointer;transition:background 0.3s,border-color 0.3s;min-height:44px;display:none;margin-top:10px}
+#lb-btn-over:hover{background:rgba(201,168,76,0.1);border-color:#c9a84c}
+#lb-name-modal{display:none;position:fixed;inset:0;z-index:4000;background:rgba(4,2,10,0.96);align-items:center;justify-content:center}
+#lb-name-modal.lb-open{display:flex}
+#lb-name-card{background:rgba(4,2,10,0.99);border:1px solid rgba(201,168,76,0.55);padding:44px 40px;max-width:440px;width:90%;text-align:center;position:relative}
+#lb-name-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.65),transparent)}
+.lbnm-title{font-family:'Luminari',serif;font-size:1.1rem;letter-spacing:0.3em;color:#c9a84c;text-transform:uppercase;margin-bottom:8px}
+.lbnm-sub{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(240,230,210,0.42);text-transform:uppercase;margin-bottom:28px;line-height:1.7}
+#lb-name-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:'Luminari',serif;font-size:1rem;letter-spacing:0.15em;padding:10px 4px;outline:none;text-align:center;margin-bottom:24px;-webkit-appearance:none;caret-color:#c9a84c}
+#lb-name-input::placeholder{color:rgba(201,168,76,0.25)}
+#lb-name-submit{width:100%;background:#c9a84c;color:#000;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.42em;text-transform:uppercase;border:none;padding:15px 0;cursor:pointer;transition:background 0.2s;min-height:44px}
+#lb-name-submit:hover{background:#deb95c}
+#lb-name-skip{display:block;margin-top:16px;font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.2em;color:rgba(201,168,76,0.25);cursor:pointer;background:none;border:none;text-transform:uppercase;width:100%;transition:color 0.2s}
+#lb-name-skip:hover{color:rgba(201,168,76,0.55)}
+#lb-modal{display:none;position:fixed;inset:0;z-index:4000;background:rgba(4,2,10,0.96);align-items:center;justify-content:center}
+#lb-modal.lb-open{display:flex}
+#lb-modal-inner{background:rgba(4,2,10,0.99);border:1px solid rgba(201,168,76,0.55);padding:36px 32px;max-width:500px;width:95%;max-height:88vh;overflow-y:auto;position:relative}
+#lb-modal-inner::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.65),transparent)}
+#lb-modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(201,168,76,0.55);font-size:1.3rem;cursor:pointer;font-family:'Luminari',serif;min-width:44px;min-height:44px;line-height:1}
+#lb-modal-close:hover{color:#c9a84c}
+.lbm-header{text-align:center;margin-bottom:24px}
+.lbm-title{font-family:'Luminari',serif;font-size:1.2rem;letter-spacing:0.4em;color:#c9a84c;text-transform:uppercase;margin-bottom:5px}
+.lbm-game{font-family:'Luminari',serif;font-size:0.63rem;letter-spacing:0.45em;color:rgba(201,168,76,0.38);text-transform:uppercase}
+#lb-new-banner{font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.4em;text-transform:uppercase;color:#c9a84c;padding:10px;border:1px solid rgba(201,168,76,0.5);margin-bottom:20px;text-align:center;display:none;animation:lbFlash 0.9s ease-in-out infinite}
+@keyframes lbFlash{0%,100%{opacity:1;border-color:rgba(201,168,76,0.5)}50%{opacity:0.35;border-color:rgba(201,168,76,0.15)}}
+#lb-table{width:100%;border-collapse:collapse}
+#lb-table th{font-family:'Luminari',serif;font-size:0.57rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.38);padding:0 8px 12px;text-align:left;border-bottom:1px solid rgba(201,168,76,0.15)}
+#lb-table th:nth-child(3),#lb-table th:nth-child(4),#lb-table td:nth-child(3),#lb-table td:nth-child(4){text-align:right}
+#lb-table td{font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.05em;color:rgba(240,230,210,0.7);padding:10px 8px;border-bottom:1px solid rgba(201,168,76,0.07)}
+.lb-r1 td{color:#c9a84c}
+.lb-r23 td{color:rgba(201,168,76,0.78)}
+.lb-cur td{background:rgba(201,168,76,0.07);color:#c9a84c}
+.lb-loading-row td{text-align:center;padding:28px;font-family:'Luminari',serif;font-style:italic;color:rgba(201,168,76,0.32);letter-spacing:0.15em}
+.lb-av{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.4);background:#111;vertical-align:middle;margin-right:7px}
+@media(max-width:480px){#lb-name-card{padding:32px 22px}#lb-modal-inner{padding:28px 18px;max-height:92vh}}
+</style>
+<style id="jsearch-styles">
+#jsearch-btn{background:none;border:none;color:rgba(255,255,255,0.75);cursor:pointer;padding:0 10px;line-height:52px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:color 0.2s;min-width:40px;min-height:44px}
+#jsearch-btn:hover{color:#c9a84c}
+#jsearch-btn.jsearch-active{color:rgba(201,168,76,0.45)}
+#jsearch-btn svg{display:block;pointer-events:none}
+#jsearch-overlay{display:none;position:fixed;top:52px;left:0;right:0;bottom:auto;z-index:9998;background:rgba(0,0,0,0.95);border-bottom:1px solid #c9a84c;flex-direction:column;max-height:400px;overflow-y:auto}
+#jsearch-overlay.jsearch-open{display:flex}
+#jsearch-inner{width:100%;padding:16px 40px 14px;position:relative}
+#jsearch-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,0.65);color:#c9a84c;font-family:'Luminari',serif;font-size:18px;letter-spacing:0.18em;padding:10px 4px;outline:none;text-transform:uppercase;caret-color:#c9a84c;-webkit-appearance:none;border-radius:0}
+#jsearch-input::placeholder{color:rgba(201,168,76,0.32);letter-spacing:0.12em}
+#jsearch-results{margin-top:14px}
+.jsearch-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid rgba(201,168,76,0.08);cursor:pointer;transition:background 0.15s;text-decoration:none;color:inherit}
+.jsearch-item:hover{background:rgba(201,168,76,0.07)}
+.jsearch-item-icon{font-size:0.85rem;flex-shrink:0;opacity:0.6;width:18px;text-align:center;font-family:'Luminari',serif}
+.jsearch-item-name{font-family:'Luminari',serif;font-size:0.88rem;letter-spacing:0.1em;color:rgba(240,230,210,0.9);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jsearch-item-name mark{background:none;color:#c9a84c;font-style:normal}
+.jsearch-item-cat{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.5);flex-shrink:0;margin-left:8px}
+.jsearch-empty{text-align:center;font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.3);padding:40px 0}
+.jsearch-hint{text-align:center;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.6);padding:16px 0}
+.jsearch-float-btn{position:fixed;top:14px;right:14px;z-index:9000;background:rgba(0,0,0,0.55);border:1px solid rgba(201,168,76,0.35);color:rgba(201,168,76,0.75);cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s}
+.jsearch-float-btn:hover{border-color:rgba(201,168,76,0.75);color:#c9a84c}
+.jsearch-float-btn svg{pointer-events:none}
+@media(max-width:767px){#jsearch-overlay{top:52px}#jsearch-inner{padding:12px 16px 12px}#jsearch-input{font-size:16px}.jsearch-hint{letter-spacing:0.08em;font-size:0.6rem;padding:12px 0;white-space:nowrap}}
+</style>
+
+<link rel="preload" as="font" type="font/ttf" href="../assets/fonts/Luminari.ttf" crossorigin>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#c9a84c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jestamang">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
+<script src="../assets/js/firebase-config.js" defer></script>
+<script>(function(GID,GDISP,FLFLOAT){
+var _score=0,_docId=null;
+var MON=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+var RD=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV','XXV','XXVI','XXVII','XXVIII','XXIX','XXX','XXXI'];
+function toRom(y){var t=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];var r='';t.forEach(function(p){while(y>=p[0]){r+=p[1];y-=p[0];}});return r;}
+function fmtD(ts){var d=ts&&ts.toDate?ts.toDate():new Date();return MON[d.getMonth()].slice(0,3)+' · '+RD[d.getDate()-1]+' · '+toRom(d.getFullYear());}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function fmtS(s){return FLFLOAT?parseFloat(s).toFixed(1)+'s':parseInt(s).toLocaleString();}
+function san(n){return n.replace(/[^a-zA-Z0-9 _\-\.!]/g,'').trim().slice(0,20);}
+function openLB(cur){
+var m=document.getElementById('lb-modal'),tb=document.getElementById('lb-tbody'),bn=document.getElementById('lb-new-banner');
+if(!m||!window.jestaDB)return;
+if(bn)bn.style.display='none';
+var _pbKey='lbBest_'+GID;
+var _pb=null;try{_pb=JSON.parse(localStorage.getItem(_pbKey)||'null');}catch(e){}
+var pbRow=document.getElementById('lb-pb-row');
+if(pbRow){
+  if(_pb&&_pb.score>0){
+    var _pbDate='';try{var _pbd=new Date(_pb.date);_pbDate=MON[_pbd.getMonth()].slice(0,3)+' '+_pbd.getFullYear();}catch(e){}
+    pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.15);"><span style="color:rgba(201,168,76,0.55);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;display:block;margin-bottom:4px;">Your Personal Best</span><span style="color:#c9a84c;font-size:0.9rem;">\u2605 '+fmtS(_pb.score)+'</span>'+(_pbDate?'<span style="color:rgba(201,168,76,0.4);font-size:0.6rem;margin-left:8px;">\u00b7 '+_pbDate+'</span>':'')+'</td>';
+  } else {
+    pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.06em;">BE THE FIRST TO MARK YOUR SCORE</td>';
+  }
+}
+tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr>';
+m.classList.add('lb-open');
+window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(10).get()
+.then(function(snap){
+var rows=[];snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp});});
+var isTop=cur>0&&(rows.length===0||cur>rows[0].score);
+if(isTop&&bn)bn.style.display='block';
+tb.innerHTML='';
+if(!rows.length){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">BE THE FIRST TO MARK YOUR SCORE</td></tr>';return;}
+rows.forEach(function(r,i){
+var tr=document.createElement('tr');
+var cls=i===0?'lb-r1':i<3?'lb-r23':'';
+if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
+tr.className=cls;
+var cr=i===0?'<span style="margin-right:5px">\u2726</span>':'';
+tr.innerHTML='<td>'+(i+1)+'</td><td><img class="lb-av" src="../assets/homepage/jesta jr.jpg" onerror="this.onerror=null;this.src=\'../assets/homepage/jesta jr.jpg\'" alt="" loading="lazy">'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
+tb.appendChild(tr);
+});
+}).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">SIGNAL LOST</td></tr>';});
+}
+function saveScore(name,score){
+if(!score||score<=0||!window.jestaDB)return;
+var ps=FLFLOAT?parseFloat(score):parseInt(score);
+var _pbKey='lbBest_'+GID;
+try{var _pb=JSON.parse(localStorage.getItem(_pbKey)||'null');if(!_pb||ps>_pb.score){localStorage.setItem(_pbKey,JSON.stringify({score:ps,date:new Date().toISOString()}));}}catch(e){}
+var uid=null;try{if(window.jestaAuth&&window.jestaAuth.currentUser)uid=window.jestaAuth.currentUser.uid;}catch(e){}
+window.jestaDB.collection('leaderboards').add({game:GID,name:san(name)||'Unknown',score:ps,uid:uid,timestamp:firebase.firestore.FieldValue.serverTimestamp()})
+.then(function(ref){_docId=ref.id;}).catch(function(e){console.warn('lb:',e);});
+}
+window.lbOnGameOver=function(score){
+_score=score;_docId=null;
+if(!score||score<=0)return;
+var ob=document.getElementById('lb-btn-over');if(ob)ob.style.display='inline-block';
+if(!window.jestaAuth)return;
+var user=window.jestaAuth.currentUser;
+if(user&&user.displayName){saveScore(user.displayName,score);}
+else{window.jestaAuth.signInAnonymously().catch(function(){}).then(function(){
+var m=document.getElementById('lb-name-modal');if(!m){openLB(score);return;}
+m.classList.add('lb-open');var inp=document.getElementById('lb-name-input');if(inp){inp.value='';setTimeout(function(){inp.focus();},120);};
+});}
+};
+document.addEventListener('DOMContentLoaded',function(){
+var gd=document.getElementById('lb-game-display');if(gd)gd.textContent=GDISP;
+var nm=document.getElementById('lb-name-modal'),ni=document.getElementById('lb-name-input'),ns=document.getElementById('lb-name-submit'),nsk=document.getElementById('lb-name-skip');
+var lm=document.getElementById('lb-modal'),lc=document.getElementById('lb-modal-close');
+var hb=document.getElementById('lb-btn-hud'),ob=document.getElementById('lb-btn-over');
+var sb=document.getElementById('startBtn'),rb=document.getElementById('restartBtn');
+function doSubmit(){var n=ni?san(ni.value):'';if(!n){if(ni)ni.focus();return;}if(nm)nm.classList.remove('lb-open');saveScore(n,_score);openLB(_score);}
+if(ns)ns.addEventListener('click',doSubmit);
+if(ni)ni.addEventListener('keydown',function(e){if(e.key==='Enter')doSubmit();});
+if(nsk)nsk.addEventListener('click',function(){if(nm)nm.classList.remove('lb-open');openLB(0);});
+if(lc)lc.addEventListener('click',function(){if(lm)lm.classList.remove('lb-open');});
+if(lm)lm.addEventListener('click',function(e){if(e.target===lm)lm.classList.remove('lb-open');});
+if(hb)hb.addEventListener('click',function(){openLB(0);});
+if(ob)ob.addEventListener('click',function(){openLB(_score);});
+if(sb&&hb)sb.addEventListener('click',function(){hb.style.display='flex';});
+if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_score=0;_docId=null;});
+});
+})('harmonyOracle','HARMONY ORACLE',false);</script>
+<!-- Cloudflare Web Analytics -->
+<script>(function(){if(localStorage.getItem('cookieAccepted')==='false')return;var s=document.createElement('script');s.defer=true;s.src='https://static.cloudflareinsights.com/beacon.min.js';s.setAttribute('data-cf-beacon','{"token":"278a3dd9772141e6a6e40a9c83c51d57"}');document.head.appendChild(s);})();</script>
+</head>
+<body>
+<a href="../arcade.html" id="back">← Games</a>
+<button id="lb-btn-hud">✦ Cosmic Scrolls</button>
+
+<!-- ══════════════════════════════════
+     START SCREEN
+════════════════════════════════════ -->
+<div id="ss" class="scr">
+  <div class="eyebrow">Jestamang Universe</div>
+  <div class="big-title">Harmony<br>Oracle</div>
+  <div class="sub">Four levels of harmonic depth<br>From consonance to full analysis</div>
+  <button class="btn" id="startBtn">Consult the Oracle</button>
+  <div style="font-size:0.58rem;letter-spacing:0.28em;color:rgba(255,255,255,0.12);text-transform:uppercase;margin-top:18px;line-height:2;font-family:'Luminari',serif">4 levels · consonance → full analysis · unlock as you progress</div>
+</div>
+
+<!-- ══════════════════════════════════
+     GAME SCREEN
+════════════════════════════════════ -->
+<div id="gs" class="scr off">
+  <!-- Level tabs -->
+  <div id="ho-tabs">
+    <button class="ho-tab active" data-level="1" id="ho-tab-1">I — Consonance</button>
+    <button class="ho-tab locked" data-level="2" id="ho-tab-2">🔒 II — Tonality</button>
+    <button class="ho-tab locked" data-level="3" id="ho-tab-3">🔒 III — Progressions</button>
+    <button class="ho-tab locked" data-level="4" id="ho-tab-4">🔒 IV — Analysis</button>
+  </div>
+
+  <!-- How to play -->
+  <div id="htp-wrap">
+    <button id="htp-toggle">▸ How to Play</button>
+    <div id="htp-body" id="htp-content"></div>
+  </div>
+
+  <!-- HUD -->
+  <div id="ho-level-badge">LEVEL I — CONSONANCE &amp; DISSONANCE</div>
+  <div id="ho-hud">
+    <div id="ho-score">SCORE 0</div>
+    <div id="ho-streak"></div>
+  </div>
+
+  <!-- Progress bar -->
+  <div id="ho-prog-wrap">
+    <div id="ho-prog-bar"><div id="ho-prog-inner"></div></div>
+    <div id="ho-prog-label"></div>
+  </div>
+
+  <!-- Harmonic visualizer -->
+  <div id="ho-viz-wrap"></div>
+
+  <!-- Message -->
+  <div id="ho-msg-wrap">
+    <div id="ho-msg">THE ORACLE SPEAKS</div>
+    <div id="ho-sub">LISTEN CLOSELY</div>
+  </div>
+
+  <!-- Replay -->
+  <div id="ho-replay-row">
+    <div id="ho-replay-dots">●●●</div>
+    <button id="ho-replay">↺ Hear Again</button>
+  </div>
+
+  <!-- Answer buttons -->
+  <div id="ho-answers" class="grid-2"></div>
+
+  <!-- Explanation panel -->
+  <div id="ho-explain">
+    <div id="ho-explain-inner">
+      <div id="ho-explain-label">The Oracle reveals</div>
+      <div id="ho-explain-text"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     END SCREEN
+════════════════════════════════════ -->
+<div id="os" class="scr off">
+  <div class="eyebrow">The Oracle has spoken</div>
+  <div class="score-big" id="finalScore">0</div>
+  <div class="score-lbl">points earned</div>
+  <div id="os-narrator"></div>
+  <button class="btn" id="restartBtn">Hear Again</button>
+  <button id="lb-btn-over">✦ The Cosmic Scrolls</button>
+</div>
+
+<!-- LEADERBOARD MODALS -->
+<div id="lb-name-modal">
+<div id="lb-name-card">
+<p class="lbnm-title">MARK YOUR SCORE</p>
+<p class="lbnm-sub">ENTER YOUR NAME FOR<br>THE COSMIC SCROLLS</p>
+<input id="lb-name-input" type="text" maxlength="20" autocomplete="off" spellcheck="false" placeholder="YOUR NAME...">
+<button id="lb-name-submit">SEAL IT</button>
+<button id="lb-name-skip">ENTER WITHOUT SAVING</button>
+</div></div>
+<div id="lb-modal">
+<div id="lb-modal-inner">
+<button id="lb-modal-close">✦</button>
+<div id="lb-new-banner">✦ NEW HIGH SCORE ✦</div>
+<div class="lbm-header">
+  <p class="lbm-title">THE COSMIC SCROLLS</p>
+  <p class="lbm-game" id="lb-game-display"></p>
+</div>
+<table id="lb-table">
+<thead><tr><th>RANK</th><th>NAME</th><th>SCORE</th><th>DATE</th></tr></thead>
+<tbody><tr id="lb-pb-row"><td colspan="4"></td></tr></tbody><tbody id="lb-tbody"><tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr></tbody>
+</table>
+</div></div>
+
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
+<script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+
+<!-- SEARCH OVERLAY -->
+<button class="jsearch-float-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button>
+<div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
+<div id="jsearch-inner">
+<input id="jsearch-input" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="SEARCH THE JESTAMANG UNIVERSE...">
+<div id="jsearch-results"><div class="jsearch-hint">ENTER A NAME &nbsp;·&nbsp; PAGE &nbsp;·&nbsp; ALBUM &nbsp;·&nbsp; ENTITY</div></div>
+</div>
+</div>
+
+<script>(function(){
+var IDX=[
+{n:'Home',u:'/index.html',c:'Page',i:'⌂',t:'homepage start jestamang main'},
+{n:'Entities',u:'/entities.html',c:'Page',i:'✦',t:'characters cartoons children cosmos'},
+{n:'Albums',u:'/albums.html',c:'Page',i:'◈',t:'music releases discography records'},
+{n:'Lyrics',u:'/lyrics.html',c:'Page',i:'☽',t:'words songs text poetry'},
+{n:'Merch',u:'/merch.html',c:'Page',i:'◉',t:'shop buy store clothing'},
+{n:'Photos',u:'/photos.html',c:'Page',i:'◎',t:'images gallery visual photography'},
+{n:'Videos',u:'/videos.html',c:'Page',i:'▷',t:'film visual youtube watch'},
+{n:'Shows',u:'/shows.html',c:'Page',i:'✦',t:'events live tour concerts appearances'},
+{n:'Blog',u:'/blog.html',c:'Page',i:'◇',t:'posts writing press news'},
+{n:'Comix',u:'/comix.html',c:'Page',i:'◈',t:'comics art illustration graphic'},
+{n:'Games',u:'/arcade.html',c:'Page',i:'◉',t:'play interactive arcade'},
+{n:'Email',u:'/email.html',c:'Page',i:'✉',t:'contact subscribe mailing list'},
+{n:'Members',u:'/members.html',c:'Page',i:'✦',t:'inner circle forum guestbook community'},
+{n:'Profile',u:'/profile.html',c:'Page',i:'◉',t:'account user settings natal chart'},
+{n:'Login',u:'/login.html',c:'Page',i:'✦',t:'sign in invitation access'},
+{n:'Arcade',u:'/arcade.html',c:'Page',i:'◉',t:'games play interactive arcade'},
+{n:'Privacy Policy',u:'/privacy.html',c:'Page',i:'◉',t:'privacy policy data'},
+{n:'Accessibility',u:'/accessibility.html',c:'Page',i:'◉',t:'accessibility ada compliance'},
+{n:'Terms of Service',u:'/terms.html',c:'Page',i:'◉',t:'terms service legal'},
+{n:'Dossier',u:'/dossier.html',c:'Page',i:'◉',t:'bio biography press kit dossier'},
+{n:'Memory Vault',u:'/game-memory.html',c:'Game',i:'◉',t:'card match memory album art recall pairs'},
+{n:'The Void',u:'/games/void.html',c:'Game',i:'◎',t:'void dodge shapes survive psychedelic'},
+{n:'Cosmic Conductor',u:'/games/cosmic-conductor.html',c:'Game',i:'♪',t:'rhythm reaction space orbs cosmic conductor'},
+{n:'Pitch Oracle',u:'/games/pitch-oracle.html',c:'Game',i:'◈',t:'ear training pitch note oracle music identify'},
+{n:'Rhythm Architect',u:'/games/rhythm-architect.html',c:'Game',i:'◉',t:'rhythm beat pattern time signature architect'},
+{n:'Chord Conjurer',u:'/games/chord-conjurer.html',c:'Game',i:'✶',t:'chord theory piano harmony conjurer music'},
+{n:'Oracle',u:'/game-oracle.html',c:'Game',i:'◈',t:'divination prophecy cosmic oracle fortune'},
+{n:'Harmony Oracle',u:'/games/harmony-oracle.html',c:'Game',i:'◈',t:'harmony consonance dissonance chord progression key modal music theory'}
+];
+window.jSearchOpen=function(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.add('jsearch-open');var btn=document.getElementById('jsearch-btn');if(btn)btn.classList.add('jsearch-active');var inp=document.getElementById('jsearch-input');if(inp){inp.value='';inp.focus();jSearchRender('');}}};
+window.jSearchClose=function(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.remove('jsearch-open');var btn=document.getElementById('jsearch-btn');if(btn)btn.classList.remove('jsearch-active');}};
+function jHL(text,q){if(!q)return text.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});var safe=text.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);tokens.forEach(function(tok){var re=new RegExp('('+tok.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');safe=safe.replace(re,'<mark>$1</mark>');});return safe;}
+function jSearchRender(q){var box=document.getElementById('jsearch-results');if(!box)return;if(!q.trim()){box.innerHTML='<div class="jsearch-hint">ENTER A NAME \u00b7 PAGE \u00b7 ALBUM \u00b7 TRACK \u00b7 GAME</div>';return;}var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);var scored=[];IDX.forEach(function(e){var nl=e.n.toLowerCase();var tl=(e.t||'').toLowerCase();var score=0;tokens.forEach(function(tok){if(nl===tok)score+=100;else if(nl.startsWith(tok))score+=50;else if(nl.indexOf(tok)!==-1)score+=30;if(tl.indexOf(tok)!==-1)score+=10;});if(score>0)scored.push({e:e,s:score});});scored.sort(function(a,b){return b.s-a.s;});scored=scored.slice(0,10);if(!scored.length){box.innerHTML='<div class="jsearch-empty">NO TRANSMISSIONS FOUND</div>';return;}var html='';scored.forEach(function(r){var e=r.e;html+='<a class="jsearch-item" href="'+e.u+'" onclick="jSearchClose()"><span class="jsearch-item-icon">'+e.i+'</span><span class="jsearch-item-name">'+jHL(e.n,q)+'</span><span class="jsearch-item-cat">'+e.c+'</span></a>';});box.innerHTML=html;}
+document.addEventListener('DOMContentLoaded',function(){var inp=document.getElementById('jsearch-input');var closeBtn=document.getElementById('jsearch-close');if(inp)inp.addEventListener('input',function(){jSearchRender(this.value);});if(closeBtn)closeBtn.addEventListener('click',jSearchClose);document.addEventListener('click',function(e){var o=document.getElementById('jsearch-overlay');if(!o||!o.classList.contains('jsearch-open'))return;var btn=document.getElementById('jsearch-btn');var fbtn=document.querySelector('.jsearch-float-btn');if(o.contains(e.target))return;if(btn&&btn.contains(e.target))return;if(fbtn&&fbtn.contains(e.target))return;jSearchClose();});document.addEventListener('keydown',function(e){if(e.key==='Escape')jSearchClose();if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();jSearchOpen();}});});
+})();</script>
+
+<!-- GAME LOGIC -->
+<script>
+(function(){
+'use strict';
+
+/* ══════════════════════════════════════════════════════════════
+   WEB AUDIO
+══════════════════════════════════════════════════════════════ */
+var _ctx = null;
+function getCtx(){
+  if(!_ctx){
+    try{_ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}
+  }
+  if(_ctx&&_ctx.state==='suspended'){_ctx.resume();}
+  return _ctx;
+}
+
+// Equal temperament: freq = 440 * 2^((midi-69)/12)
+function midiToFreq(midi){ return 440*Math.pow(2,(midi-69)/12); }
+
+// Play single note (sine+triangle blend, 1.2s fade)
+function playNote(midi, startTime, dur){
+  var ctx = getCtx(); if(!ctx) return;
+  dur = dur||1.2;
+  var freq = midiToFreq(midi);
+  var gainNode = ctx.createGain();
+  gainNode.connect(ctx.destination);
+  gainNode.gain.setValueAtTime(0.001, startTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.28, startTime+0.025);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, startTime+dur);
+
+  ['sine','triangle'].forEach(function(type, i){
+    var osc = ctx.createOscillator();
+    var g2 = ctx.createGain();
+    g2.gain.value = i===0 ? 0.7 : 0.3;
+    osc.type = type;
+    osc.frequency.value = freq;
+    osc.connect(g2);
+    g2.connect(gainNode);
+    osc.start(startTime);
+    osc.stop(startTime+dur+0.05);
+  });
+}
+
+// Play two notes simultaneously (harmony interval)
+function playInterval(midi1, midi2){
+  var ctx = getCtx(); if(!ctx) return;
+  var t = ctx.currentTime + 0.05;
+  playNote(midi1, t, 1.4);
+  playNote(midi2, t, 1.4);
+  animViz(1400);
+}
+
+// Play melodic phrase (array of midi, 400ms apart)
+function playPhrase(midis){
+  var ctx = getCtx(); if(!ctx) return;
+  var t = ctx.currentTime + 0.05;
+  midis.forEach(function(m, i){ playNote(m, t + i*0.4, 0.5); });
+  animViz(midis.length*400 + 400);
+}
+
+// Play chord (strum: each note 30ms apart)
+function playChord(midis, startOffset){
+  var ctx = getCtx(); if(!ctx) return;
+  var t = ctx.currentTime + (startOffset||0.05);
+  midis.forEach(function(m, i){ playNote(m, t + i*0.03, 1.3); });
+}
+
+// Play chord progression (array of chord arrays, 1 chord per ~1.6s)
+function playProgression(chords){
+  var ctx = getCtx(); if(!ctx) return;
+  chords.forEach(function(chord, i){
+    playChord(chord, 0.05 + i*1.6);
+  });
+  animViz(chords.length*1600 + 400);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   VISUALIZER
+══════════════════════════════════════════════════════════════ */
+var _vizBars = [];
+var _vizTimer = null;
+
+function buildViz(){
+  var wrap = document.getElementById('ho-viz-wrap');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  _vizBars = [];
+  var count = 24;
+  for(var i=0;i<count;i++){
+    var b = document.createElement('div');
+    b.className = 'ho-viz-bar';
+    b.style.height = '3px';
+    wrap.appendChild(b);
+    _vizBars.push(b);
+  }
+}
+
+function animViz(durationMs){
+  if(_vizTimer) clearTimeout(_vizTimer);
+  var startTime = Date.now();
+  var totalMs = durationMs || 1400;
+  function tick(){
+    var elapsed = Date.now() - startTime;
+    var active = elapsed < totalMs;
+    _vizBars.forEach(function(b, i){
+      if(active){
+        var h = 4 + Math.abs(Math.sin(elapsed/80 + i*0.7)) * 44 + Math.random()*8;
+        b.style.height = h+'px';
+        b.style.background = 'rgba(201,168,76,'+(0.3+Math.abs(Math.sin(elapsed/120+i*0.4))*0.55)+')';
+      } else {
+        b.style.height = '3px';
+        b.style.background = 'rgba(201,168,76,0.2)';
+      }
+    });
+    if(active) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   GAME DATA
+══════════════════════════════════════════════════════════════ */
+
+// MIDI note helpers
+var C4=60, D4=62, E4=64, F4=65, G4=67, A4=69, B4=71, C5=72;
+
+// Level I: Consonance & Dissonance
+// Interval defined by semitone gap from a root
+var L1_INTERVALS = [
+  {name:'Unison',      semitones:0,  consonant:true,  desc:'Unison — two identical pitches. Perfect fusion, maximum consonance. The foundation of unison vocals.'},
+  {name:'Perfect 5th', semitones:7,  consonant:true,  desc:'Perfect 5th — the most stable harmonic interval. Every power chord is built on this. Pure, open, powerful.'},
+  {name:'Major 3rd',   semitones:4,  consonant:true,  desc:'Major 3rd — bright and joyful. The interval that defines a major chord. Think of the first two notes of "When the Saints Go Marching In."'},
+  {name:'Minor 3rd',   semitones:3,  consonant:true,  desc:'Minor 3rd — warm and slightly melancholic. The core of every minor chord. Hauntingly beautiful.'},
+  {name:'Octave',      semitones:12, consonant:true,  desc:'Octave — the same note doubled in frequency. Perfect equivalence. The most naturally consonant interval after unison.'},
+  {name:'Perfect 4th', semitones:5,  consonant:true,  desc:'Perfect 4th — strong and open. Slightly more ambiguous than the 5th. Heard in "Here Comes the Bride."'},
+  {name:'Minor 2nd',   semitones:1,  consonant:false, desc:'Minor 2nd — maximum dissonance. The sound of tension and suspense. Used deliberately in horror music and jazz.'},
+  {name:'Major 7th',   semitones:11, consonant:false, desc:'Major 7th — rich, tense, yearning. Wants desperately to resolve up a half step. The hallmark of jazz harmony.'},
+  {name:'Tritone',     semitones:6,  consonant:false, desc:'Tritone — the devil\'s interval. Exactly halfway through the octave. Medieval composers banned it. Still maximally dissonant.'},
+  {name:'Minor 9th',   semitones:13, consonant:false, desc:'Minor 9th — a minor 2nd stretched across an octave. Even more tense and dissonant. Cutting and harsh.'}
+];
+
+// Level II: Modal tonality
+// Each mode defined as scale degrees (semitones from root)
+var MODES = {
+  major:     {name:'Major',      steps:[0,2,4,5,7,9,11], desc:'Major — bright, triumphant, resolved. The most common tonality in Western music. Music sounds "happy."'},
+  minor:     {name:'Minor',      steps:[0,2,3,5,7,8,10], desc:'Minor — dark, introspective, emotional. Shadows and depth. The tonality of minor keys — sadness and power.'},
+  dorian:    {name:'Dorian',     steps:[0,2,3,5,7,9,10], desc:'Dorian — minor but with a raised 6th. Groovy and soulful. Think "Oye Como Va," "So What" by Miles Davis.'},
+  phrygian:  {name:'Phrygian',   steps:[0,1,3,5,7,8,10], desc:'Phrygian — Spanish, dark, mysterious. The flamenco mode. Starts with a half step giving it an exotic, ancient feel.'},
+  lydian:    {name:'Lydian',     steps:[0,2,4,6,7,9,11], desc:'Lydian — dreamy and otherworldly. The raised 4th creates a floating, magical quality. John Williams uses it often.'},
+  mixolydian:{name:'Mixolydian', steps:[0,2,4,5,7,9,10], desc:'Mixolydian — major but with a flat 7th. Rock and blues dominant. "Sweet Home Chicago," countless folk songs.'}
+};
+
+// Level III: Chord progressions
+// Progressions defined as intervals above a root (major scale degrees)
+// Each chord is a major or minor triad
+var PROGRESSIONS = [
+  {
+    name:'I – IV – V – I',
+    label:'I-IV-V-I',
+    desc:'I–IV–V–I — the bedrock of Western music. Three chords that make up thousands of blues, folk, and rock songs. "La Bamba," "Twist and Shout," "Johnny B. Goode."',
+    chords:[[0,4,7],[5,9,12],[7,11,14],[12,16,19]]
+  },
+  {
+    name:'I – V – vi – IV',
+    label:'I-V-vi-IV',
+    desc:'I–V–vi–IV — the most popular chord progression of the modern era. Used in thousands of pop songs: "Let It Be," "No Woman No Cry," "Don\'t Stop Believin\'."',
+    chords:[[0,4,7],[7,11,14],[9,12,16],[5,9,12]]
+  },
+  {
+    name:'ii – V – I',
+    label:'ii-V-I',
+    desc:'ii–V–I — the foundation of jazz harmony. Every jazz standard contains this. The ii creates tension, the V heightens it, the I resolves it beautifully.',
+    chords:[[2,5,9],[7,11,14],[0,4,7],[0,4,7]]
+  },
+  {
+    name:'I – vi – IV – V',
+    label:'I-vi-IV-V',
+    desc:'I–vi–IV–V — the "50s progression." "Earth Angel," "Stand By Me," "Every Breath You Take." Simple, cyclical, and deeply satisfying.',
+    chords:[[0,4,7],[9,12,16],[5,9,12],[7,11,14]]
+  },
+  {
+    name:'I – IV – I – V',
+    label:'I-IV-I-V',
+    desc:'I–IV–I–V — the basic blues turnaround. Direct and grounded. Found in 12-bar blues, country, and traditional folk music worldwide.',
+    chords:[[0,4,7],[5,9,12],[0,4,7],[7,11,14]]
+  }
+];
+
+// Level IV: Full harmonic analysis — 8-chord progressions
+var L4_ROUNDS = [
+  {
+    key:'C Major',
+    modulates:false,
+    mood:'Bright',
+    chords:[[0,4,7],[5,9,12],[7,11,14],[0,4,7],[0,4,7],[5,9,12],[7,11,14],[0,4,7]],
+    desc:'Classic C Major cycle — tonic, subdominant, dominant repeated. Stable, bright, resolved. The textbook example of diatonic Western harmony.'
+  },
+  {
+    key:'A Minor',
+    modulates:false,
+    mood:'Dark',
+    chords:[[9,12,16],[5,9,12],[7,11,14],[9,12,16],[9,12,16],[2,5,9],[7,11,14],[9,12,16]],
+    desc:'Natural minor progression — dark and introspective. The VI–VII–i movement is deeply expressive. Heard in countless classical and rock works.'
+  },
+  {
+    key:'G Major',
+    modulates:true,
+    mood:'Tense',
+    chords:[[7,11,14],[7,11,14],[2,5,9],[2,5,9],[0,4,7],[0,4,7],[5,9,12],[7,11,14]],
+    desc:'This progression begins in G but pivots through D major and briefly touches C, suggesting a modulation to C Major before returning — a classic pivot chord modulation.'
+  },
+  {
+    key:'D Minor',
+    modulates:false,
+    mood:'Resolved',
+    chords:[[2,5,9],[5,9,12],[7,11,14],[2,5,9],[5,9,12],[9,12,16],[7,11,14],[2,5,9]],
+    desc:'D Minor circular progression — tension builds across the middle chords then releases cleanly back to the tonic. A sense of journey and return.'
+  }
+];
+
+/* ══════════════════════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════════════════ */
+var state = {
+  level: 1,         // current level 1-4
+  score: 0,
+  streak: 0,
+  correctTotal: 0,  // total correct answers across all levels (for unlock threshold)
+  levelCorrect: {1:0,2:0,3:0,4:0}, // correct per level
+  unlocked: {1:true,2:false,3:false,4:false},
+  replayCount: 0,
+  maxReplays: 3,
+  answering: false,  // locked while explanation showing
+  currentRound: null,
+  // L4 sub-question state
+  l4Phase: 0,  // 0=key, 1=modulation, 2=mood
+  l4Answers: {}
+};
+
+// Unlock thresholds (correct answers needed)
+var UNLOCK = {2:8, 3:20, 4:36};
+
+var HTP_TEXT = {
+  1:'Level I: Two notes play at once. Decide if they sound Consonant (stable, pleasant) or Dissonant (tense, clashing). Listen for smoothness vs. roughness. 10 pts per correct answer.',
+  2:'Level II: A short 4-note phrase plays in a specific mode. Identify the tonality — Major, Minor, or one of four modes. Listen for the overall emotional color. 20 pts per correct answer.',
+  3:'Level III: A 4-chord progression plays. Identify the Roman numeral pattern. Listen for how the chords rise, fall, and resolve. 30 pts per correct answer.',
+  4:'Level IV: An 8-chord progression plays. Answer three questions: the key, whether it modulates (changes key), and the overall mood. 50 pts for a complete correct analysis.'
+};
+
+/* ══════════════════════════════════════════════════════════════
+   UI HELPERS
+══════════════════════════════════════════════════════════════ */
+function $(id){ return document.getElementById(id); }
+
+function setScore(n){
+  state.score = n;
+  $('ho-score').textContent = 'SCORE ' + n;
+}
+
+function addScore(n){
+  setScore(state.score + n);
+  var el = $('ho-score');
+  el.style.color = '#c9a84c';
+  el.style.textShadow = '0 0 18px rgba(201,168,76,0.8)';
+  setTimeout(function(){ el.style.textShadow=''; }, 600);
+}
+
+function updateStreak(){
+  var el = $('ho-streak');
+  if(state.streak >= 5){
+    el.textContent = '✦ IN HARMONY ✦';
+    el.classList.add('on-fire');
+  } else if(state.streak > 0){
+    el.textContent = 'STREAK ' + state.streak;
+    el.classList.remove('on-fire');
+  } else {
+    el.textContent = '';
+    el.classList.remove('on-fire');
+  }
+}
+
+function updateProgress(){
+  var nextLevel = state.level + 1;
+  var threshold = UNLOCK[nextLevel];
+  if(!threshold || state.unlocked[nextLevel]){
+    $('ho-prog-inner').style.width = '100%';
+    $('ho-prog-label').textContent = state.level === 4 ? 'MASTER LEVEL' : 'LEVEL ' + nextLevel + ' UNLOCKED';
+    return;
+  }
+  var pct = Math.min(100, (state.correctTotal / threshold) * 100);
+  $('ho-prog-inner').style.width = pct + '%';
+  var needed = threshold - state.correctTotal;
+  $('ho-prog-label').textContent = needed > 0 ? needed + ' MORE CORRECT TO UNLOCK LEVEL ' + nextLevel : 'LEVEL ' + nextLevel + ' UNLOCKED';
+  // Check unlock
+  if(state.correctTotal >= threshold && !state.unlocked[nextLevel]){
+    state.unlocked[nextLevel] = true;
+    unlockTab(nextLevel);
+  }
+}
+
+function unlockTab(level){
+  var tab = $('ho-tab-'+level);
+  if(!tab) return;
+  tab.classList.remove('locked');
+  var labels = {2:'II — Tonality', 3:'III — Progressions', 4:'IV — Analysis'};
+  tab.textContent = labels[level] || ('Level '+level);
+}
+
+function setLevelBadge(level){
+  var labels = {
+    1:'LEVEL I — CONSONANCE & DISSONANCE',
+    2:'LEVEL II — MAJOR, MINOR & MODAL',
+    3:'LEVEL III — CHORD PROGRESSIONS',
+    4:'LEVEL IV — FULL HARMONIC ANALYSIS'
+  };
+  $('ho-level-badge').textContent = labels[level] || '';
+}
+
+function updateReplayDots(){
+  var remaining = state.maxReplays - state.replayCount;
+  var dots = '';
+  for(var i=0;i<3;i++) dots += (i < remaining) ? '●' : '○';
+  $('ho-replay-dots').textContent = dots;
+  $('ho-replay').disabled = remaining <= 0 || state.answering;
+}
+
+function showExplanation(text){
+  $('ho-explain-text').textContent = text;
+  $('ho-explain').classList.add('show');
+}
+
+function hideExplanation(){
+  $('ho-explain').classList.remove('show');
+}
+
+function setMsg(msg, sub){
+  $('ho-msg').textContent = msg || '';
+  $('ho-sub').textContent = sub || '';
+}
+
+function buildAnswers(options, gridClass, onPick){
+  var cont = $('ho-answers');
+  cont.className = 'grid-' + (gridClass||'2');
+  cont.innerHTML = '';
+  options.forEach(function(opt){
+    var btn = document.createElement('button');
+    btn.className = 'ho-ans-btn';
+    btn.textContent = opt.label;
+    btn.addEventListener('click', function(){
+      if(state.answering) return;
+      onPick(opt, btn);
+    });
+    cont.appendChild(btn);
+  });
+}
+
+function flashButtons(correctLabel, chosenBtn, allBtns){
+  allBtns.forEach(function(btn){
+    btn.disabled = true;
+    if(btn.textContent === correctLabel){
+      btn.classList.add('ho-correct');
+    } else if(btn === chosenBtn){
+      btn.classList.add('ho-wrong');
+    } else {
+      btn.classList.add('ho-dim');
+    }
+  });
+}
+
+function getAllAnsButtons(){
+  return Array.prototype.slice.call($('ho-answers').querySelectorAll('.ho-ans-btn'));
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LEVEL 1 — CONSONANCE & DISSONANCE
+══════════════════════════════════════════════════════════════ */
+function startL1Round(){
+  hideExplanation();
+  state.answering = false;
+  state.replayCount = 0;
+  updateReplayDots();
+  setMsg('THE ORACLE SPEAKS', 'LISTEN — CONSONANT OR DISSONANT?');
+
+  // Pick random interval
+  var interval = L1_INTERVALS[Math.floor(Math.random()*L1_INTERVALS.length)];
+  // Random root midi 55-67 (comfortable range)
+  var root = 55 + Math.floor(Math.random()*12);
+  var midi2 = root + interval.semitones;
+
+  state.currentRound = {interval:interval, root:root, midi2:midi2};
+
+  // Play
+  setTimeout(function(){ playInterval(root, midi2); }, 120);
+
+  // Wire replay
+  $('ho-replay').onclick = function(){
+    if(state.replayCount >= state.maxReplays) return;
+    state.replayCount++;
+    updateReplayDots();
+    playInterval(root, midi2);
+  };
+
+  buildAnswers([
+    {label:'Consonant', value:true},
+    {label:'Dissonant', value:false}
+  ], '2', function(opt, btn){
+    handleL1Answer(opt.value, btn);
+  });
+}
+
+function handleL1Answer(chosen, btn){
+  state.answering = true;
+  var round = state.currentRound;
+  var correct = round.interval.consonant === chosen;
+  var allBtns = getAllAnsButtons();
+  var correctLabel = round.interval.consonant ? 'Consonant' : 'Dissonant';
+  flashButtons(correctLabel, btn, allBtns);
+
+  if(correct){
+    state.streak++;
+    state.correctTotal++;
+    state.levelCorrect[1]++;
+    addScore(10);
+  } else {
+    state.streak = 0;
+  }
+  updateStreak();
+  updateProgress();
+
+  showExplanation(round.interval.name + ' — ' + round.interval.desc);
+
+  setTimeout(function(){ startL1Round(); }, 2200);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LEVEL 2 — MODAL TONALITY
+══════════════════════════════════════════════════════════════ */
+function getL2Options(){
+  // Initiate (first 8 correct): major vs minor only
+  if(state.correctTotal < 8){
+    return ['major','minor'];
+  }
+  return Object.keys(MODES);
+}
+
+function startL2Round(){
+  hideExplanation();
+  state.answering = false;
+  state.replayCount = 0;
+  updateReplayDots();
+  setMsg('THE ORACLE SPEAKS', 'IDENTIFY THE TONALITY');
+
+  var opts = getL2Options();
+  var modeKey = opts[Math.floor(Math.random()*opts.length)];
+  var mode = MODES[modeKey];
+  // Random root midi 55-65
+  var root = 55 + Math.floor(Math.random()*10);
+  // Build 4-note phrase from mode steps
+  var phrase = mode.steps.slice(0,4).map(function(s){ return root+s; });
+
+  state.currentRound = {modeKey:modeKey, mode:mode, root:root, phrase:phrase};
+
+  setTimeout(function(){ playPhrase(phrase); }, 120);
+
+  $('ho-replay').onclick = function(){
+    if(state.replayCount >= state.maxReplays) return;
+    state.replayCount++;
+    updateReplayDots();
+    playPhrase(phrase);
+  };
+
+  var options = opts.map(function(k){ return {label:MODES[k].name, value:k}; });
+  buildAnswers(options, options.length > 3 ? '3' : '2', function(opt, btn){
+    handleL2Answer(opt.value, btn);
+  });
+}
+
+function handleL2Answer(chosen, btn){
+  state.answering = true;
+  var round = state.currentRound;
+  var correct = chosen === round.modeKey;
+  var allBtns = getAllAnsButtons();
+  flashButtons(round.mode.name, btn, allBtns);
+
+  if(correct){
+    state.streak++;
+    state.correctTotal++;
+    state.levelCorrect[2]++;
+    addScore(20);
+  } else {
+    state.streak = 0;
+  }
+  updateStreak();
+  updateProgress();
+
+  showExplanation(round.mode.desc);
+  setTimeout(function(){ startL2Round(); }, 2400);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LEVEL 3 — CHORD PROGRESSIONS
+══════════════════════════════════════════════════════════════ */
+function startL3Round(){
+  hideExplanation();
+  state.answering = false;
+  state.replayCount = 0;
+  updateReplayDots();
+  setMsg('THE ORACLE SPEAKS', 'IDENTIFY THE PROGRESSION');
+
+  var prog = PROGRESSIONS[Math.floor(Math.random()*PROGRESSIONS.length)];
+  // Random root 55-65, build chords
+  var root = 55 + Math.floor(Math.random()*10);
+  var chords = prog.chords.map(function(triad){
+    return triad.map(function(s){ return root+s; });
+  });
+
+  state.currentRound = {prog:prog, root:root, chords:chords};
+
+  setTimeout(function(){ playProgression(chords); }, 120);
+
+  $('ho-replay').onclick = function(){
+    if(state.replayCount >= state.maxReplays) return;
+    state.replayCount++;
+    updateReplayDots();
+    playProgression(chords);
+  };
+
+  // Build shuffled options (correct + 3 distractors)
+  var shuffled = PROGRESSIONS.slice();
+  shuffled.sort(function(){ return Math.random()-0.5; });
+  // Ensure correct is in set
+  var options = [];
+  shuffled.forEach(function(p){
+    if(options.length < 4) options.push({label:p.label, value:p.label});
+  });
+  // Make sure correct is included
+  var hasCorrect = options.some(function(o){ return o.value===prog.label; });
+  if(!hasCorrect){ options[3] = {label:prog.label, value:prog.label}; }
+  options.sort(function(){ return Math.random()-0.5; });
+
+  buildAnswers(options, '2', function(opt, btn){
+    handleL3Answer(opt.value, btn);
+  });
+}
+
+function handleL3Answer(chosen, btn){
+  state.answering = true;
+  var round = state.currentRound;
+  var correct = chosen === round.prog.label;
+  var allBtns = getAllAnsButtons();
+  flashButtons(round.prog.label, btn, allBtns);
+
+  if(correct){
+    state.streak++;
+    state.correctTotal++;
+    state.levelCorrect[3]++;
+    addScore(30);
+  } else {
+    state.streak = 0;
+  }
+  updateStreak();
+  updateProgress();
+
+  showExplanation(round.prog.desc);
+  setTimeout(function(){ startL3Round(); }, 2600);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LEVEL 4 — FULL HARMONIC ANALYSIS
+══════════════════════════════════════════════════════════════ */
+function startL4Round(){
+  hideExplanation();
+  state.answering = false;
+  state.replayCount = 0;
+  state.l4Phase = 0;
+  state.l4Answers = {};
+  updateReplayDots();
+
+  var roundData = L4_ROUNDS[Math.floor(Math.random()*L4_ROUNDS.length)];
+  var root = 55 + Math.floor(Math.random()*8);
+  var chords = roundData.chords.map(function(triad){
+    return triad.map(function(s){ return root+s; });
+  });
+
+  state.currentRound = {data:roundData, root:root, chords:chords};
+
+  setMsg('THE ORACLE SPEAKS', 'LISTEN TO THE FULL PROGRESSION');
+  setTimeout(function(){ playProgression(chords); }, 120);
+
+  $('ho-replay').onclick = function(){
+    if(state.replayCount >= state.maxReplays) return;
+    state.replayCount++;
+    updateReplayDots();
+    playProgression(chords);
+  };
+
+  // After progression plays (~6.4s), present question 1
+  setTimeout(function(){ showL4Phase(0); }, 6600);
+}
+
+function showL4Phase(phase){
+  state.l4Phase = phase;
+  state.answering = false;
+
+  if(phase === 0){
+    // Question 1: Key
+    setMsg('WHAT KEY IS THIS?', '');
+    var keys = ['C Major','G Major','D Major','A Minor','D Minor','E Minor','F Major','B♭ Major'];
+    var correct = state.currentRound.data.key;
+    var opts = [correct];
+    var pool = keys.filter(function(k){ return k!==correct; });
+    pool.sort(function(){ return Math.random()-0.5; });
+    while(opts.length<4) opts.push(pool.shift());
+    opts.sort(function(){ return Math.random()-0.5; });
+    buildAnswers(opts.map(function(k){ return {label:k,value:k}; }), '2', function(opt, btn){
+      handleL4Phase(0, opt.value, btn, correct);
+    });
+  } else if(phase === 1){
+    // Question 2: Modulation
+    setMsg('DOES IT MODULATE?', '(CHANGE KEY MID-PROGRESSION)');
+    buildAnswers([
+      {label:'Yes — It Modulates', value:true},
+      {label:'No — Same Key Throughout', value:false}
+    ], '2', function(opt, btn){
+      handleL4Phase(1, opt.value, btn, state.currentRound.data.modulates);
+    });
+  } else if(phase === 2){
+    // Question 3: Mood
+    setMsg('WHAT IS THE OVERALL MOOD?', '');
+    var moods = ['Bright','Dark','Tense','Resolved'];
+    var correctMood = state.currentRound.data.mood;
+    buildAnswers(moods.map(function(m){ return {label:m,value:m}; }), '4', function(opt, btn){
+      handleL4Phase(2, opt.value, btn, correctMood);
+    });
+  }
+}
+
+function handleL4Phase(phase, chosen, btn, correctValue){
+  state.answering = true;
+  var correct = chosen === correctValue;
+  var allBtns = getAllAnsButtons();
+  var correctLabel = typeof correctValue === 'boolean'
+    ? (correctValue ? 'Yes — It Modulates' : 'No — Same Key Throughout')
+    : correctValue;
+  flashButtons(correctLabel, btn, allBtns);
+
+  state.l4Answers[phase] = correct;
+
+  if(correct){
+    state.streak++;
+    state.correctTotal++;
+    state.levelCorrect[4]++;
+    addScore(50);
+  } else {
+    state.streak = 0;
+  }
+  updateStreak();
+  updateProgress();
+
+  if(phase === 2){
+    // All three answered — show explanation
+    showExplanation(state.currentRound.data.desc);
+    setTimeout(function(){ startL4Round(); }, 2800);
+  } else {
+    setTimeout(function(){ showL4Phase(phase + 1); }, 900);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LEVEL SWITCHING & GAME FLOW
+══════════════════════════════════════════════════════════════ */
+function startLevel(level){
+  state.level = level;
+  state.replayCount = 0;
+  hideExplanation();
+  setLevelBadge(level);
+
+  // Update HTP text
+  var htpBody = $('htp-body');
+  if(htpBody) htpBody.textContent = HTP_TEXT[level] || '';
+
+  if(level===1) startL1Round();
+  else if(level===2) startL2Round();
+  else if(level===3) startL3Round();
+  else if(level===4) startL4Round();
+}
+
+function switchTab(level){
+  if(!state.unlocked[level]) return;
+  document.querySelectorAll('.ho-tab').forEach(function(t){
+    t.classList.remove('active');
+  });
+  var tab = $('ho-tab-'+level);
+  if(tab) tab.classList.add('active');
+  startLevel(level);
+}
+
+function showGame(){
+  $('ss').classList.add('off');
+  $('os').classList.add('off');
+  $('gs').classList.remove('off');
+  buildViz();
+  setScore(0);
+  state.streak = 0;
+  state.correctTotal = 0;
+  state.levelCorrect = {1:0,2:0,3:0,4:0};
+  state.unlocked = {1:true,2:false,3:false,4:false};
+  // Reset tabs
+  document.querySelectorAll('.ho-tab').forEach(function(t,i){
+    var lvl = parseInt(t.dataset.level);
+    t.classList.remove('active','locked');
+    if(lvl===1){
+      t.classList.add('active');
+      t.textContent = 'I — Consonance';
+    } else {
+      t.classList.add('locked');
+      var labels = {2:'🔒 II — Tonality',3:'🔒 III — Progressions',4:'🔒 IV — Analysis'};
+      t.textContent = labels[lvl]||('Level '+lvl);
+    }
+  });
+  updateProgress();
+  updateStreak();
+  startLevel(1);
+}
+
+function showOver(){
+  $('gs').classList.add('off');
+  $('os').classList.remove('off');
+  $('finalScore').textContent = state.score;
+  var narr = '';
+  if(state.score < 50) narr = 'The harmonic path begins here.\nListen deeply — the oracle will reveal its secrets.';
+  else if(state.score < 150) narr = 'You are tuning in.\nThe intervals are becoming clear.';
+  else if(state.score < 300) narr = 'Your harmonic ear is awakening.\nPress on — deeper levels await.';
+  else if(state.score < 500) narr = 'Strong harmonic intuition.\nYou hear the architecture beneath the sound.';
+  else narr = 'Harmonic mastery.\nThe oracle recognizes one of its own.';
+  $('os-narrator').textContent = narr;
+  if(window.lbOnGameOver) window.lbOnGameOver(state.score);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function(){
+  buildViz();
+
+  $('startBtn').addEventListener('click', function(){
+    getCtx(); // unlock AudioContext on user gesture
+    showGame();
+  });
+
+  $('restartBtn').addEventListener('click', function(){
+    showGame();
+  });
+
+  // Level tabs
+  document.querySelectorAll('.ho-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      var level = parseInt(this.dataset.level);
+      if(state.unlocked[level]) switchTab(level);
+    });
+  });
+
+  // How to play toggle
+  $('htp-toggle').addEventListener('click', function(){
+    var body = $('htp-body');
+    var open = body.classList.toggle('open');
+    $('htp-toggle').textContent = (open ? '▾ ' : '▸ ') + 'How to Play';
+  });
+});
+
+})();
+</script>
+</body>
+</html>
