@@ -463,4 +463,32 @@
     el.classList.add('jt-press');
     el.addEventListener('animationend', function() { el.classList.remove('jt-press'); }, { once: true });
   }, { passive: true });
+
+  // ── Sitewide Caption Loader ───────────────────────────────────
+  (function () {
+    var _t = 0;
+    var _iv = setInterval(function () {
+      if (window.jestaDB) {
+        clearInterval(_iv);
+        var currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        window.jestaDB.collection('siteConfig').doc('captions').get()
+          .then(function (doc) {
+            if (!doc.exists) return;
+            var captions = doc.data().captions || [];
+            captions.forEach(function (cap) {
+              if (!cap.selector || !cap.text) return;
+              if (cap.page !== 'all' && cap.page !== currentPage) return;
+              try {
+                var el = document.querySelector(cap.selector);
+                if (el) el.textContent = cap.text;
+              } catch (e) { /* invalid selector — skip */ }
+            });
+          })
+          .catch(function () { /* no captions or offline — hardcoded text remains */ });
+      } else if (++_t > 80) {
+        clearInterval(_iv);
+      }
+    }, 100);
+  }());
+
 })();

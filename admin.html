@@ -460,6 +460,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-26')">Albums</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-27')">Entities</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-29')">Lyrics</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-30')">Captions</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-14')">Videos</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-15')">Artifacts</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-23')">Photos</button>
@@ -488,7 +489,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-17')">Maintenance</button>
 </nav>
 <div id="adm-mobtabs" role="navigation" aria-label="Section tabs">
-  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-29')">Lyrics</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-28')">TxtStyle</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
+  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-29')">Lyrics</button><button class="adm-mobtab" onclick="admNavTo('sec-30')">Captions</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-28')">TxtStyle</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
 </div>
 
   <div class="adm-header">
@@ -737,6 +738,63 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <p class="status-msg" id="lym-add-status"></p>
       </div>
       <p class="status-msg" id="lym-status"></p>
+    </div>
+    <div class="adm-ornament">✦</div>
+    <div class="adm-section" id="sec-30">
+      <div class="adm-section-title">✦ Caption Editor</div>
+      <div class="adm-section-underline"></div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:24px;">Edit visible text on any page and save it live — no code push needed.</div>
+      <div class="lym-form-grid" style="gap:0 20px;margin-bottom:16px;">
+        <div>
+          <label class="field-label" for="cap-page">Page</label>
+          <select class="field-input" id="cap-page">
+            <option value="all">All Pages</option>
+            <option value="index.html">Home</option>
+            <option value="entities.html">Entities</option>
+            <option value="albums.html">Albums</option>
+            <option value="lyrics.html">Lyrics</option>
+            <option value="merch.html">Merch</option>
+            <option value="photos.html">Photos</option>
+            <option value="videos.html">Videos</option>
+            <option value="shows.html">Shows</option>
+            <option value="blog.html">Blog</option>
+            <option value="comix.html">Comix</option>
+            <option value="arcade.html">Games / Arcade</option>
+            <option value="game-oracle.html">Oracle Game</option>
+            <option value="game-memory.html">Memory Game</option>
+            <option value="members.html">Members</option>
+            <option value="profile.html">Profile</option>
+            <option value="dossier.html">Dossier</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="cap-label">Label <span style="color:rgba(201,168,76,0.4);font-size:0.6rem;">(friendly name for this caption)</span></label>
+          <input class="field-input" type="text" id="cap-label" placeholder="e.g. Albums Page Subtitle">
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label class="field-label" for="cap-selector">CSS Selector</label>
+        <input class="field-input" type="text" id="cap-selector" placeholder="e.g. .page-header p  or  h1.page-title">
+        <div style="font-size:0.6rem;letter-spacing:0.12em;color:rgba(201,168,76,0.35);margin-top:4px;">Right-click any text on the page → Inspect → copy the element's CSS selector from DevTools.</div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label class="field-label" for="cap-text">Caption Text</label>
+        <textarea class="lym-lyr-ta" id="cap-text" style="min-height:80px;" placeholder="Enter the new caption text…"></textarea>
+      </div>
+      <div style="margin-bottom:20px;">
+        <div style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.5);margin-bottom:8px;">Live Preview</div>
+        <div id="cap-preview" style="background:rgba(0,0,0,0.4);border:1px solid rgba(201,168,76,0.18);border-radius:3px;padding:16px 20px;font-family:'Luminari',serif;font-size:1rem;color:#c9a84c;letter-spacing:0.08em;min-height:48px;white-space:pre-wrap;word-break:break-word;"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-gold" id="cap-save-btn">Save Caption</button>
+        <button class="btn-ghost" id="cap-clear-btn">Clear</button>
+        <button class="btn-gold" id="cap-publish-btn" style="margin-left:auto;">Publish All ✦</button>
+      </div>
+      <p class="status-msg" id="cap-status"></p>
+      <div style="margin-top:28px;">
+        <div style="font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.55);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(201,168,76,0.1);">Active Captions</div>
+        <div id="cap-list-inner" style="min-height:40px;"><div style="color:rgba(201,168,76,0.35);font-size:0.7rem;letter-spacing:0.2em;">Loading…</div></div>
+      </div>
     </div>
     <div class="adm-ornament">✦</div>
     <div class="adm-section" id="sec-14">
@@ -1702,12 +1760,24 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   var allMembers = [], memberFilter = '';
 
   function initMembers() {
-    db.collection('users').orderBy('createdAt','desc').get().then(function (snap) {
+    var _db = window.jestaDB || db;
+    console.log('[Members] initMembers() called, db:', !!_db);
+    _db.collection('users').get().then(function (snap) {
+      console.log('[Members] snapshot size:', snap.size);
       allMembers = [];
       snap.forEach(function (doc) { allMembers.push({id: doc.id, data: doc.data()}); });
+      // client-side sort by createdAt desc (avoids Firestore index requirement)
+      allMembers.sort(function(a, b) {
+        var ta = (a.data.createdAt && a.data.createdAt.toMillis) ? a.data.createdAt.toMillis() : (a.data.createdAt || 0);
+        var tb = (b.data.createdAt && b.data.createdAt.toMillis) ? b.data.createdAt.toMillis() : (b.data.createdAt || 0);
+        return tb - ta;
+      });
+      console.log('[Members] allMembers loaded:', allMembers.length);
       document.getElementById('member-count').textContent = allMembers.length + ' member' + (allMembers.length !== 1 ? 's' : '');
       renderMemberTable();
     }).catch(function (e) {
+      console.error('[Members] fetch error:', e);
+      document.getElementById('member-count').textContent = '0 members';
       document.getElementById('member-list').innerHTML = '<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;padding:12px 0;">Error loading members: ' + esc(e.message) + '</div>';
     });
 
@@ -2408,33 +2478,54 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       });
     });
 
-    db.collection('pressArticles').orderBy('order','asc').onSnapshot(function(snap){
+    console.log('[Press] setting up onSnapshot on pressArticles');
+    db.collection('pressArticles').onSnapshot(function(snap){
+      console.log('[Press] snapshot received, size:', snap.size);
       var el=document.getElementById('pm-list');
       if(snap.empty){el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No press articles yet.</div>';return;}
+      // sort client-side by order asc (avoids Firestore index requirement)
+      var docs=[];
+      snap.forEach(function(doc){ docs.push({id:doc.id, data:doc.data()}); });
+      docs.sort(function(a,b){ return (a.data.order||0)-(b.data.order||0); });
       var html='';
-      snap.forEach(function(doc){
-        var d=doc.data(); var eid='pm-'+doc.id;
+      docs.forEach(function(item){
+        var doc_id=item.id; var d=item.data; var eid='pm-'+doc_id;
+        var excerptPreview = d.excerpt ? (d.excerpt.length>80 ? d.excerpt.slice(0,80)+'…' : d.excerpt) : '';
         html+='<div class="entry-row" id="row-'+eid+'">'
           +'<div class="entry-body">'
           +'<div class="entry-name">'+esc(d.title)+'</div>'
           +'<div class="entry-meta">'+esc(d.publication)+(d.author?' · '+esc(d.author):'')+(d.date?' · '+esc(d.date):'')+'</div>'
-          +(d.excerpt?'<div class="entry-text" style="margin-top:4px;">'+esc(d.excerpt)+'</div>':'')
-          +'<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">'
+          +(excerptPreview?'<div class="entry-text" style="margin-top:4px;">'+esc(excerptPreview)+'</div>':'')
+          +'<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;">'
           +(d.featured?'<span class="badge badge-gold">Featured</span>':'')
           +(d.url?'<a href="'+esc(d.url)+'" target="_blank" rel="noopener" style="font-size:0.6rem;color:rgba(201,168,76,0.4);letter-spacing:0.1em;">View Article ↗</a>':'')
           +'</div>'
           +'<div class="entry-actions">'
-          +'<button class="btn-ghost btn-sm" onclick="toggleFeatured(\''+doc.id+'\','+d.featured+')">'+(d.featured?'Unfeature':'Feature')+'</button>'
-          +'<button class="btn-danger btn-sm" onclick="askDelete(\''+eid+'\')">Delete</button>'
-          +makeDeleteRow('pressArticles',doc.id,eid)
+          +'<button class="btn-ghost btn-sm" onclick="toggleFeatured(\''+doc_id+'\','+d.featured+')">'+(d.featured?'Unfeature':'Feature')+'</button>'
+          +'<button class="btn-danger btn-sm" onclick="pressDelete(\''+doc_id+'\',\''+esc(d.title)+'\')">Delete</button>'
           +'</div></div></div>';
       });
       el.innerHTML=html;
-    },function(e){document.getElementById('pm-list').innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>';});
+    },function(e){
+      console.error('[Press] onSnapshot error:', e);
+      document.getElementById('pm-list').innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>';
+    });
   }
 
   window.toggleFeatured = function(id, current){
     db.collection('pressArticles').doc(id).update({featured:!current}).catch(function(){});
+  };
+
+  window.pressDelete = function(id, title){
+    if(!confirm('Delete article "'+title+'"? This cannot be undone.')) return;
+    var statusEl = document.getElementById('pm-status');
+    db.collection('pressArticles').doc(id).delete().then(function(){
+      statusEl.textContent = 'ARTICLE REMOVED \u2726';
+      statusEl.className = 'status-msg status-ok';
+    }).catch(function(e){
+      statusEl.textContent = 'Delete failed: '+e.message;
+      statusEl.className = 'status-msg status-err';
+    });
   };
 
   /* ══════════════ SECTION 10: ALBUM MANAGER ══════════════ */
@@ -4184,7 +4275,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       obs.observe(el, { childList: true, characterData: true, subtree: true });
     });
   }
-  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-26','sec-27','sec-29','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-25','sec-28','sec-1','sec-12','sec-20','sec-17'];
+  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-26','sec-27','sec-29','sec-30','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-25','sec-28','sec-1','sec-12','sec-20','sec-17'];
   function initScrollSpy() {
     var secs = SEC_IDS.map(function(id){ return document.getElementById(id); }).filter(Boolean);
     var links = document.querySelectorAll('.adm-sidenav-link,.adm-mobtab');
@@ -5025,6 +5116,165 @@ function lymLoad(){
   var _t=0,_iv=setInterval(function(){
     if(window.jestaDB){clearInterval(_iv);lymLoad();}
     else if(++_t>80){clearInterval(_iv);var c=document.getElementById('lym-list-inner');if(c)c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
+  },100);
+})();
+})();</script>
+
+<script>(function(){
+/* ── Caption Editor ── */
+var _capDocs = [];  // flat array of caption objects (with ._idx)
+
+function capEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function capLoad(){
+  var el = document.getElementById('cap-list-inner');
+  if(el) el.innerHTML = '<div style="color:rgba(201,168,76,0.35);font-size:0.7rem;letter-spacing:0.2em;">Loading\u2026</div>';
+  window.jestaDB.collection('siteConfig').doc('captions').get()
+    .then(function(doc){
+      _capDocs = [];
+      if(doc.exists){
+        var data = doc.data();
+        _capDocs = (data.captions || []).map(function(c,i){ return Object.assign({},c,{_idx:i}); });
+      }
+      capRenderList();
+    })
+    .catch(function(e){
+      var el2 = document.getElementById('cap-list-inner');
+      if(el2) el2.innerHTML = '<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Load error: '+capEsc(e.message)+'</div>';
+    });
+}
+
+function capRenderList(){
+  var el = document.getElementById('cap-list-inner');
+  if(!el) return;
+  if(!_capDocs.length){ el.innerHTML = '<div style="color:rgba(201,168,76,0.3);font-size:0.7rem;letter-spacing:0.18em;">No captions saved yet.</div>'; return; }
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:0.68rem;">'
+    + '<thead><tr style="border-bottom:1px solid rgba(201,168,76,0.2);">'
+    + '<th style="text-align:left;padding:6px 8px;color:rgba(201,168,76,0.6);letter-spacing:0.2em;font-weight:normal;">Label</th>'
+    + '<th style="text-align:left;padding:6px 8px;color:rgba(201,168,76,0.6);letter-spacing:0.2em;font-weight:normal;">Page</th>'
+    + '<th style="text-align:left;padding:6px 8px;color:rgba(201,168,76,0.6);letter-spacing:0.2em;font-weight:normal;">Selector</th>'
+    + '<th style="text-align:left;padding:6px 8px;color:rgba(201,168,76,0.6);letter-spacing:0.2em;font-weight:normal;">Text Preview</th>'
+    + '<th style="padding:6px 8px;"></th>'
+    + '</tr></thead><tbody>';
+  _capDocs.forEach(function(c){
+    var preview = (c.text||'').length > 60 ? c.text.slice(0,57)+'\u2026' : (c.text||'');
+    html += '<tr id="cap-row-'+c._idx+'" style="border-bottom:1px solid rgba(201,168,76,0.07);">'
+      + '<td style="padding:7px 8px;color:rgba(240,230,210,0.85);">'+capEsc(c.label||'')+'</td>'
+      + '<td style="padding:7px 8px;color:rgba(201,168,76,0.55);">'+capEsc(c.page||'')+'</td>'
+      + '<td style="padding:7px 8px;color:rgba(201,168,76,0.45);font-family:monospace;font-size:0.62rem;">'+capEsc(c.selector||'')+'</td>'
+      + '<td style="padding:7px 8px;color:rgba(240,230,210,0.6);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+capEsc(preview)+'</td>'
+      + '<td style="padding:7px 8px;white-space:nowrap;text-align:right;">'
+      + '<button class="btn-ghost" style="font-size:0.6rem;padding:3px 8px;margin-right:4px;" onclick="capEdit('+c._idx+')">Edit</button>'
+      + '<button class="btn-ghost" style="font-size:0.6rem;padding:3px 8px;color:rgba(251,56,56,0.75);" onclick="capDelete('+c._idx+')">Delete</button>'
+      + '</td></tr>';
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+window.capEdit = function(idx){
+  var c = _capDocs[idx];
+  if(!c) return;
+  document.getElementById('cap-page').value    = c.page     || 'all';
+  document.getElementById('cap-label').value   = c.label    || '';
+  document.getElementById('cap-selector').value= c.selector || '';
+  document.getElementById('cap-text').value    = c.text     || '';
+  document.getElementById('cap-preview').textContent = c.text || '';
+  document.getElementById('cap-save-btn').dataset.editIdx = idx;
+  document.getElementById('cap-save-btn').textContent = 'Update Caption';
+  document.getElementById('sec-30').scrollIntoView({behavior:'smooth',block:'start'});
+};
+
+window.capDelete = function(idx){
+  var c = _capDocs[idx];
+  if(!c) return;
+  if(!confirm('Delete caption "' + (c.label||c.selector) + '"?')) return;
+  var newList = _capDocs.filter(function(x){ return x._idx !== idx; }).map(function(x,i){
+    return { id: x.id||'', page: x.page||'all', selector: x.selector||'', text: x.text||'', label: x.label||'' };
+  });
+  var statusEl = document.getElementById('cap-status');
+  window.jestaDB.collection('siteConfig').doc('captions').set({ captions: newList }, { merge: false })
+    .then(function(){
+      if(statusEl){ statusEl.textContent = 'Caption deleted \u2726'; statusEl.className = 'status-msg status-ok'; }
+      capLoad();
+    })
+    .catch(function(e){
+      if(statusEl){ statusEl.textContent = 'Delete failed: '+(e.message||String(e)); statusEl.className = 'status-msg status-err'; }
+    });
+};
+
+function capSave(){
+  var page     = (document.getElementById('cap-page').value     || '').trim();
+  var label    = (document.getElementById('cap-label').value    || '').trim();
+  var selector = (document.getElementById('cap-selector').value || '').trim();
+  var text     = (document.getElementById('cap-text').value     || '');
+  var statusEl = document.getElementById('cap-status');
+  if(!selector){ if(statusEl){ statusEl.textContent = 'CSS Selector is required.'; statusEl.className = 'status-msg status-err'; } return; }
+  if(!text.trim()){ if(statusEl){ statusEl.textContent = 'Caption text is required.'; statusEl.className = 'status-msg status-err'; } return; }
+  var saveBtn = document.getElementById('cap-save-btn');
+  var editIdx = saveBtn.dataset.editIdx !== undefined && saveBtn.dataset.editIdx !== '' ? parseInt(saveBtn.dataset.editIdx, 10) : -1;
+  // Generate id from label or selector
+  var id = label ? label.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') : selector.replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  id = id || ('cap-' + Date.now());
+  var entry = { id: id, page: page, selector: selector, text: text, label: label };
+  var newList;
+  if(editIdx >= 0 && _capDocs[editIdx]){
+    newList = _capDocs.map(function(c,i){
+      if(c._idx === editIdx) return entry;
+      return { id: c.id||'', page: c.page||'all', selector: c.selector||'', text: c.text||'', label: c.label||'' };
+    });
+  } else {
+    newList = _capDocs.map(function(c){ return { id: c.id||'', page: c.page||'all', selector: c.selector||'', text: c.text||'', label: c.label||'' }; });
+    newList.push(entry);
+  }
+  if(saveBtn){ saveBtn.disabled = true; saveBtn.textContent = 'Saving\u2026'; }
+  window.jestaDB.collection('siteConfig').doc('captions').set({ captions: newList }, { merge: false })
+    .then(function(){
+      if(statusEl){ statusEl.textContent = editIdx >= 0 ? 'Caption updated \u2726' : 'Caption saved \u2726'; statusEl.className = 'status-msg status-ok'; }
+      capClear();
+      capLoad();
+    })
+    .catch(function(e){
+      if(statusEl){ statusEl.textContent = 'Save failed: '+(e.message||String(e)); statusEl.className = 'status-msg status-err'; }
+      if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = 'Save Caption'; }
+    });
+}
+
+function capClear(){
+  var saveBtn = document.getElementById('cap-save-btn');
+  document.getElementById('cap-page').value     = 'all';
+  document.getElementById('cap-label').value    = '';
+  document.getElementById('cap-selector').value = '';
+  document.getElementById('cap-text').value     = '';
+  document.getElementById('cap-preview').textContent = '';
+  if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = 'Save Caption'; delete saveBtn.dataset.editIdx; }
+}
+
+function capPublish(){
+  var statusEl = document.getElementById('cap-status');
+  window.jestaDB.collection('siteConfig').doc('cacheVersion').set({ v: Date.now() }, { merge: true })
+    .then(function(){
+      if(statusEl){ statusEl.textContent = 'Published \u2014 cache busted \u2726'; statusEl.className = 'status-msg status-ok'; }
+    })
+    .catch(function(e){
+      if(statusEl){ statusEl.textContent = 'Publish failed: '+(e.message||String(e)); statusEl.className = 'status-msg status-err'; }
+    });
+}
+
+/* ── Boot ── */
+(function(){
+  var textEl = document.getElementById('cap-text');
+  var previewEl = document.getElementById('cap-preview');
+  if(textEl && previewEl){ textEl.addEventListener('input', function(){ previewEl.textContent = this.value; }); }
+  var saveBtn   = document.getElementById('cap-save-btn');
+  var clearBtn  = document.getElementById('cap-clear-btn');
+  var publishBtn= document.getElementById('cap-publish-btn');
+  if(saveBtn)    saveBtn.addEventListener('click', capSave);
+  if(clearBtn)   clearBtn.addEventListener('click', capClear);
+  if(publishBtn) publishBtn.addEventListener('click', capPublish);
+  var _t=0, _iv=setInterval(function(){
+    if(window.jestaDB){ clearInterval(_iv); capLoad(); }
+    else if(++_t>80){ clearInterval(_iv); var el=document.getElementById('cap-list-inner'); if(el) el.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>'; }
   },100);
 })();
 })();</script>
