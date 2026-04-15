@@ -119,8 +119,8 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
   body, .bg-wrap { background-attachment: scroll !important; }
   /* All containers box-sizing */
   * { box-sizing: border-box; }
-  /* Video bg: use absolute not fixed on mobile */
-  #jt-bg { position: absolute !important; }
+  /* Background: keep fixed so it covers full viewport on mobile */
+  #jt-bg { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; }
   /* Minimum touch targets */
   button, a, [role="button"] { min-height: 44px; }
   /* Hide home-btn on mobile */
