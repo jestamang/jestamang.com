@@ -528,7 +528,31 @@ document.addEventListener('DOMContentLoaded', function(){
     return; // do not fall through to verifyEmail logic
   }
 
-  if (mode === 'verifyEmail') {
+  if (mode === 'recoverEmail') {
+    firebase.auth().checkActionCode(oobCode).then(function(info) {
+      var restoredEmail = info.data.email || '';
+      return firebase.auth().applyActionCode(oobCode).then(function() {
+        titleEl.textContent    = 'YOUR EMAIL HAS BEEN RESTORED \u2756';
+        subtitleEl.textContent = restoredEmail
+          ? 'Your account email has been restored to ' + restoredEmail + '.'
+          : 'Your original email address has been restored.';
+        msgEl.style.display   = 'none';
+        btnEl.href            = 'login.html';
+        btnEl.textContent     = 'Sign In';
+        btnEl.style.display   = 'block';
+        resendBtn.style.display = 'none';
+      });
+    }).catch(function() {
+      titleEl.textContent    = 'Recovery Failed';
+      subtitleEl.textContent = '';
+      msgEl.textContent      = 'This link has expired or has already been used.';
+      msgEl.style.display    = 'block';
+      btnEl.href             = 'mailto:thejestamang@gmail.com?subject=Email%20Recovery%20Issue';
+      btnEl.textContent      = 'Contact Support';
+      btnEl.style.display    = 'block';
+      resendBtn.style.display = 'none';
+    });
+  } else if (mode === 'verifyEmail') {
     firebase.auth().applyActionCode(oobCode).then(function() {
       showSuccess();
     }).catch(function() {
