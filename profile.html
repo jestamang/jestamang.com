@@ -4807,7 +4807,7 @@ document.addEventListener('DOMContentLoaded', function(){
           }
           change.doc.ref.update({ sent: true });
         });
-      });
+      }, function(e){ console.error('notifications error:', e.message); });
   }
 
   // ── Button click ─────────────────────────────────────────────

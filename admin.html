@@ -2400,7 +2400,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           +'</tr>';
       });
       tbody.innerHTML=html;
-    },function(){});
+    },function(e){ console.error('shows error:', e.message); });
   }
 
   window.notifyShow = function(venue, city, date){
