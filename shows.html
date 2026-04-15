@@ -161,10 +161,10 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .ml-signup-box label{display:none!important}
 @media(max-width:520px){.ml-signup-box{padding:24px 16px}.ml-signup-box button[type="submit"],.ml-signup-box .ml-form-embedSubmit button{min-width:180px!important}}
 @media(max-width:768px){
-  .ml-signup-box{background:rgba(0,0,0,0.65)!important;border:1px solid rgba(201,168,76,0.4)!important;padding:32px 20px!important;text-align:center!important;margin:40px 16px!important;max-width:unset!important}
+  .ml-signup-box{background:rgba(0,0,0,0.65)!important;border:1px solid rgba(201,168,76,0.4)!important;padding:28px 20px!important;text-align:center!important;margin:0 16px!important;max-width:unset!important}
   .ml-signup-title{color:#c9a84c!important;font-family:'Luminari',Georgia,serif!important;font-size:1.1rem!important;letter-spacing:0.25em!important}
   .ml-signup-sub{color:rgba(240,230,210,0.85)!important;font-size:0.85rem!important}
-  #shows-notif-btn{color:#c9a84c!important;border:1px solid rgba(201,168,76,0.5)!important;padding:10px 24px!important;display:inline-block!important;margin-top:16px!important;background:transparent!important}
+  #shows-notif-btn{color:#c9a84c!important;border:1px solid rgba(201,168,76,0.5)!important;padding:10px 24px!important;display:block!important;width:100%!important;margin-top:16px!important;background:transparent!important;box-sizing:border-box!important}
   }
 </style>
 <script>(function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[]).push(arguments);};l=d.createElement(e);l.async=1;l.src=u;n=d.getElementsByTagName(e)[0];n.parentNode.insertBefore(l,n);})(window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');ml('account','1679810');</script>
@@ -270,8 +270,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   var status = document.getElementById('shows-notif-status');
   var LS = 'jesta-notif-enabled';
   if (!btn) return;
-  if (!('Notification' in window)) { status.textContent = 'Notifications not supported in this browser.'; status.className = 'blocked'; btn.disabled = true; return; }
-
   function setOn() {
     btn.textContent = 'Notifications On \u2736';
     btn.classList.add('notif-on');
@@ -301,6 +299,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   else { setOff(); }
 
   btn.addEventListener('click', function() {
+    if (!('Notification' in window)) { status.textContent = 'Notifications not supported in this browser.'; status.className = 'blocked'; btn.disabled = true; return; }
     if (btn.classList.contains('notif-on')) { setOff(); return; }
     btn.disabled = true;
     btn.textContent = 'Requesting\u2026';
