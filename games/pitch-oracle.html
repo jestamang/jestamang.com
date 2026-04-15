@@ -1198,6 +1198,9 @@ document.addEventListener('DOMContentLoaded', function() {
   .ltn-hear-btn{font-size:0.45rem;padding:5px 4px}
   #ltn-inner{padding:18px 14px 8px}
   .ltn-prose{font-size:0.6rem}
+  /* Panel scroll fix: prevent flex shrink so panel overflows #ss and scroll engages */
+  #ltn-panel.ltn-open{flex-shrink:0}
+  #ss.ltn-open{overflow-y:scroll!important;-webkit-overflow-scrolling:touch}
 }
 </style>
 <style>@media(max-width:768px){body{overflow-x:hidden}}</style>
