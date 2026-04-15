@@ -450,7 +450,7 @@
     var cs = document.createElement('style');
     cs.id = 'ck-styles';
     cs.textContent =
-      '#ck-banner{position:fixed;bottom:0;left:0;right:0;z-index:99998;background:rgba(0,0,0,0.85);border-top:1px solid #c9a84c;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}' +
+      '#ck-banner{position:fixed;bottom:0;left:0;right:0;z-index:99998;background:rgba(0,0,0,0.85);border-top:1px solid #c9a84c;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}' +
       '#ck-banner.ck-hidden{display:none!important}' +
       '#ck-text{font-family:\'Luminari\',serif;font-size:0.72rem;letter-spacing:0.05em;color:rgba(240,230,210,0.85);line-height:1.7;flex:1;min-width:180px;margin:0}' +
       '#ck-btns{display:flex;gap:10px;flex-shrink:0;align-items:center}' +
