@@ -3332,7 +3332,7 @@ document.addEventListener('DOMContentLoaded', function(){
     document.getElementById('f-pob').value       = data.placeOfBirth  || '';
   }
 
-  document.getElementById('edit-dossier-btn').addEventListener('click', function(){
+  var _editDossierBtn=document.getElementById('edit-dossier-btn');if(_editDossierBtn)_editDossierBtn.addEventListener('click', function(){
     populateEditForm(dossierData);
     document.getElementById('dossier-view').style.display = 'none';
     document.getElementById('dossier-edit').style.display = 'block';
@@ -3340,7 +3340,7 @@ document.addEventListener('DOMContentLoaded', function(){
     editMode = true;
   });
 
-  document.getElementById('cancel-edit-btn').addEventListener('click', function(){
+  var _cancelEditBtn=document.getElementById('cancel-edit-btn');if(_cancelEditBtn)_cancelEditBtn.addEventListener('click', function(){
     exitEditMode();
   });
 
@@ -3352,7 +3352,7 @@ document.addEventListener('DOMContentLoaded', function(){
     editMode = false;
   }
 
-  document.getElementById('save-dossier-btn').addEventListener('click', function(){
+  var _saveDossierBtn=document.getElementById('save-dossier-btn');if(_saveDossierBtn)_saveDossierBtn.addEventListener('click', function(){
     var newData = {
       username:       document.getElementById('f-username').value.trim(),
       dateOfBirth:    document.getElementById('f-dob').value,
@@ -3381,7 +3381,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // ── Username inline edit ──
 
-  document.getElementById('username-edit-btn').addEventListener('click', function(){
+  var _usernameEditBtn=document.getElementById('username-edit-btn');if(_usernameEditBtn)_usernameEditBtn.addEventListener('click', function(){
     var currentName = document.getElementById('display-name').textContent;
     document.getElementById('username-input').value = dossierData.username || currentName;
     document.getElementById('username-wrap').style.display = 'none';
@@ -3413,14 +3413,14 @@ document.addEventListener('DOMContentLoaded', function(){
       });
   }
 
-  document.getElementById('username-save-btn').addEventListener('click', saveUsername);
+  var _usernameSaveBtn=document.getElementById('username-save-btn');if(_usernameSaveBtn)_usernameSaveBtn.addEventListener('click', saveUsername);
 
-  document.getElementById('username-cancel-btn').addEventListener('click', function(){
+  var _usernameCancelBtn=document.getElementById('username-cancel-btn');if(_usernameCancelBtn)_usernameCancelBtn.addEventListener('click', function(){
     document.getElementById('username-edit-form').style.display = 'none';
     document.getElementById('username-wrap').style.display = 'flex';
   });
 
-  document.getElementById('username-input').addEventListener('keydown', function(e){
+  var _usernameInput=document.getElementById('username-input');if(_usernameInput)_usernameInput.addEventListener('keydown', function(e){
     if(e.key === 'Enter') saveUsername();
     if(e.key === 'Escape'){
       document.getElementById('username-edit-form').style.display = 'none';
@@ -3475,7 +3475,7 @@ document.addEventListener('DOMContentLoaded', function(){
   // ── Account ──
 
   // ── Blog post submission ──────────────────────────────
-  document.getElementById('blog-post-btn').addEventListener('click', function(){
+  var _blogPostBtn=document.getElementById('blog-post-btn');if(_blogPostBtn)_blogPostBtn.addEventListener('click', function(){
     var title = (document.getElementById('blog-title').value||'').trim();
     var body  = (document.getElementById('blog-body').value||'').trim();
     var status = document.getElementById('blog-post-status');
@@ -3666,11 +3666,11 @@ document.addEventListener('DOMContentLoaded', function(){
     };
   })();
 
-  document.getElementById('signout-btn').addEventListener('click', function(){
+  var _signoutBtn=document.getElementById('signout-btn');if(_signoutBtn)_signoutBtn.addEventListener('click', function(){
     firebase.auth().signOut().then(function(){ window.location.href = 'index.html'; });
   });
 
-  document.getElementById('delete-account-btn').addEventListener('click', function(){
+  var _deleteAccountBtn=document.getElementById('delete-account-btn');if(_deleteAccountBtn)_deleteAccountBtn.addEventListener('click', function(){
     var confirmed = window.confirm('Are you certain you wish to dissolve your presence from the inner circle? This cannot be undone.');
     if(!confirmed) return;
     currentUser.delete()
@@ -3683,11 +3683,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // ── NATAL CHART CALCULATOR ──
 
-  document.getElementById('natal-calc-btn').addEventListener('click', function(){
+  var _natalCalcBtn=document.getElementById('natal-calc-btn');if(_natalCalcBtn)_natalCalcBtn.addEventListener('click', function(){
     runNatalCalculation();
   });
 
-  document.getElementById('natal-recalc-btn').addEventListener('click', function(){
+  var _natalRecalcBtn=document.getElementById('natal-recalc-btn');if(_natalRecalcBtn)_natalRecalcBtn.addEventListener('click', function(){
     document.getElementById('natal-result').style.display = 'none';
     document.getElementById('natal-form-area').style.display = 'block';
     document.getElementById('natal-error').style.display = 'none';
@@ -3702,7 +3702,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   });
 
-  document.getElementById('natal-share-btn').addEventListener('click', function(){
+  var _natalShareBtn=document.getElementById('natal-share-btn');if(_natalShareBtn)_natalShareBtn.addEventListener('click', function(){
     if(!currentUser) return;
     var btn = this;
     var userName = (dossierData && dossierData.username) ||
@@ -3841,7 +3841,7 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
-  document.getElementById('natal-seal-btn').addEventListener('click', function(){
+  var _natalSealBtn=document.getElementById('natal-seal-btn');if(_natalSealBtn)_natalSealBtn.addEventListener('click', function(){
     var charts = getSavedCharts();
     if(charts.length >= MAX_SAVED_CHARTS){
       var limitEl = document.getElementById('natal-save-limit');
@@ -4048,7 +4048,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   // ── Download My Chart (PDF) ──────────────────────────────────
-  document.getElementById('natal-dl-btn').addEventListener('click', function(){
+  var _natalDlBtn=document.getElementById('natal-dl-btn');if(_natalDlBtn)_natalDlBtn.addEventListener('click', function(){
     if(!_lastNatalResult){ return; }
     var btn = this;
     btn.disabled = true;
@@ -4179,7 +4179,7 @@ document.addEventListener('DOMContentLoaded', function(){
       sel.appendChild(opt);
     });
   })();
-  document.getElementById('nc-tz-confirm').addEventListener('click', function(){
+  var _ncTzConfirm=document.getElementById('nc-tz-confirm');if(_ncTzConfirm)_ncTzConfirm.addEventListener('click', function(){
     if(!_pendingDoCalculate) return;
     var sel = document.getElementById('nc-tz-offset');
     var manualOffset = parseInt(sel.value, 10);
@@ -4600,7 +4600,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   // ── Profile picture upload ──
-  document.getElementById('avatar-upload-input').addEventListener('change', function(e){
+  var _avatarUploadInput=document.getElementById('avatar-upload-input');if(_avatarUploadInput)_avatarUploadInput.addEventListener('change', function(e){
     var file = e.target.files && e.target.files[0];
     if(!file || !currentUser) return;
     if(file.size > 10 * 1024 * 1024){

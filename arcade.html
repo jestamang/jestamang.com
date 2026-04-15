@@ -335,7 +335,7 @@ window.openLB=function(game,title,lowerBetter){
 };
 window.closeLB=function(){document.getElementById('lb-modal').classList.remove('open');};
 document.addEventListener('keydown',function(e){if(e.key==='Escape')window.closeLB();});
-document.getElementById('lb-modal').addEventListener('click',function(e){if(e.target===this)window.closeLB();});
+var _lbModal=document.getElementById('lb-modal');if(_lbModal)_lbModal.addEventListener('click',function(e){if(e.target===this)window.closeLB();});
 })();
 </script>
 

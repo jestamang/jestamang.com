@@ -528,7 +528,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       emailInput.readOnly  = false;
       pendingGoogleCred    = null;
     }
-    document.getElementById('toggle-link').addEventListener('click',function(e){
+    var _toggleLink=document.getElementById('toggle-link');if(_toggleLink)_toggleLink.addEventListener('click',function(e){
       e.preventDefault();
       setMode(mode==='signin'?'signup':'signin');
     });
@@ -672,7 +672,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     });
 
   // ── Google Sign In (popup → redirect fallback) ─────────────────
-  document.getElementById('google-btn').addEventListener('click', function(){
+  var _googleBtn=document.getElementById('google-btn');if(_googleBtn)_googleBtn.addEventListener('click', function(){
     clearError();
     var provider = new firebase.auth.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });

@@ -718,11 +718,13 @@ function gameOver(elapsed) {
   if(typeof lbOnGameOver==='function')lbOnGameOver(score);
 }
 
-document.getElementById('startBtn').addEventListener('click', () => {
+var _startBtn = document.getElementById('startBtn');
+if (_startBtn) _startBtn.addEventListener('click', () => {
   document.getElementById('ss').classList.add('off');
   init(); ST = 'playing';
 });
-document.getElementById('restartBtn').addEventListener('click', () => {
+var _restartBtn = document.getElementById('restartBtn');
+if (_restartBtn) _restartBtn.addEventListener('click', () => {
   document.getElementById('os').classList.add('off');
   init(); ST = 'playing';
 });

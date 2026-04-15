@@ -929,7 +929,7 @@ function renderMerchCards(docs) {
           '<button class="ask-link" data-product="' + _mEsc(d.name || '') + '">Ask a Question</button>' +
         '</div>' +
       '</div>';
-    card.querySelector('.ask-link').addEventListener('click', function() {
+    var _askLink=card.querySelector('.ask-link');if(_askLink)_askLink.addEventListener('click', function() {
       openModal(this.getAttribute('data-product'));
     });
     _mGrid.appendChild(card);
@@ -1006,7 +1006,7 @@ function showFallback() {
           '<button class="ask-link" data-product="' + p.title + '">Ask a Question</button>' +
         '</div>' +
       '</div>';
-    card.querySelector('.ask-link').addEventListener('click', function() {
+    var _askLink=card.querySelector('.ask-link');if(_askLink)_askLink.addEventListener('click', function() {
       openModal(this.getAttribute('data-product'));
     });
     _mGrid.appendChild(card);
@@ -1085,7 +1085,7 @@ document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') closeModal();
 });
 
-document.getElementById('inquiry-form').addEventListener('submit', function (e) {
+var _inquiryForm=document.getElementById('inquiry-form');if(_inquiryForm)_inquiryForm.addEventListener('submit', function (e) {
   e.preventDefault();
 
   var name    = inqName.value.trim();

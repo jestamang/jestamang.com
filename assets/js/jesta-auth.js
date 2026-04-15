@@ -431,11 +431,13 @@
     document.body.appendChild(banner);
     // Init
     if (!v) { banner.classList.remove('ck-hidden'); }
-    document.getElementById('ck-accept').addEventListener('click', function () {
+    var ckAccept = document.getElementById('ck-accept');
+    if (ckAccept) ckAccept.addEventListener('click', function () {
       try { localStorage.setItem('cookieAccepted', 'true'); } catch(e) {}
       banner.classList.add('ck-hidden');
     });
-    document.getElementById('ck-decline').addEventListener('click', function () {
+    var ckDecline = document.getElementById('ck-decline');
+    if (ckDecline) ckDecline.addEventListener('click', function () {
       try { localStorage.setItem('cookieAccepted', 'false'); } catch(e) {}
       banner.classList.add('ck-hidden');
     });

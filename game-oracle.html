@@ -548,7 +548,7 @@ function syncToFirestore(idx,drawTs){
 }
 
 /* ── Draw button ── */
-document.getElementById('draw-btn').addEventListener('click',function(){
+var _drawBtn=document.getElementById('draw-btn');if(_drawBtn)_drawBtn.addEventListener('click',function(){
   var btn=this;
   if(btn.disabled)return;
   btn.disabled=true;
@@ -575,7 +575,7 @@ document.getElementById('draw-btn').addEventListener('click',function(){
 });
 
 /* ── Share button ── */
-document.getElementById('share-btn').addEventListener('click',function(){
+var _shareBtn=document.getElementById('share-btn');if(_shareBtn)_shareBtn.addEventListener('click',function(){
   var btn=this;
   if(_currentCardIdx===null)return;
   var card=ACTIVE_CARDS[_currentCardIdx];
@@ -708,7 +708,7 @@ window.openLB=function(game,title,lowerBetter){
 };
 window.closeLB=function(){document.getElementById('lb-modal').classList.remove('open');};
 document.addEventListener('keydown',function(e){if(e.key==='Escape')window.closeLB();});
-document.getElementById('lb-modal').addEventListener('click',function(e){if(e.target===this)window.closeLB();});
+var _lbModal=document.getElementById('lb-modal');if(_lbModal)_lbModal.addEventListener('click',function(e){if(e.target===this)window.closeLB();});
 })();
 </script>
 

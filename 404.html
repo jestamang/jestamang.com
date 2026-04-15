@@ -782,7 +782,7 @@ function loop(ts) {
 }
 
 // ── Button handlers ───────────────────────────────────────
-document.getElementById('begin-btn').addEventListener('click',()=>{
+var _beginBtn=document.getElementById('begin-btn');if(_beginBtn)_beginBtn.addEventListener('click',()=>{
   document.getElementById('s-ov').classList.add('off');
   resizeCanvas();
   initGame();
@@ -791,7 +791,7 @@ document.getElementById('begin-btn').addEventListener('click',()=>{
   if(!loopRunning){loopRunning=true;requestAnimationFrame(loop);}
 });
 
-document.getElementById('retry-btn').addEventListener('click',()=>{
+var _retryBtn=document.getElementById('retry-btn');if(_retryBtn)_retryBtn.addEventListener('click',()=>{
   document.getElementById('d-ov').classList.add('off');
   resizeCanvas();
   initGame();

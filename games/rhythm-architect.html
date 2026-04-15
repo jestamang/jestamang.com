@@ -937,16 +937,16 @@ function startGame(){
 
 // ── Event Listeners ───────────────────────────────────
 document.addEventListener('DOMContentLoaded',function(){
-  document.getElementById('startBtn').addEventListener('click',function(){getAC();startGame();});
-  document.getElementById('restartBtn').addEventListener('click',function(){getAC();startGame();});
+  var _startBtn=document.getElementById('startBtn');if(_startBtn)_startBtn.addEventListener('click',function(){getAC();startGame();});
+  var _restartBtn=document.getElementById('restartBtn');if(_restartBtn)_restartBtn.addEventListener('click',function(){getAC();startGame();});
 
-  document.getElementById('how-toggle').addEventListener('click',function(){
+  var _howToggle=document.getElementById('how-toggle');if(_howToggle)_howToggle.addEventListener('click',function(){
     var b=document.getElementById('how-body');
     b.classList.toggle('open');
     this.textContent=b.classList.contains('open')?'▴ How to Play':'▾ How to Play';
   });
 
-  document.getElementById('replay-btn').addEventListener('click',function(){
+  var _replayBtn=document.getElementById('replay-btn');if(_replayBtn)_replayBtn.addEventListener('click',function(){
     if(state.answered||state.playing||state.replayLeft<=0)return;
     getAC();
     state.replayLeft--;
@@ -967,7 +967,7 @@ document.addEventListener('DOMContentLoaded',function(){
     });
   });
 
-  document.getElementById('next-btn').addEventListener('click',function(){
+  var _nextBtn=document.getElementById('next-btn');if(_nextBtn)_nextBtn.addEventListener('click',function(){
     if(state.lives<=0||state.qNum>=state.MAX_Q){gameOver();}
     else{newRound();}
   });
