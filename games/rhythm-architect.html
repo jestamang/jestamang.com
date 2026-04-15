@@ -199,9 +199,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 @media(hover:none){
   .ans-btn:not(:disabled):hover{background:rgba(5,3,15,0.88)!important;border-color:rgba(201,168,76,0.28)!important;color:rgba(201,168,76,0.85)!important;box-shadow:none!important}
 }
-</style>
+.skip-link{position:absolute;top:-40px;left:0;background:#c9a84c;color:#000;padding:8px 16px;z-index:99999;text-decoration:none;font-family:'Luminari',serif;font-size:0.8rem;letter-spacing:0.1em;border-radius:0 0 4px 0;transition:top 0.1s}.skip-link:focus{top:0;outline:2px solid #000;outline-offset:2px}</style>
 </head>
 <body>
+<a href="#scr-start" class="skip-link">Skip to main content</a>
+
 
 <a href="../arcade.html" id="back">← ARCADE</a>
 
@@ -292,7 +294,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 ══════════════════════════════════════════════════════ -->
 <div id="lb-modal">
   <div id="lb-box">
-    <button id="lb-modal-close">✕</button>
+    <button id="lb-modal-close" aria-label="Close">✕</button>
     <div id="lb-title">Rhythm Architect · Leaderboard</div>
     <div id="lb-new-banner">✦ New High Score ✦</div>
     <table id="lb-table">
@@ -309,7 +311,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div id="lb-name-modal">
   <div id="lb-name-box">
     <div id="lb-name-label">Seal Your Score in the Archive</div>
-    <input id="lb-name-input" type="text" maxlength="20" placeholder="Your name..." autocomplete="off" autocapitalize="off" spellcheck="false">
+    <input id="lb-name-input" type="text" maxlength="20" placeholder="Your name..." autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Enter your name">
     <button id="lb-name-submit">Seal It</button>
     <br>
     <button id="lb-name-skip">Skip</button>

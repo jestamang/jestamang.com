@@ -40,7 +40,7 @@ canvas{display:block;position:fixed;inset:0;touch-action:none}
 .best-lbl{font-size:clamp(0.6rem,1.6vw,0.75rem);letter-spacing:0.35em;color:rgba(255,255,255,0.2);text-transform:uppercase;margin-bottom:44px}
 .ctrl-hint{font-size:0.66rem;letter-spacing:0.14em;color:rgba(255,255,255,0.16);text-transform:uppercase;margin-top:24px;line-height:2.2}
 #back{position:fixed;top:12px;left:14px;z-index:30;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.2s}
-#back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}</style>
+#back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}.skip-link{position:absolute;top:-40px;left:0;background:#c9a84c;color:#000;padding:8px 16px;z-index:99999;text-decoration:none;font-family:'Luminari',serif;font-size:0.8rem;letter-spacing:0.1em;border-radius:0 0 4px 0;transition:top 0.1s}.skip-link:focus{top:0;outline:2px solid #000;outline-offset:2px}</style>
 <style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
 <link rel="preload" as="font" type="font/ttf" href="../assets/fonts/Luminari.ttf" crossorigin>
 <link rel="manifest" href="/manifest.json">
@@ -210,6 +210,8 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 <!-- End Cloudflare Web Analytics -->
 </head>
 <body>
+<a href="#hud" class="skip-link">Skip to main content</a>
+
 <a href="../arcade.html" id="back">← Games</a>
 <canvas id="c"></canvas>
 <div id="hud"></div>
@@ -738,7 +740,7 @@ if (_restartBtn) _restartBtn.addEventListener('click', () => {
 <div id="lb-name-card">
 <p class="lbnm-title">MARK YOUR SCORE</p>
 <p class="lbnm-sub">ENTER YOUR NAME FOR<br>THE COSMIC SCROLLS</p>
-<input id="lb-name-input" type="text" maxlength="20" autocomplete="off" spellcheck="false" placeholder="YOUR NAME...">
+<input id="lb-name-input" type="text" maxlength="20" autocomplete="off" spellcheck="false" placeholder="YOUR NAME..." aria-label="Enter your name">
 <button id="lb-name-submit">SEAL IT</button>
 <button id="lb-name-skip">ENTER WITHOUT SAVING</button>
 </div>
@@ -765,7 +767,7 @@ if (_restartBtn) _restartBtn.addEventListener('click', () => {
 <button class="jsearch-float-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button>
 <div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
 <div id="jsearch-inner">
-<input id="jsearch-input" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="SEARCH THE JESTAMANG UNIVERSE...">
+<input id="jsearch-input" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="SEARCH THE JESTAMANG UNIVERSE..." aria-label="Search">
 <div id="jsearch-results"><div class="jsearch-hint">ENTER A NAME &nbsp;·&nbsp; PAGE &nbsp;·&nbsp; ALBUM &nbsp;·&nbsp; ENTITY</div></div>
 </div>
 </div>
