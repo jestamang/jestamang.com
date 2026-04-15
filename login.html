@@ -614,7 +614,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     var pw    = pwInput.value;
     clearError();
     if(!email || !pw){ showError('Both signal and key are required to enter.'); return; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showError('This signal format is unrecognized.'); return; }
     submitBtn.disabled = true;
+    submitBtn.textContent = mode === 'signup' ? 'Initiating...' : 'Entering...';
     var promise;
 
     if (mode === 'link' && pendingGoogleCred) {
@@ -641,6 +643,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       .then(function(){ /* onAuthStateChanged handles redirect */ })
       .catch(function(err){
         submitBtn.disabled = false;
+        submitBtn.textContent = mode === 'link' ? 'Link & Sign In' : mode === 'signup' ? 'Declare Yourself' : 'Initiate';
         if (mode === 'signup') {
           handleSignUpError(err, email);
         } else {
