@@ -54,7 +54,7 @@
     wrap.innerHTML =
       '<div id="jtnav-auth-sep"></div>' +
       '<a class="jtnav-auth-link" href="profile.html" title="Your Dossier">' + esc(shortName) + '</a>' +
-      '<a class="jtnav-auth-star" href="members.html" title="Inner Circle">\u2736</a>';
+      '<a class="jtnav-auth-star" href="members.html" title="Members">\u2736</a>';
     if (mobWrap) {
       mobWrap.innerHTML =
         '<div class="jtnav-mob-divider"></div>' +
