@@ -590,7 +590,7 @@ function pressSectionToggle(){
             '<div class="comment-body">'+del+'<div class="comment-author">'+escHtml(d.username||'Anonymous')+' · '+fmtDate(d.timestamp)+'</div><div class="comment-text">'+escHtml(d.text)+'</div></div>';
           var delBtn=el.querySelector('.comment-delete');
           if(delBtn) delBtn.addEventListener('click',function(){
-            if(confirm('Remove this transmission?')) window.jestaDB.collection('comments').doc(item.id).delete();
+            if(confirm('Remove this transmission?')) window.jestaDB.collection('comments').doc(item.id).delete().catch(function(){});
           });
           list.appendChild(el);
         });
