@@ -919,7 +919,7 @@ function renderMerchCards(docs) {
     card.style.background = _mBgColors[i % 3];
     card.innerHTML =
       '<div class="product-image-wrap">' +
-        '<img src="' + _mEsc(d.imageUrl || '') + '" alt="' + _mEsc(d.name || '') + '" loading="lazy">' +
+        '<img src="' + _mEsc(d.imageUrl || '') + '" alt="' + _mEsc(d.name || '') + '" loading="lazy" width="180" height="220">' +
       '</div>' +
       '<div class="merch-card-content">' +
         '<div class="product-name">' + _mEsc(d.name || '') + '</div>' +
@@ -994,7 +994,7 @@ function showFallback() {
     card.style.background = _mBgColors[i % 3];
     card.innerHTML =
       '<div class="product-image-wrap">' +
-        '<img src="' + p.image + '" alt="' + p.title + '" loading="lazy">' +
+        '<img src="' + p.image + '" alt="' + p.title + '" loading="lazy" width="180" height="220">' +
       '</div>' +
       '<div class="merch-card-content">' +
         '<div class="product-name">' + p.title + '</div>' +
