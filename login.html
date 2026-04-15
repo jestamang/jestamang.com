@@ -282,6 +282,96 @@ body::before{
   transition:color 0.2s ease;
 }
 .toggle-mode a:hover{color:#c9a84c;}
+#forgot-link{
+  display:block;
+  text-align:right;
+  font-family:'Luminari',serif;
+  font-size:0.75rem;
+  letter-spacing:0.1em;
+  color:rgba(201,168,76,0.8);
+  cursor:pointer;
+  background:none;
+  border:none;
+  padding:0;
+  margin-top:-10px;
+  margin-bottom:18px;
+  transition:color 0.2s ease;
+}
+#forgot-link:hover{color:#c9a84c;}
+#forgot-panel{
+  display:none;
+}
+#forgot-panel .forgot-heading{
+  font-family:'Luminari',serif;
+  font-size:clamp(1.1rem,2.5vw,1.5rem);
+  letter-spacing:0.25em;
+  color:#c9a84c;
+  text-align:center;
+  text-transform:uppercase;
+  margin-bottom:16px;
+  text-shadow:0 0 30px rgba(201,168,76,0.25);
+}
+#forgot-panel .forgot-sub{
+  font-family:'Luminari',serif;
+  font-style:italic;
+  font-size:0.78rem;
+  color:rgba(240,230,210,0.8);
+  text-align:center;
+  line-height:1.7;
+  margin-bottom:24px;
+  letter-spacing:0.04em;
+}
+#forgot-submit-btn{
+  display:block;
+  width:100%;
+  background:#c9a84c;
+  border:none;
+  color:#000;
+  font-family:'Luminari',serif;
+  font-size:0.82rem;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  padding:14px 20px;
+  cursor:pointer;
+  transition:background 0.25s ease,box-shadow 0.25s ease;
+  margin-top:4px;
+}
+#forgot-submit-btn:hover{
+  background:#dfc060;
+  box-shadow:0 0 20px rgba(201,168,76,0.3);
+}
+#forgot-submit-btn:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+}
+#forgot-msg{
+  display:none;
+  font-family:'Luminari',serif;
+  font-style:italic;
+  font-size:0.78rem;
+  color:#c9a84c;
+  letter-spacing:0.04em;
+  line-height:1.6;
+  margin-top:18px;
+  text-align:center;
+  border-top:1px solid rgba(201,168,76,0.15);
+  padding-top:16px;
+}
+#forgot-back{
+  display:block;
+  text-align:center;
+  margin-top:20px;
+  font-family:'Luminari',serif;
+  font-size:0.72rem;
+  letter-spacing:0.1em;
+  color:rgba(201,168,76,0.65);
+  cursor:pointer;
+  background:none;
+  border:none;
+  padding:0;
+  transition:color 0.2s ease;
+}
+#forgot-back:hover{color:#c9a84c;}
 #auth-error{
   display:none;
   font-family:'Luminari',serif;
@@ -325,6 +415,7 @@ body::before{
   .auth-input { font-size: 16px !important; padding: 9px 12px !important; margin-bottom: 10px !important; }
   #submit-btn { padding: 11px !important; min-height: 44px !important; width: 100% !important; margin-top: 2px !important; }
   .toggle-mode { margin-top: 12px !important; font-size:0.7rem !important; }
+  #forgot-submit-btn { padding: 11px !important; min-height: 44px !important; }
 }
 /* jt-text-treatments */
 h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
@@ -416,6 +507,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <label class="field-label" for="pw-input">Your Key</label>
       <input class="auth-input" type="password" id="pw-input" name="password" placeholder="············" autocomplete="current-password">
 
+      <button id="forgot-link" type="button">Forgot Password?</button>
+
       <label class="remember-wrap" id="remember-wrap">
         <input type="checkbox" id="remember-me" checked>
         <span class="remember-box"></span>
@@ -430,6 +523,17 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     </div>
 
     <div id="auth-error"></div>
+
+    <div id="forgot-panel">
+      <div class="forgot-heading">Reset Your Password</div>
+      <p class="forgot-sub">Enter your signal and we'll transmit a reset link.</p>
+      <div class="gold-rule"></div>
+      <label class="field-label" for="forgot-email-input">Your Signal</label>
+      <input class="auth-input" type="email" id="forgot-email-input" name="forgot-email" placeholder="signal@domain.com" autocomplete="email">
+      <button id="forgot-submit-btn" type="button">Send Reset Link &#10022;</button>
+      <div id="forgot-msg"></div>
+      <button id="forgot-back" type="button">&#8592; Back to Sign In</button>
+    </div>
   </div>
 </div>
 
@@ -701,6 +805,90 @@ document.addEventListener('DOMContentLoaded', function(){
         showError(translateError(err.code));
       }
     });
+  });
+
+  // ── Forgot Password ───────────────────────────────────────────
+  var forgotLink      = document.getElementById('forgot-link');
+  var forgotPanel     = document.getElementById('forgot-panel');
+  var forgotBack      = document.getElementById('forgot-back');
+  var forgotEmailInput = document.getElementById('forgot-email-input');
+  var forgotSubmitBtn = document.getElementById('forgot-submit-btn');
+  var forgotMsg       = document.getElementById('forgot-msg');
+  var mainForm        = document.getElementById('auth-form');
+  var googleBtn       = document.getElementById('google-btn');
+  var dividerOr       = document.querySelector('.divider-or');
+  var ssoBtn          = document.getElementById('google-btn');
+
+  function showForgotPanel() {
+    mainForm.style.display    = 'none';
+    if (googleBtn)  googleBtn.style.display  = 'none';
+    if (dividerOr)  dividerOr.style.display  = 'none';
+    toggleWrap.style.display  = 'none';
+    errorDiv.style.display    = 'none';
+    forgotPanel.style.display = 'block';
+    forgotMsg.style.display   = 'none';
+    forgotMsg.textContent     = '';
+    forgotSubmitBtn.disabled  = false;
+    forgotSubmitBtn.textContent = 'Send Reset Link \u2756';
+    forgotEmailInput.value    = emailInput.value.trim();
+    forgotEmailInput.focus();
+  }
+
+  function hideForgotPanel() {
+    forgotPanel.style.display = 'none';
+    mainForm.style.display    = 'block';
+    if (googleBtn)  googleBtn.style.display  = '';
+    if (dividerOr)  dividerOr.style.display  = '';
+    toggleWrap.style.display  = '';
+  }
+
+  if (forgotLink) forgotLink.addEventListener('click', showForgotPanel);
+  if (forgotBack) forgotBack.addEventListener('click', hideForgotPanel);
+
+  if (forgotSubmitBtn) forgotSubmitBtn.addEventListener('click', function() {
+    var email = forgotEmailInput.value.trim();
+    forgotMsg.style.display = 'none';
+    forgotMsg.textContent   = '';
+
+    if (!email) {
+      forgotMsg.textContent   = 'Please enter your email address.';
+      forgotMsg.style.display = 'block';
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      forgotMsg.textContent   = 'Please enter a valid email address.';
+      forgotMsg.style.display = 'block';
+      return;
+    }
+
+    forgotSubmitBtn.disabled    = true;
+    forgotSubmitBtn.textContent = 'Sending\u2026';
+
+    firebase.auth().sendPasswordResetEmail(email, { url: 'https://jestamang.com/verify.html' })
+      .then(function() {
+        forgotEmailInput.style.display  = 'none';
+        forgotSubmitBtn.style.display   = 'none';
+        document.querySelector('#forgot-panel .forgot-sub').style.display = 'none';
+        document.querySelector('#forgot-panel .field-label').style.display = 'none';
+        document.querySelector('#forgot-panel .gold-rule').style.display = 'none';
+        forgotMsg.textContent   = 'A reset link has been sent to ' + email + '. Check your inbox. \u2756';
+        forgotMsg.style.display = 'block';
+      })
+      .catch(function(err) {
+        forgotSubmitBtn.disabled    = false;
+        forgotSubmitBtn.textContent = 'Send Reset Link \u2756';
+        var msg;
+        if (err.code === 'auth/user-not-found')    msg = 'No account found with this email.';
+        else if (err.code === 'auth/invalid-email') msg = 'Please enter a valid email address.';
+        else if (err.code === 'auth/too-many-requests') msg = 'Too many attempts. Please try again later.';
+        else msg = err.message || 'Something went wrong. Please try again.';
+        forgotMsg.textContent   = msg;
+        forgotMsg.style.display = 'block';
+      });
+  });
+
+  if (forgotEmailInput) forgotEmailInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') forgotSubmitBtn.click();
   });
 
 })();
