@@ -1422,44 +1422,7 @@ body::before{
 }
 @keyframes avSpin { to { transform: rotate(360deg); } }
 
-/* ── Mobile section tabs ── */
-.mob-section-tabs {
-  display: none;
-}
-@media (max-width: 600px) {
-  .mob-section-tabs {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 4px;
-    padding: 8px 12px;
-    background: rgba(0,0,0,0.6);
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .mob-section-tabs::-webkit-scrollbar { display: none; }
-  .mob-tab-btn {
-    flex: 0 0 auto;
-    font-family: 'Luminari', serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(240,230,210,0.65);
-    background: transparent;
-    border: 1px solid rgba(201,168,76,0.2);
-    padding: 6px 12px;
-    cursor: pointer;
-    white-space: nowrap;
-    min-height: 32px;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .mob-tab-btn.active {
-    color: #c9a84c;
-    border-color: rgba(201,168,76,0.6);
-  }
-  /* Section visibility on mobile: show all by default */
-  .profile-section[data-section] { scroll-margin-top: 60px; }
-}
+
 /* ── Notifications opt-in card ── */
 .notif-card{text-align:center;padding:32px 28px;}
 .notif-title{font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.38em;text-transform:uppercase;color:#c9a84c;margin-bottom:8px;text-shadow:0 0 18px rgba(201,168,76,0.5),0 2px 6px rgba(0,0,0,1);}
@@ -1537,15 +1500,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
 <div id="page-content">
 
-  <!-- Mobile section tabs -->
-  <nav class="mob-section-tabs" id="mob-section-tabs" aria-label="Profile sections">
-    <button class="mob-tab-btn active" data-target="sec-dossier">Dossier</button>
-    <button class="mob-tab-btn" data-target="sec-chart">Chart</button>
-    <button class="mob-tab-btn" data-target="sec-transmissions">Saved</button>
-    <button class="mob-tab-btn" data-target="sec-blog">Blog</button>
-    <button class="mob-tab-btn" data-target="sec-notifications">Alerts</button>
-    <button class="mob-tab-btn" data-target="sec-account">Account</button>
-  </nav>
 
   <!-- Hero -->
   <div class="profile-hero profile-section" style="visibility:hidden">
@@ -4865,21 +4819,7 @@ document.addEventListener('DOMContentLoaded', function(){
     reader.readAsDataURL(file);
   });
 
-  // ── Mobile section tabs ──
-  (function(){
-    var tabs = document.querySelectorAll('.mob-tab-btn');
-    tabs.forEach(function(btn){
-      btn.addEventListener('click', function(){
-        tabs.forEach(function(t){ t.classList.remove('active'); });
-        btn.classList.add('active');
-        var targetId = btn.getAttribute('data-target');
-        var target = document.getElementById(targetId);
-        if(target){
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    });
-  })();
+
 })();
 });
 </script>
