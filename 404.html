@@ -62,8 +62,7 @@ body {
   flex-direction: column;
   overflow: hidden;
   position: relative;
-  user-select: none;
-  -webkit-user-select: none;
+  -webkit-user-select:none;user-select:none;
 }
 
 /* ── Decorative void rings ── */
@@ -411,12 +410,12 @@ h1 {
 </div>
 
 <script>
-const gc = document.getElementById('gc');
-const gx = gc.getContext('2d');
-let GW, GH;
+var gc = document.getElementById('gc');
+var gx = gc.getContext('2d');
+var GW, GH;
 
 function resizeCanvas() {
-  const r = document.getElementById('ga').getBoundingClientRect();
+  var r = document.getElementById('ga').getBoundingClientRect();
   GW = gc.width  = Math.floor(r.width);
   GH = gc.height = Math.floor(r.height);
   if (frags) repositionFrags();
@@ -424,7 +423,7 @@ function resizeCanvas() {
 }
 
 // ── Entities ─────────────────────────────────────────────
-const ENT = [
+var ENT = [
   'Jestamang','Ace of Chase','Alissa Orange','Blue Jays','Cricket Om',
   'Father P. Journee','Israel','Kek-Buh','Ode to Bonnie','The Perfect Trip',
   'Venus & the Flytrap','NONS','Porphigen','Austinich','Quarter Days',
@@ -432,29 +431,29 @@ const ENT = [
 ];
 
 // Fragment % positions (x, y of game area)
-const FPOS = [[0.18,0.22],[0.74,0.15],[0.45,0.60],[0.82,0.72],[0.12,0.80]];
+var FPOS = [[0.18,0.22],[0.74,0.15],[0.45,0.60],[0.82,0.72],[0.12,0.80]];
 
 // ── State ────────────────────────────────────────────────
-let ST = 'idle';
-let player, obstacles, frags, stars, parts;
-let lives, fragsGot, invT, spawnT, drift;
-let portal = null;
-let flashCol = null, flashA = 0;
-let keys = {}, touchTgt = null;
-let loopRunning = false;
+var ST = 'idle';
+var player, obstacles, frags, stars, parts;
+var lives, fragsGot, invT, spawnT, drift;
+var portal = null;
+var flashCol = null, flashA = 0;
+var keys = {}, touchTgt = null;
+var loopRunning = false;
 
 function repositionFrags() {
-  frags.forEach((f,i) => { f.x = FPOS[i][0]*GW; f.y = FPOS[i][1]*GH; });
+  frags.forEach(function(f,i) { f.x = FPOS[i][0]*GW; f.y = FPOS[i][1]*GH; });
 }
 
 function initGame() {
   player = { x: GW/2, y: GH*0.35, r: 11, trail: [] };
   obstacles = []; parts = []; spawnT = 0; invT = 0; drift = 0.38;
   lives = 3; fragsGot = 0; portal = null; flashA = 0;
-  frags = FPOS.map(([px,py],i) => ({
+  frags = FPOS.map(function([px,py],i) { return ({
     x: px*GW, y: py*GH, r: 13, spin: 0,
     gp: Math.random()*6.28, collected: false
-  }));
+  }); });
   initStars();
   updateHUD();
   document.getElementById('hud-l').style.display = 'block';
@@ -463,39 +462,39 @@ function initGame() {
 
 function initStars() {
   stars = [];
-  for (let i = 0; i < 85; i++) {
+  for (var i = 0; i < 85; i++) {
     stars.push({ x: Math.random()*GW, y: Math.random()*GH, r: 0.35+Math.random()*1.3, a: 0.08+Math.random()*0.45, sp: 0.04+Math.random()*0.18 });
   }
 }
 
 // ── Controls ─────────────────────────────────────────────
-window.addEventListener('keydown', e => {
+window.addEventListener('keydown', function(e) {
   keys[e.key] = true;
   if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) e.preventDefault();
 });
-window.addEventListener('keyup', e => { keys[e.key] = false; });
+window.addEventListener('keyup', function(e) { keys[e.key] = false; });
 
-gc.addEventListener('touchstart', e => {
+gc.addEventListener('touchstart', function(e) {
   e.preventDefault();
-  const r = gc.getBoundingClientRect();
+  var r = gc.getBoundingClientRect();
   touchTgt = { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
 }, { passive: false });
-gc.addEventListener('touchmove', e => {
+gc.addEventListener('touchmove', function(e) {
   e.preventDefault();
-  const r = gc.getBoundingClientRect();
+  var r = gc.getBoundingClientRect();
   touchTgt = { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
 }, { passive: false });
-gc.addEventListener('touchend', e => { if (!e.touches.length) touchTgt = null; }, { passive: false });
+gc.addEventListener('touchend', function(e) { if (!e.touches.length) touchTgt = null; }, { passive: false });
 
 // ── Obstacle spawn ────────────────────────────────────────
 function spawnObstacle(elapsed) {
-  const name = ENT[0|Math.random()*ENT.length];
-  const fs = 10 + Math.random() * 11;
-  gx.font = `${fs}px 'Luminari'`;
-  const w = gx.measureText(name).width;
-  const pad = fs * 0.8;
-  const y = pad + Math.random() * (GH - pad*2);
-  const spd = 0.85 + Math.random() * 1.55 + Math.min(elapsed * 0.005, 0.8);
+  var name = ENT[0|Math.random()*ENT.length];
+  var fs = 10 + Math.random() * 11;
+  gx.font = (fs) + 'px \'Luminari\'';
+  var w = gx.measureText(name).width;
+  var pad = fs * 0.8;
+  var y = pad + Math.random() * (GH - pad*2);
+  var spd = 0.85 + Math.random() * 1.55 + Math.min(elapsed * 0.005, 0.8);
   obstacles.push({ name, x: GW + 8, y, vx: -spd, fs, w, h: fs * 1.3 });
 }
 
@@ -511,31 +510,31 @@ function getHit() {
 }
 
 // ── Narrator ─────────────────────────────────────────────
-let narratorTO = null;
+var narratorTO = null;
 function showNarrator(txt) {
-  const el = document.getElementById('nmsg');
+  var el = document.getElementById('nmsg');
   el.textContent = txt;
   el.classList.add('show');
   clearTimeout(narratorTO);
-  narratorTO = setTimeout(() => el.classList.remove('show'), 2600);
+  narratorTO = setTimeout(function() { return el.classList.remove('show'); }, 2600);
 }
 
 // ── HUD ──────────────────────────────────────────────────
 function updateHUD() {
-  const lv = document.getElementById('hud-l');
+  var lv = document.getElementById('hud-l');
   lv.innerHTML = '';
-  for (let i = 0; i < 3; i++) {
-    const s = document.createElement('span');
+  for (var i = 0; i < 3; i++) {
+    var s = document.createElement('span');
     s.textContent = '✦';
     s.style.opacity = i < lives ? '1' : '0.12';
     s.style.color = '#c9a84c';
     s.style.marginRight = '4px';
     lv.appendChild(s);
   }
-  const fr = document.getElementById('hud-f');
+  var fr = document.getElementById('hud-f');
   fr.innerHTML = '';
-  for (let i = 0; i < 5; i++) {
-    const s = document.createElement('span');
+  for (var i = 0; i < 5; i++) {
+    var s = document.createElement('span');
     s.textContent = i < fragsGot ? '◈' : '◇';
     s.style.opacity = i < fragsGot ? '1' : '0.18';
     s.style.color = i < fragsGot ? '#c9a84c' : 'rgba(201,168,76,0.4)';
@@ -548,8 +547,8 @@ function updateHUD() {
 // ── Particles ────────────────────────────────────────────
 function burst(x, y, col, n) {
   n = n || 26;
-  for (let i = 0; i < n; i++) {
-    const a = Math.random()*6.283, spd = 1.5+Math.random()*6;
+  for (var i = 0; i < n; i++) {
+    var a = Math.random()*6.283, spd = 1.5+Math.random()*6;
     parts.push({ x, y, vx: Math.cos(a)*spd, vy: Math.sin(a)*spd, life: 1, dec: 0.02+Math.random()*0.022, col, r: 1.5+Math.random()*4.5 });
   }
 }
@@ -569,22 +568,22 @@ function triggerWin() {
   flashCol = 'gold'; flashA = 1.0;
   showNarrator('THE UNIVERSE WELCOMES YOU BACK');
   burst(portal.x, portal.y, '#c9a84c', 80);
-  setTimeout(() => {
+  setTimeout(function() {
     document.getElementById('w-ov').classList.remove('off');
   }, 600);
-  setTimeout(() => { window.location.href = 'index.html'; }, 3200);
+  setTimeout(function() { window.location.href = 'index.html'; }, 3200);
 }
 
 // ── Draw helpers ─────────────────────────────────────────
 function drawObstacles() {
-  const blinking = invT > 0;
-  for (const o of obstacles) {
+  var blinking = invT > 0;
+  for (var o of obstacles) {
     gx.save();
-    gx.font = `${o.fs}px 'Luminari'`;
+    gx.font = (o.fs) + 'px \'Luminari\'';
     gx.textAlign = 'left';
     gx.textBaseline = 'middle';
-    const danger = blinking && Math.floor(invT/7)%2===0;
-    gx.fillStyle = danger ? 'rgba(255,60,60,0.35)' : `rgba(201,168,76,${0.16 + o.fs * 0.005})`;
+    var danger = blinking && Math.floor(invT/7)%2===0;
+    gx.fillStyle = danger ? 'rgba(255,60,60,0.35)' : 'rgba(201,168,76,' + (0.16 + o.fs * 0.005) + ')';
     gx.shadowColor = danger ? '#FF3838' : 'rgba(201,168,76,0.25)';
     gx.shadowBlur = 7;
     gx.fillText(o.name, o.x, o.y, o.w + 2);
@@ -593,26 +592,26 @@ function drawObstacles() {
 }
 
 function drawFragments() {
-  for (const f of frags) {
+  for (var f of frags) {
     if (f.collected) continue;
-    const gv = 0.55 + 0.25 * Math.sin(f.gp);
+    var gv = 0.55 + 0.25 * Math.sin(f.gp);
     gx.save();
     gx.translate(f.x, f.y);
     gx.rotate(f.spin);
     // Outer aura
-    const g = gx.createRadialGradient(0,0,0,0,0,f.r*3.2);
-    g.addColorStop(0, `rgba(201,168,76,${gv*0.42})`);
-    g.addColorStop(0.6, `rgba(201,168,76,${gv*0.08})`);
+    var g = gx.createRadialGradient(0,0,0,0,0,f.r*3.2);
+    g.addColorStop(0, 'rgba(201,168,76,' + (gv*0.42) + ')');
+    g.addColorStop(0.6, 'rgba(201,168,76,' + (gv*0.08) + ')');
     g.addColorStop(1, 'transparent');
     gx.beginPath(); gx.arc(0,0,f.r*3.2,0,6.283); gx.fillStyle=g; gx.fill();
     // Diamond
     gx.beginPath();
     gx.moveTo(0,-f.r); gx.lineTo(f.r*0.62,0); gx.lineTo(0,f.r); gx.lineTo(-f.r*0.62,0);
     gx.closePath();
-    gx.fillStyle = `rgba(201,168,76,${gv})`;
+    gx.fillStyle = 'rgba(201,168,76,' + (gv) + ')';
     gx.shadowColor = '#c9a84c'; gx.shadowBlur = 20;
     gx.fill();
-    gx.strokeStyle = `rgba(255,229,100,${gv*0.8})`; gx.lineWidth = 1.2; gx.stroke();
+    gx.strokeStyle = 'rgba(255,229,100,' + (gv*0.8) + ')'; gx.lineWidth = 1.2; gx.stroke();
     gx.shadowBlur = 0;
     gx.restore();
   }
@@ -620,31 +619,31 @@ function drawFragments() {
 
 function drawPortal() {
   if (!portal || !portal.active) return;
-  const gv = 0.5 + 0.28 * Math.sin(portal.spin * 2.2);
+  var gv = 0.5 + 0.28 * Math.sin(portal.spin * 2.2);
   gx.save();
   gx.translate(portal.x, portal.y);
   // Outer glow
-  const g = gx.createRadialGradient(0,0,0,0,0,portal.r*2.8);
-  g.addColorStop(0, `rgba(201,168,76,${gv*0.65})`);
-  g.addColorStop(0.5, `rgba(201,168,76,${gv*0.18})`);
+  var g = gx.createRadialGradient(0,0,0,0,0,portal.r*2.8);
+  g.addColorStop(0, 'rgba(201,168,76,' + (gv*0.65) + ')');
+  g.addColorStop(0.5, 'rgba(201,168,76,' + (gv*0.18) + ')');
   g.addColorStop(1, 'transparent');
   gx.beginPath(); gx.arc(0,0,portal.r*2.8,0,6.283); gx.fillStyle=g; gx.fill();
   // Spinning outer ring
   gx.rotate(portal.spin);
   gx.beginPath(); gx.arc(0,0,portal.r,0,6.283);
-  gx.strokeStyle=`rgba(201,168,76,${0.65+gv*0.35})`;
+  gx.strokeStyle='rgba(201,168,76,' + (0.65+gv*0.35) + ')';
   gx.lineWidth=3; gx.shadowColor='#c9a84c'; gx.shadowBlur=28; gx.stroke(); gx.shadowBlur=0;
   // 8 orbit gems
-  for (let i=0; i<8; i++) {
-    const a=i/8*6.283;
+  for (var i=0; i<8; i++) {
+    var a=i/8*6.283;
     gx.beginPath(); gx.arc(Math.cos(a)*portal.r*0.68, Math.sin(a)*portal.r*0.68, 2.8, 0, 6.283);
     gx.fillStyle='rgba(255,229,100,0.9)'; gx.shadowColor='#ffe566'; gx.shadowBlur=10; gx.fill(); gx.shadowBlur=0;
   }
   // Counter-rotate inner text
   gx.rotate(-portal.spin * 2);
-  const fs = Math.max(9, Math.min(15, portal.r * 0.38));
-  gx.font = `${fs}px 'Luminari'`; gx.textAlign='center'; gx.textBaseline='middle';
-  gx.fillStyle = `rgba(255,229,100,${0.55+gv*0.45})`;
+  var fs = Math.max(9, Math.min(15, portal.r * 0.38));
+  gx.font = (fs) + 'px \'Luminari\''; gx.textAlign='center'; gx.textBaseline='middle';
+  gx.fillStyle = 'rgba(255,229,100,' + (0.55+gv*0.45) + ')';
   gx.shadowColor='#ffe566'; gx.shadowBlur=12;
   gx.fillText('HOME', 0, 0);
   gx.shadowBlur=0;
@@ -652,17 +651,17 @@ function drawPortal() {
 }
 
 function drawTrail() {
-  for (let i=0; i<player.trail.length; i++) {
-    const a=i/player.trail.length;
+  for (var i=0; i<player.trail.length; i++) {
+    var a=i/player.trail.length;
     gx.beginPath(); gx.arc(player.trail[i].x, player.trail[i].y, player.r*a*0.58, 0, 6.283);
-    gx.fillStyle = invT>0 ? `rgba(255,60,60,${a*0.28})` : `rgba(201,168,76,${a*0.25})`;
+    gx.fillStyle = invT>0 ? 'rgba(255,60,60,' + (a*0.28) + ')' : 'rgba(201,168,76,' + (a*0.25) + ')';
     gx.fill();
   }
 }
 
 function drawPlayer() {
   if (invT>0 && Math.floor(invT/6)%2===0) return; // blink
-  const g = gx.createRadialGradient(player.x,player.y,0,player.x,player.y,player.r*3.8);
+  var g = gx.createRadialGradient(player.x,player.y,0,player.x,player.y,player.r*3.8);
   g.addColorStop(0,'rgba(201,168,76,0.38)'); g.addColorStop(1,'transparent');
   gx.beginPath(); gx.arc(player.x,player.y,player.r*3.8,0,6.283); gx.fillStyle=g; gx.fill();
   gx.beginPath(); gx.arc(player.x,player.y,player.r,0,6.283);
@@ -670,8 +669,8 @@ function drawPlayer() {
 }
 
 function drawParticles() {
-  for (let i=parts.length-1; i>=0; i--) {
-    const p=parts[i]; p.x+=p.vx; p.y+=p.vy; p.vx*=0.97; p.vy*=0.97; p.life-=p.dec;
+  for (var i=parts.length-1; i>=0; i--) {
+    var p=parts[i]; p.x+=p.vx; p.y+=p.vy; p.vx*=0.97; p.vy*=0.97; p.life-=p.dec;
     if (p.life<=0){parts.splice(i,1);continue;}
     gx.beginPath(); gx.arc(p.x,p.y,p.r*p.life,0,6.283);
     gx.globalAlpha=p.life; gx.fillStyle=p.col; gx.fill(); gx.globalAlpha=1;
@@ -680,14 +679,14 @@ function drawParticles() {
 
 function drawFlash() {
   if (flashA<=0) return;
-  if (flashCol==='gold')      gx.fillStyle=`rgba(201,168,76,${flashA})`;
-  else if (flashCol==='red')  gx.fillStyle=`rgba(255,40,40,${flashA})`;
+  if (flashCol==='gold')      gx.fillStyle='rgba(201,168,76,' + (flashA) + ')';
+  else if (flashCol==='red')  gx.fillStyle='rgba(255,40,40,' + (flashA) + ')';
   gx.fillRect(0,0,GW,GH);
   flashA=Math.max(0,flashA-0.038);
 }
 
 // ── Main loop ─────────────────────────────────────────────
-let t0=0, entSpawnT=0;
+var t0=0, entSpawnT=0;
 function loop(ts) {
   requestAnimationFrame(loop);
 
@@ -695,10 +694,10 @@ function loop(ts) {
   gx.fillRect(0,0,GW,GH);
 
   // Drifting stars (always)
-  for (const s of stars) {
+  for (var s of stars) {
     s.y+=s.sp; if(s.y>GH){s.y=0;s.x=Math.random()*GW;}
     gx.beginPath(); gx.arc(s.x,s.y,s.r,0,6.283);
-    gx.fillStyle=`rgba(201,168,76,${s.a*0.55})`; gx.fill();
+    gx.fillStyle='rgba(201,168,76,' + (s.a*0.55) + ')'; gx.fill();
   }
 
   if (ST!=='playing') {
@@ -708,18 +707,18 @@ function loop(ts) {
     return;
   }
 
-  const elapsed=(ts-t0)/1000;
+  var elapsed=(ts-t0)/1000;
   drift=0.36+Math.min(elapsed*0.007,0.55);
-  const spawnI=Math.max(62,145-Math.floor(elapsed/12)*13);
+  var spawnI=Math.max(62,145-Math.floor(elapsed/12)*13);
 
   // Move player
-  let dx=0,dy=0;
+  var dx=0,dy=0;
   if(keys['ArrowLeft']||keys['a']||keys['A']) dx-=1;
   if(keys['ArrowRight']||keys['d']||keys['D']) dx+=1;
   if(keys['ArrowUp']||keys['w']||keys['W']) dy-=1;
   if(keys['ArrowDown']||keys['s']||keys['S']) dy+=1;
   if(touchTgt){
-    const td=Math.hypot(touchTgt.x-player.x,touchTgt.y-player.y);
+    var td=Math.hypot(touchTgt.x-player.x,touchTgt.y-player.y);
     if(td>8){dx=(touchTgt.x-player.x)/td;dy=(touchTgt.y-player.y)/td;}
   }
   if(dx&&dy){dx*=0.707;dy*=0.707;}
@@ -735,8 +734,8 @@ function loop(ts) {
   if(entSpawnT>=spawnI){spawnObstacle(elapsed);entSpawnT=0;}
 
   // Update + check entity collision
-  for(let i=obstacles.length-1;i>=0;i--){
-    const o=obstacles[i];
+  for(var i=obstacles.length-1;i>=0;i--){
+    var o=obstacles[i];
     o.x+=o.vx;
     if(o.x+o.w<-16){obstacles.splice(i,1);continue;}
     // AABB vs circle (with small inset to feel fair)
@@ -748,7 +747,7 @@ function loop(ts) {
   }
 
   // Fragment collection
-  for(const f of frags){
+  for(var f of frags){
     if(f.collected)continue;
     f.spin+=0.033; f.gp+=0.042;
     if(Math.hypot(player.x-f.x,player.y-f.y)<player.r+f.r+5){
@@ -757,7 +756,7 @@ function loop(ts) {
       showNarrator('A PIECE OF THE PATH REVEALS ITSELF');
       updateHUD();
       if(fragsGot>=5){
-        setTimeout(()=>{
+        setTimeout(function() {
           portal={x:GW/2,y:GH/2,r:32,spin:0,active:true};
           flashCol='gold';flashA=0.35;
           showNarrator('THE WAY HOME HAS BEEN REVEALED');
@@ -784,7 +783,7 @@ function loop(ts) {
 }
 
 // ── Button handlers ───────────────────────────────────────
-var _beginBtn=document.getElementById('begin-btn');if(_beginBtn)_beginBtn.addEventListener('click',()=>{
+var _beginBtn=document.getElementById('begin-btn');if(_beginBtn)_beginBtn.addEventListener('click',function() {
   document.getElementById('s-ov').classList.add('off');
   resizeCanvas();
   initGame();
@@ -793,7 +792,7 @@ var _beginBtn=document.getElementById('begin-btn');if(_beginBtn)_beginBtn.addEve
   if(!loopRunning){loopRunning=true;requestAnimationFrame(loop);}
 });
 
-var _retryBtn=document.getElementById('retry-btn');if(_retryBtn)_retryBtn.addEventListener('click',()=>{
+var _retryBtn=document.getElementById('retry-btn');if(_retryBtn)_retryBtn.addEventListener('click',function() {
   document.getElementById('d-ov').classList.add('off');
   resizeCanvas();
   initGame();
@@ -804,17 +803,17 @@ var _retryBtn=document.getElementById('retry-btn');if(_retryBtn)_retryBtn.addEve
 });
 
 // ── Init ─────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded',()=>{
+window.addEventListener('DOMContentLoaded',function() {
   resizeCanvas();
   // Seed minimal stars for idle background
   stars=[];
-  for(let i=0;i<85;i++)stars.push({x:Math.random()*GW,y:Math.random()*GH,r:0.35+Math.random()*1.3,a:0.08+Math.random()*0.45,sp:0.04+Math.random()*0.18});
-  frags=FPOS.map(([px,py])=>({x:px*GW,y:py*GH,r:13,spin:0,gp:Math.random()*6.28,collected:false}));
+  for(var i=0;i<85;i++)stars.push({x:Math.random()*GW,y:Math.random()*GH,r:0.35+Math.random()*1.3,a:0.08+Math.random()*0.45,sp:0.04+Math.random()*0.18});
+  frags=FPOS.map(function([px,py]) { return ({x:px*GW,y:py*GH,r:13,spin:0,gp:Math.random()*6.28,collected:false}); });
   parts=[];
   flashA=0;
   requestAnimationFrame(loop);
 });
-window.addEventListener('resize',()=>{resizeCanvas();},{passive:true});
+window.addEventListener('resize',function() {resizeCanvas();},{passive:true});
 </script>
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>©<span class="jcyr"></span> Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a></footer>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>

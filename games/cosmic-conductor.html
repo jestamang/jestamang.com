@@ -25,7 +25,7 @@
 <style>
 @font-face{font-family:'Luminari';src:url('../assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Luminari',serif;user-select:none;-webkit-user-select:none}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Luminari',serif;-webkit-user-select:none;user-select:none}
 canvas{display:block;position:fixed;inset:0;touch-action:none}
 .scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;text-align:center;padding:24px;background:rgba(0,0,0,0.9)}
 .scr.off{display:none}
@@ -261,47 +261,47 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 </style>
 
 <script>
-const C = document.getElementById('c'), X = C.getContext('2d');
-let W, H;
+var C = document.getElementById('c'), X = C.getContext('2d');
+var W, H;
 function resize() { W = C.width = window.innerWidth; H = C.height = window.innerHeight; }
 resize();
 window.addEventListener('resize', resize);
 
 // ─── Constants ───────────────────────────
-const PERFECT_WINDOW = 18;
-const GOOD_WINDOW    = 36;
-const LANE_KEYS = ['a','s','d','f'];
-const LANE_COLORS = ['#8800FF','#0099FF','#39FF14','#FF1493'];
+var PERFECT_WINDOW = 18;
+var GOOD_WINDOW    = 36;
+var LANE_KEYS = ['a','s','d','f'];
+var LANE_COLORS = ['#8800FF','#0099FF','#39FF14','#FF1493'];
 // Lane tint colors (subtle background per column)
-const LANE_TINTS = [
+var LANE_TINTS = [
   'rgba(201,168,76,0.08)',   // gold
   'rgba(120,0,222,0.08)',    // purple
   'rgba(251,56,56,0.08)',    // red
   'rgba(2,225,39,0.08)'      // green
 ];
-const ORB_R = 18;
+var ORB_R = 18;
 
 // ─── State ───────────────────────────────
-let ST = 'start';
-let score, combo, maxCombo, health, orbs, effects, stars, nebulaHue;
-let streak, maxStreak, totalPerfect, totalHits, totalMisses;
-let feverActive, feverTimer;
-let t0, nextOrbTime, orbSpeed, beatInterval;
-let laneActive = [false,false,false,false];
-let laneFlash = [0,0,0,0];
-let laneExplosion = [null,null,null,null]; // hit explosion rings
-let keyDown = {};
-let orbPulse = 0; // global pulse phase for orb breathing
+var ST = 'start';
+var score, combo, maxCombo, health, orbs, effects, stars, nebulaHue;
+var streak, maxStreak, totalPerfect, totalHits, totalMisses;
+var feverActive, feverTimer;
+var t0, nextOrbTime, orbSpeed, beatInterval;
+var laneActive = [false,false,false,false];
+var laneFlash = [0,0,0,0];
+var laneExplosion = [null,null,null,null]; // hit explosion rings
+var keyDown = {};
+var orbPulse = 0; // global pulse phase for orb breathing
 
 // ─── Audio ───────────────────────────────
-let _AC = null;
+var _AC = null;
 function getAC(){if(!_AC){try{_AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}return _AC;}
 function playTone(freq,endFreq,type,vol,dur,delay){
   try{
-    const ac=getAC();if(!ac)return;
+    var ac=getAC();if(!ac)return;
     if(ac.state==='suspended')ac.resume();
-    const t=ac.currentTime+(delay||0);
-    const o=ac.createOscillator(),g=ac.createGain();
+    var t=ac.currentTime+(delay||0);
+    var o=ac.createOscillator(),g=ac.createGain();
     o.connect(g);g.connect(ac.destination);
     o.type=type||'sine';
     o.frequency.setValueAtTime(freq,t);
@@ -356,49 +356,49 @@ function init() {
 
 function initStars() {
   stars = [];
-  for (let i = 0; i < 110; i++) {
+  for (var i = 0; i < 110; i++) {
     stars.push({ x: Math.random()*W, y: Math.random()*H, r: 0.4+Math.random()*1.4, sp: 0.1+Math.random()*0.3, alpha: 0.3+Math.random()*0.7 });
   }
 }
 
 // ─── Controls ────────────────────────────
-window.addEventListener('keydown', e => {
+window.addEventListener('keydown', function(e) {
   if (keyDown[e.key]) return;
   keyDown[e.key] = true;
-  const li = LANE_KEYS.indexOf(e.key.toLowerCase());
+  var li = LANE_KEYS.indexOf(e.key.toLowerCase());
   if (li !== -1 && ST === 'playing') { laneActive[li] = true; pressLane(li); }
 });
-window.addEventListener('keyup', e => {
+window.addEventListener('keyup', function(e) {
   keyDown[e.key] = false;
-  const li = LANE_KEYS.indexOf(e.key.toLowerCase());
+  var li = LANE_KEYS.indexOf(e.key.toLowerCase());
   if (li !== -1) laneActive[li] = false;
 });
 
 // Touch zones
-['a','s','d','f'].forEach((k, i) => {
-  const el = document.getElementById('tz-' + k);
-  el.addEventListener('touchstart', e => {
+['a','s','d','f'].forEach(function(k, i) {
+  var el = document.getElementById('tz-' + k);
+  el.addEventListener('touchstart', function(e) {
     e.preventDefault(); laneActive[i] = true; el.classList.add('active');
     if (ST === 'playing') pressLane(i);
   }, { passive:false });
-  el.addEventListener('touchend', e => {
+  el.addEventListener('touchend', function(e) {
     e.preventDefault(); laneActive[i] = false; el.classList.remove('active');
   }, { passive:false });
 });
 
 // ─── Spawn orbs ──────────────────────────
 function scheduleOrb() {
-  const now = performance.now();
+  var now = performance.now();
   if (now < nextOrbTime) return;
-  const elapsed = (now - t0) / 1000;
+  var elapsed = (now - t0) / 1000;
   beatInterval = Math.max(260, 640 - Math.floor(elapsed / 20) * 55);
   orbSpeed = H * (0.0034 + Math.floor(elapsed / 30) * 0.0006);
-  const lanePool = [0,1,2,3];
-  const count = elapsed > 60 && Math.random() < 0.25 ? 3 :
+  var lanePool = [0,1,2,3];
+  var count = elapsed > 60 && Math.random() < 0.25 ? 3 :
                 elapsed > 30 && Math.random() < 0.3 ? 2 : 1;
-  const shuffled = lanePool.sort(() => Math.random() - 0.5).slice(0, count);
-  for (const lane of shuffled) {
-    const travelMs = (targetY() - 0) / orbSpeed;
+  var shuffled = lanePool.sort(function() { return Math.random() - 0.5; }).slice(0, count);
+  for (var lane of shuffled) {
+    var travelMs = (targetY() - 0) / orbSpeed;
     orbs.push({ lane, y: -ORB_R, targetTime: now + travelMs, hit: null, alpha: 1 });
   }
   nextOrbTime = now + beatInterval;
@@ -408,11 +408,11 @@ function scheduleOrb() {
 // ─── Press lane ──────────────────────────
 function pressLane(li) {
   laneFlash[li] = 12;
-  const laneOrbs = orbs.filter(o => o.lane === li && !o.hit);
+  var laneOrbs = orbs.filter(function(o) { return o.lane === li && !o.hit; });
   if (!laneOrbs.length) return;
-  const tY = targetY();
-  const closest = laneOrbs.reduce((a, b) => Math.abs(a.y - tY) < Math.abs(b.y - tY) ? a : b);
-  const dist = Math.abs(closest.y - tY);
+  var tY = targetY();
+  var closest = laneOrbs.reduce(function(a, b) { return Math.abs(a.y - tY) < Math.abs(b.y - tY) ? a : b; });
+  var dist = Math.abs(closest.y - tY);
 
   if (dist <= PERFECT_WINDOW) {
     closest.hit = 'perfect';
@@ -428,15 +428,15 @@ function pressLane(li) {
     }
 
     // Scoring: base × fever × streak multiplier
-    const streakMult = streak >= 20 ? 3 : streak >= 10 ? 2 : 1;
-    const feverMult = feverActive ? 5 : 1;
-    const combMult = Math.min(8, 1 + Math.floor(combo / 5));
+    var streakMult = streak >= 20 ? 3 : streak >= 10 ? 2 : 1;
+    var feverMult = feverActive ? 5 : 1;
+    var combMult = Math.min(8, 1 + Math.floor(combo / 5));
     score += 100 * combMult * streakMult * feverMult;
 
     // Hit explosion ring
     laneExplosion[li] = { r: 0, maxR: 55, life: 1 };
 
-    const subLabel = feverActive ? '✦ FEVER ✦' : (streak >= 10 ? '✦ STREAK: ' + streak : (combo >= 5 ? '✦ x'+combMult : ''));
+    var subLabel = feverActive ? '✦ FEVER ✦' : (streak >= 10 ? '✦ STREAK: ' + streak : (combo >= 5 ? '✦ x'+combMult : ''));
     spawnEffect(closest.lane, 'PERFECT', '#c9a84c', subLabel);
     nebulaHue = (nebulaHue + 20) % 360;
     playHit('perfect', streak);
@@ -446,7 +446,7 @@ function pressLane(li) {
     totalHits++;
     streak = 0; // reset streak on non-perfect
     combo++; maxCombo = Math.max(maxCombo, combo);
-    const mult = Math.min(8, 1 + Math.floor(combo / 5));
+    var mult = Math.min(8, 1 + Math.floor(combo / 5));
     score += 50 * mult;
     spawnEffect(closest.lane, 'GOOD', '#aaaaff', '');
     playHit('good');
@@ -455,8 +455,8 @@ function pressLane(li) {
 
 // ─── Effects ─────────────────────────────
 function spawnEffect(lane, text, col, sub) {
-  const laneW = W / 4;
-  const x = laneW * lane + laneW / 2;
+  var laneW = W / 4;
+  var x = laneW * lane + laneW / 2;
   effects.push({ x, y: targetY() - 20, text, sub, col, life: 1, dec: 0.035 });
 }
 
@@ -466,10 +466,10 @@ function getLaneX(lane) {
 }
 
 function drawLanes() {
-  const laneW = W / 4;
-  for (let i = 0; i < 4; i++) {
-    const x = laneW * i;
-    const active = laneFlash[i] > 0;
+  var laneW = W / 4;
+  for (var i = 0; i < 4; i++) {
+    var x = laneW * i;
+    var active = laneFlash[i] > 0;
     // Lane color tint (unique per column)
     X.fillStyle = LANE_TINTS[i];
     X.fillRect(x + 1, 0, laneW - 2, H);
@@ -482,8 +482,8 @@ function drawLanes() {
     X.lineWidth = 1;
     X.strokeRect(x + 1, 0, laneW - 2, H);
     // Key label
-    const ky = H * (window.innerWidth <= 900 ? 0.76 : 0.78);
-    const fs = Math.max(12, Math.min(20, W * 0.013));
+    var ky = H * (window.innerWidth <= 900 ? 0.76 : 0.78);
+    var fs = Math.max(12, Math.min(20, W * 0.013));
     X.font = fs + "px 'Luminari'";
     X.textAlign = 'center';
     X.fillStyle = laneFlash[i] > 0 ? 'rgba(201,168,76,0.85)' : 'rgba(201,168,76,0.3)';
@@ -493,8 +493,8 @@ function drawLanes() {
 }
 
 function drawTargetLine() {
-  const tY = targetY();
-  const grad = X.createLinearGradient(0, tY, W, tY);
+  var tY = targetY();
+  var grad = X.createLinearGradient(0, tY, W, tY);
   grad.addColorStop(0, 'transparent');
   grad.addColorStop(0.2, 'rgba(201,168,76,0.7)');
   grad.addColorStop(0.5, 'rgba(201,168,76,1)');
@@ -503,33 +503,33 @@ function drawTargetLine() {
   X.beginPath(); X.moveTo(0, tY); X.lineTo(W, tY);
   X.strokeStyle = grad; X.lineWidth = 3;
   X.shadowColor = '#c9a84c'; X.shadowBlur = 16; X.stroke(); X.shadowBlur = 0;
-  for (let i = 0; i < 4; i++) {
+  for (var i = 0; i < 4; i++) {
     if (laneFlash[i] > 0) {
-      const laneW = W / 4;
-      X.fillStyle = `rgba(201,168,76,${laneFlash[i] / 12 * 0.4})`;
+      var laneW = W / 4;
+      X.fillStyle = 'rgba(201,168,76,' + (laneFlash[i] / 12 * 0.4) + ')';
       X.fillRect(laneW * i + 2, tY - 14, laneW - 4, 28);
     }
   }
 }
 
 function drawOrbs(ts) {
-  const tY = targetY();
+  var tY = targetY();
   // Orb breath pulse: scale 1.0 → 1.1 → 1.0
-  const breathScale = 1 + 0.05 * Math.sin(orbPulse);
-  for (const o of orbs) {
+  var breathScale = 1 + 0.05 * Math.sin(orbPulse);
+  for (var o of orbs) {
     if (o.hit) continue;
-    const x = getLaneX(o.lane);
-    const dist = Math.abs(o.y - tY);
-    const inPerfect = dist <= PERFECT_WINDOW;
-    const inGood    = dist <= GOOD_WINDOW;
-    const r = ORB_R * breathScale;
-    const glowR = inPerfect ? 28 : inGood ? 22 : 16;
-    const glowA = inPerfect ? 0.55 : inGood ? 0.35 : 0.18;
+    var x = getLaneX(o.lane);
+    var dist = Math.abs(o.y - tY);
+    var inPerfect = dist <= PERFECT_WINDOW;
+    var inGood    = dist <= GOOD_WINDOW;
+    var r = ORB_R * breathScale;
+    var glowR = inPerfect ? 28 : inGood ? 22 : 16;
+    var glowA = inPerfect ? 0.55 : inGood ? 0.35 : 0.18;
     // Fever glow enhancement
-    const feverBoost = feverActive ? 1.6 : 1;
+    var feverBoost = feverActive ? 1.6 : 1;
     // Glow
-    const g = X.createRadialGradient(x, o.y, 0, x, o.y, (glowR + r) * feverBoost);
-    g.addColorStop(0, feverActive ? `rgba(255,215,0,${glowA * 1.5})` : `rgba(201,168,76,${glowA})`);
+    var g = X.createRadialGradient(x, o.y, 0, x, o.y, (glowR + r) * feverBoost);
+    g.addColorStop(0, feverActive ? 'rgba(255,215,0,' + (glowA * 1.5) + ')' : 'rgba(201,168,76,' + (glowA) + ')');
     g.addColorStop(1, 'transparent');
     X.beginPath(); X.arc(x, o.y, (glowR + r) * feverBoost, 0, 6.283); X.fillStyle = g; X.fill();
     // Core
@@ -546,16 +546,16 @@ function drawOrbs(ts) {
 }
 
 function drawExplosions() {
-  const tY = targetY();
-  for (let i = 0; i < 4; i++) {
-    const ex = laneExplosion[i];
+  var tY = targetY();
+  for (var i = 0; i < 4; i++) {
+    var ex = laneExplosion[i];
     if (!ex) continue;
-    const x = getLaneX(i);
+    var x = getLaneX(i);
     ex.r += ex.maxR * 0.12;
     ex.life -= 0.1;
     if (ex.life <= 0) { laneExplosion[i] = null; continue; }
     X.beginPath(); X.arc(x, tY, ex.r, 0, 6.283);
-    X.strokeStyle = `rgba(201,168,76,${ex.life * 0.8})`;
+    X.strokeStyle = 'rgba(201,168,76,' + (ex.life * 0.8) + ')';
     X.lineWidth = 3 * ex.life;
     X.shadowColor = '#c9a84c'; X.shadowBlur = 18 * ex.life;
     X.stroke(); X.shadowBlur = 0;
@@ -563,11 +563,11 @@ function drawExplosions() {
 }
 
 function drawEffects() {
-  for (const e of effects) {
+  for (var e of effects) {
     X.globalAlpha = e.life;
     X.textAlign = 'center';
-    const fs = Math.max(14, Math.min(22, W * 0.018));
-    X.font = `bold ${fs}px 'Luminari'`;
+    var fs = Math.max(14, Math.min(22, W * 0.018));
+    X.font = 'bold ' + (fs) + 'px \'Luminari\'';
     X.fillStyle = e.col;
     X.shadowColor = e.col; X.shadowBlur = 16;
     X.fillText(e.text, e.x, e.y);
@@ -578,16 +578,16 @@ function drawEffects() {
     X.shadowBlur = 0; X.globalAlpha = 1;
     e.y -= 1.2; e.life -= e.dec;
   }
-  for (let i = effects.length - 1; i >= 0; i--) {
+  for (var i = effects.length - 1; i >= 0; i--) {
     if (effects[i].life <= 0) effects.splice(i, 1);
   }
 }
 
 function drawHealth() {
-  const fs = Math.max(14, Math.min(22, W * 0.018));
+  var fs = Math.max(14, Math.min(22, W * 0.018));
   X.font = fs + "px 'Luminari'";
   X.textAlign = 'right';
-  for (let i = 0; i < 5; i++) {
+  for (var i = 0; i < 5; i++) {
     X.fillStyle = i < health ? '#c9a84c' : 'rgba(255,255,255,0.12)';
     X.shadowColor = i < health ? '#c9a84c' : 'none';
     X.shadowBlur = i < health ? 8 : 0;
@@ -597,7 +597,7 @@ function drawHealth() {
 }
 
 function drawHUD() {
-  const fs = Math.max(12, Math.min(20, W * 0.014));
+  var fs = Math.max(12, Math.min(20, W * 0.014));
   X.font = fs + "px 'Luminari'"; X.textAlign = 'left';
   X.fillStyle = 'rgba(201,168,76,0.85)'; X.shadowColor = '#c9a84c'; X.shadowBlur = 10;
   X.fillText(score.toLocaleString(), 18, 34);
@@ -605,11 +605,11 @@ function drawHUD() {
   // Combo + streak display
   if (combo >= 2 || streak >= 2) {
     X.font = (fs - 2) + "px 'Luminari'"; X.textAlign = 'center';
-    const streakMult = streak >= 20 ? '×3' : streak >= 10 ? '×2' : '';
-    const comboText = combo >= 2 ? combo + 'x COMBO' : '';
-    const streakText = streak >= 3 ? '✦ STREAK: ' + streak + (streakMult ? ' ' + streakMult : '') : '';
+    var streakMult = streak >= 20 ? '×3' : streak >= 10 ? '×2' : '';
+    var comboText = combo >= 2 ? combo + 'x COMBO' : '';
+    var streakText = streak >= 3 ? '✦ STREAK: ' + streak + (streakMult ? ' ' + streakMult : '') : '';
     if (comboText) {
-      X.fillStyle = `hsla(${(nebulaHue + 60) % 360},90%,70%,0.9)`;
+      X.fillStyle = 'hsla(' + ((nebulaHue + 60) % 360) + ',90%,70%,0.9)';
       X.fillText(comboText, W/2, 34);
     }
     if (streakText) {
@@ -624,10 +624,10 @@ function drawHUD() {
 }
 
 // ─── Loop ────────────────────────────────
-let lastTS2 = 0;
+var lastTS2 = 0;
 requestAnimationFrame(function loop(ts) {
   requestAnimationFrame(loop);
-  const dt = Math.min((ts - (lastTS2 || ts)) / 1000, 0.05);
+  var dt = Math.min((ts - (lastTS2 || ts)) / 1000, 0.05);
   lastTS2 = ts;
 
   // Fever timer
@@ -641,40 +641,40 @@ requestAnimationFrame(function loop(ts) {
 
   // Background — gold pulse in fever mode
   if (feverActive) {
-    const feverPulse = 0.04 + 0.03 * Math.sin(ts / 200);
-    X.fillStyle = `rgba(40,28,0,${feverPulse + 0.85})`;
+    var feverPulse = 0.04 + 0.03 * Math.sin(ts / 200);
+    X.fillStyle = 'rgba(40,28,0,' + (feverPulse + 0.85) + ')';
   } else {
     X.fillStyle = 'rgba(0,2,8,0.9)';
   }
   X.fillRect(0, 0, W, H);
 
   // Nebula
-  const ng = X.createRadialGradient(W/2, H/2, 0, W/2, H/2, H*0.75);
-  ng.addColorStop(0, `hsla(${nebulaHue},50%,8%,${0.1 + Math.min(combo*0.015, 0.3)})`);
+  var ng = X.createRadialGradient(W/2, H/2, 0, W/2, H/2, H*0.75);
+  ng.addColorStop(0, 'hsla(' + (nebulaHue) + ',50%,8%,' + (0.1 + Math.min(combo*0.015, 0.3)) + ')');
   ng.addColorStop(1, 'transparent');
   X.fillStyle = ng; X.fillRect(0, 0, W, H);
 
   // Stars
-  for (const s of stars) {
+  for (var s of stars) {
     s.y += s.sp; if (s.y > H) { s.y = 0; s.x = Math.random()*W; }
     X.beginPath(); X.arc(s.x, s.y, s.r, 0, 6.283);
-    X.fillStyle = `rgba(255,255,255,${s.alpha * 0.75})`; X.fill();
+    X.fillStyle = 'rgba(255,255,255,' + (s.alpha * 0.75) + ')'; X.fill();
   }
 
   if (ST !== 'playing') return;
 
   orbPulse += 0.08;
-  const elapsed = (ts - t0) / 1000;
+  var elapsed = (ts - t0) / 1000;
 
   scheduleOrb();
 
-  const tY = targetY();
-  for (const o of orbs) {
+  var tY = targetY();
+  for (var o of orbs) {
     if (!o.hit) o.y += orbSpeed * 60 / 60;
   }
 
-  for (let i = orbs.length - 1; i >= 0; i--) {
-    const o = orbs[i];
+  for (var i = orbs.length - 1; i >= 0; i--) {
+    var o = orbs[i];
     if (o.hit) {
       o.alpha -= 0.1; if (o.alpha <= 0) orbs.splice(i, 1);
     } else if (o.y > tY + GOOD_WINDOW + 10) {
@@ -700,20 +700,20 @@ function gameOver(elapsed) {
   ST = 'over';
   playHit('gameover');
   document.getElementById('finalScore').textContent = score.toLocaleString();
-  const best = parseInt(localStorage.getItem('cc_best') || 0);
+  var best = parseInt(localStorage.getItem('cc_best') || 0);
   if (score > best) {
     localStorage.setItem('cc_best', score);
     document.getElementById('bestLbl').textContent = '✦ New Record ✦';
   } else {
     document.getElementById('bestLbl').textContent = 'Best: ' + best.toLocaleString();
   }
-  const rank = score >= 50000 ? 'Grand Conductor' : score >= 20000 ? 'Celestial' : score >= 8000 ? 'Rising Star' : 'Apprentice';
+  var rank = score >= 50000 ? 'Grand Conductor' : score >= 20000 ? 'Celestial' : score >= 8000 ? 'Rising Star' : 'Apprentice';
   document.getElementById('rankLbl').textContent = rank + ' · ' + maxCombo + 'x max combo';
 
   // Stats + grade
-  const attempted = totalHits + totalMisses;
-  const accuracy = attempted > 0 ? Math.round((totalHits / attempted) * 100) : 0;
-  const grade = accuracy >= 95 ? 'S' : accuracy >= 80 ? 'A' : accuracy >= 65 ? 'B' : accuracy >= 50 ? 'C' : 'F';
+  var attempted = totalHits + totalMisses;
+  var accuracy = attempted > 0 ? Math.round((totalHits / attempted) * 100) : 0;
+  var grade = accuracy >= 95 ? 'S' : accuracy >= 80 ? 'A' : accuracy >= 65 ? 'B' : accuracy >= 50 ? 'C' : 'F';
   document.getElementById('statsLbl').innerHTML =
     'Perfect: ' + totalPerfect + ' &nbsp;·&nbsp; Hits: ' + totalHits + ' &nbsp;·&nbsp; Misses: ' + totalMisses + '<br>' +
     'Accuracy: ' + accuracy + '% &nbsp;·&nbsp; Best Streak: ' + maxStreak;
@@ -724,12 +724,12 @@ function gameOver(elapsed) {
 }
 
 var _startBtn = document.getElementById('startBtn');
-if (_startBtn) _startBtn.addEventListener('click', () => {
+if (_startBtn) _startBtn.addEventListener('click', function() {
   document.getElementById('ss').classList.add('off');
   init(); ST = 'playing';
 });
 var _restartBtn = document.getElementById('restartBtn');
-if (_restartBtn) _restartBtn.addEventListener('click', () => {
+if (_restartBtn) _restartBtn.addEventListener('click', function() {
   document.getElementById('os').classList.add('off');
   init(); ST = 'playing';
 });
