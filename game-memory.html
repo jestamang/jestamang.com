@@ -437,9 +437,9 @@ function showFlawless(){
 }
 
 document.addEventListener('DOMContentLoaded',function(){
-  document.getElementById('btn-restart').addEventListener('click',build);
-  document.getElementById('btn-again').addEventListener('click',build);
-  document.getElementById('hint-btn').addEventListener('click',doHint);
+  var _btnRestart=document.getElementById('btn-restart');if(_btnRestart)_btnRestart.addEventListener('click',build);
+  var _btnAgain=document.getElementById('btn-again');if(_btnAgain)_btnAgain.addEventListener('click',build);
+  var _hintBtn=document.getElementById('hint-btn');if(_hintBtn)_hintBtn.addEventListener('click',doHint);
   document.querySelectorAll('.diff-btn').forEach(function(btn){
     btn.addEventListener('click',function(){
       DIFF=this.dataset.diff;
@@ -509,7 +509,7 @@ window.openLB=function(game,title,lowerBetter){
 };
 window.closeLB=function(){document.getElementById('lb-modal').classList.remove('open');};
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){window.closeLB();document.getElementById('lb-name-modal').classList.remove('open');}});
-document.getElementById('lb-modal').addEventListener('click',function(e){if(e.target===this)window.closeLB();});
+var _lbModal=document.getElementById('lb-modal');if(_lbModal)_lbModal.addEventListener('click',function(e){if(e.target===this)window.closeLB();});
 window.submitScore=function(game,score,lowerBetter,cb){
   function doSave(name){
     var db=_getDb();if(!db){if(cb)cb();return;}
@@ -521,9 +521,9 @@ window.submitScore=function(game,score,lowerBetter,cb){
   nm.classList.add('open');inp.value='';setTimeout(function(){inp.focus();},100);
   function doCancel(){nm.classList.remove('open');cleanup();if(cb)cb();}
   function doConfirm(){var n=inp.value.trim();if(!n){inp.focus();return;}nm.classList.remove('open');cleanup();doSave(n);}
-  function cleanup(){document.getElementById('lb-name-confirm').onclick=null;document.getElementById('lb-name-cancel').onclick=null;inp.onkeydown=null;}
-  document.getElementById('lb-name-confirm').onclick=doConfirm;
-  document.getElementById('lb-name-cancel').onclick=doCancel;
+  function cleanup(){var _lbc=document.getElementById('lb-name-confirm');if(_lbc)_lbc.onclick=null;var _lbcl=document.getElementById('lb-name-cancel');if(_lbcl)_lbcl.onclick=null;inp.onkeydown=null;}
+  var _lbNameConfirm=document.getElementById('lb-name-confirm');if(_lbNameConfirm)_lbNameConfirm.onclick=doConfirm;
+  var _lbNameCancel=document.getElementById('lb-name-cancel');if(_lbNameCancel)_lbNameCancel.onclick=doCancel;
   inp.onkeydown=function(e){if(e.key==='Enter')doConfirm();if(e.key==='Escape')doCancel();};
 };
 })();

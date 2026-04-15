@@ -1425,11 +1425,11 @@ function endGame(){
 }
 
 document.addEventListener('DOMContentLoaded',function(){
-  document.getElementById('startBtn').addEventListener('click',function(){getACtx();startGame();});
-  document.getElementById('restartBtn').addEventListener('click',function(){
+  var _startBtn=document.getElementById('startBtn');if(_startBtn)_startBtn.addEventListener('click',function(){getACtx();startGame();});
+  var _restartBtn=document.getElementById('restartBtn');if(_restartBtn)_restartBtn.addEventListener('click',function(){
     document.getElementById('os').classList.remove('active');getACtx();startGame();
   });
-  document.getElementById('cc-replay-btn').addEventListener('click',function(){
+  var _replayBtn=document.getElementById('cc-replay-btn');if(_replayBtn)_replayBtn.addEventListener('click',function(){
     if(state.answered||state.playing||state.replayLeft<=0)return;
     getACtx();state.replayLeft--;updateReplayDots();
     playChordStrummed(state.currentChord.notes);

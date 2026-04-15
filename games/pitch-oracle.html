@@ -1116,15 +1116,18 @@ function playLearnNote(note, octave, freq, btn) {
 /* ── Init ── */
 document.addEventListener('DOMContentLoaded', function() {
   setupNoteButtons();
-  document.getElementById('startBtn').addEventListener('click', function() { getAC(); startGame(); });
-  document.getElementById('restartBtn').addEventListener('click', function() {
+  var _startBtn = document.getElementById('startBtn');
+  if (_startBtn) _startBtn.addEventListener('click', function() { getAC(); startGame(); });
+  var _restartBtn = document.getElementById('restartBtn');
+  if (_restartBtn) _restartBtn.addEventListener('click', function() {
     document.getElementById('os').classList.add('off'); getAC(); startGame();
   });
   if (document.getElementById('learnBtn'))
     document.getElementById('learnBtn').addEventListener('click', function() { if(window.ltnToggle) window.ltnToggle(); });
   if (document.getElementById('learnBack'))
     document.getElementById('learnBack').addEventListener('click', closeLearnMode);
-  document.getElementById('po-replay').addEventListener('click', handleReplay);
+  var _poReplay = document.getElementById('po-replay');
+  if (_poReplay) _poReplay.addEventListener('click', handleReplay);
   document.querySelectorAll('.po-diff-tab').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var d = btn.dataset.diff;
