@@ -600,10 +600,19 @@ function pressSectionToggle(){
     if(form){
       var ta=form.querySelector('.comment-textarea');
       var btn=form.querySelector('.gbtn-comment');
+      var commentStatusEl=form.querySelector('.comment-form-status');
+      if(!commentStatusEl){
+        commentStatusEl=document.createElement('span');
+        commentStatusEl.className='comment-form-status';
+        commentStatusEl.style.cssText='font-size:0.72rem;letter-spacing:0.1em;margin-left:8px;';
+        btn.parentNode.insertBefore(commentStatusEl,btn.nextSibling);
+      }
       btn.addEventListener('click',function(){
         var txt=(ta.value||'').trim();
         if(!txt) return;
         btn.disabled=true;
+        btn.textContent='Sending...';
+        commentStatusEl.textContent='';
         window.jestaDB.collection('comments').add({
           userId: user.uid,
           username: user.displayName||user.email.split('@')[0],
@@ -611,8 +620,19 @@ function pressSectionToggle(){
           postId: postId,
           text: txt,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(function(){ta.value='';btn.disabled=false;})
-          .catch(function(){btn.disabled=false;});
+        }).then(function(){
+          ta.value='';
+          btn.disabled=false;
+          btn.textContent='SEND';
+          commentStatusEl.textContent='Transmitted.';
+          commentStatusEl.style.color='rgba(2,225,39,0.75)';
+          setTimeout(function(){commentStatusEl.textContent='';},3000);
+        }).catch(function(){
+          btn.disabled=false;
+          btn.textContent='SEND';
+          commentStatusEl.textContent='Transmission failed. Try again.';
+          commentStatusEl.style.color='rgba(251,56,56,0.8)';
+        });
       });
     }
   }
@@ -735,6 +755,9 @@ function pressSectionToggle(){
       var body=(document.getElementById('post-body-input').value||'').trim();
       if(!title||!body) return;
       postPublishBtn.disabled=true;
+      postPublishBtn.textContent='Transmitting...';
+      postConfirm.textContent='';
+      postConfirm.style.color='#c9a84c';
       var now=new Date();
       var dateStr=now.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
       window.jestaDB.collection('blogPosts').add({
@@ -746,6 +769,7 @@ function pressSectionToggle(){
         date:dateStr
       }).then(function(){
         postPublishBtn.disabled=false;
+        postPublishBtn.textContent='Publish Transmission';
         postFormWrap.style.display='none';
         document.getElementById('post-title-input').value='';
         document.getElementById('post-body-input').value='';
@@ -759,6 +783,11 @@ function pressSectionToggle(){
       }).catch(function(err){
         console.error('Post error:',err);
         postPublishBtn.disabled=false;
+        postPublishBtn.textContent='Publish Transmission';
+        postConfirm.textContent='Transmission failed. Try again.';
+        postConfirm.style.color='rgba(251,56,56,0.8)';
+        postConfirm.style.display='block';
+        postConfirm.style.opacity='1';
       });
     });
   }

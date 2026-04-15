@@ -1548,6 +1548,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <input class="username-input" id="username-input" type="text" maxlength="30" placeholder="Username" autocomplete="off">
       <button class="btn-gold" id="username-save-btn">Save</button>
       <button class="btn-ghost" id="username-cancel-btn">Cancel</button>
+      <span id="username-save-status" style="font-size:0.72rem;letter-spacing:0.1em;margin-left:8px;"></span>
     </div>
     <div class="profile-subtitle">Welcome</div>
     <div class="profile-since" id="member-since"></div>
@@ -3353,15 +3354,20 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   var _saveDossierBtn=document.getElementById('save-dossier-btn');if(_saveDossierBtn)_saveDossierBtn.addEventListener('click', function(){
+    var saveBtn = document.getElementById('save-dossier-btn');
+    var statusEl = document.getElementById('save-status');
+    var usernameVal = document.getElementById('f-username').value.trim();
+    if(!usernameVal){
+      statusEl.textContent = 'Name is required.';
+      return;
+    }
     var newData = {
-      username:       document.getElementById('f-username').value.trim(),
+      username:       usernameVal,
       dateOfBirth:    document.getElementById('f-dob').value,
       timeOfBirth:    document.getElementById('f-tob').value,
       placeOfBirth:   document.getElementById('f-pob').value.trim(),
       updatedAt:      firebase.firestore.FieldValue.serverTimestamp()
     };
-    var saveBtn = document.getElementById('save-dossier-btn');
-    var statusEl = document.getElementById('save-status');
     saveBtn.disabled = true;
     statusEl.textContent = 'Sealing...';
     db.collection('users').doc(currentUser.uid).set(newData, {merge:true})
@@ -3391,10 +3397,12 @@ document.addEventListener('DOMContentLoaded', function(){
 
   function saveUsername(){
     var val = document.getElementById('username-input').value.trim();
+    var usernameStatusEl = document.getElementById('username-save-status');
     if(!val) return;
     var saveBtn = document.getElementById('username-save-btn');
     saveBtn.disabled = true;
     saveBtn.textContent = '...';
+    if(usernameStatusEl){ usernameStatusEl.textContent = ''; usernameStatusEl.style.color = ''; }
     db.collection('users').doc(currentUser.uid).set({username: val}, {merge:true})
       .then(function(){
         dossierData.username = val;
@@ -3410,6 +3418,7 @@ document.addEventListener('DOMContentLoaded', function(){
         console.error('Username save error:', e);
         saveBtn.disabled = false;
         saveBtn.textContent = 'Save';
+        if(usernameStatusEl){ usernameStatusEl.textContent = 'Save failed. Try again.'; usernameStatusEl.style.color = 'rgba(251,56,56,0.8)'; }
       });
   }
 

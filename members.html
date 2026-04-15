@@ -798,6 +798,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <textarea id="chat-input" rows="1" placeholder="Awaiting transmission..." maxlength="500"></textarea>
       <button id="chat-send">Send ✦</button>
     </div>
+    <div id="chat-status" class="status-msg" style="font-size:0.72rem;letter-spacing:0.1em;padding:4px 0;min-height:1.2em;"></div>
   </div>
 
 
@@ -934,9 +935,12 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       });
 
     /* Send */
+    var chatStatusEl = document.getElementById('chat-status');
     function doSend(){
       var text = input.value.trim();
       if(!text || !currentUser) return;
+      sendBtn.disabled = true;
+      if(chatStatusEl){ chatStatusEl.textContent = 'Sending...'; chatStatusEl.className = 'status-msg'; }
       input.value = '';
       autoResize();
       db.collection('innerCircleChat').add({
@@ -946,6 +950,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         text: text,
         ts:   firebase.firestore.FieldValue.serverTimestamp()
       }).then(function(){
+        sendBtn.disabled = false;
+        if(chatStatusEl){ chatStatusEl.textContent = ''; }
         /* Trim to 50 */
         db.collection('innerCircleChat')
           .orderBy('ts','asc')
@@ -957,7 +963,11 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
               batch.commit().catch(function(e){ console.error('innerCircleChat batch error:', e.message); });
             }
           });
-      }).catch(function(e){ console.error('innerCircleChat error:', e.message); });
+      }).catch(function(e){
+        console.error('innerCircleChat error:', e.message);
+        sendBtn.disabled = false;
+        if(chatStatusEl){ chatStatusEl.textContent = 'Transmission failed. Try again.'; chatStatusEl.className = 'status-err'; }
+      });
     }
 
     sendBtn.addEventListener('click', doSend);

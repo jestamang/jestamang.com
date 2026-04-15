@@ -1098,10 +1098,15 @@ var _inquiryForm=document.getElementById('inquiry-form');if(_inquiryForm)_inquir
     msgBox.className = 'modal-msg error';
     return;
   }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    msgBox.textContent = 'Please enter a valid email address.';
+    msgBox.className = 'modal-msg error';
+    return;
+  }
 
   submitBtn.disabled = true;
   msgBox.className = 'modal-msg';
-  msgBox.textContent = '';
+  msgBox.textContent = 'Transmitting...';
 
   // ── FIRESTORE SAVE (if available) ──
   var savePromise;
