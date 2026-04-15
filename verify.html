@@ -147,6 +147,112 @@ body::before{
   text-align:center;
   margin-top:0;
 }
+/* Password reset form */
+#reset-form{display:none;}
+.field-label{
+  display:block;
+  font-family:'Luminari',serif;
+  font-size:0.75rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:#c9a84c;
+  margin-bottom:7px;
+}
+.pw-wrap{
+  position:relative;
+  margin-bottom:20px;
+}
+.auth-input{
+  display:block;
+  width:100%;
+  background:rgba(10,8,5,1);
+  border:1px solid rgba(201,168,76,0.2);
+  color:white;
+  font-family:'Luminari',serif;
+  font-size:0.88rem;
+  letter-spacing:0.06em;
+  padding:11px 44px 11px 14px;
+  outline:none;
+  transition:border-color 0.25s ease,box-shadow 0.25s ease;
+  -webkit-appearance:none;appearance:none;
+}
+.auth-input::placeholder{color:rgba(255,255,255,0.2);}
+.auth-input:focus{
+  border-color:rgba(201,168,76,0.7);
+  box-shadow:0 0 12px rgba(201,168,76,0.12);
+}
+.pw-toggle{
+  position:absolute;
+  right:0;top:0;bottom:0;
+  width:42px;
+  background:none;
+  border:none;
+  color:rgba(201,168,76,0.45);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:color 0.2s;
+  padding:0;
+}
+.pw-toggle:hover{color:#c9a84c;}
+.pw-toggle svg{pointer-events:none;display:block;}
+/* Strength bar */
+#pw-strength-wrap{
+  margin:-12px 0 18px;
+  display:none;
+}
+#pw-strength-bar{
+  height:3px;
+  width:0%;
+  transition:width 0.3s ease,background 0.3s ease;
+  border-radius:2px;
+  background:#c9a84c;
+}
+#pw-strength-label{
+  font-family:'Luminari',serif;
+  font-size:0.62rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.55);
+  margin-top:5px;
+}
+#reset-submit-btn{
+  display:block;
+  width:100%;
+  background:#c9a84c;
+  border:none;
+  color:#000;
+  font-family:'Luminari',serif;
+  font-size:0.82rem;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  padding:14px 20px;
+  cursor:pointer;
+  transition:background 0.25s ease,box-shadow 0.25s ease;
+  margin-top:4px;
+}
+#reset-submit-btn:hover{
+  background:#dfc060;
+  box-shadow:0 0 20px rgba(201,168,76,0.3);
+}
+#reset-submit-btn:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+}
+#reset-error{
+  display:none;
+  font-family:'Luminari',serif;
+  font-style:italic;
+  font-size:0.78rem;
+  color:#c9a84c;
+  letter-spacing:0.04em;
+  line-height:1.6;
+  margin-top:18px;
+  text-align:center;
+  border-top:1px solid rgba(201,168,76,0.15);
+  padding-top:16px;
+}
 /* jt-mobile-global-base */
 @media (max-width: 768px) {
   input, textarea, select { font-size: 16px !important; }
@@ -165,6 +271,8 @@ body::before{
   .login-title { font-size: clamp(1.2rem, 5vw, 1.6rem) !important; letter-spacing: 0.2em !important; margin-bottom: 8px !important; }
   .login-subtitle { margin-bottom: 14px !important; font-size: 0.72rem !important; }
   .gold-rule { margin-bottom: 14px !important; }
+  .auth-input { font-size: 16px !important; padding: 9px 42px 9px 12px !important; }
+  #reset-submit-btn { padding: 11px !important; min-height: 44px !important; }
 }
 /* jt-text-treatments */
 h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
@@ -233,6 +341,33 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     <div id="verify-msg"></div>
     <a id="verify-btn" href="members.html" style="display:none;">Enter</a>
     <button id="resend-btn" type="button">Resend Verification</button>
+
+    <form id="reset-form" onsubmit="return false;">
+      <label class="field-label" for="pw-new">New Password</label>
+      <div class="pw-wrap">
+        <input class="auth-input" type="password" id="pw-new" autocomplete="new-password" placeholder="&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;">
+        <button class="pw-toggle" type="button" id="pw-new-toggle" aria-label="Show password">
+          <svg id="pw-new-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg id="pw-new-eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+      </div>
+      <div id="pw-strength-wrap">
+        <div id="pw-strength-bar"></div>
+        <div id="pw-strength-label"></div>
+      </div>
+
+      <label class="field-label" for="pw-confirm">Confirm Password</label>
+      <div class="pw-wrap">
+        <input class="auth-input" type="password" id="pw-confirm" autocomplete="new-password" placeholder="&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;">
+        <button class="pw-toggle" type="button" id="pw-confirm-toggle" aria-label="Show confirm password">
+          <svg id="pw-confirm-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg id="pw-confirm-eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+      </div>
+
+      <button id="reset-submit-btn" type="submit">Set New Password &#10022;</button>
+      <div id="reset-error"></div>
+    </form>
   </div>
 </div>
 
@@ -284,8 +419,113 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   if (mode === 'resetPassword') {
-    window.location.replace('login.html?mode=resetPassword&oobCode=' + encodeURIComponent(oobCode));
-    return;
+    // Show inline password reset form
+    titleEl.textContent = 'Reset Password';
+    subtitleEl.textContent = 'Choose a new key for your Inner Circle account.';
+    msgEl.style.display = 'none';
+    btnEl.style.display = 'none';
+    resendBtn.style.display = 'none';
+    document.getElementById('reset-form').style.display = 'block';
+
+    var pwNew        = document.getElementById('pw-new');
+    var pwConfirm    = document.getElementById('pw-confirm');
+    var strengthWrap = document.getElementById('pw-strength-wrap');
+    var strengthBar  = document.getElementById('pw-strength-bar');
+    var strengthLbl  = document.getElementById('pw-strength-label');
+    var submitBtn    = document.getElementById('reset-submit-btn');
+    var errorDiv     = document.getElementById('reset-error');
+
+    // Show/hide toggles
+    function makeToggle(inputId, eyeId, eyeOffId) {
+      var inp    = document.getElementById(inputId);
+      var eye    = document.getElementById(eyeId);
+      var eyeOff = document.getElementById(eyeOffId);
+      var toggle = inp.parentNode.querySelector('.pw-toggle');
+      toggle.addEventListener('click', function() {
+        var show = inp.type === 'password';
+        inp.type = show ? 'text' : 'password';
+        eye.style.display    = show ? 'none'  : 'block';
+        eyeOff.style.display = show ? 'block' : 'none';
+      });
+    }
+    makeToggle('pw-new',     'pw-new-eye',     'pw-new-eye-off');
+    makeToggle('pw-confirm', 'pw-confirm-eye', 'pw-confirm-eye-off');
+
+    // Strength indicator
+    function calcStrength(pw) {
+      var s = 0;
+      if (pw.length >= 6)  s++;
+      if (pw.length >= 10) s++;
+      if (/[A-Z]/.test(pw)) s++;
+      if (/[0-9]/.test(pw)) s++;
+      if (/[^A-Za-z0-9]/.test(pw)) s++;
+      return s; // 0-5
+    }
+    pwNew.addEventListener('input', function() {
+      var val = pwNew.value;
+      if (!val) { strengthWrap.style.display = 'none'; return; }
+      strengthWrap.style.display = 'block';
+      var s = calcStrength(val);
+      var pct, color, label;
+      if (s <= 1)      { pct = 20;  color = '#FB3838'; label = 'Weak'; }
+      else if (s <= 2) { pct = 40;  color = '#e07820'; label = 'Fair'; }
+      else if (s <= 3) { pct = 65;  color = '#c9a84c'; label = 'Good'; }
+      else if (s <= 4) { pct = 85;  color = '#7800DE'; label = 'Strong'; }
+      else             { pct = 100; color = '#02E127';  label = 'Very Strong'; }
+      strengthBar.style.width      = pct + '%';
+      strengthBar.style.background = color;
+      strengthLbl.textContent      = label;
+    });
+
+    // Translate Firebase error codes
+    function translateResetError(code) {
+      if (code === 'auth/expired-action-code')  return 'This reset link has expired. Please request a new one from the sign-in page.';
+      if (code === 'auth/invalid-action-code')  return 'This reset link is invalid or has already been used.';
+      if (code === 'auth/weak-password')         return 'Password must be at least 6 characters.';
+      if (code === 'auth/user-disabled')         return 'This account has been disabled.';
+      if (code === 'auth/user-not-found')        return 'No account found for this reset link.';
+      return 'Something went wrong. Please try again.';
+    }
+
+    // Submit
+    submitBtn.addEventListener('click', function() {
+      var pw  = pwNew.value;
+      var pw2 = pwConfirm.value;
+      errorDiv.style.display = 'none';
+      errorDiv.textContent   = '';
+
+      if (pw.length < 6) {
+        errorDiv.textContent   = 'Password must be at least 6 characters.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      if (pw !== pw2) {
+        errorDiv.textContent   = 'Passwords do not match.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      submitBtn.disabled     = true;
+      submitBtn.textContent  = 'Updating\u2026';
+
+      firebase.auth().confirmPasswordReset(oobCode, pw).then(function() {
+        // Success
+        document.getElementById('reset-form').style.display = 'none';
+        titleEl.textContent    = 'YOUR PASSWORD HAS BEEN UPDATED \u2756';
+        subtitleEl.textContent = '';
+        msgEl.style.display    = 'none';
+        btnEl.href             = 'login.html';
+        btnEl.textContent      = 'Sign In';
+        btnEl.style.display    = 'block';
+      }).catch(function(err) {
+        submitBtn.disabled    = false;
+        submitBtn.textContent = 'Set New Password \u2756';
+        errorDiv.textContent   = translateResetError(err.code);
+        errorDiv.style.display = 'block';
+      });
+    });
+
+    return; // do not fall through to verifyEmail logic
   }
 
   if (mode === 'verifyEmail') {
