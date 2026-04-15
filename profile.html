@@ -1297,6 +1297,26 @@ body::before{
   border-top: 1px solid rgba(201,168,76,0.15);
   padding-top: 14px;
 }
+/* ── Change Email section ── */
+#ce-current-email {
+  font-family: 'Luminari', serif;
+  font-style: italic;
+  font-size: 0.8rem;
+  color: rgba(240,230,210,0.55);
+  letter-spacing: 0.04em;
+  margin-bottom: 20px;
+}
+#ce-msg {
+  font-family: 'Luminari', serif;
+  font-style: italic;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  margin-top: 18px;
+  text-align: center;
+  border-top: 1px solid rgba(201,168,76,0.15);
+  padding-top: 14px;
+}
 /* jt-mobile-global-base */
 @media (max-width: 768px) {
   /* Prevent iOS input zoom */
@@ -1342,8 +1362,9 @@ body::before{
   /* Circ buttons: smaller on mobile */
   .circ-actions { gap: 16px !important; }
   .circ-btn svg { width: 72px !important; height: 72px !important; }
-  /* Change password: full-width button */
+  /* Change password / email: full-width buttons */
   #sec-change-password .btn-gold { width: 100% !important; text-align: center; }
+  #sec-change-email .btn-gold { width: 100% !important; text-align: center; }
 }
 
 /* ── Avatar upload overlay ── */
@@ -1881,6 +1902,32 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <button class="btn-gold" id="cp-submit" type="button">Update Password</button>
     </div>
     <div id="cp-msg" style="display:none;"></div>
+  </div>
+
+  <!-- Change Email -->
+  <div class="dark-card profile-section" id="sec-change-email" data-section="change-email" style="display:none;">
+    <div class="card-title">Change Email</div>
+    <div id="ce-current-email"></div>
+
+    <div class="cp-field-wrap">
+      <label class="dossier-field-label" for="ce-new-email">New Email</label>
+      <input class="form-input" type="email" id="ce-new-email" placeholder="signal@domain.com" autocomplete="email">
+    </div>
+
+    <div class="cp-field-wrap">
+      <label class="dossier-field-label" for="ce-password">Confirm Password</label>
+      <div class="cp-input-wrap">
+        <input class="form-input" type="password" id="ce-password" placeholder="············" autocomplete="current-password">
+        <button class="cp-eye" type="button" id="ce-pw-eye" aria-label="Show/hide password">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-gold" id="ce-submit" type="button">Update Email &#10022;</button>
+    </div>
+    <div id="ce-msg" style="display:none;"></div>
   </div>
 
   <div class="dark-card profile-section" id="sec-account" data-section="account" style="text-align:center;">
@@ -3112,6 +3159,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // ── Configure Change/Set Password section ─────────────────────
     if (window._initChangePassword) window._initChangePassword(user);
+    // ── Configure Change Email section ────────────────────────────
+    if (window._initChangeEmail) window._initChangeEmail(user);
     if(user.email === 'thejestamang@gmail.com'){
       var row = document.getElementById('circ-actions-row');
       if(row && !document.getElementById('circ-btn-admin')){
@@ -3742,6 +3791,86 @@ document.addEventListener('DOMContentLoaded', function(){
         cpCurrentWrap.style.display = 'none';
         cpSubmitBtn.textContent = 'Set Password';
       }
+    };
+  })();
+
+  // ── Change Email section ─────────────────────────────────────
+  (function() {
+    var ceSection     = document.getElementById('sec-change-email');
+    var ceCurrentEl   = document.getElementById('ce-current-email');
+    var ceNewEmailInp = document.getElementById('ce-new-email');
+    var cePwInp       = document.getElementById('ce-password');
+    var ceSubmitBtn   = document.getElementById('ce-submit');
+    var ceMsg         = document.getElementById('ce-msg');
+    var cePwEye       = document.getElementById('ce-pw-eye');
+
+    function ceShowMsg(text, isError) {
+      ceMsg.textContent   = text;
+      ceMsg.style.color   = isError ? '#FB3838' : '#02E127';
+      ceMsg.style.display = 'block';
+    }
+    function ceClearMsg() { ceMsg.style.display = 'none'; ceMsg.textContent = ''; }
+
+    // Eye toggle
+    cePwEye.addEventListener('click', function() {
+      var isText = cePwInp.type === 'text';
+      cePwInp.type = isText ? 'password' : 'text';
+      cePwEye.innerHTML = isText
+        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+        : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+    });
+
+    ceSubmitBtn.addEventListener('click', function() {
+      ceClearMsg();
+      var newEmail = ceNewEmailInp.value.trim();
+      var password = cePwInp.value;
+
+      if (!newEmail) { ceShowMsg('Please enter a new email address.', true); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) { ceShowMsg('Please enter a valid email address.', true); return; }
+      if (!password) { ceShowMsg('Password is required to confirm your identity.', true); return; }
+      if (!currentUser) { ceShowMsg('You must be signed in.', true); return; }
+
+      ceSubmitBtn.disabled    = true;
+      ceSubmitBtn.textContent = 'Updating\u2026';
+
+      var cred = firebase.auth.EmailAuthProvider.credential(currentUser.email, password);
+      currentUser.reauthenticateWithCredential(cred)
+        .then(function() { return currentUser.verifyBeforeUpdateEmail(newEmail); })
+        .then(function() {
+          ceNewEmailInp.value = '';
+          cePwInp.value       = '';
+          ceSubmitBtn.disabled    = false;
+          ceSubmitBtn.textContent = 'Update Email \u2756';
+          ceShowMsg('A verification link has been sent to ' + newEmail + '. Your email will update once verified. \u2756', false);
+        })
+        .catch(function(err) {
+          ceSubmitBtn.disabled    = false;
+          ceSubmitBtn.textContent = 'Update Email \u2756';
+          var errMap = {
+            'auth/wrong-password':        'Incorrect password.',
+            'auth/invalid-credential':    'Incorrect password.',
+            'auth/email-already-in-use':  'This email is already linked to another account.',
+            'auth/invalid-email':         'Please enter a valid email address.',
+            'auth/requires-recent-login': 'Please sign out and sign back in before changing your email.'
+          };
+          ceShowMsg(errMap[err.code] || err.message || 'Something went wrong. Please try again.', true);
+        });
+    });
+
+    // Called from onAuthStateChanged
+    window._initChangeEmail = function(user) {
+      if (!user) { ceSection.style.display = 'none'; return; }
+      var providerIds = user.providerData.map(function(p) { return p.providerId; });
+      var hasPassword = providerIds.indexOf('password') !== -1;
+
+      // Hide for Google-only accounts — they manage email through Google
+      if (!hasPassword) { ceSection.style.display = 'none'; return; }
+
+      ceSection.style.display = '';
+      ceCurrentEl.textContent = 'Current: ' + (user.email || '');
+      ceClearMsg();
+      ceNewEmailInp.value = '';
+      cePwInp.value       = '';
     };
   })();
 
