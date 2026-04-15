@@ -430,96 +430,46 @@ function getAC(){
   return ac;
 }
 
-// Pre-generate noise buffer for hi-hat
-var _noiseBuf = null;
-function getNoiseBuf(){
-  if(_noiseBuf)return _noiseBuf;
-  var c=getAC();
-  var len=c.sampleRate*0.15;
-  _noiseBuf=c.createBuffer(1,len,c.sampleRate);
-  var d=_noiseBuf.getChannelData(0);
-  for(var i=0;i<len;i++)d[i]=Math.random()*2-1;
-  return _noiseBuf;
-}
-
 // ── Synthesis ─────────────────────────────────────────
-function playKick(t, accent){
+// KICK: low 80Hz thump for accent beats
+function playKickTone(t){
   var c=getAC();
-  var g=c.createGain();
-  var vol=accent?0.85:0.5;
-  g.gain.setValueAtTime(vol,t);
-  g.gain.exponentialRampToValueAtTime(0.001,t+0.32);
   var osc=c.createOscillator();
+  var g=c.createGain();
   osc.type='sine';
-  osc.frequency.setValueAtTime(180,t);
-  osc.frequency.exponentialRampToValueAtTime(45,t+0.12);
+  osc.frequency.value=80;
+  g.gain.setValueAtTime(0.9,t);
+  g.gain.exponentialRampToValueAtTime(0.001,t+0.08);
   osc.connect(g);g.connect(c.destination);
-  osc.start(t);osc.stop(t+0.38);
+  osc.start(t);osc.stop(t+0.10);
 }
 
-function playHat(t, vel){
+// HI-HAT: high 1200Hz tick for non-accent beats
+function playHatTone(t){
   var c=getAC();
-  var buf=getNoiseBuf();
-  var src=c.createBufferSource();
-  src.buffer=buf;
-  var bp=c.createBiquadFilter();
-  bp.type='bandpass';bp.frequency.value=9000;bp.Q.value=0.8;
-  var g=c.createGain();
-  g.gain.setValueAtTime(vel*0.35,t);
-  g.gain.exponentialRampToValueAtTime(0.001,t+0.07);
-  src.connect(bp);bp.connect(g);g.connect(c.destination);
-  src.start(t);src.stop(t+0.1);
-}
-
-function playAccentHat(t, vel){
-  var c=getAC();
-  var buf=getNoiseBuf();
-  var src=c.createBufferSource();
-  src.buffer=buf;
-  var bp=c.createBiquadFilter();
-  bp.type='bandpass';bp.frequency.value=7000;bp.Q.value=0.6;
-  var g=c.createGain();
-  g.gain.setValueAtTime(vel*0.55,t);
-  g.gain.exponentialRampToValueAtTime(0.001,t+0.12);
-  src.connect(bp);bp.connect(g);g.connect(c.destination);
-  src.start(t);src.stop(t+0.15);
-}
-
-function playSnare(t, vel){
-  var c=getAC();
-  var buf=getNoiseBuf();
-  var src=c.createBufferSource();
-  src.buffer=buf;
-  var hp=c.createBiquadFilter();
-  hp.type='highpass';hp.frequency.value=300;hp.Q.value=0.5;
-  var g=c.createGain();
-  g.gain.setValueAtTime((vel||0.7)*0.65,t);
-  g.gain.exponentialRampToValueAtTime(0.001,t+0.2);
-  src.connect(hp);hp.connect(g);g.connect(c.destination);
-  src.start(t);src.stop(t+0.22);
   var osc=c.createOscillator();
-  osc.type='triangle';osc.frequency.value=200;
-  var g2=c.createGain();
-  g2.gain.setValueAtTime((vel||0.7)*0.25,t);
-  g2.gain.exponentialRampToValueAtTime(0.001,t+0.1);
-  osc.connect(g2);g2.connect(c.destination);
-  osc.start(t);osc.stop(t+0.12);
+  var g=c.createGain();
+  osc.type='sine';
+  osc.frequency.value=1200;
+  g.gain.setValueAtTime(0.25,t);
+  g.gain.exponentialRampToValueAtTime(0.001,t+0.04);
+  osc.connect(g);g.connect(c.destination);
+  osc.start(t);osc.stop(t+0.06);
 }
 
 // ── Time Signature Display Data ──────────────────────
 var TIME_SIGS = {
-  '4/4':    {label:'4/4',            desc:'Four beats per bar',           expl:'Four beats per bar — the most common time signature in Western music. ONE two three four.'},
-  '3/4':    {label:'3/4',            desc:'Three beats per bar',          expl:'Three beats per bar. Waltz feel. ONE two three — heard in waltzes, folk music, and countless ballads.'},
-  '2/4':    {label:'2/4',            desc:'Two beats per bar',            expl:'Two quarter note beats per bar. Strong march feel. ONE two — clean, direct, assertive.'},
-  '2/2':    {label:'2/2',            desc:'Cut time — two half-note beats',expl:'Cut time: two half-note beats per bar. Feels spacious and majestic. ONE two — used in classical overtures and fast marches.'},
-  '6/8':    {label:'6/8',            desc:'Two felt beats, triplet feel',  expl:'Six eighth notes felt in two. ONE-two-three-FOUR-five-six. Compound duple — swings and flows, as in jigs and barcarolles.'},
-  '9/8':    {label:'9/8',            desc:'Three felt beats, triplet feel',expl:'Nine eighth notes felt in three dotted-quarter beats. ONE-two-three-FOUR-five-six-SEVEN-eight-nine. Flowing, compound triple.'},
-  '5/4':    {label:'5/4',            desc:'Five beats per bar',           expl:'Five beats per bar — asymmetric and hypnotic. Often felt as 3+2 or 2+3. Dave Brubeck\'s "Take Five."'},
-  '7/8':    {label:'7/8',            desc:'Seven eighths — 2+2+3',        expl:'Seven eighth notes per bar. Felt as 2+2+3 or 3+2+2. Found in Balkan folk music and progressive rock.'},
-  '12/8':   {label:'12/8',           desc:'Four felt beats, triplet feel', expl:'Twelve eighth notes felt in four dotted-quarter beats. Rich, rolling compound feel — the backbone of blues and soul.'},
-  '5/8':    {label:'5/8',            desc:'Five eighths — asymmetric',    expl:'Five eighth notes per bar, often grouped as 2+3 or 3+2. Urgent, limping forward momentum.'},
-  'synco':  {label:'Syncopated 4/4', desc:'4/4 — off-beat accents',       expl:'Syncopation: the accent falls between the main beats — on the "and." The rhythm pushes against the steady grid.'},
-  'straight':{label:'Straight 4/4', desc:'4/4 — on-beat accents',        expl:'Straight 4/4: every accent lands squarely on the beat. No syncopation — clean, direct pulse. ONE two THREE four.'}
+  '4/4':            {label:'4/4',            desc:'Four beats per bar',            expl:'Four beats per bar — the most common time signature in Western music. ONE two three four.'},
+  '3/4':            {label:'3/4',            desc:'Three beats per bar',           expl:'Three beats per bar. Waltz feel. ONE two three — heard in waltzes, folk music, and countless ballads.'},
+  '2/4':            {label:'2/4',            desc:'Two beats per bar',             expl:'Two quarter note beats per bar. Strong march feel. ONE two — clean, direct, assertive.'},
+  '2/2':            {label:'2/2',            desc:'Cut time — two half-note beats', expl:'Cut time: two half-note beats per bar. Feels spacious and majestic. ONE two — used in classical overtures and fast marches.'},
+  '6/8':            {label:'6/8',            desc:'Two felt beats, triplet feel',   expl:'Six eighth notes felt in two. ONE-two-three-FOUR-five-six. Compound duple — swings and flows, as in jigs and barcarolles.'},
+  '9/8':            {label:'9/8',            desc:'Three felt beats, triplet feel', expl:'Nine eighth notes felt in three dotted-quarter beats. ONE-two-three-FOUR-five-six-SEVEN-eight-nine. Flowing, compound triple.'},
+  '5/4':            {label:'5/4',            desc:'Five beats per bar',            expl:'Five beats per bar — asymmetric and hypnotic. Often felt as 3+2 or 2+3. Dave Brubeck\'s "Take Five."'},
+  '7/8':            {label:'7/8',            desc:'Seven eighths — 2+2+3',         expl:'Seven eighth notes per bar. Felt as 2+2+3 or 3+2+2. Found in Balkan folk music and progressive rock.'},
+  '12/8':           {label:'12/8',           desc:'Four felt beats, triplet feel',  expl:'Twelve eighth notes felt in four dotted-quarter beats. Rich, rolling compound feel — the backbone of blues and soul.'},
+  '5/8':            {label:'5/8',            desc:'Five eighths — asymmetric',     expl:'Five eighth notes per bar, often grouped as 2+3 or 3+2. Urgent, limping forward momentum.'},
+  '4/4-syncopated': {label:'Syncopated 4/4', desc:'4/4 — off-beat accents',        expl:'Syncopation: the accent falls between the main beats — on the "and." The rhythm pushes against the steady grid.'}
 };
 
 // ── Level Display Data ────────────────────────────────
@@ -532,60 +482,48 @@ var LEVELS = [
   {id:6, name:'Mixed — All'}
 ];
 
-// ── Explicit Pattern Pool per Level ──────────────────
-// beats = total pulses per bar, bpm = pulse rate, accent = 1-indexed beat positions for thump
-var PATTERNS = {
-  1: [
-    { sig:'4/4',  beats:4, bpm:88,  accent:[1]        },
-    { sig:'3/4',  beats:3, bpm:88,  accent:[1]        }
-  ],
-  2: [
-    { sig:'2/4',  beats:2, bpm:88,  accent:[1]        },
-    { sig:'2/2',  beats:2, bpm:54,  accent:[1]        },
-    { sig:'4/4',  beats:4, bpm:88,  accent:[1]        },
-    { sig:'3/4',  beats:3, bpm:88,  accent:[1]        }
-  ],
-  3: [
-    { sig:'6/8',  beats:6, bpm:152, accent:[1,4]      },
-    { sig:'9/8',  beats:9, bpm:152, accent:[1,4,7]    },
-    { sig:'4/4',  beats:4, bpm:88,  accent:[1]        },
-    { sig:'3/4',  beats:3, bpm:88,  accent:[1]        }
-  ],
-  4: [
-    { sig:'5/4',  beats:5, bpm:84,  accent:[1,3]      },
-    { sig:'7/8',  beats:7, bpm:160, accent:[1,3,5]    },
-    { sig:'6/8',  beats:6, bpm:152, accent:[1,4]      },
-    { sig:'4/4',  beats:4, bpm:88,  accent:[1]        }
-  ],
-  5: [
-    { sig:'synco',beats:8, bpm:176, accent:[2,4,6,8], syncopated:true },
-    { sig:'4/4',  beats:4, bpm:88,  accent:[1,3]      },
-    { sig:'3/4',  beats:3, bpm:88,  accent:[1]        },
-    { sig:'5/4',  beats:5, bpm:84,  accent:[1,3]      }
-  ],
-  6: [
-    { sig:'4/4',  beats:4, bpm:88,  accent:[1]        },
-    { sig:'3/4',  beats:3, bpm:88,  accent:[1]        },
-    { sig:'2/4',  beats:2, bpm:88,  accent:[1]        },
-    { sig:'6/8',  beats:6, bpm:152, accent:[1,4]      },
-    { sig:'9/8',  beats:9, bpm:152, accent:[1,4,7]    },
-    { sig:'5/4',  beats:5, bpm:84,  accent:[1,3]      },
-    { sig:'7/8',  beats:7, bpm:160, accent:[1,3,5]    },
-    { sig:'12/8', beats:12,bpm:152, accent:[1,4,7,10] },
-    { sig:'5/8',  beats:5, bpm:160, accent:[1,3]      },
-    { sig:'synco',beats:8, bpm:176, accent:[2,4,6,8], syncopated:true }
-  ]
+// ── Pattern Pool per Level ────────────────────────────
+var LEVEL_PATTERNS = {
+  1: ['4/4', '3/4'],
+  2: ['4/4', '3/4', '2/4', '2/2'],
+  3: ['4/4', '3/4', '6/8', '9/8'],
+  4: ['5/4', '7/8', '6/8', '4/4'],
+  5: ['4/4-syncopated', '3/4', '5/4', '4/4'],
+  6: ['4/4', '3/4', '6/8', '5/4', '7/8', '12/8', '5/8']
 };
 
-function getRandomPattern(levelNum){
-  var pool = PATTERNS[levelNum] || PATTERNS[1];
-  return pool[Math.floor(Math.random() * pool.length)];
+// ── Beat Maps ─────────────────────────────────────────
+// accents: 0-indexed beat positions; tempo: BPM for beat interval
+var BEAT_MAPS = {
+  '4/4':            {beats:4,  accents:[0],          tempo:90},
+  '3/4':            {beats:3,  accents:[0],           tempo:90},
+  '2/4':            {beats:2,  accents:[0],           tempo:90},
+  '2/2':            {beats:2,  accents:[0],           tempo:70},
+  '6/8':            {beats:6,  accents:[0,3],         tempo:100},
+  '9/8':            {beats:9,  accents:[0,3,6],       tempo:100},
+  '5/4':            {beats:5,  accents:[0,2],         tempo:80},
+  '7/8':            {beats:7,  accents:[0,2,4],       tempo:90},
+  '12/8':           {beats:12, accents:[0,3,6,9],     tempo:110},
+  '5/8':            {beats:5,  accents:[0,2],         tempo:100},
+  '4/4-syncopated': {beats:4,  accents:[1,3],         tempo:90}
+};
+
+// ── Anti-repeat pattern picker ────────────────────────
+var _lastPattern = null;
+
+function pickPattern(level){
+  var pool = LEVEL_PATTERNS[level] || LEVEL_PATTERNS[1];
+  var available = pool.filter(function(p){ return p !== _lastPattern; });
+  if(available.length === 0) available = pool;
+  var chosen = available[Math.floor(Math.random() * available.length)];
+  _lastPattern = chosen;
+  return chosen;
 }
 
 // ── State ─────────────────────────────────────────────
 var state = {
-  currentLevel: 0,      // index into LEVELS
-  maxLevel: 0,          // highest unlocked level index
+  currentLevel: 0,
+  maxLevel: 0,
   score: 0,
   streak: 0,
   lives: 3,
@@ -594,385 +532,363 @@ var state = {
   correctThisLevel: 0,
   LEVEL_UP_AT: 5,
   currentSig: null,
-  currentPattern: null,
   replayLeft: 3,
   playTimeouts: [],
   answered: false,
   playing: false
 };
 
-// ── Pattern Generation ────────────────────────────────
+// ── Event Generation ──────────────────────────────────
 // Returns array of {t, isAccent, bar, beat, dotIdx}
-function generateEvents(pattern){
+function generateEvents(sig){
+  var map = BEAT_MAPS[sig];
   var BARS = 2;
-  var dt = 60 / pattern.bpm;
+  var beatInterval = 60 / map.tempo;
   var accentSet = {};
-  (pattern.accent || [1]).forEach(function(a){ accentSet[a-1] = true; }); // 0-indexed
+  map.accents.forEach(function(a){ accentSet[a] = true; });
   var events = [];
   var dotIdx = 0;
   for(var bar=0; bar<BARS; bar++){
-    for(var beat=0; beat<pattern.beats; beat++){
-      var t = (bar * pattern.beats + beat) * dt;
-      var isAccent = !!accentSet[beat];
-      events.push({ t:t, isAccent:isAccent, bar:bar, beat:beat, dotIdx:dotIdx++ });
+    for(var beat=0; beat<map.beats; beat++){
+      var t = (bar * map.beats + beat) * beatInterval;
+      events.push({t:t, isAccent:!!accentSet[beat], bar:bar, beat:beat, dotIdx:dotIdx++});
     }
   }
   return events;
 }
 
-// New synthesis: distinct thump and click
-function playThump(t){
-  var c = getAC();
-  var osc = c.createOscillator();
-  var g = c.createGain();
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(80, t);
-  osc.frequency.exponentialRampToValueAtTime(42, t+0.18);
-  g.gain.setValueAtTime(0.9, t);
-  g.gain.exponentialRampToValueAtTime(0.001, t+0.28);
-  osc.connect(g); g.connect(c.destination);
-  osc.start(t); osc.stop(t+0.32);
-}
-
-function playClickBeat(t){
-  var c = getAC();
-  var osc = c.createOscillator();
-  var g = c.createGain();
-  osc.type = 'sine';
-  osc.frequency.value = 800;
-  g.gain.setValueAtTime(0.3, t);
-  g.gain.exponentialRampToValueAtTime(0.001, t+0.06);
-  osc.connect(g); g.connect(c.destination);
-  osc.start(t); osc.stop(t+0.09);
-}
-
-// Total duration of pattern in seconds
-function patternDuration(pattern){
-  var BARS = 2;
-  return BARS * pattern.beats * (60 / pattern.bpm);
+// Total duration of 2 bars in seconds
+function patternDuration(sig){
+  var map = BEAT_MAPS[sig];
+  return 2 * map.beats * (60 / map.tempo);
 }
 
 // ── Beat Dots Rendering ───────────────────────────────
-function buildBeatDots(pattern){
-  var row=document.getElementById('beat-row');
-  var labels=document.getElementById('bar-labels');
-  row.innerHTML=''; labels.innerHTML='';
-  var accentSet={};
-  (pattern.accent||[1]).forEach(function(a){ accentSet[a-1]=true; });
-  var BARS=2;
-  for(var bar=0;bar<BARS;bar++){
-    if(bar>0){
-      var sep=document.createElement('div');
-      sep.className='bd-sep';
+function buildBeatDots(sig){
+  var map = BEAT_MAPS[sig];
+  var row = document.getElementById('beat-row');
+  var labels = document.getElementById('bar-labels');
+  row.innerHTML = ''; labels.innerHTML = '';
+  var accentSet = {};
+  map.accents.forEach(function(a){ accentSet[a] = true; });
+  var BARS = 2;
+  for(var bar=0; bar<BARS; bar++){
+    if(bar > 0){
+      var sep = document.createElement('div');
+      sep.className = 'bd-sep';
       row.appendChild(sep);
     }
-    for(var beat=0;beat<pattern.beats;beat++){
-      var dot=document.createElement('div');
-      var idx=bar*pattern.beats+beat;
-      dot.id='bd-'+idx;
-      dot.className='bd'+(accentSet[beat]?' bd-accent':'');
+    for(var beat=0; beat<map.beats; beat++){
+      var dot = document.createElement('div');
+      var idx = bar * map.beats + beat;
+      dot.id = 'bd-' + idx;
+      if(beat === 0){
+        // Beat 1: larger and brighter
+        dot.className = 'bd bd-accent';
+        dot.style.width = '22px';
+        dot.style.height = '22px';
+        dot.style.background = 'rgba(201,168,76,0.28)';
+        dot.style.borderColor = 'rgba(201,168,76,0.75)';
+      } else if(accentSet[beat]){
+        // Other accent beats: subtle gold ring
+        dot.className = 'bd';
+        dot.style.boxShadow = '0 0 0 2px rgba(201,168,76,0.45)';
+      } else {
+        dot.className = 'bd';
+      }
       row.appendChild(dot);
     }
   }
-  labels.textContent='BAR 1 · · · BAR 2';
+  labels.textContent = 'BAR 1 · · · BAR 2';
 }
 
 // ── Options Generation ────────────────────────────────
-function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=a[i];a[i]=a[j];a[j]=tmp;}return a;}
 
-function generateOptions(correctSig, levelNum){
-  // Collect all unique sigs from levels 1..levelNum as the wrong-answer pool
-  var pool=[];
-  for(var lv=1;lv<=Math.min(levelNum+1,6);lv++){
-    (PATTERNS[lv]||[]).forEach(function(p){
-      if(p.sig!==correctSig&&pool.indexOf(p.sig)===-1) pool.push(p.sig);
-    });
-  }
-  // Ensure at least 3 wrong answers by adding remaining TIME_SIGS
-  Object.keys(TIME_SIGS).forEach(function(s){
-    if(s!==correctSig&&pool.indexOf(s)===-1) pool.push(s);
-  });
-  pool=shuffle(pool).slice(0,3);
-  return shuffle([correctSig].concat(pool));
+function generateOptions(correctSig){
+  var allSigs = Object.keys(BEAT_MAPS);
+  var wrong = shuffle(allSigs.filter(function(s){ return s !== correctSig; })).slice(0, 3);
+  return shuffle([correctSig].concat(wrong));
 }
 
 // ── UI Helpers ────────────────────────────────────────
 function showScreen(id){
   document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('active');});
-  var el=document.getElementById(id);
-  if(el)el.classList.add('active');
+  var el = document.getElementById(id);
+  if(el) el.classList.add('active');
 }
 
 function updateHUD(){
-  var l=LEVELS[state.currentLevel];
-  document.getElementById('hud-level').textContent='LEVEL '+l.id+' · '+l.name.toUpperCase();
-  document.getElementById('hud-score').textContent=state.score+' PTS';
-  var streak=document.getElementById('hud-streak');
-  streak.textContent='STREAK '+state.streak;
-  streak.className=state.streak>=3?'hot':'';
-  var hearts=['♦♦♦','♦♦◇','♦◇◇','◇◇◇'];
-  document.getElementById('hud-lives').textContent=hearts[Math.max(0,3-state.lives)]||'◇◇◇';
-  document.getElementById('q-counter').textContent='Q '+(state.qNum)+' / '+state.MAX_Q;
-  var poolEl=document.getElementById('hud-pool');
+  var l = LEVELS[state.currentLevel];
+  document.getElementById('hud-level').textContent = 'LEVEL ' + l.id + ' · ' + l.name.toUpperCase();
+  document.getElementById('hud-score').textContent = state.score + ' PTS';
+  var streak = document.getElementById('hud-streak');
+  streak.textContent = 'STREAK ' + state.streak;
+  streak.className = state.streak >= 3 ? 'hot' : '';
+  var hearts = ['♦♦♦','♦♦◇','♦◇◇','◇◇◇'];
+  document.getElementById('hud-lives').textContent = hearts[Math.max(0, 3 - state.lives)] || '◇◇◇';
+  document.getElementById('q-counter').textContent = 'Q ' + state.qNum + ' / ' + state.MAX_Q;
+  var poolEl = document.getElementById('hud-pool');
   if(poolEl){
-    var levelNum=l.id;
-    var pool=(PATTERNS[levelNum]||[]).map(function(p){return TIME_SIGS[p.sig]?TIME_SIGS[p.sig].label:p.sig;});
-    poolEl.textContent='Pool: '+pool.join(' · ');
+    var pool = (LEVEL_PATTERNS[l.id] || []).map(function(sig){
+      return TIME_SIGS[sig] ? TIME_SIGS[sig].label : sig;
+    });
+    poolEl.textContent = 'Pool: ' + pool.join(' · ');
   }
 }
 
 function setStateLabel(text, cls){
-  var el=document.getElementById('state-label');
-  el.textContent=text;
-  el.className=cls?'listening':'';
+  var el = document.getElementById('state-label');
+  el.textContent = text;
+  el.className = cls ? 'listening' : '';
 }
 
 function clearFeedback(){
-  var pts=document.getElementById('feedback-pts');
-  var expl=document.getElementById('feedback-expl');
-  pts.className='';pts.textContent='';
-  expl.className='';expl.textContent='';
+  var pts = document.getElementById('feedback-pts');
+  var expl = document.getElementById('feedback-expl');
+  pts.className = ''; pts.textContent = '';
+  expl.className = ''; expl.textContent = '';
 }
 
 function showFeedback(pts, expl, isPos){
-  var pEl=document.getElementById('feedback-pts');
-  var eEl=document.getElementById('feedback-expl');
-  pEl.textContent=pts;
-  pEl.className='show '+(isPos?'pos':'neg');
-  eEl.textContent=expl;
-  setTimeout(function(){eEl.className='show';},80);
+  var pEl = document.getElementById('feedback-pts');
+  var eEl = document.getElementById('feedback-expl');
+  pEl.textContent = pts;
+  pEl.className = 'show ' + (isPos ? 'pos' : 'neg');
+  eEl.textContent = expl;
+  setTimeout(function(){ eEl.className = 'show'; }, 80);
 }
 
 function setAnswerGrid(options, correctSig, locked){
-  var grid=document.getElementById('answer-grid');
-  grid.innerHTML='';
+  var grid = document.getElementById('answer-grid');
+  grid.innerHTML = '';
   options.forEach(function(sig){
-    var s=TIME_SIGS[sig];
-    var btn=document.createElement('button');
-    btn.className='ans-btn';
-    btn.disabled=locked;
-    btn.innerHTML='<span class="ans-sig">'+s.label+'</span><span class="ans-desc">'+s.desc+'</span>';
-    btn.addEventListener('click',function(){if(!state.answered&&!state.playing)handleAnswer(sig,correctSig,options);});
+    var s = TIME_SIGS[sig];
+    var btn = document.createElement('button');
+    btn.className = 'ans-btn';
+    btn.disabled = locked;
+    btn.innerHTML = '<span class="ans-sig">' + s.label + '</span><span class="ans-desc">' + s.desc + '</span>';
+    btn.addEventListener('click', function(){ if(!state.answered && !state.playing) handleAnswer(sig, correctSig, options); });
     grid.appendChild(btn);
   });
 }
 
 function setAnswerGridLocked(){
-  document.querySelectorAll('.ans-btn').forEach(function(b){b.disabled=true;});
+  document.querySelectorAll('.ans-btn').forEach(function(b){ b.disabled = true; });
 }
 
 // ── Playback ──────────────────────────────────────────
 function clearPlayTimeouts(){
-  state.playTimeouts.forEach(function(id){clearTimeout(id);});
-  state.playTimeouts=[];
+  state.playTimeouts.forEach(function(id){ clearTimeout(id); });
+  state.playTimeouts = [];
 }
 
-function playPattern(pattern, onDone){
+function playPattern(sig, onDone){
   clearPlayTimeouts();
-  state.playing=true;
-  var events=generateEvents(pattern);
-  var c=getAC();
-  var startT=c.currentTime+0.05;
-  var ring=document.getElementById('pulse-ring');
+  state.playing = true;
+  var events = generateEvents(sig);
+  var c = getAC();
+  var startT = c.currentTime + 0.05;
+  var ring = document.getElementById('pulse-ring');
   ring.classList.add('playing');
 
-  // Schedule audio — accent = thump, non-accent = click
+  // Schedule audio — accent = kick (low), non-accent = hi-hat (high)
   events.forEach(function(ev){
-    if(ev.isAccent) playThump(startT+ev.t);
-    else            playClickBeat(startT+ev.t);
+    if(ev.isAccent) playKickTone(startT + ev.t);
+    else            playHatTone(startT + ev.t);
   });
 
   // Schedule visual dot pulses
   events.forEach(function(ev){
-    var ms=ev.t*1000;
-    var id=setTimeout(function(){
-      var dot=document.getElementById('bd-'+ev.dotIdx);
+    var ms = ev.t * 1000;
+    var id = setTimeout(function(){
+      var dot = document.getElementById('bd-' + ev.dotIdx);
       if(dot){
         dot.classList.add('lit');
-        setTimeout(function(){if(dot)dot.classList.remove('lit');},150);
+        setTimeout(function(){ if(dot) dot.classList.remove('lit'); }, 150);
       }
       if(ev.isAccent){
-        ring.style.transform='scale(1.08)';
-        setTimeout(function(){ring.style.transform='';},160);
+        ring.style.transform = 'scale(1.08)';
+        setTimeout(function(){ ring.style.transform = ''; }, 160);
       }
-    },ms);
+    }, ms);
     state.playTimeouts.push(id);
   });
 
-  // Done
-  var dur=patternDuration(pattern)*1000+200;
-  var doneId=setTimeout(function(){
-    state.playing=false;
+  // Done callback
+  var dur = patternDuration(sig) * 1000 + 200;
+  var doneId = setTimeout(function(){
+    state.playing = false;
     ring.classList.remove('playing');
-    ring.style.transform='';
-    if(onDone)onDone();
-  },dur);
+    ring.style.transform = '';
+    if(onDone) onDone();
+  }, dur);
   state.playTimeouts.push(doneId);
 }
 
 // ── Answer Handling ───────────────────────────────────
 function handleAnswer(chosen, correct, options){
-  if(state.answered||state.playing)return;
-  state.answered=true;
+  if(state.answered || state.playing) return;
+  state.answered = true;
   setAnswerGridLocked();
   clearPlayTimeouts();
-  document.getElementById('replay-btn').disabled=true;
-  document.getElementById('next-btn').style.display='inline-block';
+  document.getElementById('replay-btn').disabled = true;
+  document.getElementById('next-btn').style.display = 'inline-block';
 
-  var isCorrect=(chosen===correct);
-  var pts=0;
-  var replayPenalty=(3-state.replayLeft)*2;
+  var isCorrect = (chosen === correct);
+  var pts = 0;
+  var replayPenalty = (3 - state.replayLeft) * 2;
 
   // Flash answer buttons
   document.querySelectorAll('.ans-btn').forEach(function(btn){
-    var sig=TIME_SIGS[btn.querySelector('.ans-sig').textContent.trim()]?btn.querySelector('.ans-sig').textContent.trim():null;
-    // Match by label
-    options.forEach(function(s){if(TIME_SIGS[s].label===btn.querySelector('.ans-sig').textContent.trim())sig=s;});
-    if(sig===correct) btn.classList.add('ans-correct');
-    else if(sig===chosen&&!isCorrect) btn.classList.add('ans-wrong');
-    else btn.classList.add('ans-dim');
+    var sig = null;
+    options.forEach(function(s){ if(TIME_SIGS[s].label === btn.querySelector('.ans-sig').textContent.trim()) sig = s; });
+    if(sig === correct)              btn.classList.add('ans-correct');
+    else if(sig === chosen && !isCorrect) btn.classList.add('ans-wrong');
+    else                             btn.classList.add('ans-dim');
   });
 
   if(isCorrect){
-    pts=Math.max(1,10-replayPenalty);
+    pts = Math.max(1, 10 - replayPenalty);
     state.streak++;
-    // Streak bonus every 3
-    if(state.streak>0&&state.streak%3===0) pts+=5;
-    state.score+=pts;
+    if(state.streak > 0 && state.streak % 3 === 0) pts += 5;
+    state.score += pts;
     state.correctThisLevel++;
-    setStateLabel('CORRECT','correct');
-    showFeedback('+'+(pts>10?pts+' (streak bonus!)':pts)+' pts', TIME_SIGS[correct].expl, true);
+    setStateLabel('CORRECT', 'correct');
+    showFeedback('+' + (pts > 10 ? pts + ' (streak bonus!)' : pts) + ' pts', TIME_SIGS[correct].expl, true);
     updateHUD();
-
-    // Level up?
-    if(state.correctThisLevel>=state.LEVEL_UP_AT&&state.currentLevel<LEVELS.length-1){
+    if(state.correctThisLevel >= state.LEVEL_UP_AT && state.currentLevel < LEVELS.length - 1){
       state.currentLevel++;
-      state.maxLevel=Math.max(state.maxLevel,state.currentLevel);
-      state.correctThisLevel=0;
+      state.maxLevel = Math.max(state.maxLevel, state.currentLevel);
+      state.correctThisLevel = 0;
       showLevelUp(LEVELS[state.currentLevel]);
     }
   } else {
-    state.streak=0;
+    state.streak = 0;
     state.lives--;
-    setStateLabel('INCORRECT','');
-    showFeedback('Wrong — '+TIME_SIGS[correct].label, TIME_SIGS[correct].expl, false);
+    setStateLabel('INCORRECT', '');
+    showFeedback('Wrong — ' + TIME_SIGS[correct].label, TIME_SIGS[correct].expl, false);
     updateHUD();
-    if(state.lives<=0){
-      document.getElementById('next-btn').textContent='See Results';
+    if(state.lives <= 0){
+      document.getElementById('next-btn').textContent = 'See Results';
     }
   }
 }
 
 // ── Level Up Banner ───────────────────────────────────
 function showLevelUp(level){
-  var b=document.getElementById('levelup-banner');
-  document.getElementById('lu-name').textContent='Level '+level.id+' · '+level.name;
+  var b = document.getElementById('levelup-banner');
+  document.getElementById('lu-name').textContent = 'Level ' + level.id + ' · ' + level.name;
   b.classList.add('show');
-  setTimeout(function(){b.classList.remove('show');setTimeout(function(){b.style.display='none';},350);b.style.display='block';},2200);
-  b.style.display='block';
+  b.style.display = 'block';
+  setTimeout(function(){ b.classList.remove('show'); setTimeout(function(){ b.style.display = 'none'; }, 350); }, 2200);
 }
 
 // ── Round ─────────────────────────────────────────────
 function newRound(){
-  if(state.lives<=0||state.qNum>=state.MAX_Q){gameOver();return;}
+  if(state.lives <= 0 || state.qNum >= state.MAX_Q){ gameOver(); return; }
   state.qNum++;
-  state.answered=false;
-  state.replayLeft=3;
+  state.answered = false;
+  state.replayLeft = 3;
   clearFeedback();
 
-  // Pick pattern from current level's pool
   var levelNum = LEVELS[state.currentLevel].id;
-  var pattern = getRandomPattern(levelNum);
-  state.currentSig = pattern.sig;
-  state.currentPattern = pattern;
+  var sig = pickPattern(levelNum);
+  state.currentSig = sig;
+  console.log('[RA] Round ' + state.qNum + ' | Level ' + levelNum + ' | Pattern: ' + sig);
 
-  var options=generateOptions(pattern.sig, levelNum);
-  buildBeatDots(pattern);
+  var options = generateOptions(sig);
+  buildBeatDots(sig);
   setStateLabel('LISTEN', true);
   updateHUD();
 
-  document.getElementById('next-btn').style.display='none';
-  document.getElementById('next-btn').textContent='Next →';
-  document.getElementById('replay-btn').disabled=true;
-  setAnswerGrid(options, pattern.sig, true);
+  document.getElementById('next-btn').style.display = 'none';
+  document.getElementById('next-btn').textContent = 'Next →';
+  document.getElementById('replay-btn').disabled = true;
+  setAnswerGrid(options, sig, true);
   updateReplayBtn();
 
   setTimeout(function(){
-    playPattern(pattern, function(){
-      setStateLabel('CHOOSE','');
-      setAnswerGrid(options, pattern.sig, false);
-      document.getElementById('replay-btn').disabled=(state.replayLeft<=0);
+    playPattern(sig, function(){
+      setStateLabel('CHOOSE', '');
+      setAnswerGrid(options, sig, false);
+      document.getElementById('replay-btn').disabled = (state.replayLeft <= 0);
     });
-  },400);
+  }, 400);
 }
 
 function updateReplayBtn(){
-  var btn=document.getElementById('replay-btn');
-  var cnt=document.getElementById('replay-count');
-  btn.disabled=(state.replayLeft<=0||state.answered||state.playing);
-  cnt.textContent='('+state.replayLeft+' left)';
+  var btn = document.getElementById('replay-btn');
+  var cnt = document.getElementById('replay-count');
+  btn.disabled = (state.replayLeft <= 0 || state.answered || state.playing);
+  cnt.textContent = '(' + state.replayLeft + ' left)';
 }
 
 // ── Game Over ─────────────────────────────────────────
 function gameOver(){
   clearPlayTimeouts();
   showScreen('scr-over');
-  document.getElementById('score-final').textContent=state.score.toLocaleString();
-  var lvl=LEVELS[state.currentLevel];
-  document.getElementById('over-level').textContent='Reached: Level '+lvl.id+' · '+lvl.name;
-  document.getElementById('over-stats').textContent=
-    'Answered '+state.qNum+' questions · '+
-    'Lives remaining: '+(state.lives<0?0:state.lives);
-  if(typeof window.lbOnGameOver_RA==='function')window.lbOnGameOver_RA(state.score);
+  document.getElementById('score-final').textContent = state.score.toLocaleString();
+  var lvl = LEVELS[state.currentLevel];
+  document.getElementById('over-level').textContent = 'Reached: Level ' + lvl.id + ' · ' + lvl.name;
+  document.getElementById('over-stats').textContent =
+    'Answered ' + state.qNum + ' questions · ' +
+    'Lives remaining: ' + (state.lives < 0 ? 0 : state.lives);
+  if(typeof window.lbOnGameOver_RA === 'function') window.lbOnGameOver_RA(state.score);
 }
 
 // ── Init / Start ──────────────────────────────────────
 function startGame(){
-  state.score=0;state.streak=0;state.lives=3;state.qNum=0;
-  state.currentLevel=0;state.maxLevel=0;state.correctThisLevel=0;
-  state.answered=false;state.playing=false;state.currentSig=null;
-  document.getElementById('lb-btn-over').style.display='none';
+  state.score = 0; state.streak = 0; state.lives = 3; state.qNum = 0;
+  state.currentLevel = 0; state.maxLevel = 0; state.correctThisLevel = 0;
+  state.answered = false; state.playing = false; state.currentSig = null;
+  _lastPattern = null;
+  document.getElementById('lb-btn-over').style.display = 'none';
   showScreen('scr-game');
-  document.getElementById('lb-btn-hud').style.display='inline-block';
+  document.getElementById('lb-btn-hud').style.display = 'inline-block';
   updateHUD();
   newRound();
 }
 
 // ── Event Listeners ───────────────────────────────────
-document.addEventListener('DOMContentLoaded',function(){
-  var _startBtn=document.getElementById('startBtn');if(_startBtn)_startBtn.addEventListener('click',function(){getAC();startGame();});
-  var _restartBtn=document.getElementById('restartBtn');if(_restartBtn)_restartBtn.addEventListener('click',function(){getAC();startGame();});
+document.addEventListener('DOMContentLoaded', function(){
+  var _startBtn = document.getElementById('startBtn');
+  if(_startBtn) _startBtn.addEventListener('click', function(){ getAC(); startGame(); });
+  var _restartBtn = document.getElementById('restartBtn');
+  if(_restartBtn) _restartBtn.addEventListener('click', function(){ getAC(); startGame(); });
 
-  var _howToggle=document.getElementById('how-toggle');if(_howToggle)_howToggle.addEventListener('click',function(){
-    var b=document.getElementById('how-body');
+  var _howToggle = document.getElementById('how-toggle');
+  if(_howToggle) _howToggle.addEventListener('click', function(){
+    var b = document.getElementById('how-body');
     b.classList.toggle('open');
-    this.textContent=b.classList.contains('open')?'▴ How to Play':'▾ How to Play';
+    this.textContent = b.classList.contains('open') ? '▴ How to Play' : '▾ How to Play';
   });
 
-  var _replayBtn=document.getElementById('replay-btn');if(_replayBtn)_replayBtn.addEventListener('click',function(){
-    if(state.answered||state.playing||state.replayLeft<=0)return;
+  var _replayBtn = document.getElementById('replay-btn');
+  if(_replayBtn) _replayBtn.addEventListener('click', function(){
+    if(state.answered || state.playing || state.replayLeft <= 0) return;
     getAC();
     state.replayLeft--;
     updateReplayBtn();
-    setStateLabel('LISTEN',true);
-    setAnswerGrid(Array.from(document.querySelectorAll('.ans-btn')).map(function(b){
-      var lbl=b.querySelector('.ans-sig').textContent.trim();
-      return Object.keys(TIME_SIGS).find(function(k){return TIME_SIGS[k].label===lbl;})||lbl;
-    }),state.currentSig,true);
-    playPattern(state.currentPattern,function(){
-      setStateLabel('CHOOSE','');
-      var opts=Array.from(document.querySelectorAll('.ans-btn')).map(function(b){
-        var lbl=b.querySelector('.ans-sig').textContent.trim();
-        return Object.keys(TIME_SIGS).find(function(k){return TIME_SIGS[k].label===lbl;})||lbl;
-      });
-      setAnswerGrid(opts,state.currentSig,false);
-      document.getElementById('replay-btn').disabled=(state.replayLeft<=0);
+    setStateLabel('LISTEN', true);
+    var opts = Array.from(document.querySelectorAll('.ans-btn')).map(function(b){
+      var lbl = b.querySelector('.ans-sig').textContent.trim();
+      var found = null;
+      Object.keys(TIME_SIGS).forEach(function(k){ if(TIME_SIGS[k].label === lbl) found = k; });
+      return found || lbl;
+    });
+    setAnswerGrid(opts, state.currentSig, true);
+    playPattern(state.currentSig, function(){
+      setStateLabel('CHOOSE', '');
+      setAnswerGrid(opts, state.currentSig, false);
+      document.getElementById('replay-btn').disabled = (state.replayLeft <= 0);
     });
   });
 
-  var _nextBtn=document.getElementById('next-btn');if(_nextBtn)_nextBtn.addEventListener('click',function(){
-    if(state.lives<=0||state.qNum>=state.MAX_Q){gameOver();}
-    else{newRound();}
+  var _nextBtn = document.getElementById('next-btn');
+  if(_nextBtn) _nextBtn.addEventListener('click', function(){
+    if(state.lives <= 0 || state.qNum >= state.MAX_Q){ gameOver(); }
+    else{ newRound(); }
   });
 });
 
