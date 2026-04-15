@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
-Disallow: /dossier.html
+Disallow: /offline.html
 
 Sitemap: https://jestamang.com/sitemap.xml
