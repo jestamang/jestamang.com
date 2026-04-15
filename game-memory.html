@@ -374,7 +374,7 @@ function build(){
       var card=document.createElement('div');
       card.className='mem-card';
       card.dataset.id=item.id;
-      card.innerHTML='<div class="mem-card-inner"><div class="mem-back"><div class="mem-back-glyph">\u2726</div><div class="mem-back-text">Jestamang</div></div><div class="mem-front"><img src="'+item.src+'" alt="" loading="eager"></div></div>';
+      card.innerHTML='<div class="mem-card-inner"><div class="mem-back"><div class="mem-back-glyph">\u2726</div><div class="mem-back-text">Jestamang</div></div><div class="mem-front"><img src="'+item.src+'" alt="" loading="eager" width="150" height="150"></div></div>';
       card.addEventListener('click',function(){flip(card);});
       grid.appendChild(card);
     });

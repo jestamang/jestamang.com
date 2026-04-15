@@ -1022,7 +1022,7 @@ document.addEventListener('DOMContentLoaded', function(){
       wrap.setAttribute('data-id', doc.id);
       var avSrc1 = isMe ? currentUserPhoto : (d.photo || '/assets/homepage/jesta jr.jpg');
       wrap.innerHTML  =
-        '<div class="chat-avatar"><img src="'+esc(avSrc1)+'" onerror="this.onerror=null;this.src=\'/assets/homepage/jesta jr.jpg\'" alt="" loading="lazy"></div>'+
+        '<div class="chat-avatar"><img src="'+esc(avSrc1)+'" onerror="this.onerror=null;this.src=\'/assets/homepage/jesta jr.jpg\'" alt="" loading="lazy" width="32" height="32"></div>'+
         '<div class="chat-bubble">'+
           (canDel ? '<button class="chat-del-btn'+(isAdmin&&!isMe?' admin-del':'')+'" title="Delete message" aria-label="Delete message">&#215;</button>' : '')+
           '<div class="chat-meta">'+

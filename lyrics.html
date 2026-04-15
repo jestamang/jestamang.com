@@ -13374,7 +13374,7 @@ function loadLyrics(){
           var card=document.createElement('button');
           card.className='al-card';card.setAttribute('data-aslug',aSlug);card.setAttribute('data-alslug',alSlug);
           var artSrc=d.artwork?'assets/albums/'+esc(d.artwork):'';
-          card.innerHTML='<img src="'+artSrc+'" alt="'+esc(d.albumTitle)+'" class="al-cover" loading="lazy"><span class="al-label">'+esc(d.albumTitle)+'</span>';
+          card.innerHTML='<img src="'+artSrc+'" alt="'+esc(d.albumTitle)+'" class="al-cover" loading="lazy" width="300" height="300"><span class="al-label">'+esc(d.albumTitle)+'</span>';
           apDiv.appendChild(card);wireBtn(card);
         }
         /* lyric panel */

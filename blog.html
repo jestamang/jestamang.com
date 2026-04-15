@@ -588,7 +588,7 @@ function pressSectionToggle(){
           var del='';
           if(user&&user.uid===d.userId) del='<button class="comment-delete" aria-label="Delete comment" data-id="'+item.id+'">✕</button>';
           var avSrc=d.photoURL||'assets/homepage/jesta jr.jpg';
-          el.innerHTML='<img class="comment-avatar" src="'+escHtml(avSrc)+'" onerror="this.onerror=null;this.src=\'assets/homepage/jesta jr.jpg\'" alt="" loading="lazy">'+
+          el.innerHTML='<img class="comment-avatar" src="'+escHtml(avSrc)+'" onerror="this.onerror=null;this.src=\'assets/homepage/jesta jr.jpg\'" alt="" loading="lazy" width="36" height="36">'+
             '<div class="comment-body">'+del+'<div class="comment-author">'+escHtml(d.username||'Anonymous')+' · '+fmtDate(d.timestamp)+'</div><div class="comment-text">'+escHtml(d.text)+'</div></div>';
           var delBtn=el.querySelector('.comment-delete');
           if(delBtn) delBtn.addEventListener('click',function(){

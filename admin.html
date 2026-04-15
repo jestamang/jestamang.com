@@ -1822,7 +1822,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var avatarHtml;
       var memInitial = esc((d.username||d.displayName||d.email||'?').charAt(0).toUpperCase());
       if (d.photoURL) {
-        avatarHtml = '<img class="mem-avatar" src="' + esc(d.photoURL) + '" onerror="admAvatarErr(this,\'' + memInitial + '\')" alt="">';
+        avatarHtml = '<img class="mem-avatar" src="' + esc(d.photoURL) + '" onerror="admAvatarErr(this,\'' + memInitial + '\')" alt="" loading="lazy" width="32" height="32">';
       } else {
         avatarHtml = '<span class="mem-initial">' + memInitial + '</span>';
       }
@@ -3413,7 +3413,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         row.id = 'pm-row-' + g._id;
 
         var hdr = document.createElement('div');
-        hdr.style.cssText = 'display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;background:rgba(5,3,1,0.8);user-select:none;';
+        hdr.style.cssText = 'display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;background:rgba(5,3,1,0.8);-webkit-user-select:none;user-select:none;';
 
         var lbl = document.createElement('span');
         lbl.style.cssText = 'flex:1;font-size:0.78rem;letter-spacing:0.12em;color:#c9a84c;';
