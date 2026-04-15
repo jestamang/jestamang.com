@@ -5,19 +5,19 @@
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Members | Jestamang</title>
-<meta name="description" content="The Jestamang Inner Circle. A community space for initiated members. Live transmissions and collective presence.">
+<meta name="description" content="The Jestamang Inner Circle. A community space for initiated members. Live transmissions, collective presence, and exclusive member-only content.">
 <meta name="keywords" content="Jestamang, psychedelic music, experimental, indie collective, Quarter Days, NONS, 2K2123, Jestamang universe, psychedelic rock, members, inner circle, community, initiates, collective members">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://jestamang.com/members.html">
 <meta property="og:site_name" content="Jestamang">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Members | Jestamang">
-<meta property="og:description" content="The Jestamang Inner Circle. A community space for initiated members. Live transmissions and collective presence.">
+<meta property="og:description" content="The Jestamang Inner Circle. A community space for initiated members. Live transmissions, collective presence, and exclusive member-only content.">
 <meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 <meta property="og:url" content="https://jestamang.com/members.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Members | Jestamang">
-<meta name="twitter:description" content="The Jestamang Inner Circle. A community space for initiated members. Live transmissions and collective presence.">
+<meta name="twitter:description" content="The Jestamang Inner Circle. A community space for initiated members. Live transmissions, collective presence, and exclusive member-only content.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 
 
@@ -938,7 +938,11 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     var chatStatusEl = document.getElementById('chat-status');
     function doSend(){
       var text = input.value.trim();
-      if(!text || !currentUser) return;
+      if(!currentUser) return;
+      if(!text){
+        if(chatStatusEl){ chatStatusEl.textContent = 'Enter a message before sending.'; chatStatusEl.className = 'status-err'; }
+        return;
+      }
       sendBtn.disabled = true;
       if(chatStatusEl){ chatStatusEl.textContent = 'Sending...'; chatStatusEl.className = 'status-msg'; }
       input.value = '';
