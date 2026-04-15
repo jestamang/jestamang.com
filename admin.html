@@ -1748,7 +1748,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             + '<span style="color:rgba(201,168,76,0.25);font-size:0.62rem;">' + ts + ' · to: ' + esc(d.sendTo) + '</span></div>';
         });
         histEl.innerHTML = html;
-      });
+      }, function(e){ console.error('notifications history error:', e.message); });
   }
 
   /* ══════════════ SECTION 3: MEMBERS ══════════════ */
@@ -2047,7 +2047,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       document.getElementById('treat-cancel-btn').style.display = '';
       document.getElementById('treat-save-btn').textContent = 'UPDATE TREAT ✦';
       admNavTo('sec-24');
-    });
+    }).catch(function(e){ console.error('treats error:', e.message); });
   }
 
   function treatCancelEdit() {
@@ -2996,7 +2996,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           + '</div></div></div>';
       });
       el.innerHTML = html;
-    });
+    }, function(e){ console.error('videos error:', e.message); });
   }
 
   /* ══════════════ SECTION 15: MERCH MANAGER ══════════════ */
@@ -3441,7 +3441,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           + '</div></div></div>';
       });
       listEl.innerHTML = html;
-    });
+    }, function(e){ console.error('navBadges error:', e.message); });
 
     addBtn.addEventListener('click', function () {
       var page     = document.getElementById('nb-page').value;
