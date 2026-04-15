@@ -1407,7 +1407,34 @@ body::before{
 }
 @media (max-width: 600px) {
   .mob-section-tabs {
-    display: none;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 4px;
+    padding: 8px 12px;
+    background: rgba(0,0,0,0.6);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .mob-section-tabs::-webkit-scrollbar { display: none; }
+  .mob-tab-btn {
+    flex: 0 0 auto;
+    font-family: 'Luminari', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(240,230,210,0.65);
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 6px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    min-height: 32px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .mob-tab-btn.active {
+    color: #c9a84c;
+    border-color: rgba(201,168,76,0.6);
   }
   /* Section visibility on mobile: show all by default */
   .profile-section[data-section] { scroll-margin-top: 60px; }
