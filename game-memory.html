@@ -132,7 +132,7 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
   .game-ui, .game-panel { padding: 12px 16px !important; font-size: 0.85rem !important; }
 }
 
-</style>
+.skip-link{position:absolute;top:-40px;left:0;background:#c9a84c;color:#000;padding:8px 16px;z-index:99999;text-decoration:none;font-family:'Luminari',serif;font-size:0.8rem;letter-spacing:0.1em;border-radius:0 0 4px 0;transition:top 0.1s}.skip-link:focus{top:0;outline:2px solid #000;outline-offset:2px}</style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="dns-prefetch" href="https://apis.google.com">
@@ -177,6 +177,8 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 <!-- End Cloudflare Web Analytics -->
 </head>
 <body>
+<a href="#game-wrap" class="skip-link">Skip to main content</a>
+
 <picture><source srcset="assets/homepage/background/Jesta background.webp" type="image/webp"><img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72" loading="eager" width="1288" height="2564"></picture>
 
 <div class="game-wrap">
@@ -218,7 +220,7 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 <!-- LEADERBOARD MODAL -->
 <div class="lb-modal-wrap" id="lb-modal">
   <div class="lb-box">
-    <button class="lb-close" onclick="closeLB()">✕</button>
+    <button class="lb-close" onclick="closeLB()" aria-label="Close leaderboard">✕</button>
     <div class="lb-head" id="lb-title">Leaderboard</div>
     <div id="lb-list"><div class="lb-loading">Loading scrolls...</div></div>
   </div>
@@ -227,7 +229,7 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 <div class="lb-name-wrap" id="lb-name-modal">
   <div class="lb-name-box">
     <div class="lb-name-prompt">Enter Your Name<br>For the Scrolls</div>
-    <input class="lb-name-inp" id="lb-name-inp" type="text" maxlength="20" placeholder="Your name" autocomplete="off">
+    <input class="lb-name-inp" id="lb-name-inp" type="text" maxlength="20" placeholder="Your name" autocomplete="off" aria-label="Enter your name">
     <div class="lb-name-btns">
       <button class="lb-name-cancel" id="lb-name-cancel">Cancel</button>
       <button class="lb-name-confirm" id="lb-name-confirm">Inscribe ✦</button>
@@ -541,7 +543,7 @@ window.submitScore=function(game,score,lowerBetter,cb){
 <button class="jsearch-float-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button>
 <div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
 <div id="jsearch-inner">
-<input id="jsearch-input" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="SEARCH THE JESTAMANG UNIVERSE...">
+<input id="jsearch-input" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="SEARCH THE JESTAMANG UNIVERSE..." aria-label="Search">
 <div id="jsearch-results"><div class="jsearch-hint">ENTER A NAME &nbsp;·&nbsp; PAGE &nbsp;·&nbsp; ALBUM &nbsp;·&nbsp; ENTITY</div></div>
 </div>
 </div>
@@ -1089,7 +1091,7 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
     _b.innerHTML='<span>SITE UPDATED · REFRESH FOR THE LATEST TRANSMISSIONS</span>'
       +'<span style="display:flex;gap:10px;align-items:center;">'
       +'<button onclick="location.reload()" style="background:#0a0702;color:#c9a84c;border:none;padding:5px 14px;font-size:12px;font-weight:700;letter-spacing:0.06em;cursor:pointer;border-radius:2px;">REFRESH</button>'
-      +'<button onclick="(function(b){b.style.transform='translateY(-100%)';setTimeout(function(){b.style.opacity='0';b.style.pointerEvents='none';},400);})(document.getElementById('sw-update-banner'))" style="background:none;border:none;color:#0a0702;font-size:20px;line-height:1;cursor:pointer;padding:0 4px;">×</button>'
+      +'<button onclick="(function(b){b.style.transform='translateY(-100%)';setTimeout(function(){b.style.opacity='0';b.style.pointerEvents='none';},400);})(document.getElementById('sw-update-banner'))" style="background:none;border:none;color:#0a0702;font-size:20px;line-height:1;cursor:pointer;padding:0 4px;" aria-label="Dismiss">×</button>'
       +'</span>';
   }
   if('serviceWorker' in navigator){

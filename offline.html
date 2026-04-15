@@ -19,7 +19,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png">
 <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
 <style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}
-</style>
+.skip-link{position:absolute;top:-40px;left:0;background:#c9a84c;color:#000;padding:8px 16px;z-index:99999;text-decoration:none;font-family:'Luminari',serif;font-size:0.8rem;letter-spacing:0.1em;border-radius:0 0 4px 0;transition:top 0.1s}.skip-link:focus{top:0;outline:2px solid #000;outline-offset:2px}</style>
 <link rel="preload" as="font" type="font/ttf" href="assets/fonts/Luminari.ttf" crossorigin>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#c9a84c">
@@ -230,6 +230,8 @@ h1 {
 </style>
 </head>
 <body>
+<a href="#hz" class="skip-link">Skip to main content</a>
+
 <div class="void-ring"></div>
 <div class="void-ring"></div>
 <div class="void-ring"></div>
@@ -322,7 +324,7 @@ h1 {
     _b.innerHTML='<span>SITE UPDATED · REFRESH FOR THE LATEST TRANSMISSIONS</span>'
       +'<span style="display:flex;gap:10px;align-items:center;">'
       +'<button onclick="location.reload()" style="background:#0a0702;color:#c9a84c;border:none;padding:5px 14px;font-size:12px;font-weight:700;letter-spacing:0.06em;cursor:pointer;border-radius:2px;">REFRESH</button>'
-      +'<button onclick="(function(b){b.style.transform='translateY(-100%)';setTimeout(function(){b.style.opacity='0';b.style.pointerEvents='none';},400);})(document.getElementById('sw-update-banner'))" style="background:none;border:none;color:#0a0702;font-size:20px;line-height:1;cursor:pointer;padding:0 4px;">×</button>'
+      +'<button onclick="(function(b){b.style.transform='translateY(-100%)';setTimeout(function(){b.style.opacity='0';b.style.pointerEvents='none';},400);})(document.getElementById('sw-update-banner'))" style="background:none;border:none;color:#0a0702;font-size:20px;line-height:1;cursor:pointer;padding:0 4px;" aria-label="Dismiss">×</button>'
       +'</span>';
   }
   if('serviceWorker' in navigator){
