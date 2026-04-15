@@ -3183,6 +3183,47 @@ document.addEventListener('DOMContentLoaded', function(){
     if(lsKey){ try{ localStorage.setItem(lsKey, src); }catch(e){} }
   }
 
+  // ── Recreate-profile banner (shown when Firestore doc is missing) ──
+  function _showRecreateProfileBanner(user) {
+    var heroEl = document.querySelector('.profile-hero');
+    _revealHero(heroEl);
+    if (document.getElementById('recreate-profile-banner')) return;
+    var banner = document.createElement('div');
+    banner.id = 'recreate-profile-banner';
+    banner.style.cssText = 'background:rgba(0,0,0,0.6);border:1px solid rgba(120,0,222,0.4);padding:20px 24px;margin:24px auto;max-width:520px;border-radius:4px;text-align:center;';
+    banner.innerHTML =
+      '<div style="font-family:Luminari,serif;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,168,76,0.85);margin-bottom:10px;">Profile Record Not Found</div>' +
+      '<div style="font-family:Georgia,serif;font-size:0.78rem;color:rgba(240,230,210,0.6);margin-bottom:16px;line-height:1.6;">Your account is active but your profile data is missing.<br>You can recreate it now.</div>' +
+      '<button id="recreate-profile-btn" type="button" style="font-family:Luminari,serif;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;background:#c9a84c;color:#000;border:none;padding:10px 24px;cursor:pointer;min-height:40px;">Recreate Profile</button>';
+    var heroSection = document.querySelector('.profile-hero');
+    if (heroSection && heroSection.parentNode) {
+      heroSection.parentNode.insertBefore(banner, heroSection.nextSibling);
+    } else {
+      var pc = document.getElementById('page-content');
+      if (pc) pc.insertBefore(banner, pc.firstChild);
+    }
+    var recreateBtn = document.getElementById('recreate-profile-btn');
+    if (recreateBtn) recreateBtn.addEventListener('click', function () {
+      recreateBtn.disabled = true;
+      recreateBtn.textContent = 'CREATING...';
+      db.collection('users').doc(user.uid).set({
+        email:       user.email || '',
+        displayName: user.displayName || '',
+        photoURL:    user.photoURL || '',
+        createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+        lastSeen:    firebase.firestore.FieldValue.serverTimestamp(),
+        providers:   user.providerData.map(function (p) { return p.providerId; })
+      }).then(function () {
+        banner.remove();
+        window.location.reload();
+      }).catch(function (e) {
+        console.error('Recreate profile failed:', e);
+        recreateBtn.disabled = false;
+        recreateBtn.textContent = 'Recreate Profile';
+      });
+    });
+  }
+
   function showPage(user){
     document.getElementById('page-content').style.display = 'block';
 
@@ -3222,70 +3263,97 @@ document.addEventListener('DOMContentLoaded', function(){
     }, 8000);
 
     // ── STEP 4: Firestore fetch ─────────────────────────────────────
-    db.collection('users').doc(user.uid).get()
-      .then(function(doc){
-        clearTimeout(_heroTimer);
-        var data = doc.exists ? doc.data() : {};
-        dossierData = data;
-        renderViewMode(data, user);  // updates display-name and makes hero visible
-        loadFavorites(user.uid);
-
-        // Resolve avatar — uploaded avatar takes priority over OAuth photo
-        if (data.avatarUrl) {
-          if (data.avatarUrl !== cachedAvUrl) {
-            _setAvatarSrc(data.avatarUrl, AV_KEY);
+    var _docRetried = false;
+    function _fetchProfileDoc() {
+      db.collection('users').doc(user.uid).get()
+        .then(function(doc){
+          clearTimeout(_heroTimer);
+          // Missing doc — offer to recreate rather than show blank profile
+          if (!doc.exists) {
+            _showRecreateProfileBanner(user);
+            dossierData = {};
+            renderViewMode({}, user);
+            loadFavorites(user.uid);
+            return;
           }
-        } else if (data.photoURL && !_isGoogleDefault(data.photoURL)) {
-          // Firestore has a non-default OAuth photo
-          if (data.photoURL !== cachedPhoto) {
-            _setAvatarSrc(data.photoURL, null);
-            try { localStorage.setItem(PHOTO_KEY, data.photoURL); } catch(e) {}
-          }
-        } else if (!bestPhoto) {
-          // No usable photo at all — show initial
-          var nameForInitial = data.username || cachedName || (user.displayName || user.email || '?').split('@')[0];
-          _showInitialAvatar(nameForInitial);
-        }
+          var data = doc.data();
+          dossierData = data;
+          renderViewMode(data, user);  // updates display-name and makes hero visible
+          loadFavorites(user.uid);
 
-        // Natal chart restore
-        if(_sharedBirthData){
-          setTimeout(function(){ document.getElementById('natal-calc-btn').click(); }, 200);
-        } else {
-          db.collection('users').doc(user.uid).collection('natalChart').doc('chart').get()
-            .then(function(chartDoc){
-              if(chartDoc.exists){
-                var cd = chartDoc.data();
-                savedNatalChart = cd;
-                if(cd.birthDate) document.getElementById('nc-dob').value = cd.birthDate;
-                if(cd.birthTime) document.getElementById('nc-tob').value = cd.birthTime;
-                if(cd.birthPlace) document.getElementById('nc-pob').value = cd.birthPlace;
-                if(cd.lat != null && cd.lng != null){
-                  _pobLat = cd.lat; _pobLng = cd.lng;
-                  _pobDisplayName = cd.birthPlace || null;
-                  _pobSetStatus('located',
-                    'LOCATED: ' + (cd.birthPlace||'') +
-                    '\u2002\u00b7\u2002LAT: ' + cd.lat.toFixed(4) +
-                    '\u2002\u00b7\u2002LNG: ' + cd.lng.toFixed(4));
+          // Resolve avatar — uploaded avatar takes priority over OAuth photo
+          if (data.avatarUrl) {
+            if (data.avatarUrl !== cachedAvUrl) {
+              _setAvatarSrc(data.avatarUrl, AV_KEY);
+            }
+          } else if (data.photoURL && !_isGoogleDefault(data.photoURL)) {
+            // Firestore has a non-default OAuth photo
+            if (data.photoURL !== cachedPhoto) {
+              _setAvatarSrc(data.photoURL, null);
+              try { localStorage.setItem(PHOTO_KEY, data.photoURL); } catch(e) {}
+            }
+          } else if (!bestPhoto) {
+            // No usable photo at all — show initial
+            var nameForInitial = data.username || cachedName || (user.displayName || user.email || '?').split('@')[0];
+            _showInitialAvatar(nameForInitial);
+          }
+
+          // Natal chart restore
+          if(_sharedBirthData){
+            setTimeout(function(){ document.getElementById('natal-calc-btn').click(); }, 200);
+          } else {
+            db.collection('users').doc(user.uid).collection('natalChart').doc('chart').get()
+              .then(function(chartDoc){
+                if(chartDoc.exists){
+                  var cd = chartDoc.data();
+                  savedNatalChart = cd;
+                  if(cd.birthDate) document.getElementById('nc-dob').value = cd.birthDate;
+                  if(cd.birthTime) document.getElementById('nc-tob').value = cd.birthTime;
+                  if(cd.birthPlace) document.getElementById('nc-pob').value = cd.birthPlace;
+                  if(cd.lat != null && cd.lng != null){
+                    _pobLat = cd.lat; _pobLng = cd.lng;
+                    _pobDisplayName = cd.birthPlace || null;
+                    _pobSetStatus('located',
+                      'LOCATED: ' + (cd.birthPlace||'') +
+                      '\u2002\u00b7\u2002LAT: ' + cd.lat.toFixed(4) +
+                      '\u2002\u00b7\u2002LNG: ' + cd.lng.toFixed(4));
+                  }
+                  displaySavedChart(cd, user);
                 }
-                displaySavedChart(cd, user);
+              })
+              .catch(function(e){ console.error('No saved natal chart or error:', e); });
+          }
+        })
+        .catch(function(e){
+          // Silent token refresh on permission-denied (expired session) — retry once
+          if (e && e.code === 'permission-denied' && !_docRetried) {
+            _docRetried = true;
+            user.getIdToken(true).then(function () { _fetchProfileDoc(); }).catch(function () {
+              clearTimeout(_heroTimer);
+              if (!cachedName) {
+                var fb = (user.displayName || user.email || '?').split('@')[0];
+                document.getElementById('display-name').textContent = fb.toUpperCase();
+                _showInitialAvatar(fb);
+                _revealHero(heroEl);
               }
-            })
-            .catch(function(e){ console.error('No saved natal chart or error:', e); });
-        }
-      })
-      .catch(function(e){
-        console.error('Profile load error:', e);
-        clearTimeout(_heroTimer);
-        // Firestore failed — if we had cache the hero is already visible and correct
-        if (!cachedName) {
-          // Last resort: show auth fallback so page isn't permanently blank
-          var fb = (user.displayName || user.email || '?').split('@')[0];
-          document.getElementById('display-name').textContent = fb.toUpperCase();
-          _showInitialAvatar(fb);
-          _revealHero(heroEl);
-        }
-        loadFavorites(user.uid);
-      });
+              loadFavorites(user.uid);
+            });
+            return;
+          }
+          console.error('Profile load error:', e);
+          clearTimeout(_heroTimer);
+          // Firestore failed — if we had cache the hero is already visible and correct
+          if (!cachedName) {
+            // Last resort: show auth fallback so page isn't permanently blank
+            var fb = (user.displayName || user.email || '?').split('@')[0];
+            document.getElementById('display-name').textContent = fb.toUpperCase();
+            _showInitialAvatar(fb);
+            _revealHero(heroEl);
+          }
+          loadFavorites(user.uid);
+        });
+    }
+    _fetchProfileDoc();
   }
 
   // ── Dossier view/edit (unchanged) ──

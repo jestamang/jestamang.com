@@ -113,6 +113,31 @@
     document.body.appendChild(banner);
   }
 
+  // ── Email verification banner (email/password accounts only) ────
+  function _showVerifyEmailBanner(user) {
+    if (document.getElementById('j-verify-banner')) return;
+    var banner = document.createElement('div');
+    banner.id = 'j-verify-banner';
+    banner.style.cssText = 'position:fixed;top:52px;left:0;right:0;z-index:99997;background:rgba(0,0,0,0.88);border-bottom:1px solid rgba(120,0,222,0.5);padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;';
+    banner.innerHTML =
+      '<span style="font-family:Luminari,serif;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(201,168,76,0.85);">Please verify your email address to secure your account.</span>' +
+      '<button id="j-verify-resend" type="button" style="font-family:Luminari,serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;background:none;border:1px solid rgba(201,168,76,0.5);color:rgba(201,168,76,0.75);padding:4px 10px;cursor:pointer;white-space:nowrap;">Resend Email</button>' +
+      '<button id="j-verify-dismiss" type="button" aria-label="Dismiss" style="background:none;border:none;color:rgba(201,168,76,0.5);font-size:18px;cursor:pointer;line-height:1;padding:0 4px;">\u00d7</button>';
+    document.body.appendChild(banner);
+    var resendBtn = document.getElementById('j-verify-resend');
+    if (resendBtn) resendBtn.addEventListener('click', function () {
+      resendBtn.disabled = true;
+      user.sendEmailVerification().then(function () {
+        resendBtn.textContent = 'SENT \u2713';
+      }).catch(function () {
+        resendBtn.disabled = false;
+        resendBtn.textContent = 'Resend Email';
+      });
+    });
+    var dismissBtn = document.getElementById('j-verify-dismiss');
+    if (dismissBtn) dismissBtn.addEventListener('click', function () { banner.remove(); });
+  }
+
   function esc(s) {
     return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
@@ -251,6 +276,11 @@
 
       checkNotifications(user);
 
+      // Email verification reminder — email/password accounts only, not Google
+      var _hasPasswordProvider = user.providerData.some(function(p) { return p.providerId === 'password'; });
+      if (!user.emailVerified && _hasPasswordProvider) { _showVerifyEmailBanner(user); }
+
+      var _retried = false;
       function _doFetch() {
         window.jestaDB.collection('users').doc(user.uid).get()
           .then(function (doc) {
@@ -265,7 +295,9 @@
               if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = name.length > 10 ? name.slice(0,9)+'\u2026' : name; }
             }
             if (!cached) { wrap.style.opacity = '1'; }
-            // Keep providers array in sync so admin can see sign-in methods
+            // Keep providers array in sync; stamp lastSeen on every auth state change
+            // Note: Firebase Auth does NOT invalidate other sessions on new login —
+            // concurrent sessions coexist; lastSeen lets the admin see the most recent activity.
             var _userRef = window.jestaDB.collection('users').doc(user.uid);
             var providers = user.providerData.map(function(p) { return p.providerId; });
             if (!doc.exists) {
@@ -274,13 +306,26 @@
                 displayName: user.displayName || '',
                 photoURL:    user.photoURL || '',
                 createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+                lastSeen:    firebase.firestore.FieldValue.serverTimestamp(),
                 providers:   providers
               }).catch(function() {});
             } else {
-              _userRef.update({ providers: providers }).catch(function() {});
+              _userRef.update({ providers: providers, lastSeen: firebase.firestore.FieldValue.serverTimestamp() }).catch(function() {});
             }
           })
-          .catch(function () {
+          .catch(function (e) {
+            // Silent token refresh on permission-denied (expired session) — retry once
+            if (e && e.code === 'permission-denied' && !_retried) {
+              _retried = true;
+              user.getIdToken(true).then(function () { _doFetch(); }).catch(function () {
+                if (!cached) {
+                  renderAuthNav(wrap, mobWrap, fallback);
+                  if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = fallback.length > 10 ? fallback.slice(0,9)+'\u2026' : fallback; }
+                  wrap.style.opacity = '1';
+                }
+              });
+              return;
+            }
             if (!cached) {
               renderAuthNav(wrap, mobWrap, fallback);
               if (mobLogin) { mobLogin.href = 'profile.html'; mobLogin.textContent = fallback.length > 10 ? fallback.slice(0,9)+'\u2026' : fallback; }
