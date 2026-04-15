@@ -1614,12 +1614,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   /* ══════════════ AUTH GATE ══════════════ */
   function waitForAuth() {
-    var tries = 0, max = 80;
-    var t = setInterval(function () {
-      tries++;
-      if (window.jestaAuth || tries > max) {
-        clearInterval(t);
-        if (!window.jestaAuth) { window.location.replace('login.html'); return; }
+    var _jt = 0, _jiv = setInterval(function () {
+      if (window.jestaAuth) {
+        clearInterval(_jiv);
         window.jestaAuth.onAuthStateChanged(function (user) {
           document.getElementById('auth-checking').style.display = 'none';
           if (!user) { window.location.replace('login.html'); return; }
@@ -1628,6 +1625,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           document.getElementById('admin-content').style.display = 'block';
           initAll();
         });
+      } else if (++_jt > 80) {
+        clearInterval(_jiv);
+        window.location.replace('login.html');
       }
     }, 100);
   }

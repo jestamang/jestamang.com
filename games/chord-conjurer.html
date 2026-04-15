@@ -274,7 +274,8 @@ function fmtS(s){return FLFLOAT?parseFloat(s).toFixed(1)+'s':parseInt(s).toLocal
 function san(n){return n.replace(/[^a-zA-Z0-9 _\-\.!]/g,'').trim().slice(0,20);}
 function openLB(cur){
 var m=document.getElementById('lb-modal'),tb=document.getElementById('lb-tbody'),bn=document.getElementById('lb-new-banner');
-if(!m||!window.jestaDB)return;
+if(!m)return;
+if(!window.jestaDB){var _jt=0,_jiv=setInterval(function(){if(window.jestaDB){clearInterval(_jiv);openLB(cur);}else if(++_jt>80){clearInterval(_jiv);if(tb)tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">SIGNAL LOST</td></tr>';}},100);return;}
 if(bn)bn.style.display='none';
 // Personal best from localStorage
 var _pbKey='lbBest_'+GID;
@@ -309,7 +310,8 @@ tb.appendChild(tr);
 }).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">SIGNAL LOST</td></tr>';});
 }
 function saveScore(name,score){
-if(!score||score<=0||!window.jestaDB)return;
+if(!score||score<=0)return;
+if(!window.jestaDB){var _jt=0,_jiv=setInterval(function(){if(window.jestaDB){clearInterval(_jiv);saveScore(name,score);}else if(++_jt>80){clearInterval(_jiv);}},100);return;}
 var ps=FLFLOAT?parseFloat(score):parseInt(score);
 // Track personal best in localStorage
 var _pbKey='lbBest_'+GID;

@@ -4805,7 +4805,7 @@ document.addEventListener('DOMContentLoaded', function(){
           } else if (Notification.permission === 'granted') {
             new Notification(d.title || 'JESTAMANG', { body: d.body || '', icon: 'assets/icons/icon-192.png' });
           }
-          change.doc.ref.update({ sent: true });
+          change.doc.ref.update({ sent: true }).catch(function(){});
         });
       }, function(e){ console.error('notifications error:', e.message); });
   }
