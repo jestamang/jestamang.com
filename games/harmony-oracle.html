@@ -1170,13 +1170,17 @@ function startLevel(level){
   else if(level===4) startL4Round();
 }
 
-function switchTab(level){
-  if(!state.unlocked[level]) return;
+function updateDiffTabs(level){
   document.querySelectorAll('.game-tab').forEach(function(t){
     t.classList.remove('active');
   });
   var tab = $('ho-tab-'+level);
   if(tab) tab.classList.add('active');
+}
+
+function switchTab(level){
+  if(!state.unlocked[level]) return;
+  updateDiffTabs(level);
   startLevel(level);
 }
 
