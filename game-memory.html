@@ -411,9 +411,12 @@ function flip(card){
       setTimeout(function(){
         a.classList.remove('mismatch-shake','flipped');b.classList.remove('mismatch-shake','flipped');
         playFlipSound();
-        // Restore pointer events on all unmatched cards only after flip-back animation completes
-        document.querySelectorAll('.mem-card:not(.matched):not(.flipped)').forEach(function(c){c.style.pointerEvents='';});
-        locked=false;
+        // Wait for CSS flip-back transition (500ms) before restoring pointer events and unlocking
+        // Restoring earlier lets fast taps re-add .flipped mid-transition, causing the face-flash glitch
+        setTimeout(function(){
+          document.querySelectorAll('.mem-card:not(.matched):not(.flipped)').forEach(function(c){c.style.pointerEvents='';});
+          locked=false;
+        },500);
       },550);
     },300);
   }
