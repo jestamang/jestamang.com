@@ -539,7 +539,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
 <div id="wb-overlay">
   <div class="gold-ornament" style="margin:0 0 8px;">✦ &nbsp; ✦ &nbsp; ✦</div>
-  <div id="wb-name">Welcome Back</div>
+  <div id="wb-name">We've been expecting you…</div>
   <div id="wb-sub">entering…</div>
 </div>
 
@@ -579,7 +579,7 @@ document.addEventListener('DOMContentLoaded', function(){
       document.body.style.opacity = '0';
       var fallback = (user.displayName || user.email || '').split('@')[0];
       function showWelcome(name) {
-        wbName.textContent = name ? 'Welcome Back, ' + name.split(' ')[0].toUpperCase() : 'WELCOME BACK';
+        wbName.textContent = 'We\u2019ve been expecting you\u2026';
         wbOverlay.classList.add('wb-show');
         setTimeout(function(){ window.location.href = 'profile.html'; }, 350);
       }
