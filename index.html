@@ -130,6 +130,9 @@
 .hp-blog-ttl{font-size:clamp(1.1rem,2.5vw,1.6rem);color:#c9a84c;margin-bottom:16px;line-height:1.3;letter-spacing:0.06em}
 .hp-blog-excerpt{font-size:0.78rem;letter-spacing:0.06em;color:rgba(255,255,255,0.48);line-height:1.95;font-style:italic}
 .hp-photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+#hp-section-photos .hp-inner{flex-direction:column!important;align-items:stretch;gap:32px}
+#hp-section-photos .hp-text{flex:none;max-width:600px}
+#hp-section-photos .hp-visual{width:100%;flex:none}
 .hp-photo-grid img{width:100%;aspect-ratio:1;object-fit:cover;object-position:center top;display:block;border:1px solid rgba(201,168,76,0.08);filter:brightness(0.78);transition:filter 0.3s,transform 0.3s}
 .hp-photo-grid img:hover{filter:brightness(1);transform:scale(1.02)}
 
@@ -614,7 +617,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <div class="hp-divider"></div>
 
   <!-- PHOTOS -->
-  <div class="hp-section hp-section--green">
+  <div class="hp-section hp-section--green" id="hp-section-photos">
     <div class="hp-inner">
       <div class="hp-text">
         
