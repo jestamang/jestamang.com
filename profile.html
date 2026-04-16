@@ -3865,50 +3865,40 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   var _natalShareBtn=document.getElementById('natal-share-btn');if(_natalShareBtn)_natalShareBtn.addEventListener('click', function(){
+    console.log('[Share Dossier] handler fired — navigator.share:', !!navigator.share, '| currentUser:', !!currentUser);
     if(!currentUser) return;
-    var btn = this;
     var shareUrl = window.location.href.split('?')[0];
     var shareTitle = 'My Jestamang Dossier';
+    var shareText = shareTitle + ' \u2726 ' + shareUrl;
 
-    // ── Desktop fallback: clipboard copy (no PDF needed) ─────────
-    if(!navigator.share){
+    if(navigator.share){
+      // ── Mobile: native share sheet (text + URL only — no files) ──
+      navigator.share({ title: shareTitle, text: shareText, url: shareUrl })
+        .then(function(){ showDossierMsg('DOSSIER SHARED \u2756'); })
+        .catch(function(err){
+          console.error('[Share Dossier] navigator.share failed:', err);
+          if(err && err.name === 'AbortError') return; // user dismissed — not an error
+          showDossierMsg('Share failed. Try copying the link manually.');
+        });
+    } else {
+      // ── Desktop: copy to clipboard ────────────────────────────
       if(navigator.clipboard && navigator.clipboard.writeText){
         navigator.clipboard.writeText(shareUrl)
           .then(function(){ showDossierMsg('LINK COPIED \u2756'); })
-          .catch(function(){ showDossierMsg('Share failed. Try copying the link manually.'); });
+          .catch(function(err){
+            console.error('[Share Dossier] clipboard.writeText failed:', err);
+            showDossierMsg('Share failed. Try copying the link manually.');
+          });
       } else {
         var ta = document.createElement('textarea');
         ta.value = shareUrl;
         ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
-        document.body.appendChild(ta);
-        ta.focus(); ta.select();
-        var ok = false;
-        try { ok = document.execCommand('copy'); } catch(e){}
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        var ok = false; try { ok = document.execCommand('copy'); } catch(e){ console.error('[Share Dossier] execCommand failed:', e); }
         document.body.removeChild(ta);
         showDossierMsg(ok ? 'LINK COPIED \u2756' : 'Share failed. Try copying the link manually.');
       }
-      return;
     }
-
-    // ── Mobile: generate PDF then share ──────────────────────────
-    btn.disabled = true;
-    btn.textContent = 'Generating\u2026';
-    generateNatalPDF(function(pdfBlob, uName){
-      btn.disabled = false;
-      btn.textContent = 'Share My Dossier';
-      if(!pdfBlob){ showDossierMsg('Chart generation failed. Try again.'); return; }
-      var fileName = 'jestamang-dossier-' + (uName||'member').toLowerCase().replace(/[^a-z0-9]+/g,'-') + '.pdf';
-      var pdfFile = new File([pdfBlob], fileName, {type:'application/pdf'});
-      var shareData = (navigator.canShare && navigator.canShare({files:[pdfFile]}))
-        ? {files:[pdfFile], title:shareTitle}
-        : {title:shareTitle, url:shareUrl};
-      navigator.share(shareData)
-        .then(function(){ showDossierMsg('DOSSIER SHARED \u2756'); })
-        .catch(function(err){
-          if(err && err.name === 'AbortError') return;
-          showDossierMsg('Share failed. Try copying the link manually.');
-        });
-    });
   });
 
   function showDossierMsg(msg){
