@@ -572,10 +572,13 @@ document.addEventListener('DOMContentLoaded', function(){
   firebase.auth().onAuthStateChanged(function(user){
     if(user && !redirectPending){
       redirectPending = true;
+      // Fade out immediately — before any async ops so jesta-auth.js nav mutations
+      // (renderAuthNav, checkNavBadges) land on an already-invisible page, preventing
+      // the background distortion and footer-jump glitch
+      document.body.style.transition = 'opacity 0.2s';
+      document.body.style.opacity = '0';
       var fallback = (user.displayName || user.email || '').split('@')[0];
       function showWelcome(name) {
-        document.body.style.transition = 'opacity 0.2s';
-        document.body.style.opacity = '0';
         wbName.textContent = name ? 'Welcome Back, ' + name.split(' ')[0].toUpperCase() : 'WELCOME BACK';
         wbOverlay.classList.add('wb-show');
         setTimeout(function(){ window.location.href = 'profile.html'; }, 350);
