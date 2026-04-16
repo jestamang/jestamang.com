@@ -122,13 +122,29 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Lu
 #gs::-webkit-scrollbar{display:none}
 
 @media(max-width:768px){
-  .game-tab{padding:10px 8px;font-size:0.68rem}
+  /* ── Header bar: compact single row ── */
+  #back{top:8px;left:10px;font-size:0.65rem;padding:6px 10px;min-height:34px}
+  #lb-btn-hud{top:8px!important;right:50px!important;font-size:0.65rem!important;padding:6px 10px!important;min-height:34px!important}
+  .jsearch-float-btn{top:8px!important;right:10px!important;width:34px!important;height:34px!important}
+  /* ── Tabs: own row clearly below header ── */
+  #gs{padding:52px 12px 12px}
+  .game-tabs{margin-bottom:10px}
+  .game-tab{padding:8px 6px;font-size:0.62rem}
+  /* ── Answer grid ── */
   #ho-answers.grid-3{grid-template-columns:1fr 1fr}
-  .ho-ans-btn{min-height:48px;font-size:0.72rem;padding:12px 8px}
-  #ho-viz-wrap{height:40px}
-  .ho-viz-bar{width:6px}
+  /* ── Answer buttons ── */
+  .ho-ans-btn{padding:10px 8px;font-size:0.78rem;min-height:44px}
+  /* ── Visualizer ── */
+  #ho-viz-wrap{height:30px}
+  .ho-viz-bar{width:5px}
+  /* ── Question text ── */
+  #ho-msg{font-size:0.85rem}
+  /* ── How to play ── */
   #htp-body{font-size:0.58rem}
-  #gs{padding-top:56px}
+  #htp-wrap{margin-bottom:4px}
+  /* ── Remove decorative vertical space ── */
+  #ho-level-badge{display:none}
+  #ho-prog-label{display:none}
 }
 @media(max-width:400px){
   #ho-answers.grid-4{grid-template-columns:1fr 1fr}
