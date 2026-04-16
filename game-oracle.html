@@ -168,7 +168,7 @@ a.back-link:hover{color:#c9a84c}
 .lb-row{display:grid;grid-template-columns:36px 1fr 80px 54px;gap:4px;align-items:center;border-bottom:1px solid rgba(201,168,76,0.07);padding:7px 0;font-size:0.72rem;font-family:'Luminari',serif}
 .lb-row.lb-head-row{font-size:0.52rem;letter-spacing:0.3em;color:rgba(201,168,76,0.4);text-transform:uppercase;border-bottom:1px solid rgba(201,168,76,0.18);padding-bottom:8px;margin-bottom:2px}
 .lb-rank{color:rgba(201,168,76,0.55);text-align:center}
-.lb-name{color:rgba(255,255,255,0.75);letter-spacing:0.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-av{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.4);background:#111;vertical-align:middle;flex-shrink:0}.lb-av-init{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#c9a84c;color:#000;font-size:13px;font-family:serif;font-weight:bold;flex-shrink:0}.lb-name{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.75);letter-spacing:0.06em;overflow:hidden}.lb-name-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lb-score{color:#c9a84c;letter-spacing:0.1em;text-align:right}
 .lb-date{color:rgba(201,168,76,0.32);font-size:0.58rem;text-align:right}
 .lb-empty{text-align:center;color:rgba(201,168,76,0.35);font-size:0.72rem;letter-spacing:0.2em;padding:24px 0;font-family:'Luminari',serif}
@@ -702,11 +702,15 @@ window.openLB=function(game,title,lowerBetter){
       if(snap.empty){list.innerHTML='<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;}
       var docs=snap.docs.map(function(d){return d.data();});
       var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Score</span><span class="lb-date">Date</span></div>';
-      docs.forEach(function(d,i){
+      window.lbAvErr=function(img){img.onerror=null;var nm=img.getAttribute('data-name')||'?';var sp=document.createElement('span');sp.className='lb-av-init';sp.textContent=nm.charAt(0).toUpperCase();if(img.parentNode)img.parentNode.replaceChild(sp,img);};
+  function lbAvHtml(d){var nm=d.name||'?';var init=nm.charAt(0).toUpperCase();if(d.photoURL){return'<img class="lb-av" src="'+d.photoURL+'" data-name="'+_esc(nm)+'" alt="" loading="lazy" width="28" height="28" onerror="lbAvErr(this)">';}if(d.uid){return'<span class="lb-av-init" data-lb-uid="'+d.uid+'" data-lb-name="'+_esc(nm)+'">'+ init+'</span>';}return'<span class="lb-av-init">'+init+'</span>';}
+  function lbFetchMissingAvatars(container){if(!window.jestaDB)return;var spans=(container||document).querySelectorAll('.lb-av-init[data-lb-uid]');for(var i=0;i<spans.length;i++){(function(span){var uid=span.getAttribute('data-lb-uid');var nm=span.getAttribute('data-lb-name')||'?';window.jestaDB.collection('users').doc(uid).get().then(function(doc){if(!doc.exists)return;var data=doc.data();if(!data.photoURL)return;var img=document.createElement('img');img.className='lb-av';img.src=data.photoURL;img.setAttribute('data-name',nm);img.alt='';img.loading='lazy';img.width=28;img.height=28;img.onerror=function(){window.lbAvErr(img);};if(span.parentNode)span.parentNode.replaceChild(img,span);}).catch(function(){});})(spans[i]);}}
+  docs.forEach(function(d,i){
         var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">✦</span>':(i+1);
-        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+_esc(d.name)+'</span><span class="lb-score">'+d.score+'</span><span class="lb-date">'+_fmtDate(d.timestamp)+'</span></div>';
+        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+lbAvHtml(d)+'<span class="lb-name-txt">'+_esc(d.name)+'</span></span><span class="lb-score">'+d.score+'</span><span class="lb-date">'+_fmtDate(d.timestamp)+'</span></div>';
       });
       list.innerHTML=html;
+      lbFetchMissingAvatars(list);
     }).catch(function(){list.innerHTML='<div class="lb-empty">Scores temporarily unavailable.</div>';});
 };
 window.closeLB=function(){document.getElementById('lb-modal').classList.remove('open');};
