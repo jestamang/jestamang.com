@@ -1328,7 +1328,7 @@ body::before{
   /* All containers box-sizing */
   * { box-sizing: border-box; }
   /* Video bg: use absolute not fixed on mobile */
-  #jt-bg { position: absolute !important; }
+  #jt-bg { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; object-position: center !important; transform: none !important; }
   /* Minimum touch targets */
   button, a, [role="button"] { min-height: 44px; }
   /* Hide home-btn on mobile */
@@ -5562,5 +5562,6 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 <script>
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});}
 </script>
+<style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
 </body>
 </html>

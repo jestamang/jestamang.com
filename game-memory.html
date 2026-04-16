@@ -120,7 +120,7 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
   /* All containers box-sizing */
   * { box-sizing: border-box; }
   /* Background: keep fixed so it covers full viewport on mobile */
-  #jt-bg { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; }
+  #jt-bg { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; object-position: center !important; transform: none !important; }
   /* Minimum touch targets */
   button, a, [role="button"] { min-height: 44px; }
   /* Hide home-btn on mobile */
@@ -1106,5 +1106,6 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 </script>
 <!-- mobile-audit-fixes --><style>@media(max-width:768px){.game-wrap{padding:60px 12px 40px;overflow-x:hidden}.card-grid,.memory-grid{grid-template-columns:repeat(4,1fr)!important;gap:6px!important}.mem-card{min-height:56px}.game-stats,.status-bar{font-size:0.75rem;flex-wrap:wrap;gap:6px}.game-btn,.gbtn{min-height:44px;width:100%;font-size:0.8rem}}</style>
 
+<style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
 </body>
 </html>
