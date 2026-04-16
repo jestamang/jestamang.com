@@ -1401,7 +1401,7 @@ function switchDiff(diff){
   if(!state.unlocked[diff])return;
   state.diff=diff;state.score=0;state.streak=0;state.correctCount=0;state.roundNum=0;
   clearDiagram();hideExplanation();setFeedback('');
-  updateHUD();newRound();
+  updateDiffTabs();updateHUD();newRound();
 }
 
 /* ── Show/hide screens ── */
