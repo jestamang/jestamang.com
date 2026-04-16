@@ -516,6 +516,7 @@ function pickPattern(level){
   var available = pool.filter(function(p){ return p !== _lastPattern; });
   if(available.length === 0) available = pool;
   var chosen = available[Math.floor(Math.random() * available.length)];
+  console.log('Pattern selected:', chosen);
   _lastPattern = chosen;
   return chosen;
 }
@@ -528,7 +529,7 @@ var state = {
   streak: 0,
   lives: 3,
   qNum: 0,
-  MAX_Q: 20,
+  MAX_Q: 30,
   correctThisLevel: 0,
   LEVEL_UP_AT: 5,
   currentSig: null,
@@ -792,6 +793,7 @@ function newRound(){
   state.replayLeft = 3;
   clearFeedback();
 
+  console.log('currentLevel:', state.currentLevel);
   var levelNum = LEVELS[state.currentLevel].id;
   var sig = pickPattern(levelNum);
   state.currentSig = sig;
