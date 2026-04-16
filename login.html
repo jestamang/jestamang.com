@@ -574,9 +574,11 @@ document.addEventListener('DOMContentLoaded', function(){
       redirectPending = true;
       var fallback = (user.displayName || user.email || '').split('@')[0];
       function showWelcome(name) {
+        document.body.style.transition = 'opacity 0.2s';
+        document.body.style.opacity = '0';
         wbName.textContent = name ? 'Welcome Back, ' + name.split(' ')[0].toUpperCase() : 'WELCOME BACK';
         wbOverlay.classList.add('wb-show');
-        setTimeout(function(){ window.location.href = 'profile.html'; }, 1000);
+        setTimeout(function(){ window.location.href = 'profile.html'; }, 350);
       }
       if (window.jestaDB) {
         window.jestaDB.collection('users').doc(user.uid).get()
