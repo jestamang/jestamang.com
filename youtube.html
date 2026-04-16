@@ -30,7 +30,7 @@
   /* All containers box-sizing */
   * { box-sizing: border-box; }
   /* Video bg: use absolute not fixed on mobile */
-  #jt-bg { position: absolute !important; }
+  #jt-bg { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; object-position: center !important; transform: none !important; }
   /* Minimum touch targets */
   button, a, [role="button"] { min-height: 44px; }
   /* Hide home-btn on mobile */
@@ -671,4 +671,5 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 </script>
 <!-- footer-single-line-mobile -->
 <style>.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important}@media(max-width:768px){.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding:8px 12px!important;font-size:0.7rem!important;letter-spacing:0.01em!important}.hp-footer-mark{margin:0 8px!important;color:rgba(201,168,76,0.6)!important}}</style>
+<style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
 </body> </html>

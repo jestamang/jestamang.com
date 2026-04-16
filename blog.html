@@ -51,7 +51,7 @@
   /* All containers box-sizing */
   * { box-sizing: border-box; }
   /* Keep bg image fixed so it covers full viewport on long pages */
-  #jt-bg { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; }
+  #jt-bg { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; object-position: center !important; transform: none !important; }
   /* Minimum touch targets */
   button, a, [role="button"] { min-height: 44px; }
   /* Hide home-btn on mobile */
@@ -1381,4 +1381,5 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 <!-- mobile-audit-fixes --><style>@media(max-width:768px){.press-expand-btn,.press-toggle{min-height:44px!important;width:100%}.mailerlite-embed,#mlb2-form,.ml-form-embedContainer{display:block!important;width:100%}.press-grid{grid-template-columns:1fr!important}}@media(hover:none){.post:hover{transform:none!important}}</style>
 
 <style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;gap:0!important;background:transparent;padding:16px 24px 20px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10;}.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none;white-space:nowrap!important;}.hp-footer a:hover{color:#c9a84c!important;}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4);white-space:nowrap!important;}@media(max-width:768px){.hp-footer{padding:8px 12px 20px!important;font-size:0.7rem!important;flex-direction:row!important;flex-wrap:nowrap!important;}}</style>
+<style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
 </body> </html>
