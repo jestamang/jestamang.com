@@ -1074,7 +1074,7 @@ function switchDiff(diff) {
   state.diff = diff; state.score = 0; state.streak = 0; state.correctCount = 0; state.roundNum = 0;
   hideIntervalButtons(); hideNoteReveal(); hideExplanation();
   document.getElementById('po-replay').style.display = 'none';
-  updateHUD(); startRound();
+  updateDiffTabs(); updateHUD(); startRound();
 }
 
 function startGame() {
