@@ -4037,6 +4037,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // ── generateNatalPDF — build a 2-page PDF from the chart SVG ──
   function generateNatalPDF(onDone){
+    if(!window.jspdf || !window.jspdf.jsPDF){ if(onDone) onDone(null, null); return; }
     var svgEl = document.querySelector('#nr-wheel svg');
     if(!svgEl || !_lastNatalResult){ if(onDone) onDone(null, null); return; }
 
@@ -4055,6 +4056,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var CHART_PX = 560;
     var img = new Image();
     img.onload = function(){
+      try {
       // Render SVG → canvas
       var canvas = document.createElement('canvas');
       canvas.width = CHART_PX * 2; canvas.height = CHART_PX * 2;
@@ -4201,6 +4203,10 @@ document.addEventListener('DOMContentLoaded', function(){
 
       var pdfBlob = doc.output('blob');
       if(onDone) onDone(pdfBlob, userName);
+      } catch(e) {
+        URL.revokeObjectURL(svgUrl);
+        if(onDone) onDone(null, null);
+      }
     };
     img.onerror = function(){
       URL.revokeObjectURL(svgUrl);
@@ -4220,7 +4226,7 @@ document.addEventListener('DOMContentLoaded', function(){
       btn.innerHTML = 'DOWNLOAD MY CHART \u2756';
       if(!pdfBlob){
         var msgEl = document.getElementById('natal-pdf-msg');
-        msgEl.textContent = 'Could not render PDF. Try again.';
+        msgEl.textContent = 'Chart download failed. Please try again.';
         msgEl.classList.add('show');
         setTimeout(function(){ msgEl.classList.remove('show'); }, 2500);
         return;
