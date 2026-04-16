@@ -404,12 +404,17 @@ function flip(card){
     },200);
   } else {
     mismatches++;var a=first,b=second;first=null;second=null;
+    // Disable pointer events immediately — prevents queued taps re-flipping cards during hide delay
+    a.style.pointerEvents='none';b.style.pointerEvents='none';
     setTimeout(function(){
       a.classList.add('mismatch-shake');b.classList.add('mismatch-shake');playMismatchSound();
       setTimeout(function(){
         a.classList.remove('mismatch-shake','flipped');b.classList.remove('mismatch-shake','flipped');
-        playFlipSound();locked=false;
-      },400);
+        playFlipSound();
+        // Restore pointer events on all unmatched cards only after flip-back animation completes
+        document.querySelectorAll('.mem-card:not(.matched):not(.flipped)').forEach(function(c){c.style.pointerEvents='';});
+        locked=false;
+      },550);
     },300);
   }
 }
