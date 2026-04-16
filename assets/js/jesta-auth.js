@@ -371,6 +371,50 @@
     insertAuthNav();
   }
 
+  // ── Search overlay close button ───────────────────────────────
+  function initSearchClose() {
+    var inner = document.getElementById('jsearch-inner');
+    if (!inner || document.getElementById('jsearch-close-btn')) return;
+    var btn = document.createElement('button');
+    btn.id = 'jsearch-close-btn';
+    btn.setAttribute('aria-label', 'Close search');
+    btn.textContent = '\u2716';
+    btn.style.cssText = [
+      'position:absolute',
+      'top:50%',
+      'right:6px',
+      'transform:translateY(-50%)',
+      'background:none',
+      'border:none',
+      'color:#c9a84c',
+      'font-size:1.2rem',
+      'cursor:pointer',
+      'min-width:44px',
+      'min-height:44px',
+      'display:flex',
+      'align-items:center',
+      'justify-content:center',
+      'font-family:\'Luminari\',serif',
+      'transition:color 0.2s',
+      'z-index:1',
+      'padding:0',
+      'line-height:1',
+      'flex-shrink:0'
+    ].join(';');
+    btn.addEventListener('click', function () {
+      if (typeof window.jSearchClose === 'function') window.jSearchClose();
+    });
+    btn.addEventListener('mouseenter', function () { btn.style.color = '#fff'; });
+    btn.addEventListener('mouseleave', function () { btn.style.color = '#c9a84c'; });
+    inner.appendChild(btn);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSearchClose);
+  } else {
+    initSearchClose();
+  }
+
   // ── Sitewide theme loader ─────────────────────────────────────
   (function () {
     var TD = {
