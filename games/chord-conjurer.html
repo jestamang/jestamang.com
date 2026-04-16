@@ -220,7 +220,7 @@ body{font-family:'Luminari',serif;background:#000;color:#fff;min-height:100vh;ov
 .lb-r23 td{color:rgba(201,168,76,0.78)}
 .lb-cur td{background:rgba(201,168,76,0.07);color:#c9a84c}
 .lb-loading-row td{text-align:center;padding:28px;font-family:'Luminari',serif;font-style:italic;color:rgba(201,168,76,0.32);letter-spacing:0.15em}
-.lb-av{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.4);background:#111;vertical-align:middle;margin-right:7px}
+.lb-av{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.4);background:#111;vertical-align:middle;margin-right:7px}.lb-av-init{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#c9a84c;color:#000;font-size:13px;font-family:serif;font-weight:bold;vertical-align:middle;margin-right:7px;flex-shrink:0}
 @media(max-width:480px){#lb-name-card{padding:32px 22px}#lb-modal-inner{padding:28px 18px;max-height:92vh}}
 </style>
 <style id="jsearch-styles">
@@ -293,11 +293,14 @@ tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...
 m.classList.add('lb-open');
 window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(10).get()
 .then(function(snap){
-var rows=[];snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp});});
+var rows=[];snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp,photoURL:d.photoURL||'',uid:d.uid||''});});
 var isTop=cur>0&&(rows.length===0||cur>rows[0].score);
 if(isTop&&bn)bn.style.display='block';
 tb.innerHTML='';
 if(!rows.length){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">BE THE FIRST TO MARK YOUR SCORE</td></tr>';return;}
+window.lbAvErr=function(img){img.onerror=null;var nm=img.getAttribute('data-name')||'?';var sp=document.createElement('span');sp.className='lb-av-init';sp.textContent=nm.charAt(0).toUpperCase();if(img.parentNode)img.parentNode.replaceChild(sp,img);};
+function lbAvHtml(r){var nm=r.name||'?';var init=nm.charAt(0).toUpperCase();if(r.photoURL){return'<img class="lb-av" src="'+r.photoURL+'" data-name="'+esc(nm)+'" alt="" loading="lazy" width="28" height="28" onerror="lbAvErr(this)">';}if(r.uid){return'<span class="lb-av-init" data-lb-uid="'+r.uid+'" data-lb-name="'+esc(nm)+'">'+ init+'</span>';}return'<span class="lb-av-init">'+init+'</span>';}
+function lbFetchMissingAvatars(container){if(!window.jestaDB)return;var spans=(container||document).querySelectorAll('.lb-av-init[data-lb-uid]');for(var i=0;i<spans.length;i++){(function(span){var uid=span.getAttribute('data-lb-uid');var nm=span.getAttribute('data-lb-name')||'?';window.jestaDB.collection('users').doc(uid).get().then(function(doc){if(!doc.exists)return;var data=doc.data();if(!data.photoURL)return;var img=document.createElement('img');img.className='lb-av';img.src=data.photoURL;img.setAttribute('data-name',nm);img.alt='';img.loading='lazy';img.width=28;img.height=28;img.onerror=function(){window.lbAvErr(img);};if(span.parentNode)span.parentNode.replaceChild(img,span);}).catch(function(){});})(spans[i]);}}
 rows.forEach(function(r,i){
 var tr=document.createElement('tr');
 var cls=i===0?'lb-r1':i<3?'lb-r23':'';
@@ -307,6 +310,7 @@ var cr=i===0?'<span style="margin-right:5px">✦</span>':'';
 tr.innerHTML='<td>'+(i+1)+'</td><td><img class="lb-av" src="../assets/homepage/jesta jr.jpg" onerror="this.onerror=null;this.src=\'../assets/homepage/jesta jr.jpg\'" alt="" loading="lazy" width="28" height="28">'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
 tb.appendChild(tr);
 });
+lbFetchMissingAvatars(tb);
 }).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">SIGNAL LOST</td></tr>';});
 }
 function saveScore(name,score){
@@ -316,8 +320,8 @@ var ps=FLFLOAT?parseFloat(score):parseInt(score);
 // Track personal best in localStorage
 var _pbKey='lbBest_'+GID;
 try{var _pb=JSON.parse(localStorage.getItem(_pbKey)||'null');if(!_pb||ps>_pb.score){localStorage.setItem(_pbKey,JSON.stringify({score:ps,date:new Date().toISOString()}));}}catch(e){}
-var uid=null;try{if(window.jestaAuth&&window.jestaAuth.currentUser)uid=window.jestaAuth.currentUser.uid;}catch(e){}
-window.jestaDB.collection('leaderboards').add({game:GID,name:san(name)||'Unknown',score:ps,uid:uid,timestamp:firebase.firestore.FieldValue.serverTimestamp()})
+var uid=null,photoURL=null;try{if(window.jestaAuth&&window.jestaAuth.currentUser){uid=window.jestaAuth.currentUser.uid;photoURL=window.jestaAuth.currentUser.photoURL||null;}}catch(e){}
+window.jestaDB.collection('leaderboards').add({game:GID,name:san(name)||'Unknown',score:ps,uid:uid,photoURL:photoURL,timestamp:firebase.firestore.FieldValue.serverTimestamp()})
 .then(function(ref){_docId=ref.id;}).catch(function(e){console.warn('lb:',e);});
 }
 window.lbOnGameOver=function(score){
