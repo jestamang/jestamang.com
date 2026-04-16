@@ -128,8 +128,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Lu
   .jsearch-float-btn{top:8px!important;right:10px!important;width:34px!important;height:34px!important}
   /* ── Tabs: own row clearly below header ── */
   #gs{padding:52px 12px 12px}
-  .game-tabs{margin-bottom:10px}
-  .game-tab{padding:8px 6px;font-size:0.62rem}
+  .game-tabs{margin-bottom:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;scrollbar-width:none}
+  .game-tabs::-webkit-scrollbar{display:none}
+  .game-tab{padding:8px 10px;font-size:0.62rem;flex-shrink:0;min-width:auto;white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .tab-dash{display:none}
+  .tab-lock{display:block;font-size:0.75rem;line-height:1}
   /* ── Answer grid ── */
   #ho-answers.grid-3{grid-template-columns:1fr 1fr}
   /* ── Answer buttons ── */
@@ -341,10 +344,10 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 <div id="gs" class="scr off">
   <!-- Level tabs -->
   <div class="game-tabs" id="ho-tabs">
-    <button class="game-tab active" data-level="1" id="ho-tab-1">I — Consonance</button>
-    <button class="game-tab locked" data-level="2" id="ho-tab-2">🔒 II — Tonality</button>
-    <button class="game-tab locked" data-level="3" id="ho-tab-3">🔒 III — Progressions</button>
-    <button class="game-tab locked" data-level="4" id="ho-tab-4">🔒 IV — Analysis</button>
+    <button class="game-tab active" data-level="1" id="ho-tab-1"><span class="tab-label">I<span class="tab-dash"> — </span> Consonance</span></button>
+    <button class="game-tab locked" data-level="2" id="ho-tab-2"><span class="tab-lock">🔒</span><span class="tab-label">II<span class="tab-dash"> — </span> Tonality</span></button>
+    <button class="game-tab locked" data-level="3" id="ho-tab-3"><span class="tab-lock">🔒</span><span class="tab-label">III<span class="tab-dash"> — </span> Progressions</span></button>
+    <button class="game-tab locked" data-level="4" id="ho-tab-4"><span class="tab-lock">🔒</span><span class="tab-label">IV<span class="tab-dash"> — </span> Analysis</span></button>
   </div>
 
   <!-- How to play -->
@@ -784,8 +787,8 @@ function unlockTab(level){
   var tab = $('ho-tab-'+level);
   if(!tab) return;
   tab.classList.remove('locked');
-  var labels = {2:'II — Tonality', 3:'III — Progressions', 4:'IV — Analysis'};
-  tab.textContent = labels[level] || ('Level '+level);
+  var labels = {2:'II<span class="tab-dash"> — </span> Tonality', 3:'III<span class="tab-dash"> — </span> Progressions', 4:'IV<span class="tab-dash"> — </span> Analysis'};
+  tab.innerHTML = '<span class="tab-label">'+(labels[level]||('Level '+level))+'</span>';
 }
 
 function setLevelBadge(level){
@@ -1193,11 +1196,11 @@ function showGame(){
     t.classList.remove('active','locked');
     if(lvl===1){
       t.classList.add('active');
-      t.textContent = 'I — Consonance';
+      t.innerHTML = '<span class="tab-label">I<span class="tab-dash"> — </span> Consonance</span>';
     } else {
       t.classList.add('locked');
-      var labels = {2:'🔒 II — Tonality',3:'🔒 III — Progressions',4:'🔒 IV — Analysis'};
-      t.textContent = labels[lvl]||('Level '+lvl);
+      var labels = {2:'II<span class="tab-dash"> — </span> Tonality',3:'III<span class="tab-dash"> — </span> Progressions',4:'IV<span class="tab-dash"> — </span> Analysis'};
+      t.innerHTML = '<span class="tab-lock">🔒</span><span class="tab-label">'+(labels[lvl]||('Level '+lvl))+'</span>';
     }
   });
   updateProgress();
