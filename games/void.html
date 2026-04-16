@@ -215,10 +215,6 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 <a href="../arcade.html" id="back">← Games</a>
 <canvas id="c"></canvas>
 <div id="hud"></div>
-<div id="pause-overlay" style="display:none;position:fixed;inset:0;z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:12px;pointer-events:none;text-align:center;">
-  <div style="font-family:'Luminari',serif;font-size:0.8rem;letter-spacing:0.5em;text-transform:uppercase;color:rgba(201,168,76,0.9);text-shadow:0 0 20px rgba(201,168,76,0.6);">LIFT YOUR FINGER TO PAUSE</div>
-  <div style="font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.5);">TOUCH TO RESUME</div>
-</div>
 <button id="lb-btn-hud">Scrolls</button>
 
 <div id="ss" class="scr">
@@ -259,7 +255,6 @@ var PAL = { triangle:'#8800FF', ring:'#0099FF', hexagon:'#39FF14', diamond:'#FF1
 var ST = 'start';
 var player, trail, shapes, parts, keys, touch, t0, bgHue, spawnT, flashA;
 var isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
-var pausedAt = 0;
 var shieldTimer = 0; // seconds since last hit; >= 10 → shield active for 1s
 var shieldActive = 0; // countdown timer for gold invincibility (seconds)
 var scoreMultiplier = 1;
@@ -315,21 +310,16 @@ window.addEventListener('keyup', function(e) { keys[e.key] = false; });
 C.addEventListener('touchstart', function(e) {
   e.preventDefault(); touch.on = true;
   touch.x = e.touches[0].clientX; touch.y = e.touches[0].clientY;
-  if (ST === 'paused') { t0 += performance.now() - pausedAt; ST = 'playing'; document.getElementById('pause-overlay').style.display = 'none'; }
 }, { passive: false });
 C.addEventListener('touchmove', function(e) {
   e.preventDefault();
   if (e.touches.length) { touch.x = e.touches[0].clientX; touch.y = e.touches[0].clientY; }
 }, { passive: false });
 C.addEventListener('touchend', function(e) {
-  if (!e.touches.length) {
-    touch.on = false;
-    if (ST === 'playing') { pausedAt = performance.now(); ST = 'paused'; document.getElementById('pause-overlay').style.display = 'flex'; }
-  }
+  if (!e.touches.length) { touch.on = false; }
 }, { passive: false });
 C.addEventListener('touchcancel', function(e) {
   touch.on = false;
-  if (ST === 'playing') { pausedAt = performance.now(); ST = 'paused'; document.getElementById('pause-overlay').style.display = 'flex'; }
 }, { passive: false });
 
 function spawnShape(sec) {
