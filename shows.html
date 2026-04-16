@@ -294,12 +294,13 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     status.className = 'blocked';
   }
 
-  if (Notification.permission === 'denied') { setBlocked(); }
+  if (!('Notification' in window)) { setOff(); }
+  else if (Notification.permission === 'denied') { setBlocked(); }
   else if (Notification.permission === 'granted' && localStorage.getItem(LS) === 'true') { setOn(); }
   else { setOff(); }
 
   btn.addEventListener('click', function() {
-    if (!('Notification' in window)) { status.textContent = 'Notifications not supported in this browser.'; status.className = 'blocked'; btn.disabled = true; return; }
+    if (!('Notification' in window)) { status.textContent = 'Notifications not supported on this browser.'; status.className = 'blocked'; btn.disabled = true; return; }
     if (btn.classList.contains('notif-on')) { setOff(); return; }
     btn.disabled = true;
     btn.textContent = 'Requesting\u2026';
