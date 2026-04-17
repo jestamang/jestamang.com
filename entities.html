@@ -241,10 +241,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       +(d.hates?'<div class="entity-row"><span class="entity-label">Hates</span><span class="entity-value">'+esc(d.hates)+'</span></div>':'')
     +'</div>';
   }
-  function fadeReplace(el,html){
-    el.style.transition='opacity 0.3s';el.style.opacity='0';
-    setTimeout(function(){el.innerHTML=html;el.style.opacity='1';},300);
-  }
   function loadEntities(){
     window.jestaDB.collection('entities').orderBy('order').get()
       .then(function(snap){
@@ -256,22 +252,13 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         if(children.length){
           var el=document.querySelector('.children-list');
           if(el){
-            var bioFallbacks={};
-            el.querySelectorAll('.dossier-panel').forEach(function(panel){
-              var nameEl=panel.querySelector('.dossier-name');
-              var bioEl=panel.querySelector('.dossier-desc');
-              if(nameEl&&bioEl&&bioEl.textContent.trim())bioFallbacks[nameEl.textContent.trim()]=bioEl.textContent.trim();
-            });
-            var h='';children.forEach(function(d,i){
-              if(!d.bio&&bioFallbacks[d.name])d.bio=bioFallbacks[d.name];
-              h+=buildDossier(d,i);
-            });
-            fadeReplace(el,h);
+            var h='';children.forEach(function(d,i){h+=buildDossier(d,i);});
+            el.innerHTML=h;
           }
         }
         if(cartoons.length){
           var el=document.querySelector('.entity-grid');
-          if(el){var h='';cartoons.forEach(function(d){h+=buildCard(d);});fadeReplace(el,h);}
+          if(el){var h='';cartoons.forEach(function(d){h+=buildCard(d);});el.innerHTML=h;}
         }
       })
       .catch(function(){});

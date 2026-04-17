@@ -216,7 +216,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 <body>
 <a href="#hud" class="skip-link">Skip to main content</a>
 
-<a href="../arcade.html" id="back">← Games</a>
+<a href="/arcade.html" id="back" data-native-nav>← Games</a>
 <canvas id="c"></canvas>
 <div id="hud"></div>
 <button id="lb-btn-hud">Scrolls</button>
@@ -708,7 +708,7 @@ if (_restartBtn) {
 </div>
 
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
-<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download")||a.hasAttribute("data-native-nav"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();window.addEventListener('pageshow',function(e){if(e.persisted){document.body.style.opacity='';document.body.style.transition='';}});</script>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
 <button class="jsearch-float-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button>
 <div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">

@@ -733,14 +733,8 @@ window._albumPlayTrack=function(btn,idx,card){
       if (window._activeDrawer.parentNode) window._activeDrawer.parentNode.removeChild(window._activeDrawer);
       window._activeDrawer = null; window._activeCard = null;
     }
-    grid.style.transition = 'opacity 0.3s ease';
-    grid.style.opacity = '0';
-    var snap_albums = albums.slice();
-    setTimeout(function(){
-      grid.innerHTML = '';
-      snap_albums.forEach(function(a){ grid.appendChild(buildCatalogCard(a)); });
-      grid.style.opacity = '1';
-    }, 300);
+    grid.innerHTML = '';
+    albums.forEach(function(a){ grid.appendChild(buildCatalogCard(a)); });
   }
 
   function loadCatalog() {

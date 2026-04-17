@@ -328,7 +328,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 <body>
 <a href="#ss" class="skip-link">Skip to main content</a>
 
-<a href="../arcade.html" id="back">← Games</a>
+<a href="/arcade.html" id="back" data-native-nav>← Games</a>
 <button id="lb-btn-hud">✦ Cosmic Scrolls</button>
 
 <!-- ══════════════════════════════════
@@ -436,7 +436,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 </div></div>
 
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
-<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download")||a.hasAttribute("data-native-nav"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();window.addEventListener('pageshow',function(e){if(e.persisted){document.body.style.opacity='';document.body.style.transition='';}});</script>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
 
 <!-- SEARCH OVERLAY -->
