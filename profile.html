@@ -1740,7 +1740,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <!-- Share -->
       <div class="nc-divider" style="margin-top:36px;">&#10022; Share &#10022;</div>
       <div class="natal-share-row">
-        <button class="btn-gold" id="natal-share-btn" style="padding:13px 28px;">Share My Dossier</button>
+        <button class="btn-gold" id="natal-share-btn" style="padding:13px 28px;">Share My Chart</button>
         <button class="btn-dl-chart" id="natal-dl-btn" title="Download chart as PDF">DOWNLOAD MY CHART &#10022;</button>
         <span class="natal-copied-msg" id="natal-copied-msg"></span>
         <span class="natal-copied-msg" id="natal-pdf-msg"></span>
@@ -3888,14 +3888,14 @@ document.addEventListener('DOMContentLoaded', function(){
     var initiationDate = (initiationEl && initiationEl.textContent.trim()) ? initiationEl.textContent.trim() : '';
     var text = '\u2726 ' + username + ' \u2726\nInitiated into the Jestamang Universe\n' + initiationDate + '\njestamang.com/members.html';
     if(navigator.share){
-      navigator.share({ title: 'Dossier', text: text }).catch(function(e){
+      navigator.share({ title: 'My Chart', text: text }).catch(function(e){
         if(e.name !== 'AbortError'){
-          navigator.clipboard.writeText(text).then(function(){ showDossierMsg('DOSSIER COPIED \u2756'); });
+          navigator.clipboard.writeText(text).then(function(){ showDossierMsg('CHART COPIED \u2756'); });
         }
       });
     } else {
       navigator.clipboard.writeText(text)
-        .then(function(){ showDossierMsg('DOSSIER COPIED \u2756'); })
+        .then(function(){ showDossierMsg('CHART COPIED \u2756'); })
         .catch(function(){ showDossierMsg('Share not supported on this browser'); });
     }
   });
