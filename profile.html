@@ -734,6 +734,7 @@ body::before{
   margin-bottom:6px;
   flex-wrap:wrap;
   justify-content:center;
+  font-variant-emoji:text;
 }
 .natal-result-badge {
   font-family:'Luminari',serif;
@@ -805,6 +806,7 @@ body::before{
   font-family:'Luminari',Georgia,serif;
   color:#c9a84c;
   margin-right:3px;
+  font-variant-emoji:text;
 }
 .house-num-cell {
   color:rgba(201,168,76,0.5);
@@ -967,6 +969,7 @@ body::before{
   text-transform:uppercase;
   color:rgba(201,168,76,0.85);
   margin-bottom:12px;
+  font-variant-emoji:text;
 }
 .natal-interp-text {
   font-family:'Luminari',serif;
@@ -2694,7 +2697,7 @@ var NC = (function(){
       var color=ELEMENT_COLORS[SIGN_ELEMENT[SIGNS[si]]];
       svg+='<path d="'+sectorPath(R_ZO,R_ZI,a1,a2)+'" fill="'+color+'" stroke="rgba(201,168,76,0.3)" stroke-width="0.5"/>';
       var midA=lonToAngle(ascLon+si*30+15), gp=polar(midA,(R_ZO+R_ZI)/2);
-      svg+='<text x="'+fx(gp.x)+'" y="'+fx(gp.y+5.5)+'" text-anchor="middle" font-size="16" fill="rgba(201,168,76,0.95)" font-family="Luminari,Georgia,serif" filter="url(#ncgs)">'+SIGN_GLYPHS[si]+'</text>';
+      svg+='<text x="'+fx(gp.x)+'" y="'+fx(gp.y+5.5)+'" text-anchor="middle" font-size="16" fill="rgba(201,168,76,0.95)" font-family="Luminari,Georgia,serif" filter="url(#ncgs)" style="font-variant-emoji:text">'+SIGN_GLYPHS[si]+'</text>';
     }
 
     // Degree ticks every 10° in zodiac ring
@@ -2884,7 +2887,7 @@ var NC = (function(){
     }
     if(moon&&INTERPRETATIONS.Moon[moon.sign]){
       html+='<div class="natal-interp-block">'
-          +'<div class="natal-interp-title"><span style="color:#c8d8f0">\u263D</span> Moon in '+moon.sign+'</div>'
+          +'<div class="natal-interp-title"><span style="color:#c8d8f0;font-variant-emoji:text;">'+moon.glyph+'</span> Moon in '+moon.sign+'</div>'
           +'<div class="natal-interp-text">'+INTERPRETATIONS.Moon[moon.sign]+'</div>'
           +'</div>';
     }
