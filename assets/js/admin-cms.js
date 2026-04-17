@@ -5,6 +5,15 @@ var _almDocs = {}; /* docId -> data */
 
 function almEsc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+/* Resolve an artwork value to a usable src path.
+   Values that already start with assets/, / or http(s) are used as-is.
+   Bare relative values (e.g. "2K2323/ace of chase/2k2323nov.jpg") get the albums prefix. */
+function _artSrc(val){
+  if(!val)return'';
+  if(/^(https?:\/\/|\/|assets\/)/.test(val))return val;
+  return'assets/albums/'+val;
+}
+
 /* ── Build edit/add form HTML ── */
 function almBuildForm(data, prefix) {
   data = data || {};
@@ -30,7 +39,7 @@ function almBuildForm(data, prefix) {
     +'<div><label class="field-label">Order #</label><input class="field-input" id="'+pfx+'-order" type="number" value="'+almEsc(String(data.order||'0'))+'"></div>'
     +'<div style="grid-column:1/-1"><label class="field-label">Artwork filename (e.g. <em>jestress melody.jpg</em>)</label>'
     +'<input class="field-input" id="'+pfx+'-artwork" value="'+almEsc(data.artwork||'')+'" oninput="almPreviewArt(\''+pfx+'\')">'
-    +'<img id="'+pfx+'-art-preview" class="alm-art-preview" src="'+(data.artwork?'assets/albums/'+almEsc(data.artwork):'')+'" style="'+(data.artwork?'':'display:none')+'">'
+    +'<img id="'+pfx+'-art-preview" class="alm-art-preview" src="'+(data.artwork?almEsc(_artSrc(data.artwork)):'')+'" style="'+(data.artwork?'':'display:none')+'">'
     +'</div>'
     +'<div><label class="field-label">Spotify URL (album)</label><input class="field-input" id="'+pfx+'-sp" value="'+almEsc(data.spotifyUrl||'')+'"></div>'
     +'<div><label class="field-label">YouTube URL (album)</label><input class="field-input" id="'+pfx+'-yt" value="'+almEsc(data.youtubeUrl||'')+'"></div>'
@@ -62,7 +71,7 @@ window.almPreviewArt = function(pfx) {
   var img = document.getElementById(pfx+'-art-preview');
   if (!inp || !img) return;
   var v = inp.value.trim();
-  if (v) { img.src = 'assets/albums/' + v; img.style.display = 'block'; }
+  if (v) { img.src = _artSrc(v); img.style.display = 'block'; }
   else   { img.src = ''; img.style.display = 'none'; }
 };
 
@@ -172,7 +181,7 @@ function almRenderList(docs) {
 }
 
 function almRowHtml(docId, d) {
-  var artSrc = d.artwork ? 'assets/albums/'+almEsc(d.artwork) : '';
+  var artSrc = d.artwork ? almEsc(_artSrc(d.artwork)) : '';
   var imgHtml = artSrc
     ? '<img class="alm-thumb" src="'+artSrc+'" alt="" onerror="this.style.opacity=0.2">'
     : '<div class="alm-thumb" style="display:flex;align-items:center;justify-content:center;color:rgba(201,168,76,0.3);font-size:1.2rem;">◈</div>';
@@ -621,7 +630,7 @@ function lymBuildForm(d,pfx){
     +'<div><label class="field-label">Album Title</label><input class="field-input" id="'+pfx+'-albumTitle" value="'+lymEsc(d.albumTitle||'')+'" maxlength="200"></div>'
     +'<div><label class="field-label">Artist</label><input class="field-input" id="'+pfx+'-artist" value="'+lymEsc(d.artist||'')+'" maxlength="200"></div>'
     +'<div><label class="field-label">Artwork Filename</label><input class="field-input" id="'+pfx+'-artwork" value="'+lymEsc(d.artwork||'')+'" placeholder="filename.jpg" onchange="lymPreviewArt(\''+pfx+'\')"></div>'
-    +'<div><label class="field-label">Art Preview</label><img class="lym-art-preview" id="'+pfx+'-art-preview" src="'+(d.artwork?'assets/albums/'+lymEsc(d.artwork):'')+'" onerror="this.src=\'\'"></div>'
+    +'<div><label class="field-label">Art Preview</label><img class="lym-art-preview" id="'+pfx+'-art-preview" src="'+(d.artwork?lymEsc(_artSrc(d.artwork)):'')+'" onerror="this.src=\'\'"></div>'
     +'<div><label class="field-label">Album YouTube URL</label><input class="field-input" id="'+pfx+'-youtubeUrl" value="'+lymEsc(d.youtubeUrl||'')+'" placeholder="https://youtube.com/..."></div>'
     +'<div><label class="field-label" style="display:flex;align-items:center;gap:6px;margin-top:18px;"><input type="checkbox" id="'+pfx+'-visible"'+(d.visible===false?'':' checked')+'> Visible</label>'
     +'<label class="field-label" style="margin-top:8px;">Order</label><input class="field-input" id="'+pfx+'-order" type="number" value="'+(d.order||0)+'"></div>'
@@ -653,7 +662,7 @@ function lymReadForm(pfx){
 window.lymPreviewArt=function(pfx){
   var img=document.getElementById(pfx+'-art-preview');
   var inp=document.getElementById(pfx+'-artwork');
-  if(img&&inp)img.src=inp.value.trim()?'assets/albums/'+inp.value.trim():'';
+  if(img&&inp)img.src=inp.value.trim()?_artSrc(inp.value.trim()):'';
 };
 
 window.lymAddSong=function(pfx){
@@ -702,7 +711,7 @@ function lymWireDragDrop(list){
 }
 
 function lymRowHtml(docId,d){
-  var artSrc=d.artwork?'assets/albums/'+lymEsc(d.artwork):'';
+  var artSrc=d.artwork?lymEsc(_artSrc(d.artwork)):'';
   var songCount=(d.songs&&d.songs.length)||0;
   return '<div class="lym-row" id="lym-row-'+lymEsc(docId)+'">'
     +'<div class="lym-row-header">'
