@@ -1035,13 +1035,7 @@ var _jt = 0, _jiv = setInterval(function() {
           return (doc.data.name || '') === (_mFallback[i].title || '');
         });
         if (matches) { return; }
-        // Fade out, swap content, fade in
-        _mGrid.style.transition = 'opacity 0.3s ease';
-        _mGrid.style.opacity = '0';
-        setTimeout(function() {
-          renderMerchCards(docs);
-          _mGrid.style.opacity = '1';
-        }, 300);
+        renderMerchCards(docs);
       })
       .catch(function() { /* fallback already shown */ });
   } else if (++_jt > 80) {

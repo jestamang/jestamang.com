@@ -199,7 +199,7 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
     <button class="ctrl-btn primary" id="btn-restart">Shuffle & Restart</button>
     <button id="hint-btn">♦ HINT (costs 1 life)</button>
     <button class="ctrl-btn" onclick="openLB('memory-vault','Memory Vault',true)">✦ COSMIC SCROLLS</button>
-    <a href="arcade.html" class="ctrl-btn">← Back to Vault</a>
+    <a href="/arcade.html" class="ctrl-btn" data-native-nav>← Back to Vault</a>
   </div>
 </div>
 <div id="flawless-banner"></div>
@@ -213,7 +213,7 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
   <div class="controls" style="margin-top:12px">
     <button class="ctrl-btn primary" id="btn-again">Play Again</button>
     <button class="ctrl-btn" onclick="openLB('memory-vault','Memory Vault',true)">✦ COSMIC SCROLLS</button>
-    <a href="arcade.html" class="ctrl-btn">Return to Vault</a>
+    <a href="/arcade.html" class="ctrl-btn" data-native-nav>Return to Vault</a>
   </div>
 </div>
 
@@ -549,9 +549,9 @@ window.submitScore=function(game,score,lowerBetter,cb){
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
+<script>window.addEventListener('pagehide',function(){clearInterval(ticker);clearTimeout(hintTimer);});</script><script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 <script>(function(){function jVCheck(){if(!window.jestaDB)return;window.jestaDB.collection('siteConfig').doc('cacheVersion').onSnapshot(function(doc){if(!doc.exists)return;var v=doc.data().version;if(!v)return;var s=localStorage.getItem('jSiteVersion');if(s&&s!==v){jUpdateBanner();}localStorage.setItem('jSiteVersion',v);},function(e){/* cacheVersion unavailable – non-critical */void e;});}function jUpdateBanner(){if(document.getElementById('j-update-banner'))return;var b=document.createElement('div');b.id='j-update-banner';b.style.cssText='position:fixed;top:0;left:0;width:100%;z-index:99999;background:#c9a84c;color:#000;text-align:center;padding:12px;font-family:Luminari,Georgia,serif;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;';b.textContent='SITE UPDATED \u00b7 TAP TO REFRESH \u2726';b.onclick=function(){var r=function(){window.location.reload(true);};try{caches.keys().then(function(k){return Promise.all(k.map(function(n){return caches.delete(n);}));}).then(r).catch(r);}catch(e){r();}};document.body.prepend(b);}var _jt=0,_jiv=setInterval(function(){if(window.jestaDB){clearInterval(_jiv);jVCheck();}else if(++_jt>80){clearInterval(_jiv);}},100);})();</script>
-<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download")||a.hasAttribute("data-native-nav"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();window.addEventListener('pageshow',function(e){if(e.persisted){document.body.style.opacity='';document.body.style.transition='';}});</script>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
 <button class="jsearch-float-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button>
 <div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
