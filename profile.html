@@ -3231,6 +3231,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   function showPage(user){
+    console.log('[profile] showPage running for user:', user && user.uid);
     document.getElementById('page-content').style.opacity = '1';
 
     // ── Cache keys ──────────────────────────────────────────────────
@@ -4284,16 +4285,17 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   // ── Download My Chart (PDF) ──────────────────────────────────
-  var _natalDlBtn=document.getElementById('natal-dl-btn');if(_natalDlBtn)_natalDlBtn.addEventListener('click', function(){
-    if(!_lastNatalResult){ return; }
+  var _natalDlBtn=document.getElementById('natal-dl-btn');if(_natalDlBtn){_natalDlBtn.addEventListener('click', function(){
+    console.log('[natal-dl] click fired, _lastNatalResult:', _lastNatalResult);
+    if(!_lastNatalResult){
+      console.warn('[natal-dl] clicked but _lastNatalResult is null — natal chart has not been computed yet');
+      var msgEl=document.getElementById('natal-pdf-msg');
+      if(msgEl){msgEl.textContent='Chart is still loading. Please wait a moment and try again.';msgEl.classList.add('show');setTimeout(function(){msgEl.classList.remove('show');},3000);}
+      return;
+    }
     if(!window.jspdf||!window.jspdf.jsPDF){
       var msgEl=document.getElementById('natal-pdf-msg');
       if(msgEl){msgEl.textContent='Chart download is loading, try again in a moment';msgEl.classList.add('show');setTimeout(function(){msgEl.classList.remove('show');},3000);}
-      return;
-    }
-    if(!window.html2canvas){
-      var msgEl=document.getElementById('natal-pdf-msg');
-      if(msgEl){msgEl.textContent='Chart renderer not ready, try again in a moment';msgEl.classList.add('show');setTimeout(function(){msgEl.classList.remove('show');},3000);}
       return;
     }
     var btn = this;
@@ -4321,6 +4323,7 @@ document.addEventListener('DOMContentLoaded', function(){
       setTimeout(function(){ msgEl.classList.remove('show'); }, 2200);
     });
   });
+  console.log('[profile] natal-dl listener attached');}
 
   function setError(msg){
     var el = document.getElementById('natal-error');
