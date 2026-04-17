@@ -1578,6 +1578,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
+<script src="assets/js/admin-utils.js" defer></script>
 <script src="assets/js/admin-cms.js" defer></script>
 <script src="assets/js/admin-games.js" defer></script>
 <script src="assets/js/admin-tools.js" defer></script>
@@ -2897,6 +2898,25 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         + '</div>'
         + '<div class="merch-card-status status-msg" style="margin-top:8px;"></div>';
       container.appendChild(card);
+
+      if (window.__adminUtils && window.__adminUtils.buildCompressWidget) {
+        var imageInput = card.querySelector('[data-field="imageUrl"]');
+        if (imageInput) {
+          var compWrap = document.createElement('div');
+          compWrap.style.cssText = 'margin:4px 0 10px;';
+          (function(cardRef) {
+            compWrap.appendChild(window.__adminUtils.buildCompressWidget({
+              maxDim: 800, quality: 0.82,
+              title: 'Compress Image for Upload',
+              onDownload: function(baseName) {
+                var inp = cardRef.querySelector('[data-field="imageUrl"]');
+                if (inp) inp.value = 'assets/merch/' + baseName;
+              }
+            }));
+          })(card);
+          imageInput.parentNode.insertBefore(compWrap, imageInput.nextSibling);
+        }
+      }
     }
 
     db.collection('merch').orderBy('updatedAt','asc').get().then(function (snap) {
@@ -3534,76 +3554,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       panel.appendChild(divider);
 
       // ── Compress & Prep section ─────────────────────────────────
-      var compTitle = document.createElement('div');
-      compTitle.style.cssText = 'font-size:0.62rem;letter-spacing:0.22em;color:rgba(201,168,76,0.45);text-transform:uppercase;margin-bottom:8px;';
-      compTitle.textContent = 'Compress Photos for Upload';
-      var compInput = document.createElement('input');
-      compInput.type = 'file'; compInput.accept = 'image/*'; compInput.multiple = true;
-      compInput.style.cssText = 'display:none;';
-      var compPickBtn = document.createElement('button');
-      compPickBtn.className = 'btn-ghost btn-sm';
-      compPickBtn.textContent = 'CHOOSE FILES';
-      compPickBtn.onclick = function(){ compInput.click(); };
-      var compResults = document.createElement('div');
-      compResults.style.cssText = 'margin-top:10px;';
-
-      compInput.onchange = function(){
-        compResults.innerHTML = '';
-        Array.prototype.forEach.call(compInput.files, function(file){
-          var item = document.createElement('div');
-          item.style.cssText = 'padding:6px 0;border-bottom:1px solid rgba(201,168,76,0.06);font-size:0.62rem;color:rgba(201,168,76,0.5);display:flex;align-items:center;gap:8px;flex-wrap:wrap;';
-          var nameSpan = document.createElement('span');
-          nameSpan.style.cssText = 'flex:1;word-break:break-all;';
-          var beforeKB = (file.size/1024).toFixed(0);
-          nameSpan.textContent = file.name + ' (' + beforeKB + ' KB)';
-          item.appendChild(nameSpan);
-          var statusSpan = document.createElement('span');
-          statusSpan.style.cssText = 'color:rgba(201,168,76,0.3);';
-          statusSpan.textContent = 'compressing…';
-          item.appendChild(statusSpan);
-          compResults.appendChild(item);
-
-          var img = new Image();
-          var url = URL.createObjectURL(file);
-          img.onload = function(){
-            URL.revokeObjectURL(url);
-            var MAX = 1200;
-            var w = img.naturalWidth, h = img.naturalHeight;
-            if(w > MAX){ h = Math.round(h * MAX / w); w = MAX; }
-            else if(h > MAX){ w = Math.round(w * MAX / h); h = MAX; }
-            var canvas = document.createElement('canvas');
-            canvas.width = w; canvas.height = h;
-            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-            canvas.toBlob(function(blob){
-              if(!blob){ statusSpan.textContent = 'failed'; return; }
-              var afterKB = (blob.size/1024).toFixed(0);
-              statusSpan.textContent = beforeKB + ' KB → ' + afterKB + ' KB';
-              statusSpan.style.color = '#02E127';
-              var baseName = file.name.replace(/\.[^.]+$/, '') + '.jpg';
-              var dlBtn = document.createElement('a');
-              dlBtn.href = URL.createObjectURL(blob);
-              dlBtn.download = baseName;
-              dlBtn.className = 'btn-ghost btn-sm';
-              dlBtn.style.cssText = 'font-size:0.5rem;padding:3px 8px;text-decoration:none;';
-              dlBtn.textContent = '↓ ' + baseName;
-              dlBtn.onclick = function(){
-                // pre-fill filename into bulk-add textarea
-                var lines = bulkTA.value ? bulkTA.value.trimEnd() + '\n' + baseName : baseName;
-                bulkTA.value = lines;
-              };
-              item.appendChild(dlBtn);
-            }, 'image/jpeg', 0.82);
-          };
-          img.onerror = function(){ URL.revokeObjectURL(url); statusSpan.textContent = 'load error'; };
-          img.src = url;
-        });
-        compInput.value = '';
-      };
-
-      var compRow = document.createElement('div');
-      compRow.style.cssText = 'display:flex;gap:8px;align-items:center;';
-      compRow.appendChild(compPickBtn); compRow.appendChild(compInput);
-      panel.appendChild(compTitle); panel.appendChild(compRow); panel.appendChild(compResults);
+      panel.appendChild(window.__adminUtils.buildCompressWidget({
+        maxDim: 1200, quality: 0.82,
+        title: 'Compress Photos for Upload',
+        onDownload: function(baseName) {
+          var lines = bulkTA.value ? bulkTA.value.trimEnd() + '\n' + baseName : baseName;
+          bulkTA.value = lines;
+        }
+      }));
 
       var compDivider = document.createElement('div');
       compDivider.style.cssText = 'border-top:1px solid rgba(201,168,76,0.08);margin:14px 0;';

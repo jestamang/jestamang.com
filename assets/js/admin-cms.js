@@ -40,6 +40,7 @@ function almBuildForm(data, prefix) {
     +'<div style="grid-column:1/-1"><label class="field-label">Artwork filename (e.g. <em>jestress melody.jpg</em>)</label>'
     +'<input class="field-input" id="'+pfx+'-artwork" value="'+almEsc(data.artwork||'')+'" oninput="almPreviewArt(\''+pfx+'\')">'
     +'<img id="'+pfx+'-art-preview" class="alm-art-preview" src="'+(data.artwork?almEsc(_artSrc(data.artwork)):'')+'" style="'+(data.artwork?'':'display:none')+'">'
+    +'<div class="alm-compress-placeholder" data-compress-pfx="'+pfx+'"></div>'
     +'</div>'
     +'<div><label class="field-label">Spotify URL (album)</label><input class="field-input" id="'+pfx+'-sp" value="'+almEsc(data.spotifyUrl||'')+'"></div>'
     +'<div><label class="field-label">YouTube URL (album)</label><input class="field-input" id="'+pfx+'-yt" value="'+almEsc(data.youtubeUrl||'')+'"></div>'
@@ -169,6 +170,7 @@ function almRenderList(docs) {
     html += '</div>';
   });
   container.innerHTML = html;
+  almAttachCompressWidgets(container);
 
   /* attach listeners */
   container.querySelectorAll('.alm-visible-toggle input').forEach(function(chk){
@@ -318,6 +320,24 @@ function almInitAddForm() {
   var formEl = document.getElementById('alm-add-form');
   if (!formEl) return;
   formEl.innerHTML = almBuildForm({section:'Quarter Days', order:0, visible:true}, 'almn');
+  almAttachCompressWidgets(formEl);
+}
+
+function almAttachCompressWidgets(container) {
+  if (!window.__adminUtils || !window.__adminUtils.buildCompressWidget) return;
+  container.querySelectorAll('.alm-compress-placeholder:not([data-wired])').forEach(function(el) {
+    var pfx = el.getAttribute('data-compress-pfx');
+    if (!pfx) return;
+    el.setAttribute('data-wired', '1');
+    el.appendChild(window.__adminUtils.buildCompressWidget({
+      maxDim: 500, quality: 0.82,
+      title: 'Compress Artwork for Upload',
+      onDownload: function(baseName) {
+        var inp = document.getElementById(pfx + '-artwork');
+        if (inp) { inp.value = baseName; window.almPreviewArt(pfx); }
+      }
+    }));
+  });
 }
 
 /* ── Tab switching ── */
@@ -383,7 +403,7 @@ function entBuildForm(d,pfx){
   var html='<div class="ent-form-grid">'
     +'<div><label class="field-label">Name</label><input class="field-input" id="'+pfx+'-name" value="'+entEsc(d.name||'')+'" maxlength="120"></div>'
     +'<div><label class="field-label">Type</label><select class="field-input" id="'+pfx+'-type">'+typeOpts+'</select></div>'
-    +'<div><label class="field-label">Image Path</label><input class="field-input" id="'+pfx+'-image" value="'+entEsc(d.image||'')+'" placeholder="assets/entities/..." onchange="entPreviewArt(\''+pfx+'\')"></div>'
+    +'<div><label class="field-label">Image Path</label><input class="field-input" id="'+pfx+'-image" value="'+entEsc(d.image||'')+'" placeholder="assets/entities/..." onchange="entPreviewArt(\''+pfx+'\')"><div class="ent-compress-placeholder" data-compress-pfx="'+pfx+'"></div></div>'
     +'<div><label class="field-label">Art Preview</label><img class="ent-art-preview" id="'+pfx+'-art-preview" src="'+entEsc(d.image||'')+'" onerror="this.src=\'\'"></div>'
     +'<div><label class="field-label">Bg Color</label><input class="field-input" id="'+pfx+'-bgColor" value="'+entEsc(d.bgColor||'')+'" placeholder="rgba(15,50,25,0.25)"></div>'
     +'<div><label class="field-label">Albums</label><input class="field-input" id="'+pfx+'-albums" value="'+entEsc(d.albums||'')+'" placeholder="Album (year) · Album (year)"></div>'
@@ -474,7 +494,7 @@ function entRenderList(docs){
     html+='</div>';
   }
   if(!html)html='<div style="color:rgba(201,168,76,0.3);font-size:0.7rem;">No entities found.</div>';
-  var c=document.getElementById('ent-list-inner');if(c)c.innerHTML=html;
+  var c=document.getElementById('ent-list-inner');if(c){c.innerHTML=html;entAttachCompressWidgets(c);}
 }
 
 window.entToggleEdit=function(docId){
@@ -541,7 +561,24 @@ window.entMoveOrder=function(docId,dir){
 
 function entInitAddForm(){
   var c=document.getElementById('ent-add-form');
-  if(c)c.innerHTML=entBuildForm(null,'ent-new');
+  if(c){c.innerHTML=entBuildForm(null,'ent-new');entAttachCompressWidgets(c);}
+}
+
+function entAttachCompressWidgets(container) {
+  if (!window.__adminUtils || !window.__adminUtils.buildCompressWidget) return;
+  container.querySelectorAll('.ent-compress-placeholder:not([data-wired])').forEach(function(el) {
+    var pfx = el.getAttribute('data-compress-pfx');
+    if (!pfx) return;
+    el.setAttribute('data-wired', '1');
+    el.appendChild(window.__adminUtils.buildCompressWidget({
+      maxDim: 800, quality: 0.82,
+      title: 'Compress Image for Upload',
+      onDownload: function(baseName) {
+        var inp = document.getElementById(pfx + '-image');
+        if (inp) { inp.value = 'assets/entities/' + baseName; window.entPreviewArt(pfx); }
+      }
+    }));
+  });
 }
 
 function entLoad(){
@@ -635,7 +672,7 @@ function lymBuildForm(d,pfx){
   return '<div class="lym-form-grid">'
     +'<div><label class="field-label">Album Title</label><input class="field-input" id="'+pfx+'-albumTitle" value="'+lymEsc(d.albumTitle||'')+'" maxlength="200"></div>'
     +'<div><label class="field-label">Artist</label><input class="field-input" id="'+pfx+'-artist" value="'+lymEsc(d.artist||'')+'" maxlength="200"></div>'
-    +'<div><label class="field-label">Artwork Filename</label><input class="field-input" id="'+pfx+'-artwork" value="'+lymEsc(d.artwork||'')+'" placeholder="filename.jpg" onchange="lymPreviewArt(\''+pfx+'\')"></div>'
+    +'<div><label class="field-label">Artwork Filename</label><input class="field-input" id="'+pfx+'-artwork" value="'+lymEsc(d.artwork||'')+'" placeholder="filename.jpg" onchange="lymPreviewArt(\''+pfx+'\')"><div class="lym-compress-placeholder" data-compress-pfx="'+pfx+'"></div></div>'
     +'<div><label class="field-label">Art Preview</label><img class="lym-art-preview" id="'+pfx+'-art-preview" src="'+(d.artwork?lymEsc(_artSrc(d.artwork)):'')+'" onerror="this.src=\'\'"></div>'
     +'<div><label class="field-label">Album YouTube URL</label><input class="field-input" id="'+pfx+'-youtubeUrl" value="'+lymEsc(d.youtubeUrl||'')+'" placeholder="https://youtube.com/..."></div>'
     +'<div><label class="field-label" style="display:flex;align-items:center;gap:6px;margin-top:18px;"><input type="checkbox" id="'+pfx+'-visible"'+(d.visible===false?'':' checked')+'> Visible</label>'
@@ -751,7 +788,7 @@ function lymRenderList(docs){
   sorted.sort(function(a,b){return(a.d.order||0)-(b.d.order||0);});
   var html='';sorted.forEach(function(e){html+=lymRowHtml(e.id,e.d);});
   if(!html)html='<div style="color:rgba(201,168,76,0.3);font-size:0.7rem;">No albums found.</div>';
-  var c=document.getElementById('lym-list-inner');if(c){c.innerHTML=html;c.querySelectorAll('.lym-song-list').forEach(lymWireDragDrop);}
+  var c=document.getElementById('lym-list-inner');if(c){c.innerHTML=html;c.querySelectorAll('.lym-song-list').forEach(lymWireDragDrop);lymAttachCompressWidgets(c);}
 }
 
 window.lymToggleEdit=function(docId){var p=document.getElementById('lym-edit-'+docId);if(p)p.classList.toggle('open');};
@@ -793,7 +830,24 @@ window.lymMoveOrder=function(docId,dir){
 
 function lymInitAddForm(){
   var c=document.getElementById('lym-add-form');
-  if(c){c.innerHTML=lymBuildForm(null,'lym-new');var sl=document.getElementById('lym-new-song-list');if(sl)lymWireDragDrop(sl);}
+  if(c){c.innerHTML=lymBuildForm(null,'lym-new');var sl=document.getElementById('lym-new-song-list');if(sl)lymWireDragDrop(sl);lymAttachCompressWidgets(c);}
+}
+
+function lymAttachCompressWidgets(container) {
+  if (!window.__adminUtils || !window.__adminUtils.buildCompressWidget) return;
+  container.querySelectorAll('.lym-compress-placeholder:not([data-wired])').forEach(function(el) {
+    var pfx = el.getAttribute('data-compress-pfx');
+    if (!pfx) return;
+    el.setAttribute('data-wired', '1');
+    el.appendChild(window.__adminUtils.buildCompressWidget({
+      maxDim: 700, quality: 0.82,
+      title: 'Compress Artwork for Upload',
+      onDownload: function(baseName) {
+        var inp = document.getElementById(pfx + '-artwork');
+        if (inp) { inp.value = baseName; window.lymPreviewArt(pfx); }
+      }
+    }));
+  });
 }
 
 function lymLoad(){
