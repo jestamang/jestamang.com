@@ -323,7 +323,7 @@ h1 {
     _b.innerHTML='<span>SITE UPDATED · REFRESH FOR THE LATEST TRANSMISSIONS</span>'
       +'<span style="display:flex;gap:10px;align-items:center;">'
       +'<button onclick="location.reload()" style="background:#0a0702;color:#c9a84c;border:none;padding:5px 14px;font-size:12px;font-weight:700;letter-spacing:0.06em;cursor:pointer;border-radius:2px;">REFRESH</button>'
-      +'<button onclick="(function(b){b.style.transform='translateY(-100%)';setTimeout(function(){b.style.opacity='0';b.style.pointerEvents='none';},400);})(document.getElementById('sw-update-banner'))" style="background:none;border:none;color:#0a0702;font-size:20px;line-height:1;cursor:pointer;padding:0 4px;" aria-label="Dismiss">×</button>'
+      +'<button onclick="(function(b){b.style.transform=\'translateY(-100%)\';setTimeout(function(){b.style.opacity=\'0\';b.style.pointerEvents=\'none\';},400);})(document.getElementById(\'sw-update-banner\'))\" style="background:none;border:none;color:#0a0702;font-size:20px;line-height:1;cursor:pointer;padding:0 4px;" aria-label="Dismiss">×</button>'
       +'</span>';
   }
   if('serviceWorker' in navigator){

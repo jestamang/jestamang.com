@@ -679,7 +679,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .page-header .subtitle,.product-desc{text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 4px rgba(0,0,0,1),0 0 40px rgba(0,0,0,0.9),1px 1px 3px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 
 .skip-link{position:absolute;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;z-index:99999;text-decoration:none;font-family:'Luminari',serif;font-size:0.8rem;letter-spacing:0.1em;border-radius:0 0 4px 0;transition:top 0.1s}.skip-link:focus{top:0;outline:2px solid #000;outline-offset:2px}</style>
-  <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/truetype" crossorigin>
+  <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/ttf" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="dns-prefetch" href="https://apis.google.com">
   <link rel="dns-prefetch" href="https://firestore.googleapis.com">
@@ -737,12 +737,12 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<picture><source srcset="assets/homepage/background/Jesta background.webp" type="image/webp"><img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72" loading="eager" width="1288" height="2564"></picture>
+<picture><source srcset="assets/homepage/background/Jesta%20background.webp" type="image/webp"><img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72" loading="eager" width="1288" height="2564"></picture>
 
 <!-- ── TOP NAV ── -->
 <div id="jtnav">
   <a id="jtnav-logo" href="index.html">
-    <picture><source srcset="assets/homepage/logo png.webp" type="image/webp"><img src="assets/homepage/logo png.png" alt="Jestamang" loading="eager" width="300" fetchpriority="high" height="300"></picture>
+    <picture><source srcset="assets/homepage/logo%20png.webp" type="image/webp"><img src="assets/homepage/logo png.png" alt="Jestamang" loading="eager" width="300" fetchpriority="high" height="300"></picture>
   </a>
   <div id="jtnav-links">
     <a class="jtnav-link" href="entities.html" data-page="entities.html">Entities</a>
@@ -1173,7 +1173,7 @@ var _inquiryForm=document.getElementById('inquiry-form');if(_inquiryForm)_inquir
 <p style="position:relative;z-index:1;text-align:center;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.18em;color:rgba(201,168,76,0.8);margin:0 auto 0;padding:0 20px 28px;">All sales are final — <a href="refund.html" style="color:#c9a84c;text-decoration:none;border-bottom:1px solid rgba(201,168,76,0.5);">view our Refund Policy</a></p>
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>©<span class="jcyr"></span> Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a></footer>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
-<script>(function(){function jVCheck(){if(!window.jestaDB)return;window.jestaDB.collection('siteConfig').doc('cacheVersion').onSnapshot(function(doc){if(!doc.exists)return;var v=doc.data().version;if(!v)return;var s=localStorage.getItem('jSiteVersion');if(s&&s!==v){jUpdateBanner();}localStorage.setItem('jSiteVersion',v);},function(e){console.error('cacheVersion error:',e.message);});}function jUpdateBanner(){if(document.getElementById('j-update-banner'))return;var b=document.createElement('div');b.id='j-update-banner';b.style.cssText='position:fixed;top:0;left:0;width:100%;z-index:99999;background:#c9a84c;color:#000;text-align:center;padding:12px;font-family:Luminari,Georgia,serif;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;';b.textContent='SITE UPDATED · TAP TO REFRESH ✦';b.onclick=function(){var r=function(){window.location.reload(true);};try{caches.keys().then(function(k){return Promise.all(k.map(function(n){return caches.delete(n);}));}).then(r).catch(r);}catch(e){r();}};document.body.prepend(b);}var _jt=0,_jiv=setInterval(function(){if(window.jestaDB){clearInterval(_jiv);jVCheck();}else if(++_jt>80){clearInterval(_jiv);}},100);})();</script>
+<script>(function(){function jVCheck(){if(!window.jestaDB)return;window.jestaDB.collection('siteConfig').doc('cacheVersion').onSnapshot(function(doc){if(!doc.exists)return;var v=doc.data().version;if(!v)return;var s=localStorage.getItem('jSiteVersion');if(s&&s!==v){jUpdateBanner();}localStorage.setItem('jSiteVersion',v);},function(e){/* cacheVersion unavailable – non-critical */void e;});}function jUpdateBanner(){if(document.getElementById('j-update-banner'))return;var b=document.createElement('div');b.id='j-update-banner';b.style.cssText='position:fixed;top:0;left:0;width:100%;z-index:99999;background:#c9a84c;color:#000;text-align:center;padding:12px;font-family:Luminari,Georgia,serif;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;';b.textContent='SITE UPDATED · TAP TO REFRESH ✦';b.onclick=function(){var r=function(){window.location.reload(true);};try{caches.keys().then(function(k){return Promise.all(k.map(function(n){return caches.delete(n);}));}).then(r).catch(r);}catch(e){r();}};document.body.prepend(b);}var _jt=0,_jiv=setInterval(function(){if(window.jestaDB){clearInterval(_jiv);jVCheck();}else if(++_jt>80){clearInterval(_jiv);}},100);})();</script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
 <div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
@@ -1726,7 +1726,7 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
     _b.innerHTML='<span>SITE UPDATED · REFRESH FOR THE LATEST TRANSMISSIONS</span>'
       +'<span style="display:flex;gap:10px;align-items:center;">'
       +'<button onclick="location.reload()" style="background:#0a0702;color:#c9a84c;border:none;padding:5px 14px;font-size:12px;font-weight:700;letter-spacing:0.06em;cursor:pointer;border-radius:2px;">REFRESH</button>'
-      +'<button onclick="(function(b){b.style.transform='translateY(-100%)';setTimeout(function(){b.style.opacity='0';b.style.pointerEvents='none';},400);})(document.getElementById('sw-update-banner'))" style="background:none;border:none;color:#0a0702;font-size:20px;line-height:1;cursor:pointer;padding:0 4px;" aria-label="Dismiss">×</button>'
+      +'<button onclick="(function(b){b.style.transform=\'translateY(-100%)\';setTimeout(function(){b.style.opacity=\'0\';b.style.pointerEvents=\'none\';},400);})(document.getElementById(\'sw-update-banner\'))\" style="background:none;border:none;color:#0a0702;font-size:20px;line-height:1;cursor:pointer;padding:0 4px;" aria-label="Dismiss">×</button>'
       +'</span>';
   }
   if('serviceWorker' in navigator){
