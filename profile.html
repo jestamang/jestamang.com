@@ -3889,30 +3889,170 @@ console.log('[trace] IIFE entered');
     }
   });
 
-  var _natalShareBtn=document.getElementById('natal-share-btn');if(_natalShareBtn)_natalShareBtn.addEventListener('click', function(){
-    var usernameEl = document.getElementById('v-username');
-    var username = (usernameEl && usernameEl.textContent.trim()) ? usernameEl.textContent.trim() : 'A member';
-    var initiationEl = document.getElementById('member-since');
-    var initiationDate = (initiationEl && initiationEl.textContent.trim()) ? initiationEl.textContent.trim() : '';
-    var text = '\u2726 ' + username + ' \u2726\nInitiated into the Jestamang Universe\n' + initiationDate + '\njestamang.com/members.html';
-    if(navigator.share){
-      navigator.share({ title: 'My Chart', text: text }).catch(function(e){
-        if(e.name !== 'AbortError'){
-          navigator.clipboard.writeText(text).then(function(){ showDossierMsg('CHART COPIED \u2756'); });
-        }
-      });
-    } else {
-      navigator.clipboard.writeText(text)
-        .then(function(){ showDossierMsg('CHART COPIED \u2756'); })
-        .catch(function(){ showDossierMsg('Share not supported on this browser'); });
+  // ── Shared chart-image builder ───────────────────────────────────────
+  // Renders the chart SVG to a 2x canvas, adds a caption section, and
+  // calls onDone(blob, errMsg). blob is null on failure.
+  function buildChartPNG(onDone) {
+    var svg = document.querySelector('#nr-wheel svg');
+    if (!svg) { onDone(null, 'Chart not ready'); return; }
+
+    var nameEl = document.getElementById('nr-name');
+    var chartName = nameEl ? nameEl.textContent.trim() : '';
+
+    var dobEl = document.getElementById('nc-dob');
+    var dobStr = '';
+    if (dobEl && dobEl.value) {
+      try {
+        var _d = new Date(dobEl.value + 'T12:00:00Z');
+        dobStr = _d.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+      } catch(e) { dobStr = dobEl.value; }
     }
+
+    var sunSign = '', moonSign = '', risingSign = '';
+    if (_lastNatalResult) {
+      var _sun = _lastNatalResult.planets && _lastNatalResult.planets['Sun'];
+      var _moon = _lastNatalResult.planets && _lastNatalResult.planets['Moon'];
+      var _asc = _lastNatalResult.ascData;
+      if (_sun)  sunSign    = _sun.sign;
+      if (_moon) moonSign   = _moon.sign;
+      if (_asc)  risingSign = _asc.sign;
+    }
+
+    var svgStr, svgBlob, svgUrl;
+    try {
+      svgStr  = new XMLSerializer().serializeToString(svg);
+      svgBlob = new Blob([svgStr], {type:'image/svg+xml'});
+      svgUrl  = URL.createObjectURL(svgBlob);
+    } catch(e) { onDone(null, 'SVG serialise failed'); return; }
+
+    var img = new Image();
+    img.onload = function() {
+      URL.revokeObjectURL(svgUrl);
+      var SCALE = 2, CHART = 500;          // SVG is always 500×500
+      var CW = CHART * SCALE;              // 1000px canvas width
+      var CAP_H = 180 * SCALE;             // 360px caption strip
+
+      var canvas = document.createElement('canvas');
+      canvas.width  = CW;
+      canvas.height = CW + CAP_H;
+      var ctx = canvas.getContext('2d');
+
+      // Dark background
+      ctx.fillStyle = '#020100';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Chart SVG
+      ctx.drawImage(img, 0, 0, CW, CW);
+
+      // Thin gold divider
+      ctx.strokeStyle = 'rgba(201,168,76,0.3)';
+      ctx.lineWidth   = 1 * SCALE;
+      ctx.beginPath();
+      ctx.moveTo(CW * 0.25, CW + 22 * SCALE);
+      ctx.lineTo(CW * 0.75, CW + 22 * SCALE);
+      ctx.stroke();
+
+      ctx.textAlign = 'center';
+      var _cx = CW / 2;
+      var _y  = CW + 52 * SCALE;
+
+      // Member name
+      if (chartName) {
+        ctx.font      = 'bold ' + (17 * SCALE) + 'px Georgia, serif';
+        ctx.fillStyle = '#c9a84c';
+        ctx.fillText(chartName, _cx, _y);
+        _y += 28 * SCALE;
+      }
+
+      // Sun · Moon · Rising
+      var trioStr = '';
+      if (sunSign)    trioStr += '\u2609 Sun in '   + sunSign;
+      if (moonSign)   trioStr += (trioStr ? '  \u00B7  ' : '') + '\u263D Moon in ' + moonSign;
+      if (risingSign) trioStr += (trioStr ? '  \u00B7  ' : '') + risingSign + ' Rising';
+      if (trioStr) {
+        ctx.font      = (12 * SCALE) + 'px Georgia, serif';
+        ctx.fillStyle = 'rgba(232,220,200,0.78)';
+        ctx.fillText(trioStr, _cx, _y);
+        _y += 24 * SCALE;
+      }
+
+      // Birth date
+      if (dobStr) {
+        ctx.font      = 'italic ' + (11 * SCALE) + 'px Georgia, serif';
+        ctx.fillStyle = 'rgba(201,168,76,0.5)';
+        ctx.fillText(dobStr, _cx, _y);
+      }
+
+      // Footer watermark
+      ctx.font      = (10 * SCALE) + 'px Georgia, serif';
+      ctx.fillStyle = 'rgba(201,168,76,0.22)';
+      ctx.fillText('jestamang.com', _cx, CW + CAP_H - 14 * SCALE);
+
+      canvas.toBlob(function(blob) {
+        onDone(blob, blob ? null : 'canvas.toBlob failed');
+      }, 'image/png');
+    };
+    img.onerror = function() {
+      URL.revokeObjectURL(svgUrl);
+      onDone(null, 'SVG render failed');
+    };
+    img.src = svgUrl;
+  }
+
+  function _triggerPNGDownload(blob) {
+    var date = new Date().toISOString().split('T')[0];
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'jestamang-chart-' + date + '.png';
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 10000);
+  }
+
+  function _copyChartToClipboard(blob) {
+    try {
+      navigator.clipboard.write([new ClipboardItem({'image/png': blob})])
+        .then(function(){ showDossierMsg('Image copied to clipboard \u2756'); })
+        .catch(function(){ _triggerPNGDownload(blob); showDossierMsg('Saved to device \u2756'); });
+    } catch(e) {
+      _triggerPNGDownload(blob);
+      showDossierMsg('Saved to device \u2756');
+    }
+  }
+
+  // ── Share My Chart ───────────────────────────────────────────────────
+  var _natalShareBtn = document.getElementById('natal-share-btn');
+  if (_natalShareBtn) _natalShareBtn.addEventListener('click', function() {
+    var btn = this;
+    btn.disabled = true;
+    showDossierMsg('Preparing image\u2026');
+    buildChartPNG(function(blob, err) {
+      btn.disabled = false;
+      if (!blob) { showDossierMsg(err || 'Share failed'); return; }
+      var file = new File([blob], 'jestamang-chart.png', {type:'image/png'});
+      if (navigator.canShare && navigator.canShare({files:[file]})) {
+        navigator.share({
+          files: [file],
+          title: 'My Jestamang Chart',
+          text:  'My natal chart \u2014 jestamang.com'
+        }).then(function(){ showDossierMsg('Shared \u2756'); })
+          .catch(function(e){
+            if (e.name !== 'AbortError') { _copyChartToClipboard(blob); }
+          });
+      } else if (navigator.clipboard && window.ClipboardItem) {
+        _copyChartToClipboard(blob);
+      } else {
+        _triggerPNGDownload(blob);
+        showDossierMsg('Saved to device \u2756');
+      }
+    });
   });
 
   function showDossierMsg(msg){
     var el = document.getElementById('natal-copied-msg');
+    if (!el) return;
     el.textContent = msg;
     el.classList.add('show');
-    setTimeout(function(){ el.classList.remove('show'); }, 2500);
+    setTimeout(function(){ el.classList.remove('show'); }, 3000);
   }
 
   var _sharedBirthData = null; // holds {dob,tob,pob,lat,lng} when loaded from URL
@@ -4619,6 +4759,7 @@ console.log('[trace] IIFE entered');
     reader.readAsDataURL(file);
   });
 
+  window._buildChartPNG = buildChartPNG;
 
 })();
 });
@@ -4793,7 +4934,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <script>
 document.addEventListener('DOMContentLoaded', function(){
   var _dlBtn = document.getElementById('natal-dl-btn');
-  if(!_dlBtn){ console.warn('[chart-dl] #natal-dl-btn not found'); return; }
+  if(!_dlBtn) return;
   _dlBtn.addEventListener('click', function(){
     var btn = this;
     var msgEl = document.getElementById('natal-pdf-msg');
@@ -4803,61 +4944,32 @@ document.addEventListener('DOMContentLoaded', function(){
       msgEl.classList.add('show');
       setTimeout(function(){ msgEl.classList.remove('show'); }, ms || 2200);
     }
-    var svg = document.querySelector('#nr-wheel svg');
-    if(!svg){
+    if(!document.querySelector('#nr-wheel svg')){
       _msg('Chart not ready yet, try again in a moment', 3000);
+      return;
+    }
+    if(!window._buildChartPNG){
+      _msg('Chart not ready yet', 3000);
       return;
     }
     btn.disabled = true;
     btn.textContent = 'Saving\u2026';
-    try {
-      var svgStr = new XMLSerializer().serializeToString(svg);
-      var blob = new Blob([svgStr], {type:'image/svg+xml'});
-      var url = URL.createObjectURL(blob);
-      var img = new Image();
-      img.onload = function(){
-        var SIZE = svg.getAttribute('width') || svg.viewBox.baseVal.width || 560;
-        SIZE = parseFloat(SIZE) || 560;
-        var canvas = document.createElement('canvas');
-        canvas.width = SIZE * 2;
-        canvas.height = SIZE * 2;
-        var ctx = canvas.getContext('2d');
-        ctx.scale(2, 2);
-        ctx.fillStyle = '#020100';
-        ctx.fillRect(0, 0, SIZE, SIZE);
-        ctx.drawImage(img, 0, 0, SIZE, SIZE);
-        URL.revokeObjectURL(url);
-        canvas.toBlob(function(pngBlob){
-          btn.disabled = false;
-          btn.innerHTML = 'DOWNLOAD MY CHART \u2756';
-          if(!pngBlob){
-            _msg('Chart save failed. Try again.', 5000);
-            return;
-          }
-          var date = new Date().toISOString().split('T')[0];
-          var a = document.createElement('a');
-          a.href = URL.createObjectURL(pngBlob);
-          a.download = 'jestamang-chart-' + date + '.png';
-          a.click();
-          setTimeout(function(){ URL.revokeObjectURL(a.href); }, 10000);
-          _msg('Chart saved \u2756', 2200);
-        }, 'image/png');
-      };
-      img.onerror = function(){
-        URL.revokeObjectURL(url);
-        btn.disabled = false;
-        btn.innerHTML = 'DOWNLOAD MY CHART \u2756';
-        _msg('Chart save failed. Try again.', 5000);
-      };
-      img.src = url;
-    } catch(e){
-      console.error('[chart-dl] export failed:', e);
+    window._buildChartPNG(function(blob, err){
       btn.disabled = false;
       btn.innerHTML = 'DOWNLOAD MY CHART \u2756';
-      _msg('Chart save failed. Try again.', 5000);
-    }
+      if(!blob){
+        _msg(err || 'Chart save failed. Try again.', 5000);
+        return;
+      }
+      var date = new Date().toISOString().split('T')[0];
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'jestamang-chart-' + date + '.png';
+      a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 10000);
+      _msg('Chart saved \u2756', 2200);
+    });
   });
-  console.log('[chart-dl] listener attached at', new Date().toISOString());
 });
 </script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
