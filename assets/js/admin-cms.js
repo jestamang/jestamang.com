@@ -607,6 +607,12 @@ var _lymDocs = {};
 
 function lymEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
+function _artSrc(val){
+  if(!val)return'';
+  if(/^(https?:\/\/|\/|assets\/)/.test(val))return val;
+  return'assets/albums/'+val;
+}
+
 function lymSongRowHtml(pfx,i,song){
   song=song||{};
   return '<div class="lym-song-row" data-song-row draggable="true">'
