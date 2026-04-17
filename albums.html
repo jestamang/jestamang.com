@@ -655,6 +655,29 @@ window._albumPlayTrack=function(btn,idx,card){
     {name:'NONS',         id:'nons'}
   ];
 
+  var COLOR_MAP = {
+    /* Quarter Days */
+    'Zodiac':'#42A371','New \u00c6on':'#BCB999','Niga Denots':'#868792','Jestress Melody':'#224267',
+    /* 2K2323 */
+    'The Naples Society of the Temple of Psychick Youth':'#A2D3D9',
+    'Peter Thy Godfather':'#000000','Covers the Taste':'#FEB350','Sleep Cycle':'#3852B9',
+    'The Ace of Chase':'#E355D0','Big Boy, New Cat. Records':'#B8BC6E',
+    'Jonas Kyle Meets The Perfect Trip':'#A3A2A2',"Summer O' Sahr":'#0C46DD',
+    '\ua4d8':'#3CEF83','8slush':'#D54380','Jestawomang':'#8C77A0','Xmas 23':'#BC292F',
+    'Revolution Epilogue: 2K2321\u20132K2323':'#ffffff',
+    /* 2K2123 */
+    'You and the 7.5 Evils of the World':'#B25819','El Santo De Gangster Volume II':'#500094',
+    'Ode to Bonnie':'#4682B4','I Can Touch the Revolution From My Home':'#0924AF',
+    "Talkin' Jesus":'#E1DD02','Green House':'#02E127',
+    'The Boston Society of the Temple of Psychick Youth':'#BFBFBF',
+    'Alissa Orange':'#FEA80E','The Woodland Singapore Orchestra':'#466940',
+    'The Colours':'#ffffff','Sounds Across the World':'#ffffff','Ball of Energy':'#FB3838',
+    "Babylon's Final Hours":'#7800DE','Venus and the Flytrap':'#106149','Covers the Greats':'#E8C482',
+    /* NONS */
+    'Psycho Classical':'#D4B00D','The Magic Eye':'#BF3CC8','Cell Life':'#37C0C5',
+    'The Perfect Trip':'#BF3CC8','Hit!':'#AA5907'
+  };
+
   function buildCatalogCard(a) {
     var tracks = a.tracks || [];
     var trackTitles = tracks.map(function(t){ return typeof t==='string' ? t : (t.title||''); });
@@ -693,7 +716,9 @@ window._albumPlayTrack=function(btn,idx,card){
     var titleEl  = document.createElement('div'); titleEl.className  = 'album-title-label'; titleEl.textContent  = a.title||'';
     var artistEl = document.createElement('div'); artistEl.className = 'album-artist';       artistEl.textContent = a.artist||'';
     var yearEl   = document.createElement('div'); yearEl.className   = 'album-season';
-    yearEl.style.cssText = 'background-color:#c9a84c;color:#000;padding:2px 8px;border-radius:3px;';
+    var _pillBg = COLOR_MAP[a.title] || '#c9a84c';
+    var _pillFg = (_pillBg === '#ffffff') ? '#000000' : '#ffffff';
+    yearEl.style.cssText = 'background-color:'+_pillBg+';color:'+_pillFg+';padding:2px 8px;border-radius:3px;';
     yearEl.textContent = yearStr;
 
     div.appendChild(img); div.appendChild(titleEl); div.appendChild(artistEl);
