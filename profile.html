@@ -58,7 +58,8 @@ body::before{
   z-index:0;
 }
 #page-content{
-  display:none;
+  visibility:hidden;
+  min-height:100vh;
   position:relative;
   z-index:1;
   max-width:860px;
@@ -3231,7 +3232,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   function showPage(user){
-    document.getElementById('page-content').style.display = 'block';
+    document.getElementById('page-content').style.visibility = 'visible';
 
     // ── Cache keys ──────────────────────────────────────────────────
     var AV_KEY    = 'jesta_av_'    + user.uid;  // Firebase Storage upload URL
