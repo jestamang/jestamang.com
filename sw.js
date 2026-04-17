@@ -35,7 +35,7 @@ var PRECACHE_URLS = [
   '/offline.html',
   '/assets/fonts/Luminari.ttf',
   '/assets/icons/icon-192.png',
-  '/assets/homepage/logo%20png.png',
+  '/assets/homepage/logo%20png.webp',
   '/assets/homepage/background/Jesta background.jpg',
   '/assets/js/firebase-config.js',
   '/assets/js/jesta-auth.js'
