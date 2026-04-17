@@ -3327,7 +3327,13 @@ document.addEventListener('DOMContentLoaded', function(){
                   displaySavedChart(cd, user);
                 }
               })
-              .catch(function(e){ console.error('No saved natal chart or error:', e); });
+              .catch(function(e){
+                if(e && (e.code === 'permission-denied' || e.code === 'PERMISSION_DENIED')){
+                  /* new user — subcollection doesn't exist yet, no chart to show */
+                  return;
+                }
+                console.warn('[profile] non-critical: natal chart read failed:', e);
+              });
           }
         })
         .catch(function(e){
@@ -3515,6 +3521,10 @@ document.addEventListener('DOMContentLoaded', function(){
 
   function loadFavorites(uid){
     var listEl = document.getElementById('favorites-list');
+    if(!uid || !(firebase.auth && firebase.auth().currentUser)){
+      if(listEl) listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.</div>';
+      return;
+    }
     db.collection('favorites')
       .where('userId','==',uid)
       .orderBy('savedAt','desc')
@@ -3550,8 +3560,13 @@ document.addEventListener('DOMContentLoaded', function(){
         });
       })
       .catch(function(e){
-        console.error('Favorites load error:', e);
-        listEl.innerHTML = '<div class="empty-state">N/A</div>';
+        if(e && (e.code === 'permission-denied' || e.code === 'PERMISSION_DENIED')){
+          /* new user — no favorites collection yet */
+          listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.</div>';
+          return;
+        }
+        console.warn('[profile] non-critical: favorites load failed:', e);
+        listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.</div>';
       });
   }
 
