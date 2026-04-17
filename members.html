@@ -803,8 +803,26 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   </div>
 
 
-<div class="ml-signup-wrap" style="padding:28px 24px;text-align:center;position:relative;z-index:1">
-  <p style="font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.55em;color:rgba(201,168,76,0.55);text-transform:uppercase;margin-bottom:20px">JOIN THE JESTAGANG</p>
+<style id="ml-signup-styles">
+.ml-signup-box{background:rgba(0,0,0,0.6);border:1px solid #c9a84c;padding:32px;max-width:500px;margin:0 auto;text-align:center}
+.ml-signup-title{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.5em;color:#c9a84c;text-transform:uppercase;margin-bottom:10px}
+.ml-signup-box .ml-form-embedWrapper{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important}
+.ml-signup-box .ml-form-embedWrapper .ml-form-embedBody,.ml-signup-box .ml-form-embedWrapper .ml-form-embedBody .ml-form-formContent{padding:0!important;background:transparent!important}
+.ml-signup-box .ml-form-embedContent,.ml-signup-box .ml-form-embedContentDefault{display:none!important}
+.ml-signup-box input[type="email"],.ml-signup-box input[type="text"]{background:transparent!important;border:none!important;border-bottom:1px solid rgba(201,168,76,0.3)!important;border-radius:0!important;color:#e8e0d0!important;font-family:'Luminari',serif!important;font-size:16px!important;letter-spacing:0.12em!important;padding:8px 4px!important;outline:none!important;width:100%!important;max-width:320px!important;box-shadow:none!important;text-align:center!important;caret-color:#c9a84c!important;-webkit-appearance:none!important;appearance:none!important}
+.ml-signup-box input[type="email"]::placeholder,.ml-signup-box input[type="text"]::placeholder{color:rgba(201,168,76,0.22)!important;font-style:italic!important}
+.ml-signup-box button[type="submit"],.ml-signup-box .ml-form-embedSubmit button{background:#c9a84c!important;color:transparent!important;font-family:'Luminari',serif!important;font-size:0!important;letter-spacing:0.45em!important;text-transform:uppercase!important;border:none!important;border-radius:0!important;padding:0!important;width:auto!important;min-width:200px!important;min-height:46px!important;cursor:pointer!important;margin-top:18px!important;transition:background 0.2s,box-shadow 0.2s!important;display:block!important;margin-left:auto!important;margin-right:auto!important;position:relative!important;box-shadow:none!important}
+.ml-signup-box button[type="submit"]::after,.ml-signup-box .ml-form-embedSubmit button::after{content:'JOIN THE JESTAGANG';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.45em;color:#08060a;text-transform:uppercase}
+.ml-signup-box button[type="submit"]:hover,.ml-signup-box .ml-form-embedSubmit button:hover{background:#dfc060!important;box-shadow:0 0 24px rgba(201,168,76,0.35)!important}
+.ml-signup-box .ml-form-successBody,.ml-signup-box .ml-form-successContent{background:transparent!important;border:none!important;box-shadow:none!important}
+.ml-signup-box .ml-form-successContent h4{font-family:'Luminari',serif!important;color:rgba(201,168,76,0.7)!important;letter-spacing:0.3em!important;text-transform:uppercase!important;font-size:0.72rem!important;font-weight:normal!important}
+.ml-signup-box .ml-form-successContent p{font-family:'Luminari',serif!important;color:rgba(240,230,210,0.35)!important;font-size:0.62rem!important;letter-spacing:0.14em!important}
+.ml-signup-box .ml-form-fieldRow{margin-bottom:4px!important}
+.ml-signup-box label{display:none!important}
+@media(max-width:520px){.ml-signup-box{padding:24px 16px}.ml-signup-box button[type="submit"],.ml-signup-box .ml-form-embedSubmit button{min-width:180px!important}}
+</style>
+<div class="ml-signup-wrap ml-signup-box" style="position:relative;z-index:1;margin:0 auto 0;padding:32px 24px">
+  <p class="ml-signup-title">JOIN THE JESTAGANG</p>
   <div class="ml-embedded" data-form="8EZtSf"></div>
 </div>
 </div><!-- /#page-content -->
