@@ -1936,6 +1936,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
@@ -4290,6 +4291,11 @@ document.addEventListener('DOMContentLoaded', function(){
       if(msgEl){msgEl.textContent='Chart download is loading, try again in a moment';msgEl.classList.add('show');setTimeout(function(){msgEl.classList.remove('show');},3000);}
       return;
     }
+    if(!window.html2canvas){
+      var msgEl=document.getElementById('natal-pdf-msg');
+      if(msgEl){msgEl.textContent='Chart renderer not ready, try again in a moment';msgEl.classList.add('show');setTimeout(function(){msgEl.classList.remove('show');},3000);}
+      return;
+    }
     var btn = this;
     btn.disabled = true;
     btn.textContent = 'Rendering\u2026';
@@ -4298,9 +4304,9 @@ document.addEventListener('DOMContentLoaded', function(){
       btn.innerHTML = 'DOWNLOAD MY CHART \u2756';
       if(!pdfBlob){
         var msgEl = document.getElementById('natal-pdf-msg');
-        msgEl.textContent = 'Chart download failed. Please try again.';
+        msgEl.textContent = 'Chart download failed. Try again or contact support.';
         msgEl.classList.add('show');
-        setTimeout(function(){ msgEl.classList.remove('show'); }, 2500);
+        setTimeout(function(){ msgEl.classList.remove('show'); }, 5000);
         return;
       }
       var date = new Date().toISOString().split('T')[0];
