@@ -221,7 +221,7 @@ var _jt=0,_jiv=setInterval(function(){
 <script>var _ytReady=false;var _pendingId=null;var _pendingTitle=null;var _ytPlayer=null;var _currentVideoId=null;function onYouTubeIframeAPIReady(){_ytReady=true;if(_pendingId)_createPlayer(_pendingId,_pendingTitle);}
 function _showError(){document.getElementById('lb-frame').style.display='none';document.getElementById('lb-error').classList.add('show');document.getElementById('lb-yt-link').href='https://www.youtube.com/watch?v='+_currentVideoId;}
 function _createPlayer(id,title){_currentVideoId=id;document.getElementById('lb-frame').style.display='';document.getElementById('lb-error').classList.remove('show');if(_ytPlayer){try{_ytPlayer.destroy();}catch(e){}_ytPlayer=null;}
-document.getElementById('lb-player').innerHTML='';_ytPlayer=new YT.Player('lb-player',{videoId:id,playerVars:{autoplay:1,rel:0},events:{onError:function(){_showError();}}});}
+document.getElementById('lb-player').innerHTML='';_ytPlayer=new YT.Player('lb-player',{videoId:id,playerVars:{autoplay:1,rel:0,origin:'https://jestamang.com'},events:{onError:function(){_showError();}}});}
 function openLightbox(id,title){document.getElementById('lb-title').textContent=title;document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden';if(_ytReady){_createPlayer(id,title);}else{_pendingId=id;_pendingTitle=title;}}
 function closeLightbox(){document.getElementById('lightbox').classList.remove('active');document.body.style.overflow='';if(_ytPlayer){try{_ytPlayer.stopVideo();}catch(e){}}}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLightbox();});</script>
