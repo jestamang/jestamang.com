@@ -2806,7 +2806,7 @@ var NC = (function(){
       var _dc=getDecan(item.p.totalDeg);
       var _tip=item.name+' \u00B7 '+item.p.sign+' '+formatPos(item.p)+' \u00B7 '+DECAN_ORDINALS[_dc.num-1]+' Decan';
       svg+='<g><title>'+_tip+'</title>'
-          +'<text x="'+fx(pos.x)+'" y="'+fx(pos.y+4.5)+'" text-anchor="middle" font-size="14" fill="'+item.info.color+'" font-family="serif" filter="url(#ncg)" opacity="0.95">'+item.info.glyph+'</text>'
+          +'<text x="'+fx(pos.x)+'" y="'+fx(pos.y+4.5)+'" text-anchor="middle" font-size="14" fill="'+item.info.color+'" font-family="serif" filter="url(#ncg)" opacity="0.95" style="font-variant-emoji:text">'+item.info.glyph+'</text>'
           +'</g>';
       if(item.p.retrograde){
         svg+='<text x="'+fx(pos.x)+'" y="'+fx(pos.y-9)+'" text-anchor="middle" font-size="7" fill="'+item.info.color+'" font-family="serif" opacity="0.6" font-style="italic">R</text>';
@@ -2881,7 +2881,7 @@ var NC = (function(){
     var html='';
     if(sun&&INTERPRETATIONS.Sun[sun.sign]){
       html+='<div class="natal-interp-block">'
-          +'<div class="natal-interp-title"><span style="color:#f0c040">'+sun.glyph+'</span> Sun in '+sun.sign+'</div>'
+          +'<div class="natal-interp-title"><span style="color:#f0c040;font-variant-emoji:text;">'+sun.glyph+'</span> Sun in '+sun.sign+'</div>'
           +'<div class="natal-interp-text">'+INTERPRETATIONS.Sun[sun.sign]+'</div>'
           +'</div>';
     }
@@ -2893,7 +2893,7 @@ var NC = (function(){
     }
     if(asc&&INTERPRETATIONS.Rising[asc.sign]){
       html+='<div class="natal-interp-block">'
-          +'<div class="natal-interp-title"><span style="color:#c9a84c">'+asc.glyph+'</span> '+asc.sign+' Rising</div>'
+          +'<div class="natal-interp-title"><span style="color:#c9a84c;font-variant-emoji:text;">'+asc.glyph+'</span> '+asc.sign+' Rising</div>'
           +'<div class="natal-interp-text">'+INTERPRETATIONS.Rising[asc.sign]+'</div>'
           +'</div>';
     }
@@ -2913,10 +2913,10 @@ var NC = (function(){
     if(container.sunSubEl){
       var sun=planets['Sun'],moonPl=planets['Moon'];
       var parts=[];
-      if(sun)    parts.push(sun.glyph+' Sun in '+sun.sign);
-      if(moonPl) parts.push(moonPl.glyph+' Moon in '+moonPl.sign);
-      if(ascData) parts.push(ascData.glyph+' '+ascData.sign+' Rising');
-      container.sunSubEl.textContent=parts.join('  \u00B7  ');
+      if(sun)    parts.push('<span class="sign-glyph">'+sun.glyph+'</span> Sun in '+sun.sign);
+      if(moonPl) parts.push('<span class="sign-glyph">'+moonPl.glyph+'</span> Moon in '+moonPl.sign);
+      if(ascData) parts.push('<span class="sign-glyph">'+ascData.glyph+'</span> '+ascData.sign+' Rising');
+      container.sunSubEl.innerHTML=parts.join('  \u00B7  ');
     }
 
     if(container.wheelEl){
@@ -2949,7 +2949,7 @@ var NC = (function(){
           decanSub+='<div style="font-size:10px;color:rgba(201,168,76,0.45);margin-top:1px;white-space:nowrap;">'+(p.isDayChart?'Day Chart':'Night Chart')+'</div>';
         }
         html+='<tr>'
-            +'<td><span style="color:'+pi2.color+';font-size:1.05rem;">'+rsym+'</span> '+rn+decanSub+'</td>'
+            +'<td><span style="color:'+pi2.color+';font-size:1.05rem;font-variant-emoji:text;">'+rsym+'</span> '+rn+decanSub+'</td>'
             +'<td><span class="sign-glyph">'+p.glyph+'</span>'+p.sign+'</td>'
             +'<td>'+formatPos(p)+'</td>'
             +'<td class="house-num-cell">'+(hasTime&&p.house?'H'+p.house:'\u2014')+'</td>'
