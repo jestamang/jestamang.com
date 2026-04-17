@@ -382,40 +382,54 @@
   function initSearchClose() {
     var inner = document.getElementById('jsearch-inner');
     if (!inner || document.getElementById('jsearch-close-btn')) return;
+    var input = document.getElementById('jsearch-input');
 
-    // Desktop: absolute-positioned ✕ inside #jsearch-inner
+    // Wrap the input in a stable-height flex row so the close button is
+    // vertically centered relative to the input height only — not the
+    // results area below it (whose growth caused top:50% to shift).
+    var row = document.createElement('div');
+    row.id = 'jsearch-input-row';
+    row.style.cssText = 'display:flex;align-items:center;gap:4px;';
+    if (input) {
+      inner.insertBefore(row, input);
+      row.appendChild(input);
+      input.style.flex = '1';
+      input.style.minWidth = '0';
+    } else {
+      inner.appendChild(row);
+    }
+    // The original padding-right:40px was reserved for the absolute button; reduce now.
+    inner.style.paddingRight = '8px';
+
     var btn = document.createElement('button');
     btn.id = 'jsearch-close-btn';
     btn.setAttribute('aria-label', 'Close search');
     btn.textContent = '\u2716';
     btn.style.cssText = [
-      'position:absolute',
-      'top:50%',
-      'right:6px',
-      'transform:translateY(-50%)',
       'background:none',
       'border:none',
       'color:#c9a84c',
       'font-size:1.2rem',
       'cursor:pointer',
+      'width:44px',
+      'height:44px',
       'min-width:44px',
       'min-height:44px',
+      'flex-shrink:0',
       'display:flex',
       'align-items:center',
       'justify-content:center',
       'font-family:\'Luminari\',serif',
       'transition:color 0.2s',
-      'z-index:1',
       'padding:0',
-      'line-height:1',
-      'flex-shrink:0'
+      'line-height:1'
     ].join(';');
     btn.addEventListener('click', function () {
       if (typeof window.jSearchClose === 'function') window.jSearchClose();
     });
     btn.addEventListener('mouseenter', function () { btn.style.color = '#fff'; });
     btn.addEventListener('mouseleave', function () { btn.style.color = '#c9a84c'; });
-    inner.appendChild(btn);
+    row.appendChild(btn);
 
     // Mobile: ✕ button prepended inside .jsearch-hint, visible only on mobile via CSS
     function createMobCloseBtn() {
