@@ -484,19 +484,23 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   // Firestore-backed daily selection — replaces fallback once loaded
   function loadLyrics(){
     if(!window.jestaDB){setTimeout(loadLyrics,200);return;}
-    window.jestaDB.collection('lyrics').orderBy('order').get().then(function(snap){
+    window.jestaDB.collection('lyrics').get().then(function(snap){
+      console.log('[lyrics] raw docs:',snap.size);
+      if(snap.size>0){var fd=snap.docs[0].data();console.log('[lyrics] first doc sample:',JSON.stringify(fd).slice(0,200));}
       var pool=[];
+      var songsTotal=0;
       snap.forEach(function(doc){
         var d=doc.data();
         if(d.visible===false)return;
         (d.songs||[]).forEach(function(song){
+          songsTotal++;
           if(!song.lyrics)return;
           var lines=song.lyrics.split('\n').map(function(l){return l.trim();}).filter(Boolean);
           if(!lines.length)return;
           pool.push({artist:d.artist||'',track:song.title||'',album:d.albumTitle||'',lines:lines.slice(0,4)});
         });
       });
-      console.log('[lyrics] pool size:',pool.length);
+      console.log('[lyrics] songs scanned:',songsTotal,'pool size:',pool.length);
       if(!pool.length)return;
       var fsRand=mulberry32(DAY);
       var chosen=pool[Math.floor(fsRand()*pool.length)];
