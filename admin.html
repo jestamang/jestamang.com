@@ -1583,7 +1583,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <script src="assets/js/admin-tools.js" defer></script>
 
 <!-- EmailJS -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>emailjs.init('xJfBxMIcVCTgYvQr9');</script>
 
 <script>
@@ -3080,8 +3080,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       // Wrap plain text in minimal HTML for MailerLite
       var htmlBody = '<html><body style="font-family:Georgia,serif;color:#1a1a1a;max-width:600px;margin:0 auto;padding:40px 20px;">'
         + '<p style="white-space:pre-wrap;">' + body.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}) + '</p>'
-        + '<!-- footer-single-line-mobile --><style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
-</body></html>';
+        + '<!-- footer-single-line-mobile --><style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>'
+        + '</body></html>';
 
       var payload = {
         name: subject + ' — ' + new Date().toISOString().slice(0,10),
