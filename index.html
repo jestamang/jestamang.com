@@ -427,6 +427,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       </div>
 <script>
 (function(){
+  // ── Hardcoded fallback — rendered immediately, replaced by Firestore on load ──
   var LYRICS=[
     {artist:"The Ace of Chase",track:"The Lovedove",album:"Jestawomang",lines:["My own head speaks to me and the lonely ones flee","You and I try to fly while the sky is panting","With the harsh flicking lights","It gets hard to be me"]},
     {artist:"The Ace of Chase",track:"Kiss Abyss",album:"Jestawomang",lines:["As I wake into another slumber","My own has called in a rolling thunder","I dream of Christine","A dusted twirl from the demolition"]},
@@ -451,26 +452,59 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     {artist:"You And The 7.5 Evils Of The World",track:"Joel Christ",album:"You and the 7.5 Evils of the World",lines:["The lines we created are turning into walls","Just look out your window, walls stacked up tall","The Earth belongs to everyone, and none of us alike","We can't divide, and var our pride keep us fighting the wrong fight"]},
     {artist:"Blue Jays",track:"It's Not Time Now",album:"Covers the Taste",lines:["I'd like to tell you that it's fine but it's not time now","I can't seem to get a word in edgewise anyhow","Though the words are flying fast it just don't mean a thing","In a little while I could tell you everything"]}
   ];
-  var now=Date.now(),h24=864e5;
-  var last=parseInt(localStorage.getItem('lyricLastChange')||'0');
-  var idx=parseInt(localStorage.getItem('lyricIndex')||'-1');
-  if(!last||(now-last)>h24||idx<0||idx>=LYRICS.length){
-    var newIdx;
-    do{newIdx=Math.floor(Math.random()*LYRICS.length);}while(newIdx===idx&&LYRICS.length>1);
-    idx=newIdx;
-    localStorage.setItem('lyricLastChange',now.toString());
-    localStorage.setItem('lyricIndex',idx.toString());
+
+  // mulberry32 — local copy; photos section has its own (defined later in page, not accessible here)
+  function mulberry32(seed){
+    return function(){
+      seed+=0x6D2B79F5;
+      var t=seed;
+      t=Math.imul(t^t>>>15,t|1);
+      t^=t+Math.imul(t^t>>>7,t|61);
+      return((t^t>>>14)>>>0)/4294967296;
+    };
   }
-  var entry=LYRICS[idx];
-  var ul=document.getElementById('hp-lyric-lines');
-  entry.lines.forEach(function(l){var li=document.createElement('li');li.textContent=l;ul.appendChild(li);});
-  document.getElementById('hp-lyric-track').textContent='\u2014 '+entry.track;
-  document.getElementById('hp-lyric-meta').textContent=entry.artist+' \u00b7 '+entry.album;
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){
-      document.getElementById('hp-lyric-card').classList.add('lyr-ready');
-    });
-  });
+
+  var DAY=Math.floor(Date.now()/86400000);
+
+  function renderEntry(entry){
+    var ul=document.getElementById('hp-lyric-lines');
+    ul.innerHTML='';
+    entry.lines.forEach(function(l){var li=document.createElement('li');li.textContent=l;ul.appendChild(li);});
+    document.getElementById('hp-lyric-track').textContent='\u2014 '+entry.track;
+    document.getElementById('hp-lyric-meta').textContent=entry.artist+' \u00b7 '+entry.album;
+  }
+
+  // Render hardcoded fallback immediately (day-seeded, no localStorage)
+  var fbRand=mulberry32(DAY);
+  renderEntry(LYRICS[Math.floor(fbRand()*LYRICS.length)]);
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    document.getElementById('hp-lyric-card').classList.add('lyr-ready');
+  });});
+
+  // Firestore-backed daily selection — replaces fallback once loaded
+  function loadLyrics(){
+    if(!window.jestaDB){setTimeout(loadLyrics,200);return;}
+    window.jestaDB.collection('lyrics').orderBy('order').get().then(function(snap){
+      var pool=[];
+      snap.forEach(function(doc){
+        var d=doc.data();
+        if(d.visible===false)return;
+        (d.songs||[]).forEach(function(song){
+          if(!song.lyrics)return;
+          var lines=song.lyrics.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+          if(!lines.length)return;
+          pool.push({artist:d.artist||'',track:song.title||'',album:d.albumTitle||'',lines:lines.slice(0,4)});
+        });
+      });
+      console.log('[lyrics] pool size:',pool.length);
+      if(!pool.length)return;
+      var fsRand=mulberry32(DAY);
+      var chosen=pool[Math.floor(fsRand()*pool.length)];
+      console.log('[lyrics] selected day-index',DAY,'\u2192',chosen.lines[0]);
+      renderEntry(chosen);
+    }).catch(function(err){console.warn('[lyrics] Firestore load failed:',err);});
+  }
+  setTimeout(loadLyrics,300);
 })();
 </script>
     </div>
