@@ -3979,6 +3979,7 @@ document.addEventListener('DOMContentLoaded', function(){
   // ── Share My Chart ───────────────────────────────────────────────────
   var _natalShareBtn = document.getElementById('natal-share-btn');
   if (_natalShareBtn) _natalShareBtn.addEventListener('click', function() {
+    console.log('[share-diag] handler fired at', Date.now());
     var btn = this;
     btn.disabled = true;
     showDossierMsg('Preparing image\u2026');
