@@ -1781,22 +1781,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     </div>
   </div>
 
-  <!-- Post to Blog -->
-  <div class="dark-card profile-section" id="sec-blog" data-section="blog">
-    <div class="card-title-lg" style="margin-bottom:4px;">Post to Blog</div>
-    <div class="gold-rule-sm"></div>
-    <div style="margin-top:16px;">
-      <label for="blog-title" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">Post title</label>
-      <input class="form-input" type="text" id="blog-title" placeholder="Title" maxlength="120" style="margin-bottom:12px;">
-      <label for="blog-body" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">Post body</label>
-      <textarea class="form-input" id="blog-body" placeholder="Write your transmission..." maxlength="5000" rows="6" style="resize:vertical;height:auto;line-height:1.7;"></textarea>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:12px;">
-        <button class="btn-gold" id="blog-post-btn">Transmit</button>
-        <span id="blog-post-status" style="font-size:0.72rem;letter-spacing:0.1em;color:rgba(201,168,76,0.6);font-style:italic;"></span>
-      </div>
-    </div>
-  </div>
-
   <!-- Notifications Opt-In -->
   <div class="dark-card profile-section" id="sec-notifications" data-section="notifications">
     <div class="notif-card">
@@ -3582,35 +3566,6 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   // ── Account ──
-
-  // ── Blog post submission ──────────────────────────────
-  var _blogPostBtn=document.getElementById('blog-post-btn');if(_blogPostBtn)_blogPostBtn.addEventListener('click', function(){
-    var title = (document.getElementById('blog-title').value||'').trim();
-    var body  = (document.getElementById('blog-body').value||'').trim();
-    var status = document.getElementById('blog-post-status');
-    if(!title||!body){ status.textContent='Title and body are required.'; return; }
-    if(!currentUser){ status.textContent='You must be signed in.'; return; }
-    var btn = document.getElementById('blog-post-btn');
-    btn.disabled=true; status.textContent='Transmitting...';
-    var username = currentUser.displayName || currentUser.email.split('@')[0];
-    db.collection('posts').add({
-      title: title,
-      body: body,
-      userId: currentUser.uid,
-      username: username,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(function(){
-      document.getElementById('blog-title').value='';
-      document.getElementById('blog-body').value='';
-      status.textContent='Transmitted. Visible on the Blog.';
-      btn.disabled=false;
-      setTimeout(function(){status.textContent='';},4000);
-    }).catch(function(e){
-      console.error('Blog post error:',e);
-      status.textContent='Transmission failed. Try again.';
-      btn.disabled=false;
-    });
-  });
 
   // ── Change / Set Password section ────────────────────────────
   (function() {
