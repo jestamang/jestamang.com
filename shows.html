@@ -131,8 +131,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .ml-signup-sect{position:relative;z-index:1;padding:48px 24px 0;text-align:center}
 .ml-signup-box{background:rgba(0,0,0,0.6);border:1px solid #c9a84c;padding:32px;max-width:500px;margin:0 auto}
 .ml-signup-title{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.5em;color:#c9a84c;text-transform:uppercase;margin-bottom:10px}
-.ml-signup-sub{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.1em;color:rgba(240,230,210,0.4);font-style:italic;margin-bottom:24px;line-height:1.7}
-.ml-notif-divider{width:60%;max-width:280px;height:1px;background:rgba(201,168,76,0.2);margin:24px auto 20px}
+.ml-notif-sect{text-align:center;padding:20px 24px 0}
 .ml-notif-label{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.28em;color:rgba(201,168,76,0.45);text-transform:uppercase;margin-bottom:12px}
 #shows-notif-btn{background:transparent;border:1px solid rgba(201,168,76,0.5);color:#c9a84c;font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.4em;text-transform:uppercase;padding:12px 28px;cursor:pointer;transition:background 0.2s,border-color 0.2s,color 0.2s;display:inline-block}
 #shows-notif-btn:hover{background:rgba(201,168,76,0.1);border-color:#c9a84c}
@@ -160,11 +159,12 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .ml-signup-box .ml-form-fieldRow{margin-bottom:4px!important}
 .ml-signup-box label{display:none!important}
 .ml-signup-box .ml-form-embedContent,.ml-signup-box .ml-form-embedContentDefault{display:none!important}
+.ml-signup-box .ml-form-embedSubmit button[type="button"]{display:none;}
+.ml-signup-box .ml-form-embedSubmitLoad{display:none;}
 @media(max-width:520px){.ml-signup-box{padding:24px 16px}.ml-signup-box button[type="submit"],.ml-signup-box .ml-form-embedSubmit button{min-width:180px!important}}
 @media(max-width:768px){
   .ml-signup-box{background:rgba(0,0,0,0.65)!important;border:1px solid rgba(201,168,76,0.4)!important;padding:28px 20px!important;text-align:center!important;margin:0 16px!important;max-width:unset!important}
   .ml-signup-title{color:#c9a84c!important;font-family:'Luminari',Georgia,serif!important;font-size:1.1rem!important;letter-spacing:0.25em!important}
-  .ml-signup-sub{color:rgba(240,230,210,0.85)!important;font-size:0.85rem!important}
   #shows-notif-btn{color:#c9a84c!important;border:1px solid rgba(201,168,76,0.5)!important;padding:10px 24px!important;display:block!important;width:100%!important;margin-top:16px!important;background:transparent!important;box-sizing:border-box!important;min-height:44px!important;position:relative!important;z-index:10!important;touch-action:manipulation!important;cursor:pointer!important;-webkit-tap-highlight-color:rgba(201,168,76,0.15)!important;pointer-events:auto!important}
   }
 </style>
@@ -256,14 +256,14 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
 <section class="ml-signup-sect">
   <div class="ml-signup-box">
-    <p class="ml-signup-title">STAY IN THE LOOP</p>
-    <p class="ml-signup-sub">Get notified when the next conjuring is announced.</p>
+    <p class="ml-signup-title">JOIN THE JESTAGANG</p>
     <div class="ml-embedded" data-form="8EZtSf"></div>
-    <div class="ml-notif-divider"></div>
-    <p class="ml-notif-label">Browser Push Notifications</p>
-    <button id="shows-notif-btn">Enable Notifications</button>
-    <p id="shows-notif-status"></p>
   </div>
+</section>
+<section class="ml-notif-sect">
+  <p class="ml-notif-label">Browser Push Notifications</p>
+  <button id="shows-notif-btn">Enable Notifications</button>
+  <p id="shows-notif-status"></p>
 </section>
 <script>
 (function(){
