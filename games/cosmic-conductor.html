@@ -590,12 +590,12 @@ function drawEffects() {
 function drawHealth() {
   var fs = Math.max(14, Math.min(22, W * 0.018));
   X.font = fs + "px 'Luminari'";
-  X.textAlign = 'right';
+  X.textAlign = 'center';
   for (var i = 0; i < 5; i++) {
     X.fillStyle = i < health ? '#c9a84c' : 'rgba(255,255,255,0.12)';
     X.shadowColor = i < health ? '#c9a84c' : 'none';
     X.shadowBlur = i < health ? 8 : 0;
-    X.fillText('★', W - 12 - (4 - i) * (fs + 4), 34);
+    X.fillText('★', W/2 + (i - 2) * (fs + 4), 34);
   }
   X.shadowBlur = 0;
 }
@@ -614,13 +614,13 @@ function drawHUD() {
     var streakText = streak >= 3 ? '✦ STREAK: ' + streak + (streakMult ? ' ' + streakMult : '') : '';
     if (comboText) {
       X.fillStyle = 'hsla(' + ((nebulaHue + 60) % 360) + ',90%,70%,0.9)';
-      X.fillText(comboText, W/2, 34);
+      X.fillText(comboText, W/2, 54);
     }
     if (streakText) {
       X.fillStyle = feverActive ? '#FFD700' : 'rgba(201,168,76,0.9)';
       X.shadowColor = feverActive ? '#FFD700' : '#c9a84c';
       X.shadowBlur = feverActive ? 20 : 8;
-      X.fillText(streakText, W/2, 34 + (fs + 4));
+      X.fillText(streakText, W/2, 54 + (fs + 4));
       X.shadowBlur = 0;
     }
   }
