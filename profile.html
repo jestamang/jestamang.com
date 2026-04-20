@@ -3067,11 +3067,8 @@ var NC = (function(){
      PROFILE PAGE LOGIC (Dossier + Natal Chart + Firebase)
 ═══════════════════════════════════════════════════ -->
 <script>
-console.log('[trace] script block started');
 document.addEventListener('DOMContentLoaded', function(){
-console.log('[trace] DOMContentLoaded fired');
 (function(){
-console.log('[trace] IIFE entered');
   var db;
   var currentUser;
   var dossierData = {};
@@ -3107,16 +3104,12 @@ console.log('[trace] IIFE entered');
   var loadingIdx = 0;
   var loadingTimer = null;
 
-  console.log('[trace] about to register onAuthStateChanged, firebase.auth exists:', !!(window.firebase && firebase.auth));
   firebase.auth().onAuthStateChanged(function(user){
-    console.log('[trace] onAuthStateChanged fired, user:', user && user.uid ? user.uid : 'null');
     if(!user){ window.location.href = 'login.html'; return; }
     currentUser = user;
     db = firebase.firestore();
     var _pc=document.getElementById('page-content');if(_pc)_pc.style.opacity='1';
-    console.log('[trace] about to call showPage');
     showPage(user);
-    console.log('[trace] showPage returned');
 
     // ── Configure Change/Set Password section ─────────────────────
     if (window._initChangePassword) window._initChangePassword(user);
