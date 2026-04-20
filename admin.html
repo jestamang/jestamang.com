@@ -1576,6 +1576,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
 <script src="assets/js/admin-utils.js" defer></script>
@@ -3562,10 +3563,60 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       compDivider.style.cssText = 'border-top:1px solid rgba(201,168,76,0.08);margin:14px 0;';
       panel.appendChild(compDivider);
 
-      // Bulk-add photos
+      // Upload new photos via Firebase Storage
+      var upTitle = document.createElement('div');
+      upTitle.style.cssText = 'font-size:0.62rem;letter-spacing:0.22em;color:rgba(201,168,76,0.45);text-transform:uppercase;margin-bottom:8px;';
+      upTitle.textContent = 'Upload New Photos';
+      var upInput = document.createElement('input');
+      upInput.type = 'file'; upInput.accept = 'image/*'; upInput.multiple = true;
+      upInput.style.cssText = 'display:block;width:100%;margin-bottom:8px;font-size:0.7rem;color:rgba(201,168,76,0.7);';
+      var upRow = document.createElement('div');
+      upRow.style.cssText = 'display:flex;gap:8px;align-items:center;margin-top:8px;';
+      var upBtn = document.createElement('button');
+      upBtn.className = 'btn-ghost btn-sm';
+      upBtn.textContent = 'UPLOAD ✦';
+      var upStatus = document.createElement('span');
+      upStatus.className = 'status-msg';
+      upStatus.style.cssText = 'font-size:0.6rem;';
+      upRow.appendChild(upBtn); upRow.appendChild(upStatus);
+
+      upBtn.onclick = function() {
+        var files = Array.prototype.slice.call(upInput.files);
+        if (!files.length) { upStatus.className = 'status-msg status-err'; upStatus.textContent = 'No files selected'; return; }
+        upBtn.disabled = true;
+        var done = 0; var failed = 0; var total = files.length;
+        upStatus.className = 'status-msg'; upStatus.textContent = '0 / ' + total + ' uploaded';
+        files.forEach(function(file) {
+          var fn = file.name.replace(/[^a-zA-Z0-9.\-_ ]/g, '');
+          var ref = firebase.storage().ref('photos/' + fn);
+          var task = ref.put(file);
+          task.on('state_changed',
+            function(snap) { upStatus.textContent = Math.round(snap.bytesTransferred / snap.totalBytes * 100) + '%'; },
+            function(err) { failed++; done++; upStatus.className = 'status-msg status-err'; upStatus.textContent = err.message; if (done === total) { upBtn.disabled = false; } },
+            function() {
+              task.snapshot.ref.getDownloadURL().then(function(url) {
+                g.photos = g.photos || [];
+                g.photos.push({ filename: fn, url: url, caption: '', order: g.photos.length, visible: true });
+                done++;
+                upStatus.textContent = done + ' / ' + total + ' uploaded';
+                if (done === total) {
+                  upInput.value = '';
+                  upBtn.disabled = false;
+                  var ctEl = document.querySelector('#pm-row-' + g._id + ' div > span:nth-child(2)');
+                  if (ctEl) ctEl.textContent = g.photos.length + ' photos';
+                  pmSaveGroup(g._id, { photos: g.photos }, upStatus);
+                  pmBuildPhotoList(g, photoListEl, gi, panel);
+                }
+              });
+            }
+          );
+        });
+      };
+
+      // Register existing photos by filename
       var bulkTitle = document.createElement('div');
-      bulkTitle.style.cssText = 'font-size:0.62rem;letter-spacing:0.22em;color:rgba(201,168,76,0.45);text-transform:uppercase;margin-bottom:8px;';
-      bulkTitle.textContent = 'Add Photos (one filename per line)';
+      bulkTitle.style.cssText = 'font-size:0.62rem;letter-spacing:0.22em;color:rgba(201,168,76,0.45);text-transform:uppercase;margin-bottom:8px;margin-top:16px;';
+      bulkTitle.textContent = 'Register Existing (one filename per line)';
       var bulkTA = document.createElement('textarea');
       bulkTA.className = 'field-input field-textarea';
       bulkTA.style.cssText = 'width:100%;min-height:70px;font-size:0.7rem;';
@@ -3574,7 +3625,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       bulkRow.style.cssText = 'display:flex;gap:8px;align-items:center;margin-top:8px;';
       var bulkBtn = document.createElement('button');
       bulkBtn.className = 'btn-ghost btn-sm';
-      bulkBtn.textContent = 'ADD ✦';
+      bulkBtn.textContent = 'REGISTER EXISTING ✦';
       var bulkStatus = document.createElement('span');
       bulkStatus.className = 'status-msg';
       bulkStatus.style.cssText = 'font-size:0.6rem;';
@@ -3584,7 +3635,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       bulkBtn.onclick = function() {
         var lines = bulkTA.value.split('\n').map(function(l){ return l.trim(); }).filter(Boolean);
         if (!lines.length) return;
-        var existing = (g.photos || []).map(function(p){ return p.filename; });
+        var existing = (g.photos || []).map(function(p){ return typeof p === 'object' ? p.filename : p; });
         var added = 0;
         lines.forEach(function(fn) {
           if (existing.indexOf(fn) === -1) {
@@ -3595,13 +3646,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         });
         if (!added) { bulkStatus.className = 'status-msg status-err'; bulkStatus.textContent = 'All filenames already exist'; return; }
         bulkTA.value = '';
-        // Update count in header
         var ctEl = document.querySelector('#pm-row-' + g._id + ' div > span:nth-child(2)');
         if (ctEl) ctEl.textContent = g.photos.length + ' photos';
         pmSaveGroup(g._id, { photos: g.photos }, bulkStatus);
         pmBuildPhotoList(g, photoListEl, gi, panel);
       };
       bulkRow.appendChild(bulkBtn); bulkRow.appendChild(bulkStatus);
+      panel.appendChild(upTitle); panel.appendChild(upInput); panel.appendChild(upRow);
       panel.appendChild(bulkTitle); panel.appendChild(bulkTA); panel.appendChild(bulkRow);
       panel.appendChild(photoListEl);
       pmBuildPhotoList(g, photoListEl, gi, panel);
@@ -3624,7 +3675,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.06);flex-wrap:wrap;';
 
         var thumb = document.createElement('img');
-        thumb.src = 'assets/photos/' + ph.filename;
+        thumb.src = ph.url ? ph.url : ('assets/photos/' + ph.filename);
         thumb.style.cssText = 'width:40px;height:40px;object-fit:cover;border:1px solid rgba(201,168,76,0.2);flex-shrink:0;border-radius:1px;';
         thumb.onerror = function(){ this.style.background='rgba(201,168,76,0.05)'; this.style.border='1px solid rgba(201,168,76,0.1)'; };
 
