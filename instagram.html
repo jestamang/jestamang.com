@@ -1,9 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="robots" content="noindex, nofollow">
-<meta http-equiv="refresh" content="0;url=https://www.instagram.com/thejestamang">
-<script>window.location.replace('https://www.instagram.com/thejestamang');</script>
+<meta charset="UTF-8">
+<title>Opening Instagram…</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { background:#000; color:#c9a84c; font-family:Georgia,serif; text-align:center; padding:40vh 20px 0; margin:0; }
+</style>
 </head>
-<body></body>
+<body>
+<p>Opening Instagram…</p>
+<script>
+(function(){
+  var HANDLE = 'thejestamang';
+  var webUrl = 'https://www.instagram.com/' + HANDLE + '/';
+  var appUrl = 'instagram://user?username=' + HANDLE;
+  var fallbackTimer = setTimeout(function(){
+    window.location.href = webUrl;
+  }, 1500);
+  window.addEventListener('pagehide', function(){ clearTimeout(fallbackTimer); });
+  window.addEventListener('blur',     function(){ clearTimeout(fallbackTimer); });
+  window.location.href = appUrl;
+})();
+</script>
+</body>
 </html>

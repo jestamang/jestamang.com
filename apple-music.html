@@ -1,9 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="robots" content="noindex, nofollow">
-<meta http-equiv="refresh" content="0;url=https://music.apple.com/us/artist/jestamang/1665724106">
-<script>window.location.replace('https://music.apple.com/us/artist/jestamang/1665724106');</script>
+<meta charset="UTF-8">
+<title>Opening Apple Music…</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { background:#000; color:#c9a84c; font-family:Georgia,serif; text-align:center; padding:40vh 20px 0; margin:0; }
+</style>
 </head>
-<body></body>
+<body>
+<p>Opening Apple Music…</p>
+<script>
+(function(){
+  var ARTIST_ID = '1665724106';
+  var webUrl = 'https://music.apple.com/artist/' + ARTIST_ID;
+  var appUrl = 'music://music.apple.com/artist/' + ARTIST_ID;
+  var fallbackTimer = setTimeout(function(){
+    window.location.href = webUrl;
+  }, 1500);
+  window.addEventListener('pagehide', function(){ clearTimeout(fallbackTimer); });
+  window.addEventListener('blur',     function(){ clearTimeout(fallbackTimer); });
+  window.location.href = appUrl;
+})();
+</script>
+</body>
 </html>
