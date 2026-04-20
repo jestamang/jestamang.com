@@ -1772,9 +1772,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   function initMembers() {
     var _db = window.jestaDB || db;
-    console.log('[Members] initMembers() called, db:', !!_db);
     _db.collection('users').get().then(function (snap) {
-      console.log('[Members] snapshot size:', snap.size);
       allMembers = [];
       snap.forEach(function (doc) { allMembers.push({id: doc.id, data: doc.data()}); });
       // client-side sort by createdAt desc (avoids Firestore index requirement)
@@ -1783,7 +1781,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var tb = (b.data.createdAt && b.data.createdAt.toMillis) ? b.data.createdAt.toMillis() : (b.data.createdAt || 0);
         return tb - ta;
       });
-      console.log('[Members] allMembers loaded:', allMembers.length);
       document.getElementById('member-count').textContent = allMembers.length + ' member' + (allMembers.length !== 1 ? 's' : '');
       renderMemberTable();
     }).catch(function (e) {
@@ -2489,9 +2486,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       });
     });
 
-    console.log('[Press] setting up onSnapshot on pressArticles');
     db.collection('pressArticles').onSnapshot(function(snap){
-      console.log('[Press] snapshot received, size:', snap.size);
       var el=document.getElementById('pm-list');
       if(snap.empty){el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No press articles yet.</div>';return;}
       // sort client-side by order asc (avoids Firestore index requirement)
