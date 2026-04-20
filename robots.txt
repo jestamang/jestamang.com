@@ -2,5 +2,11 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /offline.html
+Disallow: /apple-music.html
+Disallow: /instagram.html
+Disallow: /spotify.html
+Disallow: /youtube.html
+Disallow: /yandex_67231a4fe94dd1a2.html
+Disallow: /verify.html
 
 Sitemap: https://jestamang.com/sitemap.xml
