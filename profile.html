@@ -4035,21 +4035,23 @@ console.log('[trace] IIFE entered');
     btn.disabled = true;
     showDossierMsg('Preparing image\u2026');
     buildChartPNG(function(blob, err) {
-      btn.disabled = false;
-      if (!blob) { showDossierMsg(err || 'Share failed'); return; }
+      if (!blob) { btn.disabled = false; showDossierMsg(err || 'Share failed'); return; }
       var file = new File([blob], 'jestamang-chart.png', {type:'image/png'});
       if (navigator.canShare && navigator.canShare({files:[file]})) {
         navigator.share({
           files: [file],
           title: 'My Jestamang Chart',
           text:  'My natal chart \u2014 jestamang.com'
-        }).then(function(){ showDossierMsg('Shared \u2756'); })
+        }).then(function(){ btn.disabled = false; showDossierMsg('Shared \u2756'); })
           .catch(function(e){
+            btn.disabled = false;
             if (e.name !== 'AbortError') { _copyChartToClipboard(blob); }
           });
       } else if (navigator.clipboard && window.ClipboardItem) {
+        btn.disabled = false;
         _copyChartToClipboard(blob);
       } else {
+        btn.disabled = false;
         _triggerPNGDownload(blob);
         showDossierMsg('Saved to device \u2756');
       }
