@@ -3884,6 +3884,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
     var img = new Image();
     img.onload = function() {
+      img.onload = null;
+      img.onerror = null;
       URL.revokeObjectURL(svgUrl);
       var SCALE = 2, CHART = 500;          // SVG is always 500×500
       var CW = CHART * SCALE;              // 1000px canvas width
@@ -3950,6 +3952,8 @@ document.addEventListener('DOMContentLoaded', function(){
       }, 'image/png');
     };
     img.onerror = function() {
+      img.onload = null;
+      img.onerror = null;
       URL.revokeObjectURL(svgUrl);
       onDone(null, 'SVG render failed');
     };
