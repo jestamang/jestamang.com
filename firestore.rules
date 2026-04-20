@@ -142,6 +142,17 @@ service cloud.firestore {
       allow write: if isOwner(userId) || isAdmin();
     }
 
+    match /users/{userId}/natalChart/{docId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+
+
+    // ── TREATS ───────────────────────────────────────────────────────────────
+    match /treats/{docId} {
+      allow read:  if isSignedIn();
+      allow write: if isAdmin();
+    }
+
 
     // ── FAVORITES ────────────────────────────────────────────────────────────
     match /favorites/{userId} {
