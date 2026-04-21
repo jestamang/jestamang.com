@@ -9,18 +9,18 @@
 <meta name="description" content="Entity Pair — a daily memory match game from the Jestamang universe. Match entity faces to names, or entities to their canonical albums. New puzzle every day.">
 <meta name="keywords" content="Jestamang, memory game, entity pair, daily puzzle, card matching, entities, albums">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://jestamang.com/games/entity-pair/index.html">
+<link rel="canonical" href="https://jestamang.com/games/entity-pair.html">
 <meta property="og:site_name" content="Jestamang">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Entity Pair — Jestamang">
 <meta property="og:description" content="Entity Pair — a daily memory match game from the Jestamang universe.">
 <meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
-<meta property="og:url" content="https://jestamang.com/games/entity-pair/index.html">
+<meta property="og:url" content="https://jestamang.com/games/entity-pair.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Entity Pair — Jestamang">
 <meta name="twitter:description" content="Entity Pair — a daily memory match game from the Jestamang universe.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
-<link rel="preload" as="font" type="font/ttf" href="../../assets/fonts/Luminari.ttf" crossorigin>
+<link rel="preload" as="font" type="font/ttf" href="../assets/fonts/Luminari.ttf" crossorigin>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#c9a84c">
 <meta name="mobile-web-app-capable" content="yes">
@@ -29,10 +29,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png">
-<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
 
 <style>
-@font-face{font-family:'Luminari';src:url('../../assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Luminari';src:url('../assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{background:#000}
 body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;padding-bottom:60px;opacity:0;animation:jPageIn 0.35s ease forwards}
@@ -267,43 +267,43 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
 <script>
 /* ── Album cover map (album title → image path relative to this file) ── */
 var ALBUM_COVERS = {
-  'Zodiac':                                               '../../assets/albums/QUARTER DAYS/children/qu01.jpg',
-  'New \u00c6on':                                         '../../assets/albums/QUARTER DAYS/kek-buh/qu02.jpg',
-  'Niga Denots':                                          '../../assets/albums/QUARTER DAYS/ace of chase/qu03.jpg',
-  'Jestress Melody':                                      '../../assets/albums/QUARTER DAYS/cricket om/qu04.jpg',
-  'The Naples Society of the Temple of Psychick Youth':   '../../assets/albums/2K2323/jr mason/2k2323jan.jpg',
-  'Peter Thy Godfather':                                  '../../assets/albums/2K2323/father p journee/2k2323feb.jpg',
-  'Covers the Taste':                                     '../../assets/albums/2K2323/blue jays/2k2323mar.jpg',
-  'Sleep Cycle':                                          '../../assets/albums/2K2323/mutt tour/2k2323apr.jpg',
-  'The Ace of Chase':                                     '../../assets/albums/2K2323/venus and the flytrap/2k2323may.jpg',
-  'Big Boy, New Cat. Records':                            '../../assets/albums/2K2323/big boy new cat records/2k2323june.jpg',
-  'Jonas Kyle Meets The Perfect Trip':                    '../../assets/albums/2K2323/jonas kyle/2k2323july.jpg',
-  "Summer O' Sahr":                                       '../../assets/albums/2K2323/boston society of the temple of psychick youth/2k2323aug.jpg',
-  '\u0a18':                                               '../../assets/albums/2K2323/atlas is alice lillenger/2k2323sept.jpg',
-  '8slush':                                               '../../assets/albums/2K2323/ode to bonnie/2k2323oct.jpg',
-  'Jestawomang':                                          '../../assets/albums/2K2323/ace of chase/2k2323nov.jpg',
-  'Xmas 23':                                              '../../assets/albums/2K2323/hodge/2k2323dec.jpg',
-  'Revolution Epilogue: 2K2321\u20132K2323':              '../../assets/albums/2K2323/jestamang/epilogue.jpg',
-  'You and the 7.5 Evils of the World':                   '../../assets/albums/2K2123/you and the 7.5 evils of the world/2k2123jan.jpg',
-  'El Santo De Gangster Volume II':                       '../../assets/albums/2K2123/big smoke, lil skeez, dew, sno bunni/2k2123feb.jpg',
-  'Ode to Bonnie':                                        '../../assets/albums/2K2123/ode to bonnie/2k2123mar.jpg',
-  'I Can Touch the Revolution From My Home':              '../../assets/albums/2K2123/perfect trip/2k2123apr.jpg',
-  "Talkin' Jesus":                                        '../../assets/albums/2K2123/father p journee/2k2123may.jpg',
-  'Green House':                                          '../../assets/albums/2K2123/blue jays/2k2123june.jpg',
-  'The Boston Society of the Temple of Psychick Youth':   '../../assets/albums/2K2123/boston society of the temple of psychick youth/2k2123july.jpg',
-  'Alissa Orange':                                        '../../assets/albums/2K2123/alissa orange/2k2123aug.jpg',
-  'The Woodland Singapore Orchestra':                     '../../assets/albums/2K2123/woodland singapore orchestra/2k2123sept.jpg',
-  'The Colours':                                          '../../assets/albums/2K2123/colours/2k2123oct.jpg',
-  'Sounds Across the World':                              '../../assets/albums/2K2123/sounds across the world/2k2123nov.jpg',
-  'Ball of Energy':                                       '../../assets/albums/2K2123/mike 55/2k2123dec.jpg',
-  "Babylon's Final Hours":                                '../../assets/albums/2K2123/j.r. mason/2k21232jan.jpg',
-  'Venus and the Flytrap':                                '../../assets/albums/2K2123/venus and the flytrap/2k21232feb.jpg',
-  'Covers the Greats':                                    '../../assets/albums/2K2123/perfect trip/2k21232mar.jpg',
-  'Psycho Classical':                                     '../../assets/albums/NONS/caleb mars/non1.jpg',
-  'The Magic Eye':                                        '../../assets/albums/NONS/caleb mars/non2.jpg',
-  'Cell Life':                                            '../../assets/albums/NONS/mutt tour/non3.jpg',
-  'The Perfect Trip':                                     '../../assets/albums/NONS/perfect trip/non4.jpg',
-  'Hit!':                                                 '../../assets/albums/NONS/mutt tour/non5.jpg'
+  'Zodiac':                                               '../assets/albums/QUARTER DAYS/children/qu01.jpg',
+  'New \u00c6on':                                         '../assets/albums/QUARTER DAYS/kek-buh/qu02.jpg',
+  'Niga Denots':                                          '../assets/albums/QUARTER DAYS/ace of chase/qu03.jpg',
+  'Jestress Melody':                                      '../assets/albums/QUARTER DAYS/cricket om/qu04.jpg',
+  'The Naples Society of the Temple of Psychick Youth':   '../assets/albums/2K2323/jr mason/2k2323jan.jpg',
+  'Peter Thy Godfather':                                  '../assets/albums/2K2323/father p journee/2k2323feb.jpg',
+  'Covers the Taste':                                     '../assets/albums/2K2323/blue jays/2k2323mar.jpg',
+  'Sleep Cycle':                                          '../assets/albums/2K2323/mutt tour/2k2323apr.jpg',
+  'The Ace of Chase':                                     '../assets/albums/2K2323/venus and the flytrap/2k2323may.jpg',
+  'Big Boy, New Cat. Records':                            '../assets/albums/2K2323/big boy new cat records/2k2323june.jpg',
+  'Jonas Kyle Meets The Perfect Trip':                    '../assets/albums/2K2323/jonas kyle/2k2323july.jpg',
+  "Summer O' Sahr":                                       '../assets/albums/2K2323/boston society of the temple of psychick youth/2k2323aug.jpg',
+  '\u0a18':                                               '../assets/albums/2K2323/atlas is alice lillenger/2k2323sept.jpg',
+  '8slush':                                               '../assets/albums/2K2323/ode to bonnie/2k2323oct.jpg',
+  'Jestawomang':                                          '../assets/albums/2K2323/ace of chase/2k2323nov.jpg',
+  'Xmas 23':                                              '../assets/albums/2K2323/hodge/2k2323dec.jpg',
+  'Revolution Epilogue: 2K2321\u20132K2323':              '../assets/albums/2K2323/jestamang/epilogue.jpg',
+  'You and the 7.5 Evils of the World':                   '../assets/albums/2K2123/you and the 7.5 evils of the world/2k2123jan.jpg',
+  'El Santo De Gangster Volume II':                       '../assets/albums/2K2123/big smoke, lil skeez, dew, sno bunni/2k2123feb.jpg',
+  'Ode to Bonnie':                                        '../assets/albums/2K2123/ode to bonnie/2k2123mar.jpg',
+  'I Can Touch the Revolution From My Home':              '../assets/albums/2K2123/perfect trip/2k2123apr.jpg',
+  "Talkin' Jesus":                                        '../assets/albums/2K2123/father p journee/2k2123may.jpg',
+  'Green House':                                          '../assets/albums/2K2123/blue jays/2k2123june.jpg',
+  'The Boston Society of the Temple of Psychick Youth':   '../assets/albums/2K2123/boston society of the temple of psychick youth/2k2123july.jpg',
+  'Alissa Orange':                                        '../assets/albums/2K2123/alissa orange/2k2123aug.jpg',
+  'The Woodland Singapore Orchestra':                     '../assets/albums/2K2123/woodland singapore orchestra/2k2123sept.jpg',
+  'The Colours':                                          '../assets/albums/2K2123/colours/2k2123oct.jpg',
+  'Sounds Across the World':                              '../assets/albums/2K2123/sounds across the world/2k2123nov.jpg',
+  'Ball of Energy':                                       '../assets/albums/2K2123/mike 55/2k2123dec.jpg',
+  "Babylon's Final Hours":                                '../assets/albums/2K2123/j.r. mason/2k21232jan.jpg',
+  'Venus and the Flytrap':                                '../assets/albums/2K2123/venus and the flytrap/2k21232feb.jpg',
+  'Covers the Greats':                                    '../assets/albums/2K2123/perfect trip/2k21232mar.jpg',
+  'Psycho Classical':                                     '../assets/albums/NONS/caleb mars/non1.jpg',
+  'The Magic Eye':                                        '../assets/albums/NONS/caleb mars/non2.jpg',
+  'Cell Life':                                            '../assets/albums/NONS/mutt tour/non3.jpg',
+  'The Perfect Trip':                                     '../assets/albums/NONS/perfect trip/non4.jpg',
+  'Hit!':                                                 '../assets/albums/NONS/mutt tour/non5.jpg'
 };
 
 /* ── Helpers ── */
@@ -797,8 +797,8 @@ function startLoadPoll(){
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
-<script src="../../assets/js/firebase-config.js" defer></script>
-<script src="../../assets/js/jesta-auth.js" defer></script>
+<script src="../assets/js/firebase-config.js" defer></script>
+<script src="../assets/js/jesta-auth.js" defer></script>
 
 <!-- Click-nav fade + bfcache fix -->
 <script>(function(){document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;var h=a.getAttribute('href');if(!h||h.charAt(0)==='#'||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute('target')==='_blank'||a.hasAttribute('download')||a.hasAttribute('data-native-nav'))return;e.preventDefault();document.body.style.transition='opacity 0.3s ease';document.body.style.opacity='0';var t=h;setTimeout(function(){window.location.href=t;},300);});})();window.addEventListener('pageshow',function(){document.body.style.opacity='1';document.body.style.transition='';});</script>
