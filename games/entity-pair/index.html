@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="dns-prefetch" href="https://firestore.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entity Pair — Jestamang</title>
+<meta name="description" content="Entity Pair — a daily memory match game from the Jestamang universe. Match entity faces to names, or entities to their canonical albums. New puzzle every day.">
+<meta name="keywords" content="Jestamang, memory game, entity pair, daily puzzle, card matching, entities, albums">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jestamang.com/games/entity-pair/index.html">
+<meta property="og:site_name" content="Jestamang">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Entity Pair — Jestamang">
+<meta property="og:description" content="Entity Pair — a daily memory match game from the Jestamang universe.">
+<meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
+<meta property="og:url" content="https://jestamang.com/games/entity-pair/index.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Entity Pair — Jestamang">
+<meta name="twitter:description" content="Entity Pair — a daily memory match game from the Jestamang universe.">
+<meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
+<link rel="preload" as="font" type="font/ttf" href="../../assets/fonts/Luminari.ttf" crossorigin>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#c9a84c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jestamang">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+
+<style>
+@font-face{font-family:'Luminari';src:url('../../assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:#000}
+body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;padding-bottom:60px;opacity:0;animation:jPageIn 0.35s ease forwards}
+@keyframes jPageIn{from{opacity:0}to{opacity:1}}
+
+/* ── Header ── */
+#ep-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 10px;border-bottom:1px solid rgba(201,168,76,0.12)}
+#back-link{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.6);text-decoration:none;transition:color 0.2s}
+#back-link:hover{color:#c9a84c}
+#ep-title{font-size:clamp(1rem,3.5vw,1.5rem);letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 24px rgba(201,168,76,0.45);text-align:center}
+#ep-symbol{font-size:0.9rem;color:rgba(201,168,76,0.45)}
+
+/* ── Tabs ── */
+.game-tabs{display:flex;width:100%;border-bottom:1px solid rgba(201,168,76,0.25);background:rgba(0,0,0,0.7);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.game-tabs::-webkit-scrollbar{display:none}
+.game-tab{flex:1;min-width:90px;padding:12px 16px;font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(201,168,76,0.55);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:color 0.2s,border-color 0.2s;min-height:44px}
+.game-tab:hover{color:#c9a84c}
+.game-tab.active{color:#c9a84c;border-bottom:2px solid #c9a84c}
+
+/* ── Wrap ── */
+#ep-wrap{max-width:680px;margin:0 auto;padding:18px 16px 0;text-align:center}
+
+/* ── Status messages ── */
+#ep-loading{font-size:0.65rem;letter-spacing:0.35em;color:rgba(201,168,76,0.45);text-transform:uppercase;padding:40px 0;animation:lbpulse 1.4s ease-in-out infinite}
+#ep-error{display:none;font-size:0.72rem;letter-spacing:0.2em;color:rgba(251,56,56,0.75);text-transform:uppercase;padding:32px 0;line-height:2}
+@keyframes lbpulse{0%,100%{opacity:0.4}50%{opacity:1}}
+
+/* ── Daily info ── */
+#ep-daily-info{font-size:0.55rem;letter-spacing:0.3em;color:rgba(201,168,76,0.3);text-transform:uppercase;margin-bottom:14px;min-height:1em}
+
+/* ── Stats row ── */
+#ep-stats{display:flex;justify-content:center;gap:32px;margin-bottom:16px}
+.ep-stat{text-align:center}
+.ep-stat-val{font-size:1.2rem;color:#c9a84c;letter-spacing:0.06em;min-width:2ch;display:inline-block}
+.ep-stat-lbl{font-size:0.52rem;letter-spacing:0.3em;color:rgba(255,255,255,0.28);text-transform:uppercase;margin-top:2px}
+
+/* ── Card Grid ── */
+#ep-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:640px;margin:0 auto 18px}
+
+/* ── Card ── */
+.ep-card{aspect-ratio:3/4;cursor:pointer;perspective:900px;position:relative;outline:none}
+.ep-card:focus-visible .ep-face-back{border-color:rgba(201,168,76,0.7)}
+.ep-card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.4s cubic-bezier(0.4,0,0.2,1)}
+.ep-card.flipped .ep-card-inner,.ep-card.matched .ep-card-inner{transform:rotateY(180deg)}
+.ep-face-front,.ep-face-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid rgba(201,168,76,0.18);overflow:hidden;border-radius:2px}
+/* Face down (back) */
+.ep-face-back{background:rgba(6,3,1,0.96);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:border-color 0.2s}
+.ep-face-back-glyph{font-size:clamp(1.2rem,3vw,1.8rem);color:rgba(201,168,76,0.28);line-height:1}
+.ep-card:not(.flipped):not(.matched):hover .ep-face-back{border-color:rgba(201,168,76,0.5);cursor:pointer}
+/* Face up (front) */
+.ep-face-front{transform:rotateY(180deg);background:#050301}
+/* Image card */
+.ep-face-front img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.9)}
+/* Name card */
+.ep-card-name{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:8px;text-align:center}
+.ep-card-name-txt{font-family:'Luminari',serif;font-size:clamp(0.55rem,1.6vw,0.8rem);letter-spacing:0.08em;color:#c9a84c;line-height:1.4;text-transform:uppercase;word-break:break-word}
+/* Album card */
+.ep-card-album{width:100%;height:100%;position:relative;overflow:hidden}
+.ep-card-album img{width:100%;height:100%;object-fit:cover;display:block}
+.ep-card-album-title{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.78);font-size:0.42rem;letter-spacing:0.12em;color:rgba(201,168,76,0.75);text-transform:uppercase;text-align:center;padding:3px 4px;line-height:1.3}
+/* Matched state */
+.ep-card.matched .ep-face-front{border-color:rgba(201,168,76,0.9);box-shadow:0 0 18px rgba(201,168,76,0.35),inset 0 0 10px rgba(201,168,76,0.08)}
+.ep-card.matched{filter:drop-shadow(0 0 6px rgba(201,168,76,0.5));cursor:default;pointer-events:none}
+/* Match pulse */
+@keyframes matchPulse{0%{transform:rotateY(180deg) scale(1)}35%{transform:rotateY(180deg) scale(1.1)}100%{transform:rotateY(180deg) scale(1)}}
+.ep-card.match-pulse .ep-card-inner{animation:matchPulse 0.28s ease-out forwards}
+/* Mismatch shake */
+@keyframes mismatchShake{0%{transform:rotateY(0) translateX(0)}20%{transform:rotateY(0) translateX(-5px)}40%{transform:rotateY(0) translateX(5px)}60%{transform:rotateY(0) translateX(-3px)}80%{transform:rotateY(0) translateX(3px)}100%{transform:rotateY(0) translateX(0)}}
+.ep-card.mismatch-shake .ep-card-inner{animation:mismatchShake 0.32s ease-out forwards}
+
+/* ── Controls ── */
+#ep-controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.ep-ctrl-btn{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.7);background:none;border:1px solid rgba(201,168,76,0.3);padding:8px 22px;cursor:pointer;transition:all 0.2s;min-height:44px;text-decoration:none;display:inline-flex;align-items:center}
+.ep-ctrl-btn:hover{border-color:rgba(201,168,76,0.7);color:#c9a84c;background:rgba(201,168,76,0.06)}
+
+/* ── Win Overlay ── */
+#win-overlay{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.96);align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;padding:24px}
+#win-overlay.show{display:flex}
+.win-glyph{font-size:2.4rem;color:rgba(201,168,76,0.5);animation:wglow 2.5s ease-in-out infinite}
+@keyframes wglow{0%,100%{color:rgba(201,168,76,0.4)}50%{color:#c9a84c;text-shadow:0 0 40px rgba(201,168,76,0.8)}}
+.win-title{font-size:clamp(1.8rem,7vw,3.5rem);letter-spacing:0.5em;color:#c9a84c;text-shadow:0 0 50px rgba(201,168,76,0.7);text-transform:uppercase}
+.win-sub{font-size:0.65rem;letter-spacing:0.3em;color:rgba(255,255,255,0.35);text-transform:uppercase}
+.win-score{font-size:clamp(2.8rem,10vw,5.5rem);letter-spacing:0.3em;color:#c9a84c;text-shadow:0 0 40px rgba(201,168,76,0.7);margin:4px 0}
+.win-score-lbl{font-size:0.58rem;letter-spacing:0.45em;color:rgba(255,255,255,0.25);text-transform:uppercase;margin-bottom:8px}
+.win-detail{font-size:0.72rem;letter-spacing:0.15em;color:rgba(201,168,76,0.6)}
+#win-controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+
+/* ── LB Modals ── */
+#lb-modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.94);align-items:center;justify-content:center;padding:16px}
+#lb-modal.lb-open{display:flex}
+#lb-modal-inner{background:#0a0604;border:1px solid rgba(201,168,76,0.6);max-width:460px;width:100%;max-height:82vh;overflow-y:auto;padding:26px 20px;position:relative;box-shadow:0 0 60px rgba(201,168,76,0.1)}
+#lb-modal-close{position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(201,168,76,0.6);font-size:1rem;cursor:pointer;line-height:1;padding:4px 8px;min-height:unset;font-family:sans-serif}
+#lb-modal-close:hover{color:#c9a84c}
+.lbm-header{text-align:center;margin-bottom:20px}
+.lbm-title{font-size:0.58rem;letter-spacing:0.5em;color:#c9a84c;text-transform:uppercase;margin-bottom:4px}
+.lbm-game{font-size:0.52rem;letter-spacing:0.3em;color:rgba(201,168,76,0.4);text-transform:uppercase}
+#lb-new-banner{display:none;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-size:0.55rem;letter-spacing:0.4em;text-transform:uppercase;padding:7px;text-align:center;margin-bottom:14px;animation:lbpulse 1.5s ease-in-out infinite}
+#lb-table{width:100%;border-collapse:collapse}
+#lb-table th{font-family:'Luminari',serif;font-size:0.52rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.35);padding:0 6px 10px;text-align:left;border-bottom:1px solid rgba(201,168,76,0.14)}
+#lb-table th:nth-child(3),#lb-table td:nth-child(3),#lb-table th:nth-child(4),#lb-table td:nth-child(4){text-align:right}
+#lb-table td{font-family:'Luminari',serif;font-size:0.78rem;letter-spacing:0.04em;color:rgba(240,230,210,0.65);padding:9px 6px;border-bottom:1px solid rgba(201,168,76,0.06)}
+.lb-r1 td{color:rgba(240,230,210,0.9)}
+.lb-r23 td{color:rgba(240,230,210,0.75)}
+.lb-cur td{color:#c9a84c}
+.lb-loading-row td{text-align:center;color:rgba(201,168,76,0.35);font-size:0.58rem;letter-spacing:0.25em;padding:28px 0;animation:lbpulse 1.4s ease-in-out infinite}
+.lb-av{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.35);background:#111;vertical-align:middle;flex-shrink:0}
+.lb-av-init{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#c9a84c;color:#000;font-size:12px;font-family:serif;font-weight:bold;flex-shrink:0;vertical-align:middle}
+#lb-pb-row td{padding:8px 0}
+
+/* ── Name Modal ── */
+#lb-name-modal{display:none;position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,0.97);align-items:center;justify-content:center;padding:16px}
+#lb-name-modal.lb-open{display:flex}
+#lb-name-card{background:#0a0604;border:1px solid rgba(201,168,76,0.55);max-width:320px;width:100%;padding:28px 22px}
+.lbnm-title{font-size:0.6rem;letter-spacing:0.5em;color:#c9a84c;text-transform:uppercase;margin-bottom:6px;text-align:center}
+.lbnm-sub{font-size:0.52rem;letter-spacing:0.3em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:18px;text-align:center;line-height:1.8}
+#lb-name-input{width:100%;background:rgba(0,0,0,0.5);border:none;border-bottom:1px solid rgba(201,168,76,0.5);color:#c9a84c;font-family:'Luminari',serif;font-size:0.9rem;padding:10px 6px;letter-spacing:0.1em;outline:none;margin-bottom:16px;-webkit-appearance:none;border-radius:0}
+#lb-name-input:focus{border-bottom-color:#c9a84c}
+#lb-name-input::placeholder{color:rgba(201,168,76,0.28);letter-spacing:0.12em}
+.lbnm-btns{display:flex;gap:10px}
+#lb-name-submit{flex:2;font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:#000;background:#c9a84c;border:1px solid #c9a84c;padding:11px;cursor:pointer;min-height:44px}
+#lb-name-submit:hover{background:#e0be6a}
+#lb-name-skip{flex:1;font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,168,76,0.5);background:none;border:1px solid rgba(201,168,76,0.25);padding:11px;cursor:pointer;min-height:44px}
+#lb-name-skip:hover{border-color:rgba(201,168,76,0.5);color:rgba(201,168,76,0.8)}
+
+/* ── Retry btn ── */
+#ep-retry-btn{display:none;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.7);background:none;border:1px solid rgba(201,168,76,0.35);padding:10px 28px;cursor:pointer;margin-top:16px;min-height:44px}
+#ep-retry-btn:hover{border-color:rgba(201,168,76,0.7);color:#c9a84c}
+
+/* ── Mobile global ── */
+@media(max-width:768px){
+  #ep-grid{gap:5px}
+  .ep-card-name-txt{font-size:clamp(0.5rem,1.3vw,0.7rem)}
+  .ep-stat-val{font-size:1rem}
+  input,textarea,select{font-size:16px!important}
+  body{overflow-x:hidden}
+}
+@media(max-width:360px){
+  #ep-grid{grid-template-columns:repeat(4,1fr);gap:4px}
+  .ep-face-back-glyph{font-size:1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="ep-header">
+  <a id="back-link" href="/arcade.html" data-native-nav>← Games</a>
+  <div id="ep-title">Entity Pair <span id="ep-symbol">⊕</span></div>
+  <div style="width:64px"></div>
+</div>
+
+<!-- LEVEL TABS -->
+<div class="game-tabs" id="level-tabs">
+  <button class="game-tab active" id="tab-1" data-level="1">Visions</button>
+  <button class="game-tab" id="tab-2" data-level="2">Revelations</button>
+</div>
+
+<!-- GAME WRAP -->
+<div id="ep-wrap">
+  <div id="ep-daily-info"></div>
+
+  <!-- Loading / error -->
+  <div id="ep-loading">Consulting the cosmos...</div>
+  <div id="ep-error">
+    <div>The universe cannot be reached.</div>
+    <div>Try again later.</div>
+    <button id="ep-retry-btn">Retry</button>
+  </div>
+
+  <!-- Stats -->
+  <div id="ep-stats" style="display:none">
+    <div class="ep-stat"><div class="ep-stat-val" id="s-moves">0</div><div class="ep-stat-lbl">Moves</div></div>
+    <div class="ep-stat"><div class="ep-stat-val" id="s-time">0:00</div><div class="ep-stat-lbl">Time</div></div>
+    <div class="ep-stat"><div class="ep-stat-val" id="s-score">—</div><div class="ep-stat-lbl">Score</div></div>
+  </div>
+
+  <!-- Card grid -->
+  <div id="ep-grid" style="display:none" role="grid" aria-label="Entity Pair game board"></div>
+
+  <!-- Controls -->
+  <div id="ep-controls" style="display:none">
+    <button class="ep-ctrl-btn" id="btn-restart">Shuffle &amp; Restart</button>
+    <button class="ep-ctrl-btn" id="btn-lb">✦ Cosmic Scrolls</button>
+  </div>
+</div>
+
+<!-- WIN OVERLAY -->
+<div id="win-overlay" role="dialog" aria-modal="true" aria-label="Game complete">
+  <div class="win-glyph">⊕</div>
+  <div class="win-title" id="win-level-title">Visions</div>
+  <div class="win-sub">All pairs revealed</div>
+  <div class="win-score" id="win-score-big">0</div>
+  <div class="win-score-lbl">Points</div>
+  <div class="win-detail" id="win-detail"></div>
+  <div id="win-controls">
+    <button class="ep-ctrl-btn" id="btn-again">Play Again</button>
+    <button class="ep-ctrl-btn" id="btn-submit-win">✦ Enter Leaderboard</button>
+    <button class="ep-ctrl-btn" id="btn-lb-win">View Scrolls</button>
+  </div>
+</div>
+
+<!-- LEADERBOARD MODAL -->
+<div id="lb-modal" role="dialog" aria-modal="true" aria-label="Leaderboard">
+  <div id="lb-modal-inner">
+    <button id="lb-modal-close" aria-label="Close leaderboard">✦</button>
+    <div id="lb-new-banner">✦ NEW HIGH SCORE ✦</div>
+    <div class="lbm-header">
+      <div class="lbm-title">The Cosmic Scrolls</div>
+      <div class="lbm-game" id="lb-game-display"></div>
+    </div>
+    <table id="lb-table">
+      <thead><tr><th>Rank</th><th>Name</th><th>Score</th><th>Date</th></tr></thead>
+      <tbody><tr id="lb-pb-row"><td colspan="4"></td></tr></tbody>
+      <tbody id="lb-tbody"><tr class="lb-loading-row"><td colspan="4">Consulting the stars...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- NAME ENTRY MODAL -->
+<div id="lb-name-modal" role="dialog" aria-modal="true" aria-label="Enter your name">
+  <div id="lb-name-card">
+    <div class="lbnm-title">Mark Your Score</div>
+    <div class="lbnm-sub">Enter your name<br>for the Cosmic Scrolls</div>
+    <input id="lb-name-input" type="text" maxlength="20" autocomplete="off" spellcheck="false" placeholder="Your name..." aria-label="Enter your name">
+    <div class="lbnm-btns">
+      <button id="lb-name-submit">Inscribe ✦</button>
+      <button id="lb-name-skip">Skip</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Album cover map (album title → image path relative to this file) ── */
+var ALBUM_COVERS = {
+  'Zodiac':                                               '../../assets/albums/QUARTER DAYS/children/qu01.jpg',
+  'New \u00c6on':                                         '../../assets/albums/QUARTER DAYS/kek-buh/qu02.jpg',
+  'Niga Denots':                                          '../../assets/albums/QUARTER DAYS/ace of chase/qu03.jpg',
+  'Jestress Melody':                                      '../../assets/albums/QUARTER DAYS/cricket om/qu04.jpg',
+  'The Naples Society of the Temple of Psychick Youth':   '../../assets/albums/2K2323/jr mason/2k2323jan.jpg',
+  'Peter Thy Godfather':                                  '../../assets/albums/2K2323/father p journee/2k2323feb.jpg',
+  'Covers the Taste':                                     '../../assets/albums/2K2323/blue jays/2k2323mar.jpg',
+  'Sleep Cycle':                                          '../../assets/albums/2K2323/mutt tour/2k2323apr.jpg',
+  'The Ace of Chase':                                     '../../assets/albums/2K2323/venus and the flytrap/2k2323may.jpg',
+  'Big Boy, New Cat. Records':                            '../../assets/albums/2K2323/big boy new cat records/2k2323june.jpg',
+  'Jonas Kyle Meets The Perfect Trip':                    '../../assets/albums/2K2323/jonas kyle/2k2323july.jpg',
+  "Summer O' Sahr":                                       '../../assets/albums/2K2323/boston society of the temple of psychick youth/2k2323aug.jpg',
+  '\u0a18':                                               '../../assets/albums/2K2323/atlas is alice lillenger/2k2323sept.jpg',
+  '8slush':                                               '../../assets/albums/2K2323/ode to bonnie/2k2323oct.jpg',
+  'Jestawomang':                                          '../../assets/albums/2K2323/ace of chase/2k2323nov.jpg',
+  'Xmas 23':                                              '../../assets/albums/2K2323/hodge/2k2323dec.jpg',
+  'Revolution Epilogue: 2K2321\u20132K2323':              '../../assets/albums/2K2323/jestamang/epilogue.jpg',
+  'You and the 7.5 Evils of the World':                   '../../assets/albums/2K2123/you and the 7.5 evils of the world/2k2123jan.jpg',
+  'El Santo De Gangster Volume II':                       '../../assets/albums/2K2123/big smoke, lil skeez, dew, sno bunni/2k2123feb.jpg',
+  'Ode to Bonnie':                                        '../../assets/albums/2K2123/ode to bonnie/2k2123mar.jpg',
+  'I Can Touch the Revolution From My Home':              '../../assets/albums/2K2123/perfect trip/2k2123apr.jpg',
+  "Talkin' Jesus":                                        '../../assets/albums/2K2123/father p journee/2k2123may.jpg',
+  'Green House':                                          '../../assets/albums/2K2123/blue jays/2k2123june.jpg',
+  'The Boston Society of the Temple of Psychick Youth':   '../../assets/albums/2K2123/boston society of the temple of psychick youth/2k2123july.jpg',
+  'Alissa Orange':                                        '../../assets/albums/2K2123/alissa orange/2k2123aug.jpg',
+  'The Woodland Singapore Orchestra':                     '../../assets/albums/2K2123/woodland singapore orchestra/2k2123sept.jpg',
+  'The Colours':                                          '../../assets/albums/2K2123/colours/2k2123oct.jpg',
+  'Sounds Across the World':                              '../../assets/albums/2K2123/sounds across the world/2k2123nov.jpg',
+  'Ball of Energy':                                       '../../assets/albums/2K2123/mike 55/2k2123dec.jpg',
+  "Babylon's Final Hours":                                '../../assets/albums/2K2123/j.r. mason/2k21232jan.jpg',
+  'Venus and the Flytrap':                                '../../assets/albums/2K2123/venus and the flytrap/2k21232feb.jpg',
+  'Covers the Greats':                                    '../../assets/albums/2K2123/perfect trip/2k21232mar.jpg',
+  'Psycho Classical':                                     '../../assets/albums/NONS/caleb mars/non1.jpg',
+  'The Magic Eye':                                        '../../assets/albums/NONS/caleb mars/non2.jpg',
+  'Cell Life':                                            '../../assets/albums/NONS/mutt tour/non3.jpg',
+  'The Perfect Trip':                                     '../../assets/albums/NONS/perfect trip/non4.jpg',
+  'Hit!':                                                 '../../assets/albums/NONS/mutt tour/non5.jpg'
+};
+
+/* ── Helpers ── */
+function pad2(n){return n<10?'0'+n:String(n);}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function san(n){return n.replace(/[^a-zA-Z0-9 _\-\.!]/g,'').trim().slice(0,20);}
+
+/* ── PRNG — seeded LCG ── */
+function hashStr(str){
+  var h=5381;
+  for(var i=0;i<str.length;i++){h=((h<<5)+h)+str.charCodeAt(i)|0;}
+  return h>>>0;
+}
+function seededShuffle(arr,seedStr){
+  var seed=hashStr(seedStr);
+  function next(){seed=Math.imul(1664525,seed)+1013904223>>>0;return seed/0x100000000;}
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(next()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+function shuffleRandom(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+function getTodayUTC(){
+  var d=new Date();
+  return d.getUTCFullYear()+'-'+pad2(d.getUTCMonth()+1)+'-'+pad2(d.getUTCDate());
+}
+
+/* ── State ── */
+var ALL_ENTITIES=[]; // all fetched CARTOON/CHILD entities
+var level1Pool=[], level2Pool=[];
+var LEVEL=1;
+var boardCards=[]; // [{el, pairId, type}]
+var firstCard=null, secondCard=null;
+var locked=false, moves=0, matched=0, secs=0, started=false;
+var ticker=null;
+var finalScore=0, finalMoves=0, finalSecs=0;
+var _docId=null, _score=0;
+var LOAD_TIMEOUT=null;
+
+/* ── Timer ── */
+function startTimer(){
+  if(started)return;
+  started=true;
+  ticker=setInterval(function(){
+    secs++;
+    document.getElementById('s-time').textContent=Math.floor(secs/60)+':'+pad2(secs%60);
+    document.getElementById('s-score').textContent=computeScore().toLocaleString();
+  },1000);
+}
+function stopTimer(){if(ticker){clearInterval(ticker);ticker=null;}}
+function computeScore(){return Math.max(0,10000-(secs*10)-(moves*50));}
+
+/* ── Board build ── */
+function buildCards(entities, levelNum){
+  var pairs=[];
+  entities.forEach(function(e){
+    var pairId=e._id||e.name;
+    if(levelNum===1){
+      // image card + name card
+      pairs.push({pairId:pairId,cardType:'image',entity:e});
+      pairs.push({pairId:pairId,cardType:'name',entity:e});
+    } else {
+      // image card + album cover card
+      pairs.push({pairId:pairId,cardType:'image',entity:e});
+      pairs.push({pairId:pairId,cardType:'album',entity:e});
+    }
+  });
+  return shuffleRandom(pairs);
+}
+
+function renderBoard(cardDefs){
+  var grid=document.getElementById('ep-grid');
+  grid.innerHTML='';
+  boardCards=[];
+  cardDefs.forEach(function(def,idx){
+    var card=document.createElement('div');
+    card.className='ep-card';
+    card.setAttribute('tabindex','0');
+    card.setAttribute('role','button');
+    card.setAttribute('aria-label','Face-down card '+(idx+1));
+    card.setAttribute('data-idx',idx);
+
+    var inner=document.createElement('div');
+    inner.className='ep-card-inner';
+
+    // Back face
+    var back=document.createElement('div');
+    back.className='ep-face-back';
+    var glyph=document.createElement('div');
+    glyph.className='ep-face-back-glyph';
+    glyph.textContent='⊕';
+    back.appendChild(glyph);
+    inner.appendChild(back);
+
+    // Front face
+    var front=document.createElement('div');
+    front.className='ep-face-front';
+
+    if(def.cardType==='image'){
+      var img=document.createElement('img');
+      img.src=def.entity.image||'';
+      img.alt=def.entity.name||'';
+      img.loading='lazy';
+      front.appendChild(img);
+    } else if(def.cardType==='name'){
+      var nameDiv=document.createElement('div');
+      nameDiv.className='ep-card-name';
+      var nameTxt=document.createElement('div');
+      nameTxt.className='ep-card-name-txt';
+      nameTxt.textContent=def.entity.name||'';
+      nameDiv.appendChild(nameTxt);
+      front.appendChild(nameDiv);
+    } else if(def.cardType==='album'){
+      var albumDiv=document.createElement('div');
+      albumDiv.className='ep-card-album';
+      var albumImg=document.createElement('img');
+      var albumTitle=def.entity.canonicalAlbum||'';
+      albumImg.src=ALBUM_COVERS[albumTitle]||'';
+      albumImg.alt=albumTitle;
+      albumImg.loading='lazy';
+      albumDiv.appendChild(albumImg);
+      var titleBar=document.createElement('div');
+      titleBar.className='ep-card-album-title';
+      titleBar.textContent=albumTitle;
+      albumDiv.appendChild(titleBar);
+      front.appendChild(albumDiv);
+    }
+
+    inner.appendChild(front);
+    card.appendChild(inner);
+
+    card.addEventListener('click',function(){onCardClick(card,def,idx);});
+    card.addEventListener('keydown',function(e){
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();onCardClick(card,def,idx);}
+    });
+
+    grid.appendChild(card);
+    boardCards.push({el:card,def:def,matched:false});
+  });
+}
+
+function onCardClick(card,def,idx){
+  if(locked)return;
+  var bc=boardCards[idx];
+  if(!bc||bc.matched)return;
+  if(card.classList.contains('flipped')||card.classList.contains('matched'))return;
+  startTimer();
+
+  card.classList.add('flipped');
+  card.setAttribute('aria-label','Flipped: '+(def.cardType==='name'?(def.entity.name||'Name'):(def.cardType==='album'?(def.entity.canonicalAlbum||'Album'):'Image of '+(def.entity.name||'entity'))));
+
+  if(!firstCard){
+    firstCard={card:card,def:def,idx:idx};
+    return;
+  }
+
+  secondCard={card:card,def:def,idx:idx};
+  locked=true;
+  moves++;
+  document.getElementById('s-moves').textContent=moves;
+  document.getElementById('s-score').textContent=computeScore().toLocaleString();
+
+  var isMatch=(firstCard.def.pairId===secondCard.def.pairId);
+
+  setTimeout(function(){
+    if(isMatch){
+      boardCards[firstCard.idx].matched=true;
+      boardCards[secondCard.idx].matched=true;
+      firstCard.card.classList.add('matched','match-pulse');
+      secondCard.card.classList.add('matched','match-pulse');
+      firstCard.card.setAttribute('aria-label','Matched: '+(firstCard.def.entity.name||''));
+      secondCard.card.setAttribute('aria-label','Matched: '+(secondCard.def.entity.name||''));
+      matched++;
+      firstCard=null;secondCard=null;locked=false;
+      if(matched===8){onWin();}
+    } else {
+      firstCard.card.classList.add('mismatch-shake');
+      secondCard.card.classList.add('mismatch-shake');
+      setTimeout(function(){
+        firstCard.card.classList.remove('flipped','mismatch-shake');
+        secondCard.card.classList.remove('flipped','mismatch-shake');
+        firstCard.card.setAttribute('aria-label','Face-down card');
+        secondCard.card.setAttribute('aria-label','Face-down card');
+        firstCard=null;secondCard=null;locked=false;
+      },450);
+    }
+  },800);
+}
+
+function onWin(){
+  stopTimer();
+  finalScore=computeScore();
+  finalMoves=moves;
+  finalSecs=secs;
+  _score=finalScore;
+  _docId=null;
+
+  var mm=Math.floor(finalSecs/60),ss=finalSecs%60;
+  document.getElementById('win-level-title').textContent=LEVEL===1?'Visions':'Revelations';
+  document.getElementById('win-score-big').textContent=finalScore.toLocaleString();
+  document.getElementById('win-detail').textContent=
+    finalMoves+' moves  ·  '+mm+':'+pad2(ss);
+  document.getElementById('win-overlay').classList.add('show');
+
+  // Auto-submit if logged in
+  var user=null;
+  try{if(window.jestaAuth&&window.jestaAuth.currentUser)user=window.jestaAuth.currentUser;}catch(e){}
+  if(user&&user.displayName){
+    saveScore(user.displayName,finalScore);
+  }
+}
+
+/* ── Play again ── */
+function playAgain(){
+  document.getElementById('win-overlay').classList.remove('show');
+  firstCard=null;secondCard=null;locked=false;
+  moves=0;matched=0;secs=0;started=false;
+  finalScore=0;_docId=null;_score=0;
+  document.getElementById('s-moves').textContent='0';
+  document.getElementById('s-time').textContent='0:00';
+  document.getElementById('s-score').textContent='\u2014';
+  stopTimer();
+  var pool=LEVEL===1?level1Pool:level2Pool;
+  var cards=buildCards(pool,LEVEL);
+  renderBoard(cards);
+}
+
+/* ── Level switch ── */
+function switchLevel(n){
+  LEVEL=n;
+  document.querySelectorAll('.game-tab').forEach(function(btn){
+    btn.classList.toggle('active',parseInt(btn.getAttribute('data-level'),10)===n);
+  });
+  firstCard=null;secondCard=null;locked=false;
+  moves=0;matched=0;secs=0;started=false;
+  finalScore=0;_docId=null;_score=0;
+  document.getElementById('s-moves').textContent='0';
+  document.getElementById('s-time').textContent='0:00';
+  document.getElementById('s-score').textContent='\u2014';
+  stopTimer();
+  document.getElementById('win-overlay').classList.remove('show');
+
+  var pool=n===1?level1Pool:level2Pool;
+  if(!pool.length){
+    if(n===2){
+      showError('No entities have a Canonical Album set. Add the <em>canonicalAlbum</em> field in Firestore to enable Revelations.');
+      return;
+    }
+    showError('No entities found for this level.');
+    return;
+  }
+  var cards=buildCards(pool,n);
+  renderBoard(cards);
+  updateDailyInfo(pool,n);
+}
+
+function updateDailyInfo(pool,n){
+  var today=getTodayUTC();
+  document.getElementById('ep-daily-info').textContent=
+    'Daily challenge · '+today+' · '+pool.length+' of '+ALL_ENTITIES.length+' entities';
+}
+
+/* ── Data loading ── */
+function showError(msg){
+  document.getElementById('ep-loading').style.display='none';
+  document.getElementById('ep-stats').style.display='none';
+  document.getElementById('ep-grid').style.display='none';
+  document.getElementById('ep-controls').style.display='none';
+  var el=document.getElementById('ep-error');
+  el.style.display='block';
+  if(msg){el.querySelector('div').innerHTML=msg;}
+  document.getElementById('ep-retry-btn').style.display='inline-block';
+}
+function showBoard(){
+  document.getElementById('ep-loading').style.display='none';
+  document.getElementById('ep-error').style.display='none';
+  document.getElementById('ep-stats').style.display='flex';
+  document.getElementById('ep-grid').style.display='grid';
+  document.getElementById('ep-controls').style.display='flex';
+}
+
+function loadEntities(db){
+  LOAD_TIMEOUT=setTimeout(function(){
+    showError('The universe cannot be reached. Try again later.');
+  },8000);
+
+  db.collection('entities').orderBy('order').get().then(function(snap){
+    clearTimeout(LOAD_TIMEOUT);
+    var raw=[];
+    snap.forEach(function(doc){
+      var d=doc.data();
+      d._id=doc.id;
+      if(d.visible===false)return;
+      var t=(d.type||'').toLowerCase();
+      if(t!=='cartoon'&&t!=='child')return;
+      raw.push(d);
+    });
+    if(!raw.length){showError('No entities found in the cosmos.');return;}
+    ALL_ENTITIES=raw;
+    buildPools();
+    showBoard();
+    switchLevel(1);
+  }).catch(function(err){
+    clearTimeout(LOAD_TIMEOUT);
+    showError('The universe cannot be reached. Try again later.');
+    console.warn('EP load error:',err);
+  });
+}
+
+function buildPools(){
+  var today=getTodayUTC();
+  var shuffled1=seededShuffle(ALL_ENTITIES,today);
+  level1Pool=shuffled1.slice(0,8);
+  var shuffled2=seededShuffle(ALL_ENTITIES,today+'-L2');
+  // For Level 2, only include entities that have canonicalAlbum set
+  var eligible2=shuffled2.filter(function(e){
+    return e.canonicalAlbum&&ALBUM_COVERS[e.canonicalAlbum];
+  });
+  level2Pool=eligible2.slice(0,8);
+}
+
+/* ── Leaderboard ── */
+var MON=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+function fmtDate(ts){
+  try{var d=ts&&ts.toDate?ts.toDate():new Date(ts);return MON[d.getMonth()]+' '+d.getFullYear();}
+  catch(e){return '—';}
+}
+function fmtScore(s){return parseInt(s).toLocaleString();}
+function gameId(){return LEVEL===1?'entity-pair-visions':'entity-pair-revelations';}
+function gameDisp(){return LEVEL===1?'Entity Pair · Visions':'Entity Pair · Revelations';}
+
+function openLB(curScore){
+  var m=document.getElementById('lb-modal');
+  var tb=document.getElementById('lb-tbody');
+  var bn=document.getElementById('lb-new-banner');
+  if(!m)return;
+  if(bn)bn.style.display='none';
+  var db=window.jestaDB;
+  if(!db){
+    var _t=0,_iv=setInterval(function(){
+      if(window.jestaDB){clearInterval(_iv);openLB(curScore);}
+      else if(++_t>80){clearInterval(_iv);if(tb)tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Signal lost</td></tr>';}
+    },100);
+    m.classList.add('lb-open');
+    document.getElementById('lb-game-display').textContent=gameDisp();
+    return;
+  }
+  // Personal best
+  var pbKey='epBest_'+gameId();
+  var pb=null;try{pb=JSON.parse(localStorage.getItem(pbKey)||'null');}catch(e){}
+  var pbRow=document.getElementById('lb-pb-row');
+  if(pbRow){
+    if(pb&&pb.score>0){
+      pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:8px 0 6px;border-bottom:1px solid rgba(201,168,76,0.12)"><span style="color:rgba(201,168,76,0.5);font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;display:block;margin-bottom:3px">Your Best</span><span style="color:#c9a84c;font-size:0.85rem">\u2605 '+fmtScore(pb.score)+'</span></td>';
+    } else {
+      pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:8px 0 6px;border-bottom:1px solid rgba(201,168,76,0.07);color:rgba(201,168,76,0.28);font-size:0.58rem;letter-spacing:0.06em;font-style:italic">No personal best yet</td>';
+    }
+  }
+  tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Consulting the stars...</td></tr>';
+  m.classList.add('lb-open');
+  document.getElementById('lb-game-display').textContent=gameDisp();
+  db.collection('leaderboards').where('game','==',gameId()).orderBy('score','desc').limit(20).get()
+  .then(function(snap){
+    var rows=[];
+    snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp,photoURL:d.photoURL||'',uid:d.uid||''});});
+    var isTop=curScore>0&&(rows.length<20||curScore>rows[rows.length-1].score);
+    if(isTop&&bn)bn.style.display='block';
+    tb.innerHTML='';
+    if(!rows.length){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Be the first to mark your score</td></tr>';return;}
+    window.lbAvErr=function(img){img.onerror=null;var nm=img.getAttribute('data-name')||'?';var sp=document.createElement('span');sp.className='lb-av-init';sp.textContent=nm.charAt(0).toUpperCase();if(img.parentNode)img.parentNode.replaceChild(sp,img);};
+    function avHtml(r){var nm=r.name||'?';var init=nm.charAt(0).toUpperCase();if(r.photoURL){return'<img class="lb-av" src="'+r.photoURL+'" data-name="'+esc(nm)+'" alt="" loading="lazy" width="26" height="26" onerror="lbAvErr(this)">';}if(r.uid){return'<span class="lb-av-init" data-lb-uid="'+r.uid+'" data-lb-name="'+esc(nm)+'">'+init+'</span>';}return'<span class="lb-av-init">'+init+'</span>';}
+    rows.forEach(function(r,i){
+      var tr=document.createElement('tr');
+      var cls=i===0?'lb-r1':i<3?'lb-r23':'';
+      if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
+      tr.className=cls;
+      var cr=i===0?'<span style="margin-right:4px">\u2605</span>':'';
+      tr.innerHTML='<td>'+(i+1)+'</td><td style="display:flex;align-items:center;gap:6px">'+avHtml(r)+cr+esc(r.name||'?')+'</td><td>'+fmtScore(r.score)+'</td><td>'+fmtDate(r.ts)+'</td>';
+      tb.appendChild(tr);
+    });
+    // Fetch missing avatars
+    (function(){
+      var spans=(tb).querySelectorAll('.lb-av-init[data-lb-uid]');
+      for(var i=0;i<spans.length;i++){(function(span){
+        var uid=span.getAttribute('data-lb-uid');
+        var nm=span.getAttribute('data-lb-name')||'?';
+        db.collection('users').doc(uid).get().then(function(doc){
+          if(!doc.exists)return;var data=doc.data();if(!data.photoURL)return;
+          var img=document.createElement('img');img.className='lb-av';img.src=data.photoURL;img.setAttribute('data-name',nm);img.alt='';img.loading='lazy';img.width=26;img.height=26;img.onerror=function(){window.lbAvErr(img);};
+          if(span.parentNode)span.parentNode.replaceChild(img,span);
+        }).catch(function(){});
+      })(spans[i]);}
+    })();
+  }).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Signal lost</td></tr>';});
+}
+function closeLB(){document.getElementById('lb-modal').classList.remove('lb-open');}
+
+function saveScore(name,score){
+  if(!score||score<=0)return;
+  var db=window.jestaDB;
+  if(!db){
+    var _t=0,_iv=setInterval(function(){if(window.jestaDB){clearInterval(_iv);saveScore(name,score);}else if(++_t>80){clearInterval(_iv);}},100);
+    return;
+  }
+  var ps=parseInt(score);
+  var pbKey='epBest_'+gameId();
+  try{var pb=JSON.parse(localStorage.getItem(pbKey)||'null');if(!pb||ps>pb.score){localStorage.setItem(pbKey,JSON.stringify({score:ps,date:new Date().toISOString()}));}}catch(e){}
+  var uid=null,photoURL=null;
+  try{if(window.jestaAuth&&window.jestaAuth.currentUser){uid=window.jestaAuth.currentUser.uid;photoURL=window.jestaAuth.currentUser.photoURL||null;}}catch(e){}
+  db.collection('leaderboards').add({
+    game:gameId(),name:san(name)||'Unknown',score:ps,
+    uid:uid,photoURL:photoURL,
+    timestamp:window.firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function(ref){_docId=ref.id;}).catch(function(e){console.warn('ep lb:',e);});
+}
+
+/* ── Keyboard navigation ── */
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    closeLB();
+    document.getElementById('lb-name-modal').classList.remove('lb-open');
+  }
+});
+
+/* ── DOMContentLoaded wiring ── */
+document.addEventListener('DOMContentLoaded',function(){
+  // Tab clicks
+  document.querySelectorAll('.game-tab').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      switchLevel(parseInt(btn.getAttribute('data-level'),10));
+    });
+  });
+
+  // Controls
+  document.getElementById('btn-restart').addEventListener('click',function(){playAgain();});
+  document.getElementById('btn-lb').addEventListener('click',function(){openLB(_score);});
+  document.getElementById('btn-again').addEventListener('click',function(){playAgain();});
+  document.getElementById('btn-lb-win').addEventListener('click',function(){openLB(_score);});
+  document.getElementById('ep-retry-btn').addEventListener('click',function(){
+    document.getElementById('ep-error').style.display='none';
+    document.getElementById('ep-loading').style.display='block';
+    startLoadPoll();
+  });
+  document.getElementById('lb-modal-close').addEventListener('click',closeLB);
+  document.getElementById('lb-modal').addEventListener('click',function(e){if(e.target===this)closeLB();});
+
+  // Win overlay — submit button
+  document.getElementById('btn-submit-win').addEventListener('click',function(){
+    var user=null;
+    try{if(window.jestaAuth&&window.jestaAuth.currentUser)user=window.jestaAuth.currentUser;}catch(e){}
+    if(user&&user.displayName){saveScore(user.displayName,_score);openLB(_score);}
+    else{
+      var nm=document.getElementById('lb-name-modal');
+      nm.classList.add('lb-open');
+      setTimeout(function(){var inp=document.getElementById('lb-name-input');if(inp){inp.value='';inp.focus();}},100);
+    }
+  });
+
+  // Name modal
+  document.getElementById('lb-name-submit').addEventListener('click',function(){
+    var inp=document.getElementById('lb-name-input');
+    var n=inp?san(inp.value):'';
+    if(!n){if(inp)inp.focus();return;}
+    document.getElementById('lb-name-modal').classList.remove('lb-open');
+    saveScore(n,_score);
+    openLB(_score);
+  });
+  document.getElementById('lb-name-skip').addEventListener('click',function(){
+    document.getElementById('lb-name-modal').classList.remove('lb-open');
+    openLB(_score);
+  });
+  document.getElementById('lb-name-input').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){document.getElementById('lb-name-submit').click();}
+  });
+
+  startLoadPoll();
+});
+
+function startLoadPoll(){
+  var tries=0;
+  var iv=setInterval(function(){
+    if(window.jestaDB){clearInterval(iv);loadEntities(window.jestaDB);}
+    else if(++tries>80){clearInterval(iv);showError('The universe cannot be reached. Try again later.');}
+  },100);
+}
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
+<script src="../../assets/js/firebase-config.js" defer></script>
+<script src="../../assets/js/jesta-auth.js" defer></script>
+
+<!-- Click-nav fade + bfcache fix -->
+<script>(function(){document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;var h=a.getAttribute('href');if(!h||h.charAt(0)==='#'||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute('target')==='_blank'||a.hasAttribute('download')||a.hasAttribute('data-native-nav'))return;e.preventDefault();document.body.style.transition='opacity 0.3s ease';document.body.style.opacity='0';var t=h;setTimeout(function(){window.location.href=t;},300);});})();window.addEventListener('pageshow',function(){document.body.style.opacity='1';document.body.style.transition='';});</script>
+
+<!-- Version watcher -->
+<script>(function(){function jVCheck(){if(!window.jestaDB)return;window.jestaDB.collection('siteConfig').doc('cacheVersion').onSnapshot(function(doc){if(!doc.exists)return;var v=doc.data().version;if(!v)return;var s=localStorage.getItem('jSiteVersion');if(s&&s!==v){jUpdateBanner();}localStorage.setItem('jSiteVersion',v);},function(){});}function jUpdateBanner(){if(document.getElementById('j-update-banner'))return;var b=document.createElement('div');b.id='j-update-banner';b.style.cssText='position:fixed;top:0;left:0;width:100%;z-index:99999;background:#c9a84c;color:#000;text-align:center;padding:12px;font-family:Luminari,Georgia,serif;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;';b.textContent='SITE UPDATED \u00b7 TAP TO REFRESH \u2726';b.onclick=function(){var r=function(){window.location.reload(true);};try{caches.keys().then(function(k){return Promise.all(k.map(function(n){return caches.delete(n);}));}).then(r).catch(r);}catch(e){r();}};document.body.prepend(b);}var _t=0,_iv=setInterval(function(){if(window.jestaDB){clearInterval(_iv);jVCheck();}else if(++_t>80){clearInterval(_iv);}},100);})();</script>
+
+</body>
+</html>
