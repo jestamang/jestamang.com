@@ -39,7 +39,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:'Luminari',serif;
-  background-color:#000;
+  background-color:transparent;
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
@@ -1528,7 +1528,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <span id="username-save-status" style="font-size:0.72rem;letter-spacing:0.1em;margin-left:8px;"></span>
     </div>
     <div class="profile-subtitle">Welcome</div>
-    <div class="profile-since" id="member-since"></div>
+    <div class="profile-since" id="member-since" style="min-height:1.5em;opacity:0;transition:opacity 0.4s ease;"></div>
     <div class="gold-rule"></div>
   </div>
 
@@ -3366,8 +3366,9 @@ document.addEventListener('DOMContentLoaded', function(){
     if(creationTime){
       var d = new Date(creationTime);
       var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-      document.getElementById('member-since').textContent =
-        'Initiated \u00B7 ' + months[d.getMonth()] + ' ' + toRoman(d.getDate()) + ' ' + toRoman(d.getFullYear());
+      var _msEl = document.getElementById('member-since');
+      _msEl.textContent = 'Initiated \u00B7 ' + months[d.getMonth()] + ' ' + toRoman(d.getDate()) + ' ' + toRoman(d.getFullYear());
+      requestAnimationFrame(function(){ _msEl.style.opacity = '1'; });
     }
     function val(v){ return v || null; }
     function setField(id, v){
