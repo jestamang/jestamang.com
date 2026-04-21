@@ -27,6 +27,7 @@ var PRECACHE_URLS = [
   '/listen.html',
   '/game-oracle.html',
   '/game-memory.html',
+  '/games/entity-pair.html',
   '/privacy.html',
   '/refund.html',
   '/404.html',
