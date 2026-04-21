@@ -681,10 +681,10 @@ window._albumPlayTrack=function(btn,idx,card){
   function buildCatalogCard(a) {
     var tracks = a.tracks || [];
     var trackTitles = tracks.map(function(t){ return typeof t==='string' ? t : (t.title||''); });
-    var ytUrls  = tracks.map(function(t){ return typeof t==='object' ? (t.youtubeUrl||'')  : ''; });
-    var spUrls  = tracks.map(function(t){ return typeof t==='object' ? (t.spotifyUrl||'')  : ''; });
-    var amUrls  = tracks.map(function(t){ return typeof t==='object' ? (t.appleUrl||'')    : ''; });
-    var bcUrls  = tracks.map(function(t){ return typeof t==='object' ? (t.bandcampUrl||'') : ''; });
+    var ytUrls  = tracks.map(function(t){ return typeof t==='object' ? (t.youtube||'')     : ''; });
+    var spUrls  = tracks.map(function(t){ return typeof t==='object' ? (t.spotify||'')     : ''; });
+    var amUrls  = tracks.map(function(t){ return typeof t==='object' ? (t.appleMusic||'')  : ''; });
+    var bcUrls  = tracks.map(function(t){ return typeof t==='object' ? (t.bandcamp||'')    : ''; });
 
     var artSrc = a.artwork ? 'assets/albums/' + a.artwork : 'assets/homepage/logo png.png';
     var TITLE_YEAR_DISPLAY = {
