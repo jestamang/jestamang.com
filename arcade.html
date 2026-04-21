@@ -52,8 +52,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   padding:36px 24px 28px;
   position:relative;overflow:hidden;cursor:pointer;
   transition:border-color 0.3s,transform 0.3s,box-shadow 0.3s;
-  --card-color:#c9a84c;
+  --card-color:#02E127;--card-rgb:2,225,39;
 }
+.arc-card:nth-child(3n+1){--card-color:#02E127;--card-rgb:2,225,39}
+.arc-card:nth-child(3n+2){--card-color:#7800DE;--card-rgb:120,0,222}
+.arc-card:nth-child(3n)  {--card-color:#FB3838;--card-rgb:251,56,56}
 .arc-card::before{
   content:'';position:absolute;inset:0;
   background:radial-gradient(ellipse at 50% 0%,rgba(var(--card-rgb),0.07) 0%,transparent 65%);
@@ -92,7 +95,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 }
 .arc-name{
   font-size:clamp(1.1rem,2.5vw,1.5rem);letter-spacing:0.3em;
-  color:#c9a84c;text-transform:uppercase;margin-bottom:12px;line-height:1.2;
+  color:var(--card-color);text-transform:uppercase;margin-bottom:12px;line-height:1.2;
   text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1)
 }
 .arc-desc{
@@ -258,15 +261,15 @@ h1{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0
 <script>
 /* ── GAME DATA ── */
 var GAMES = [
-  {name:'The Daily Sigil', desc:'One draw. One reading. The cosmos speaks — if you are willing to listen.',tag:'DIVINATION',glyph:'☽',href:'game-oracle.html',color:'#7800DE',rgb:'120,0,222',lb:null,lowerBetter:false},
-  {name:'Memory Vault',    desc:'Flip the cards. Match the albums. Eight pairs stand between you and the vault.',tag:'MEMORY',glyph:'✦',href:'game-memory.html',color:'#02E127',rgb:'2,225,39',lb:'memory-vault',lowerBetter:true},
-  {name:'Chord Conjurer',  desc:'Build chords from sacred intervals. Learn the architecture of harmony.',tag:'THEORY', glyph:'✶', href:'games/chord-conjurer.html',   color:'#7800DE', rgb:'120,0,222',   lb:'chordConjurer',  lowerBetter:false},
-  {name:'Harmony Oracle',  desc:'Identify consonance, tonality, chord progressions, and full harmonic analysis. Four levels of harmonic depth.',tag:'THEORY', glyph:'⟁', href:'games/harmony-oracle.html', color:'#FB3838', rgb:'251,56,56', lb:'harmonyOracle', lowerBetter:false},
-  {name:'Pitch Oracle',    desc:'A pure tone enters the void. Name the note or lose a life.',      tag:'EAR TRAINING', glyph:'◈', href:'games/pitch-oracle.html',      color:'#02E127', rgb:'2,225,39',    lb:'pitchOracle',    lowerBetter:false},
-  {name:'Rhythm Architect',desc:'Decode the pulse. Reconstruct the pattern. Master the beat.',     tag:'RHYTHM',       glyph:'◉', href:'games/rhythm-architect.html',  color:'#02E127', rgb:'2,225,39',    lb:'rhythmArchitect',lowerBetter:false},
-  {name:'Cosmic Conductor',desc:'Four columns, falling orbs. Hit the gold line. Build your combo.',tag:'RHYTHM',       glyph:'♩', href:'games/cosmic-conductor.html',  color:'#7800DE', rgb:'120,0,222',   lb:'cosmicConductor',lowerBetter:false},
-  {name:'The Void',        desc:'Geometric shapes expand from every edge. Dodge them. Survive.',   tag:'SURVIVAL',     glyph:'◎', href:'games/void.html',              color:'#FB3838', rgb:'251,56,56',   lb:'void',           lowerBetter:false},
-  {name:'Entity Pair',     desc:'Match faces. Match makers. The universe pairs what belongs together.',tag:'MEMORY',   glyph:'\u2295', href:'games/entity-pair.html', color:'#c9a84c', rgb:'201,168,76',  lb:'entity-pair-visions', lowerBetter:false}
+  {name:'The Daily Sigil', desc:'One draw. One reading. The cosmos speaks — if you are willing to listen.',tag:'DIVINATION',  glyph:'☽',      href:'game-oracle.html',              lb:null,               lowerBetter:false},
+  {name:'Memory Vault',    desc:'Flip the cards. Match the albums. Eight pairs stand between you and the vault.',tag:'MEMORY',    glyph:'✦',      href:'game-memory.html',              lb:'memory-vault',     lowerBetter:true},
+  {name:'Chord Conjurer',  desc:'Build chords from sacred intervals. Learn the architecture of harmony.',tag:'THEORY',          glyph:'✶',      href:'games/chord-conjurer.html',     lb:'chordConjurer',    lowerBetter:false},
+  {name:'Harmony Oracle',  desc:'Identify consonance, tonality, chord progressions, and full harmonic analysis. Four levels of harmonic depth.',tag:'THEORY', glyph:'⟁', href:'games/harmony-oracle.html', lb:'harmonyOracle', lowerBetter:false},
+  {name:'Pitch Oracle',    desc:'A pure tone enters the void. Name the note or lose a life.',      tag:'EAR TRAINING',glyph:'◈',      href:'games/pitch-oracle.html',       lb:'pitchOracle',      lowerBetter:false},
+  {name:'Rhythm Architect',desc:'Decode the pulse. Reconstruct the pattern. Master the beat.',     tag:'RHYTHM',      glyph:'◉',      href:'games/rhythm-architect.html',   lb:'rhythmArchitect',  lowerBetter:false},
+  {name:'Cosmic Conductor',desc:'Four columns, falling orbs. Hit the gold line. Build your combo.',tag:'RHYTHM',      glyph:'♩',      href:'games/cosmic-conductor.html',   lb:'cosmicConductor',  lowerBetter:false},
+  {name:'The Void',        desc:'Geometric shapes expand from every edge. Dodge them. Survive.',   tag:'SURVIVAL',    glyph:'◎',      href:'games/void.html',               lb:'void',             lowerBetter:false},
+  {name:'Entity Pair',     desc:'Match faces. Match makers. The universe pairs what belongs together.',tag:'MEMORY',  glyph:'\u2295', href:'games/entity-pair.html',        lb:'entity-pair-visions', lowerBetter:false}
 ];
 
 (function(){
@@ -274,8 +277,6 @@ var GAMES = [
   GAMES.forEach(function(g){
     var card = document.createElement('div');
     card.className = 'arc-card';
-    card.style.setProperty('--card-color', g.color);
-    card.style.setProperty('--card-rgb', g.rgb);
 
     var lbBtn = g.lb
       ? '<button class="arc-lb" onclick="event.stopPropagation();openLB(\''+g.lb+'\',\''+g.name+'\','+g.lowerBetter+')">Leaderboard ✦</button>'
