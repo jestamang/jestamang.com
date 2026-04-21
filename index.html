@@ -837,7 +837,7 @@ function eotdRender(entity,cycle){
   if(dateEl)dateEl.textContent=ritualDate();
   if(photoEl){photoEl.src=entity.photo;photoEl.alt=entity.name;}
   if(nameEl)nameEl.textContent=entity.name;
-  if(typeEl)typeEl.textContent=entity.type==='ONE OF THE CHILDREN'?'CHILD':'CARTOON';
+  if(typeEl)typeEl.textContent=entity.type==='CHILD'?'CHILDREN':'CARTOON';
   if(narrEl){var key=entity.rawType+'|'+entity.name;narrEl.textContent=NARRATOR[key]||'A being of the Jestamang universe.';}
   var tracks=YT_TRACKS[entity.name];
   var playWrap=el('eotd-play-wrap');var playTrack=el('eotd-play-track');var playBtn=el('eotd-play-btn');
