@@ -310,6 +310,11 @@ var ALBUM_COVERS = {
 function pad2(n){return n<10?'0'+n:String(n);}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 function san(n){return n.replace(/[^a-zA-Z0-9 _\-\.!]/g,'').trim().slice(0,20);}
+function entityImgSrc(src){
+  if(!src)return'';
+  if(src.charAt(0)==='h'||src.charAt(0)==='/'||src.charAt(0)==='.')return src;
+  return'../'+src;
+}
 
 /* ── PRNG — seeded LCG ── */
 function hashStr(str){
@@ -407,7 +412,7 @@ function renderBoard(cardDefs){
 
     if(def.cardType==='image'){
       var img=document.createElement('img');
-      img.src=def.entity.image||'';
+      img.src=entityImgSrc(def.entity.image);
       img.alt=def.entity.name||'';
       img.loading='lazy';
       front.appendChild(img);
@@ -481,7 +486,7 @@ function onCardClick(card,def,idx){
       secondCard.card.setAttribute('aria-label','Matched: '+(secondCard.def.entity.name||''));
       matched++;
       firstCard=null;secondCard=null;locked=false;
-      if(matched===8){onWin();}
+      if(matched===6){onWin();}
     } else {
       firstCard.card.classList.add('mismatch-shake');
       secondCard.card.classList.add('mismatch-shake');
@@ -619,13 +624,13 @@ function loadEntities(db){
 function buildPools(){
   var today=getTodayUTC();
   var shuffled1=seededShuffle(ALL_ENTITIES,today);
-  level1Pool=shuffled1.slice(0,8);
+  level1Pool=shuffled1.slice(0,6);
   var shuffled2=seededShuffle(ALL_ENTITIES,today+'-L2');
   // For Level 2, only include entities that have canonicalAlbum set
   var eligible2=shuffled2.filter(function(e){
     return e.canonicalAlbum&&ALBUM_COVERS[e.canonicalAlbum];
   });
-  level2Pool=eligible2.slice(0,8);
+  level2Pool=eligible2.slice(0,6);
 }
 
 /* ── Leaderboard ── */
