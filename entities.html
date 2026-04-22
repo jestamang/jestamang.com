@@ -36,6 +36,10 @@
   /* Hide home-btn on mobile */
   .home-btn { display: none !important; }
 }
+@media (hover: none) and (pointer: coarse) {
+  body, .bg-wrap { background-attachment: scroll !important; }
+  #jt-bg { transform: translate3d(0,0,0) !important; will-change: transform; }
+}
 /* jt-mobile-entities */
 @media (max-width: 768px) {
   .section-title { font-size: clamp(1.7rem, 7vw, 2.4rem); }

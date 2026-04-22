@@ -402,6 +402,10 @@ body::before{
   /* Hide home-btn on mobile */
   .home-btn { display: none !important; }
 }
+@media (hover: none) and (pointer: coarse) {
+  body, .bg-wrap { background-attachment: scroll !important; }
+  #jt-bg { transform: translate3d(0,0,0) !important; will-change: transform; }
+}
 /* jt-mobile-login */
 @media (max-width: 768px) {
   .page-wrap { align-items: flex-start !important; padding: 12px 12px 20px !important; min-height: unset !important; }

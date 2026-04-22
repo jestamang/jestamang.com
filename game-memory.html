@@ -126,6 +126,10 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
   /* Hide home-btn on mobile */
   .home-btn { display: none !important; }
 }
+@media (hover: none) and (pointer: coarse) {
+  body, .bg-wrap { background-attachment: scroll !important; }
+  #jt-bg { transform: translate3d(0,0,0) !important; will-change: transform; }
+}
 /* jt-mobile-game_memory */
 @media (max-width: 768px) {
   canvas { max-width: 100% !important; height: auto !important; touch-action: manipulation; }
