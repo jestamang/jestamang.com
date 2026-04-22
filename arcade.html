@@ -93,6 +93,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   opacity:1;
   text-shadow:0 0 40px var(--card-color)
 }
+.arc-glyph .glyph-clef{font-size:1.4em}
+.arc-glyph .glyph-natural{font-size:1.3em}
 .arc-name{
   font-size:clamp(1.1rem,2.5vw,1.5rem);letter-spacing:0.3em;
   color:var(--card-color);text-transform:uppercase;margin-bottom:12px;line-height:1.2;
@@ -261,13 +263,13 @@ h1{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0
 <script>
 /* ── GAME DATA ── */
 var GAMES = [
-  {name:'The Daily Sigil', desc:'One draw. One reading. The cosmos speaks — if you are willing to listen.',tag:'DIVINATION',  glyph:'☽',      href:'game-oracle.html',              lb:null,               lowerBetter:false},
-  {name:'Memory Vault',    desc:'Flip the cards. Match the albums. Eight pairs stand between you and the vault.',tag:'MEMORY',    glyph:'✦',      href:'game-memory.html',              lb:'memory-vault',     lowerBetter:true},
-  {name:'Chord Conjurer',  desc:'Build chords from sacred intervals. Learn the architecture of harmony.',tag:'THEORY',          glyph:'✶',      href:'games/chord-conjurer.html',     lb:'chordConjurer',    lowerBetter:false},
-  {name:'Harmony Oracle',  desc:'Identify consonance, tonality, chord progressions, and full harmonic analysis. Four levels of harmonic depth.',tag:'THEORY', glyph:'⟁', href:'games/harmony-oracle.html', lb:'harmonyOracle', lowerBetter:false},
-  {name:'Rhythm Architect',desc:'Decode the pulse. Reconstruct the pattern. Master the beat.',     tag:'RHYTHM',      glyph:'◉',      href:'games/rhythm-architect.html',   lb:'rhythmArchitect',  lowerBetter:false},
-  {name:'Pitch Oracle',    desc:'A pure tone enters the void. Name the note or lose a life.',      tag:'EAR TRAINING',glyph:'◈',      href:'games/pitch-oracle.html',       lb:'pitchOracle',      lowerBetter:false},
-  {name:'Cosmic Conductor',desc:'Four columns, falling orbs. Hit the gold line. Build your combo.',tag:'RHYTHM',      glyph:'♩',      href:'games/cosmic-conductor.html',   lb:'cosmicConductor',  lowerBetter:false},
+  {name:'The Daily Sigil', desc:'One draw. One reading. The cosmos speaks — if you are willing to listen.',tag:'DIVINATION',  glyph:'☀︎',     href:'game-oracle.html',              lb:null,               lowerBetter:false},
+  {name:'Memory Vault',    desc:'Flip the cards. Match the albums. Eight pairs stand between you and the vault.',tag:'MEMORY',    glyph:'꩜',      href:'game-memory.html',              lb:'memory-vault',     lowerBetter:true},
+  {name:'Chord Conjurer',  desc:'Build chords from sacred intervals. Learn the architecture of harmony.',tag:'THEORY',          glyph:'<span class="glyph-clef">𝄞</span>',href:'games/chord-conjurer.html',lb:'chordConjurer',lowerBetter:false},
+  {name:'Harmony Oracle',  desc:'Identify consonance, tonality, chord progressions, and full harmonic analysis. Four levels of harmonic depth.',tag:'THEORY', glyph:'<span class="glyph-natural">♮</span>', href:'games/harmony-oracle.html', lb:'harmonyOracle', lowerBetter:false},
+  {name:'Rhythm Architect',desc:'Decode the pulse. Reconstruct the pattern. Master the beat.',     tag:'RHYTHM',      glyph:'♬',      href:'games/rhythm-architect.html',   lb:'rhythmArchitect',  lowerBetter:false},
+  {name:'Pitch Oracle',    desc:'A pure tone enters the void. Name the note or lose a life.',      tag:'EAR TRAINING',glyph:'♩',      href:'games/pitch-oracle.html',       lb:'pitchOracle',      lowerBetter:false},
+  {name:'Cosmic Conductor',desc:'Four columns, falling orbs. Hit the gold line. Build your combo.',tag:'RHYTHM',      glyph:'⌘',      href:'games/cosmic-conductor.html',   lb:'cosmicConductor',  lowerBetter:false},
   {name:'The Void',        desc:'Geometric shapes expand from every edge. Dodge them. Survive.',   tag:'SURVIVAL',    glyph:'◎',      href:'games/void.html',               lb:'void',             lowerBetter:false},
   {name:'Entity Pair',     desc:'Match faces. Match makers. The universe pairs what belongs together.',tag:'MEMORY',  glyph:'\u2295', href:'games/entity-pair.html',        lb:'entity-pair-visions', lowerBetter:false}
 ];
