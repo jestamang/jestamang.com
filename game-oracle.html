@@ -187,6 +187,10 @@ a.back-link:hover{color:#c9a84c}
   .card-stage{width:220px;height:320px;margin:0 auto 20px}
   .oracle-wrap{padding:0 8px}
 }
+@media (hover: none) and (pointer: coarse) {
+  body, .bg-wrap { background-attachment: scroll !important; }
+  #jt-bg { transform: translate3d(0,0,0) !important; will-change: transform; }
+}
 /* jt-mobile-game_oracle */
 @media (max-width: 768px) {
   canvas { max-width: 100% !important; height: auto !important; touch-action: manipulation; }

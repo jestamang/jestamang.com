@@ -37,6 +37,10 @@
   /* Hide home-btn on mobile */
   .home-btn { display: none !important; }
 }
+@media (hover: none) and (pointer: coarse) {
+  body, .bg-wrap { background-attachment: scroll !important; }
+  #jt-bg { transform: translate3d(0,0,0) !important; will-change: transform; }
+}
 /* jt-mobile-shows */
 @media (max-width: 768px) {
   /* Fix background cutting out on scroll */
