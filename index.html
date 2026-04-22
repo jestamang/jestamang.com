@@ -53,6 +53,10 @@
   .mob-nav-label{font-family:'Luminari',Georgia,serif;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,230,210,0.85);text-align:center;white-space:nowrap;}
 
 }
+/* background-attachment fix for touch devices (covers Instagram in-app browser) */
+@media (hover: none) and (pointer: coarse) {
+  body, .bg-wrap { background-attachment: scroll !important; }
+}
 /* Instagram icon: scale down to match visual size of other nav icons */
 #insta-icon-desktop { width: 34px !important; height: 34px !important; }
 #hp-hero{height:100vh;position:relative;overflow:hidden}
