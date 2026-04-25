@@ -171,12 +171,13 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   }
 </style>
 <script>(function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[]).push(arguments);};l=d.createElement(e);l.async=1;l.src=u;n=d.getElementsByTagName(e)[0];n.parentNode.insertBefore(l,n);})(window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');ml('account','2245401');</script>
-<script type="application/ld+json">
+<script type="application/ld+json" id="shows-ld-json">
 {
   "@context": "https://schema.org",
   "@type": "Event",
   "name": "Jestamang Live",
-  "startDate": "2026",
+  "startDate": "2026-06-21T20:00:00-04:00",
+  "endDate": "2026-06-21T23:00:00-04:00",
   "location": {
     "@type": "Place",
     "name": "Ft. Myers, FL",
@@ -187,9 +188,19 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       "addressCountry": "US"
     }
   },
-  "organizer": { "@type": "Organization", "name": "Jestamang LLC" },
+  "organizer": {
+    "@type": "Organization",
+    "name": "Jestamang LLC",
+    "url": "https://jestamang.com"
+  },
   "eventStatus": "https://schema.org/EventScheduled",
-  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode"
+  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+  "image": "https://jestamang.com/assets/homepage/jesta-logo.png",
+  "description": "Jestamang performing live in Fort Myers, FL. Presented by Jestamang.",
+  "performer": {
+    "@type": "MusicGroup",
+    "name": "Jestamang"
+  }
 }
 </script>
 </head> <body>
@@ -484,6 +495,82 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     document.getElementById('shows-past-fallback').style.display = '';
   }
 
+  function jEdt(dateStr) {
+    var m = parseInt(dateStr.split('-')[1], 10);
+    return (m >= 3 && m <= 11) ? '-04:00' : '-05:00';
+  }
+
+  function jPad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function jEndIso(dateStr, timeStr) {
+    var tz = jEdt(dateStr);
+    var t = (timeStr && /^\d{2}:\d{2}$/.test(timeStr)) ? timeStr : '20:00';
+    var end = new Date(new Date(dateStr + 'T' + t + ':00' + tz).getTime() + 3 * 60 * 60 * 1000);
+    return end.getFullYear() + '-' + jPad2(end.getMonth() + 1) + '-' + jPad2(end.getDate()) +
+           'T' + jPad2(end.getHours()) + ':' + jPad2(end.getMinutes()) + ':00' + tz;
+  }
+
+  function injectEventSchema(upcoming) {
+    var el = document.getElementById('shows-ld-json');
+    if (!el || !upcoming.length) return;
+    var events = [];
+    for (var i = 0; i < upcoming.length; i++) {
+      var s = upcoming[i];
+      if (!s.date) continue;
+      var tz = jEdt(s.date);
+      var t = (s.time && /^\d{2}:\d{2}$/.test(s.time)) ? s.time : '20:00';
+      var startIso = s.date + 'T' + t + ':00' + tz;
+      var cityStr = s.city || 'Fort Myers, FL';
+      var parts = cityStr.split(',');
+      var locality = parts[0].trim();
+      var region = parts.length > 1 ? parts[1].trim().split(' ')[0] : 'FL';
+      var ev = {
+        '@context': 'https://schema.org',
+        '@type': 'Event',
+        'name': s.name || ('Jestamang Live at ' + (s.venue || locality)),
+        'startDate': startIso,
+        'endDate': jEndIso(s.date, s.time),
+        'location': {
+          '@type': 'Place',
+          'name': s.venue || cityStr,
+          'address': {
+            '@type': 'PostalAddress',
+            'addressLocality': locality,
+            'addressRegion': region,
+            'addressCountry': 'US'
+          }
+        },
+        'organizer': {
+          '@type': 'Organization',
+          'name': 'Jestamang LLC',
+          'url': 'https://jestamang.com'
+        },
+        'eventStatus': 'https://schema.org/EventScheduled',
+        'eventAttendanceMode': 'https://schema.org/OfflineEventAttendanceMode',
+        'image': s.flyerUrl || s.image || 'https://jestamang.com/assets/homepage/jesta-logo.png',
+        'description': s.description || ((s.artist || 'Jestamang') + ' performing live at ' + (s.venue || cityStr) + '. Presented by Jestamang.'),
+        'performer': {'@type': 'MusicGroup', 'name': s.artist || 'Jestamang'}
+      };
+      if (s.ticketUrl && s.ticketUrl !== '#' && s.ticketUrl.trim()) {
+        var vf = new Date(new Date(startIso).getTime() - 30 * 24 * 60 * 60 * 1000);
+        var rawPrice = (s.price || '').replace(/[^0-9.]/g, '') || '0';
+        ev.offers = {
+          '@type': 'Offer',
+          'url': s.ticketUrl,
+          'price': rawPrice,
+          'priceCurrency': 'USD',
+          'availability': 'https://schema.org/InStock',
+          'validFrom': vf.getFullYear() + '-' + jPad2(vf.getMonth() + 1) + '-' + jPad2(vf.getDate())
+        };
+      }
+      events.push(ev);
+    }
+    if (!events.length) return;
+    el.textContent = JSON.stringify(
+      events.length === 1 ? events[0] : {'@context': 'https://schema.org', '@graph': events}
+    );
+  }
+
   function loadShows() {
     var todayStr = new Date().toISOString().slice(0, 10);
     window.jestaDB.collection('shows').orderBy('date', 'asc').get()
@@ -500,6 +587,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         });
         renderUpcoming(upcoming);
         renderPast(past);
+        injectEventSchema(upcoming);
         initCardObservers();
       })
       .catch(function () {
