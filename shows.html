@@ -200,6 +200,14 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   "performer": {
     "@type": "MusicGroup",
     "name": "Jestamang"
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": "https://jestamang.com/shows.html",
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "validFrom": "2026-05-22"
   }
 }
 </script>
@@ -551,8 +559,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         'description': s.description || ((s.artist || 'Jestamang') + ' performing live at ' + (s.venue || cityStr) + '. Presented by Jestamang.'),
         'performer': {'@type': 'MusicGroup', 'name': s.artist || 'Jestamang'}
       };
+      var vf = new Date(new Date(startIso).getTime() - 30 * 24 * 60 * 60 * 1000);
+      var validFrom = vf.getFullYear() + '-' + jPad2(vf.getMonth() + 1) + '-' + jPad2(vf.getDate());
       if (s.ticketUrl && s.ticketUrl !== '#' && s.ticketUrl.trim()) {
-        var vf = new Date(new Date(startIso).getTime() - 30 * 24 * 60 * 60 * 1000);
         var rawPrice = (s.price || '').replace(/[^0-9.]/g, '') || '0';
         ev.offers = {
           '@type': 'Offer',
@@ -560,7 +569,16 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
           'price': rawPrice,
           'priceCurrency': 'USD',
           'availability': 'https://schema.org/InStock',
-          'validFrom': vf.getFullYear() + '-' + jPad2(vf.getMonth() + 1) + '-' + jPad2(vf.getDate())
+          'validFrom': validFrom
+        };
+      } else {
+        ev.offers = {
+          '@type': 'Offer',
+          'url': 'https://jestamang.com/shows.html',
+          'price': '0',
+          'priceCurrency': 'USD',
+          'availability': 'https://schema.org/InStock',
+          'validFrom': validFrom
         };
       }
       events.push(ev);
