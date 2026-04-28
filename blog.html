@@ -273,7 +273,7 @@ View Events &#8594;
 </a> </aside>
 
 <style>
-.inner-circle-divider{display:flex;align-items:center;justify-content:center;gap:16px;color:rgba(201,168,76,0.85);font-size:0.65rem;letter-spacing:0.45em;text-transform:uppercase;margin:64px 0 2px}.inner-circle-divider::before,.inner-circle-divider::after{content:'';flex:1;max-width:160px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.35))}.inner-circle-divider::after{background:linear-gradient(to left,transparent,rgba(201,168,76,0.35))}
+.inner-circle-divider{display:flex;align-items:center;justify-content:center;gap:16px;color:#c9a84c;font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;margin:64px 0 2px}.inner-circle-divider::before,.inner-circle-divider::after{content:'';flex:1;max-width:160px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.35))}.inner-circle-divider::after{background:linear-gradient(to left,transparent,rgba(201,168,76,0.35))}
 .press-divider{display:flex;align-items:center;justify-content:center;gap:16px;color:rgba(201,168,76,0.45);font-size:0.8rem;letter-spacing:0.1em;margin:72px 0 48px}
 .press-divider::before,.press-divider::after{content:'';flex:1;max-width:180px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.4))}
 .press-divider::after{background:linear-gradient(to left,transparent,rgba(201,168,76,0.4))}
@@ -682,7 +682,7 @@ function pressSectionToggle(){
         var date=d.timestamp?fmtDate(d.timestamp):'';
         var article=document.createElement('article');
         var _bgC=['rgba(74,124,89,0.5)','rgba(107,74,124,0.5)','rgba(124,74,74,0.5)'];
-        article.className='post post--community';
+        article.className='post post--community visible';
         article.style.background=_bgC[idx%3];
         article.innerHTML=
           '<span class="post-tag">Transmission</span>'+
