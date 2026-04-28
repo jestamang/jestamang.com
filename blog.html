@@ -691,7 +691,11 @@ function pressSectionToggle(){
           initComments(postId, user);
           idx++;
         });
-      },function(err){console.error('Admin posts:',err);});
+      },function(err){
+        console.error('Admin posts:',err);
+        var c=document.getElementById('admin-posts');
+        if(c) c.innerHTML='<div style="text-align:center;padding:40px;color:rgba(201,168,76,0.5);font-style:italic;">Transmissions could not be loaded.</div>';
+      });
   }
 
   function loadCommunityPosts(user){
