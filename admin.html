@@ -2381,8 +2381,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var price      = (document.getElementById('sh-price').value   ||'').trim();
       var autoNotify = document.getElementById('sh-autonotify').checked;
       var statusEl   = document.getElementById('sh-status');
-      if(!venue){statusEl.textContent='Venue required';statusEl.className='status-msg status-err';return;}
-      if(!date) {statusEl.textContent='Date required'; statusEl.className='status-msg status-err';return;}
+      if(!venue)  {statusEl.textContent='Venue required';statusEl.className='status-msg status-err';return;}
+      if(!date)   {statusEl.textContent='Date required'; statusEl.className='status-msg status-err';return;}
+      if(!city)   {statusEl.textContent='City required'; statusEl.className='status-msg status-err';return;}
+      if(tickets && !/^https?:\/\//i.test(tickets)){statusEl.textContent='Ticket URL must start with http:// or https://';statusEl.className='status-msg status-err';return;}
       this.disabled=true; statusEl.textContent='';
       var self=this;
       db.collection('shows').add({
@@ -2421,14 +2423,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var html='';
       snap.forEach(function(doc){
         var d=doc.data();
+        var hidden=d.active===false;
         var vid=esc(d.venue); var ci=esc(d.city||''); var dt=esc(d.date||'');
-        html+='<tr id="sh-row-'+doc.id+'">'
+        html+='<tr id="sh-row-'+doc.id+'"'+(hidden?' style="opacity:0.45;"':'')+' >'
           +'<td>'+esc(d.venue)+'</td>'
           +'<td>'+esc(d.date)+'</td>'
           +'<td>'+esc(d.city||'—')+'</td>'
           +'<td>'+esc(d.price||'—')+'</td>'
-          +'<td><button class="btn-ghost btn-sm" onclick="notifyShow(\''+vid+'\',\''+ci+'\',\''+dt+'\')">Notify</button></td>'
-          +'<td id="sh-action-'+doc.id+'"><button class="btn-danger btn-sm" onclick="askRemoveShow(\''+doc.id+'\')">Remove</button></td>'
+          +'<td>'+(hidden?'':'<button class="btn-ghost btn-sm" onclick="notifyShow(\''+vid+'\',\''+ci+'\',\''+dt+'\')">Notify</button>')+'</td>'
+          +'<td>'+(hidden
+            ?'<button class="btn-ghost btn-sm" onclick="restoreShow(\''+doc.id+'\')">Restore</button>'
+            :'<button class="btn-danger btn-sm" onclick="hideShow(\''+doc.id+'\',\''+vid+'\',\''+dt+'\')">Remove</button>')+'</td>'
           +'</tr>';
       });
       tbody.innerHTML=html;
@@ -2447,21 +2452,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     }).catch(function(e){ alert('Error: '+e.message); });
   };
 
-  window.askRemoveShow = function(id){
-    var cell = document.getElementById('sh-action-'+id);
-    if(!cell) return;
-    cell.innerHTML='<span style="font-size:0.6rem;letter-spacing:0.1em;color:rgba(201,168,76,0.6);margin-right:6px;">REMOVE?</span>'
-      +'<button class="btn-danger btn-sm" onclick="confirmRemoveShow(\''+id+'\')">YES</button>'
-      +' <button class="btn-ghost btn-sm" onclick="cancelRemoveShow(\''+id+'\')">NO</button>';
+  window.hideShow = function(id, venue, date) {
+    var label = (venue || 'this show') + (date ? ' on ' + date : '');
+    if (!confirm('Hide "' + label + '" from the site? You can restore it later from the admin panel.')) return;
+    db.collection('shows').doc(id).update({
+      active: false,
+      hiddenAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(function(){});
   };
 
-  window.confirmRemoveShow = function(id){
-    db.collection('shows').doc(id).delete().catch(function(){});
-  };
-
-  window.cancelRemoveShow = function(id){
-    var cell = document.getElementById('sh-action-'+id);
-    if(cell) cell.innerHTML='<button class="btn-danger btn-sm" onclick="askRemoveShow(\''+id+'\')">Remove</button>';
+  window.restoreShow = function(id) {
+    db.collection('shows').doc(id).update({
+      active: true,
+      hiddenAt: firebase.firestore.FieldValue.delete()
+    }).catch(function(){});
   };
 
   /* ══════════════ SECTION 8: PRESS MANAGER ══════════════ */
