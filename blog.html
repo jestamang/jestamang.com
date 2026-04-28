@@ -691,6 +691,10 @@ function pressSectionToggle(){
           initComments(postId, user);
           idx++;
         });
+        // Retint static posts to continue the green→purple→red cycle from adminCount
+        document.querySelectorAll('.page-wrap > article.post').forEach(function(p,i){
+          p.style.background=_bgC[(idx+i)%3];
+        });
       },function(err){
         console.error('Admin posts:',err);
         var c=document.getElementById('admin-posts');
