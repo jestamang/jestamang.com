@@ -596,6 +596,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         var upcoming = [], past = [];
         snap.forEach(function (doc) {
           var d = doc.data();
+          if (d.active === false) return;
           d.id = doc.id;
           if (d.date && d.date >= todayStr) {
             upcoming.push(d);
