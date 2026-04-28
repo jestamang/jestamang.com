@@ -2866,11 +2866,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   /* ══════════════ SECTION 15: MERCH MANAGER ══════════════ */
   var MERCH_DEFAULTS = [
-    { name:'T-Shirt',     description:'Classic tee, exclusive artwork.', price:35, gumroadUrl:'', imageUrl:'', active:true },
-    { name:'Comix',       description:'Limited edition art comix.',       price:30, gumroadUrl:'', imageUrl:'', active:true },
-    { name:'Polyphonies', description:'Collected transmissions in print.',price:40, gumroadUrl:'', imageUrl:'', active:true },
-    { name:'Puzzle',      description:'Jestamang puzzle artifact.',       price:45, gumroadUrl:'', imageUrl:'', active:true },
-    { name:'Card Deck',   description:'Cosmic oracle card deck.',         price:60, gumroadUrl:'', imageUrl:'', active:true }
+    { name:'T-Shirt',     description:'The Jestamang image on your body. Printed on a quality shirt. For those who want to carry the mythology into the world wherever they go.',                                                                                                                                                        price:35, gumroadUrl:'https://jestamang.gumroad.com/l/t-shirt',    imageUrl:'assets/merch/t shirt.png',    active:true },
+    { name:'Comix',       description:'The Jestamang story in sequential art. Sixteen pages of original illustration telling the mythology in a form that predates the digital world. Printed and bound by hand. This is where the story lives when it is not music.',                                                                   price:30, gumroadUrl:'https://jestamang.gumroad.com/l/comix',       imageUrl:'assets/merch/comix.png',       active:true },
+    { name:'Polyphonies', description:'The written document of the Jestamang mythology. Polyphonies is the text that exists alongside the music — a companion to the catalog, a record of the cosmology, a book that rewards those who read it slowly.',                                                                                price:40, gumroadUrl:'https://jestamang.gumroad.com/l/polyphonies', imageUrl:'assets/merch/polyphonies.jpeg', active:true },
+    { name:'Puzzle',      description:'An original Jestamang image rendered as a puzzle. The act of assembly is the point — the mythology reveals itself one piece at a time. Take your time with this one.',                                                                                                                            price:45, gumroadUrl:'https://jestamang.gumroad.com/l/puzzle',      imageUrl:'assets/merch/puzzle.png',      active:true },
+    { name:'Card Deck',   description:'Fifty-two original illustrations drawn from the Jestamang universe. Each card is its own artifact — an entity, a symbol, a moment from the mythology rendered in ink. No two cards are the same. No reprints are planned. This deck will not exist forever.',                                    price:60, gumroadUrl:'https://jestamang.gumroad.com/l/cards',       imageUrl:'assets/merch/cards.png',       active:true }
   ];
 
   function initMerchManager() {
@@ -2880,7 +2880,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var card = document.createElement('div');
       var safeId = docId || ('new-' + Date.now());
       card.id = 'merch-card-' + safeId;
-      card.style.cssText = 'background:rgba(5,3,1,0.6);border:1px solid rgba(201,168,76,0.12);padding:20px;margin-bottom:16px;border-radius:2px;';
+      card.style.cssText = 'background:rgba(5,3,1,0.6);border:1px solid rgba(201,168,76,0.12);padding:20px;margin-bottom:16px;border-radius:2px;' + (data.active === false ? 'opacity:0.45;' : '');
       card.innerHTML =
         '<div style="font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.35);margin-bottom:14px;">' + esc(data.name || 'New Product') + '</div>'
         + '<div class="form-grid">'
@@ -2893,7 +2893,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         + '<label class="radio-label" style="display:flex;align-items:center;gap:8px;margin:12px 0;cursor:pointer;"><input type="checkbox" data-field="active"' + (data.active ? ' checked' : '') + ' style="accent-color:#c9a84c;"><span>Active (visible on site)</span></label>'
         + '<div style="display:flex;gap:10px;margin-top:12px;">'
         + '<button class="btn-gold" onclick="window._saveMerchCard(\'' + safeId + '\',\'' + (docId||'') + '\',this)" style="padding:8px 20px;font-size:0.65rem;letter-spacing:0.2em;">SAVE CHANGES \u2726</button>'
-        + (docId ? '<button class="btn-danger btn-sm" onclick="window._removeMerchCard(\'' + docId + '\',this.closest(\'[id^=merch-card-]\'))">Remove</button>' : '')
+        + (docId ? (data.active === false
+          ? '<button class="btn-ghost btn-sm" onclick="window._restoreMerchCard(\'' + docId + '\',this.closest(\'[id^=merch-card-]\'))">Restore</button>'
+          : '<button class="btn-danger btn-sm" onclick="window._removeMerchCard(\'' + docId + '\',this.closest(\'[id^=merch-card-]\'))">Remove</button>') : '')
         + '</div>'
         + '<div class="merch-card-status status-msg" style="margin-top:8px;"></div>';
       container.appendChild(card);
@@ -2951,6 +2953,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
     if (!data.name) { statusEl.textContent='Name required'; statusEl.className='merch-card-status status-msg status-err'; return; }
+    if (!data.imageUrl) { statusEl.textContent='Image URL required'; statusEl.className='merch-card-status status-msg status-err'; return; }
+    if (!data.gumroadUrl) { statusEl.textContent='Gumroad URL required'; statusEl.className='merch-card-status status-msg status-err'; return; }
     btn.disabled = true;
     var ref = (docId && docId.length) ? db.collection('merch').doc(docId) : db.collection('merch').doc();
     ref.set(data, { merge: true }).then(function () {
@@ -2979,9 +2983,49 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   };
 
   window._removeMerchCard = function (docId, card) {
-    if (!confirm('Remove this product from the catalog?')) return;
-    db.collection('merch').doc(docId).delete().then(function () {
-      if (card) card.remove();
+    var nameEl = card ? card.querySelector('[data-field="name"]') : null;
+    var productName = nameEl ? (nameEl.value.trim() || 'this product') : 'this product';
+    if (!confirm('Hide "' + productName + '" from the site? You can restore it later from the admin panel.')) return;
+    db.collection('merch').doc(docId).update({
+      active: false,
+      hiddenAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function () {
+      if (card) {
+        card.style.opacity = '0.45';
+        var btnWrap = card.querySelector('[style*="display:flex;gap"]');
+        if (btnWrap) {
+          var removeBtn = btnWrap.querySelector('.btn-danger');
+          if (removeBtn) {
+            removeBtn.className = 'btn-ghost btn-sm';
+            removeBtn.textContent = 'Restore';
+            removeBtn.setAttribute('onclick', 'window._restoreMerchCard(\'' + docId + '\',this.closest(\'[id^=merch-card-]\'))');
+          }
+        }
+        var statusEl = card.querySelector('.merch-card-status');
+        if (statusEl) { statusEl.textContent = 'Hidden from live site'; statusEl.className = 'merch-card-status status-msg'; }
+      }
+    }).catch(function (e) { alert('Error: ' + e.message); });
+  };
+
+  window._restoreMerchCard = function (docId, card) {
+    db.collection('merch').doc(docId).update({
+      active: true,
+      hiddenAt: firebase.firestore.FieldValue.delete()
+    }).then(function () {
+      if (card) {
+        card.style.opacity = '';
+        var btnWrap = card.querySelector('[style*="display:flex;gap"]');
+        if (btnWrap) {
+          var restoreBtn = btnWrap.querySelector('.btn-ghost.btn-sm');
+          if (restoreBtn) {
+            restoreBtn.className = 'btn-danger btn-sm';
+            restoreBtn.textContent = 'Remove';
+            restoreBtn.setAttribute('onclick', 'window._removeMerchCard(\'' + docId + '\',this.closest(\'[id^=merch-card-]\'))');
+          }
+        }
+        var statusEl = card.querySelector('.merch-card-status');
+        if (statusEl) { statusEl.textContent = 'Restored — visible on live site'; statusEl.className = 'merch-card-status status-msg status-ok'; }
+      }
     }).catch(function (e) { alert('Error: ' + e.message); });
   };
 
