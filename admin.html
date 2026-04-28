@@ -2566,6 +2566,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       +'<div><input class="field-input" placeholder="YouTube URL" data-track="'+n+'" data-field="youtube" maxlength="300"></div>'
       +'<div><input class="field-input" placeholder="Bandcamp URL" data-track="'+n+'" data-field="bandcamp" maxlength="300"></div>'
       +'</div>'
+      +'<div style="margin-top:8px;">'
+      +'<input class="field-input" style="width:100%;box-sizing:border-box;" placeholder="Apple Music URL" data-track="'+n+'" data-field="appleMusic" maxlength="300">'
+      +'</div>'
       +'<button onclick="removeTrackRow('+n+')" aria-label="Remove track" style="position:absolute;top:10px;right:10px;background:none;border:none;color:rgba(201,168,76,0.3);cursor:pointer;font-size:0.8rem;">✕</button>';
     wrap.appendChild(div);
   }
@@ -2585,10 +2588,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var cover    =(document.getElementById('am-cover').value   ||'').trim();
     if(!artist){statusEl.textContent='Artist required';statusEl.className='status-msg status-err';return;}
     if(!album) {statusEl.textContent='Album title required';statusEl.className='status-msg status-err';return;}
+    if(!cover) {statusEl.textContent='Cover image URL required';statusEl.className='status-msg status-err';return;}
     var tracks=[];
     document.querySelectorAll('.am-track-row').forEach(function(row,i){
       var inputs=row.querySelectorAll('[data-field]');
-      var t={number:i+1,title:'',spotify:'',youtube:'',bandcamp:''};
+      var t={number:i+1,title:'',spotify:'',youtube:'',bandcamp:'',appleMusic:''};
       inputs.forEach(function(inp){t[inp.getAttribute('data-field')]=inp.value.trim();});
       if(t.title) tracks.push(t);
     });
@@ -2624,16 +2628,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var html='';
       snap.forEach(function(doc){
         var d=doc.data(); var eid='am-'+doc.id;
+        var hidden=d.active===false;
         var pub=d.published?'<span class="badge badge-green">Published</span>':'<span class="badge badge-dim">Draft</span>';
-        html+='<div class="entry-row" id="row-'+eid+'">'
+        html+='<div class="entry-row" id="row-'+eid+'"'+(hidden?' style="opacity:0.45;"':'')+' >'
           +'<div class="entry-body">'
           +'<div class="entry-name">'+esc(d.albumTitle)+'</div>'
           +'<div class="entry-meta">'+esc(d.artist)+(d.year?' · '+d.year:'')+(d.catalog?' · '+esc(d.catalog):'')+' '+pub+'</div>'
           +'<div style="font-size:0.62rem;color:rgba(201,168,76,0.3);margin-top:3px;">'+(d.tracks?d.tracks.length+' tracks':'')+'</div>'
           +'<div class="entry-actions">'
-          +(d.published?'<button class="btn-ghost btn-sm" onclick="unpublishRelease(\''+doc.id+'\')">Unpublish</button>':'<button class="btn-success btn-sm" onclick="publishRelease(\''+doc.id+'\')">Publish</button>')
-          +'<button class="btn-danger btn-sm" onclick="askDelete(\''+eid+'\')">Delete</button>'
-          +makeDeleteRow('releases',doc.id,eid)
+          +(hidden
+            ?'<button class="btn-ghost btn-sm" onclick="restoreRelease(\''+doc.id+'\',\''+eid+'\')">Restore</button>'
+            :(d.published?'<button class="btn-ghost btn-sm" onclick="unpublishRelease(\''+doc.id+'\')">Unpublish</button>':'<button class="btn-success btn-sm" onclick="publishRelease(\''+doc.id+'\')">Publish</button>')
+              +'<button class="btn-danger btn-sm" onclick="hideRelease(\''+doc.id+'\',\''+esc(d.albumTitle)+'\',\''+eid+'\')">Remove</button>')
           +'</div></div></div>';
       });
       el.innerHTML=html;
@@ -2642,6 +2648,33 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   window.unpublishRelease=function(id){db.collection('releases').doc(id).update({published:false}).then(loadReleases).catch(function(){});};
   window.publishRelease  =function(id){db.collection('releases').doc(id).update({published:true}).then(loadReleases).catch(function(){});};
+
+  window.hideRelease = function(docId, title, eid) {
+    var name = title || 'this release';
+    if (!confirm('Hide "' + name + '" from the site? You can restore it later from the admin panel.')) return;
+    db.collection('releases').doc(docId).update({
+      active: false,
+      hiddenAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function() {
+      var row = document.getElementById('row-' + eid);
+      if (row) {
+        row.style.opacity = '0.45';
+        var actionsEl = row.querySelector('.entry-actions');
+        if (actionsEl) {
+          actionsEl.innerHTML = '<button class="btn-ghost btn-sm" onclick="restoreRelease(\'' + docId + '\',\'' + eid + '\')">Restore</button>';
+        }
+      }
+    }).catch(function(e) { alert('Error: ' + e.message); });
+  };
+
+  window.restoreRelease = function(docId, eid) {
+    db.collection('releases').doc(docId).update({
+      active: true,
+      hiddenAt: firebase.firestore.FieldValue.delete()
+    }).then(function() {
+      loadReleases();
+    }).catch(function(e) { alert('Error: ' + e.message); });
+  };
 
   /* ══════════════ SECTION 12: CACHE BUST ══════════════ */
   function initCacheBust() {
@@ -2747,8 +2780,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var tx = textEl.value.trim();
       var doNotify = document.getElementById('aa-notify').checked;
 
-      if (!a) { statusEl.textContent='Artist required'; statusEl.className='status-msg status-err'; return; }
-      if (!t) { statusEl.textContent='Album title required'; statusEl.className='status-msg status-err'; return; }
+      if (!a)  { statusEl.textContent='Artist required'; statusEl.className='status-msg status-err'; return; }
+      if (!t)  { statusEl.textContent='Album title required'; statusEl.className='status-msg status-err'; return; }
+      if (!cv) { statusEl.textContent='Cover image URL required'; statusEl.className='status-msg status-err'; return; }
 
       btn.disabled = true;
       statusEl.textContent = '';

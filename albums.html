@@ -557,7 +557,7 @@ window._albumPlayTrack=function(btn,idx,card){
     if(firstBc) card.setAttribute('data-album-bc',firstBc);
     var img=document.createElement('img');
     img.className='album-art';
-    img.src=r.cover||'assets/homepage/logo png.png';
+    img.src=r.coverUrl||r.cover||'assets/homepage/logo png.png';
     img.alt=String(r.artist||'');
     img.loading='lazy';
     img.onclick=function(){toggleDrawer(card);};
@@ -590,7 +590,10 @@ window._albumPlayTrack=function(btn,idx,card){
         if(snap.empty) return;
         // Sort by timestamp desc client-side (avoids composite index requirement)
         var docs=[];
-        snap.forEach(function(doc){docs.push({id:doc.id,data:doc.data()});});
+        snap.forEach(function(doc){
+          var d=doc.data();
+          if(d.active!==false) docs.push({id:doc.id,data:d});
+        });
         docs.sort(function(a,b){
           var ta=a.data.timestamp, tb=b.data.timestamp;
           if(!ta) return 1; if(!tb) return -1;
