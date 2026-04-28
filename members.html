@@ -903,6 +903,7 @@ document.addEventListener('DOMContentLoaded', function(){
         var html = '';
         snap.forEach(function(doc){
           var d = doc.data();
+          if (d.active === false) return;
           var blurCls = blurMap[d.blur] || 'catalog-blur-1';
           var lines = (d.overlayTitle||d.title||'').replace(/<br>/g,'\n').split('\n');
           var overlayHtml = lines.map(function(l){ return esc(l); }).join('<br>');

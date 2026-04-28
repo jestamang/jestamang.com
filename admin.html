@@ -2026,15 +2026,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var html = '';
     snap.forEach(function (doc) {
       var d = doc.data();
-      html += '<div class="entry-item" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;margin-bottom:6px;border:1px solid rgba(201,168,76,0.12);">'
+      var hidden = d.active === false;
+      html += '<div class="entry-item" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;margin-bottom:6px;border:1px solid rgba(201,168,76,0.12);' + (hidden ? 'opacity:0.45;' : '') + '">'
         + '<div style="flex:1;min-width:0;">'
         + '<div style="font-family:\'Luminari\',serif;font-size:0.72rem;letter-spacing:0.15em;color:#c9a84c;">' + esc(d.icon || '') + '  ' + esc(d.title || '') + '</div>'
         + '<div style="font-size:0.62rem;letter-spacing:0.12em;color:rgba(201,168,76,0.4);margin-top:2px;">' + esc(d.meta || '') + '</div>'
         + '<div style="font-size:0.58rem;letter-spacing:0.1em;color:rgba(201,168,76,0.25);margin-top:2px;">' + esc(d.url || '') + ' · order: ' + (d.order || 0) + '</div>'
         + '</div>'
         + '<div style="display:flex;gap:6px;flex-shrink:0;">'
-        + '<button class="btn-ghost" onclick="treatEdit(\'' + doc.id + '\')" style="padding:5px 12px;font-size:0.58rem;letter-spacing:0.2em;">EDIT</button>'
-        + '<button class="btn-ghost" onclick="treatDelete(\'' + doc.id + '\')" style="padding:5px 12px;font-size:0.58rem;letter-spacing:0.2em;border-color:rgba(251,56,56,0.4);color:rgba(251,56,56,0.7);">DEL</button>'
+        + (hidden
+          ? '<button class="btn-ghost" onclick="treatRestore(\'' + doc.id + '\')" style="padding:5px 12px;font-size:0.58rem;letter-spacing:0.2em;">RESTORE</button>'
+          : '<button class="btn-ghost" onclick="treatEdit(\'' + doc.id + '\')" style="padding:5px 12px;font-size:0.58rem;letter-spacing:0.2em;">EDIT</button>'
+            + '<button class="btn-ghost" onclick="treatHide(\'' + doc.id + '\',\'' + esc(d.title || '') + '\')" style="padding:5px 12px;font-size:0.58rem;letter-spacing:0.2em;border-color:rgba(251,56,56,0.4);color:rgba(251,56,56,0.7);">DEL</button>')
         + '</div>'
         + '</div>';
     });
@@ -2093,7 +2096,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var order   = parseInt(document.getElementById('treat-order').value, 10) || 10;
     var msg     = document.getElementById('treat-form-msg');
 
-    if (!title || !url) { msg.textContent = 'Title and URL are required.'; return; }
+    if (!title) { msg.textContent = 'Title is required.'; return; }
+    if (!url)   { msg.textContent = 'URL is required.'; return; }
+    if (!/^https?:\/\//i.test(url)) { msg.textContent = 'URL must start with http:// or https://'; return; }
 
     var data = {
       title: title,
@@ -2117,10 +2122,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       .catch(function (e) { msg.textContent = 'Error: ' + esc(e.message); });
   }
 
-  function treatDelete(id) {
-    if (!confirm('Remove this treat?')) return;
-    db.collection('treats').doc(id).delete()
-      .catch(function (e) { alert('Error: ' + e.message); });
+  function treatHide(id, title) {
+    var name = title || 'this treat';
+    if (!confirm('Hide "' + name + '" from the Inner Circle? You can restore it later from the admin panel.')) return;
+    db.collection('treats').doc(id).update({
+      active: false,
+      hiddenAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(function (e) { alert('Error: ' + e.message); });
+  }
+
+  function treatRestore(id) {
+    db.collection('treats').doc(id).update({
+      active: true,
+      hiddenAt: firebase.firestore.FieldValue.delete()
+    }).catch(function (e) { alert('Error: ' + e.message); });
   }
 
   /* ══════════════ SECTION 5: MODERATION ══════════════ */
