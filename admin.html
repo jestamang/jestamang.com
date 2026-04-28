@@ -1934,6 +1934,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     loadRecentPosts();
   }
 
+  window._bpEditId   = null;
+  window._bpPostData = {};
+
   function saveBlogPost(publish) {
     var title    = (document.getElementById('bp-title').value    || '').trim();
     var dateVal  = (document.getElementById('bp-date').value     || '').trim();
@@ -1946,7 +1949,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     document.getElementById('bp-publish-btn').disabled = true;
     document.getElementById('bp-draft-btn').disabled   = true;
     statusEl.textContent = '';
-    db.collection('blogPosts').add({
+    var payload = {
       title:         title,
       date:          dateVal,
       dateFormatted: dateVal ? ritualDate(dateVal) : '',
@@ -1956,7 +1959,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       timestamp:     firebase.firestore.FieldValue.serverTimestamp(),
       published:     publish,
       authorRole:    'admin'
-    }).then(function () {
+    };
+    var op = window._bpEditId
+      ? db.collection('blogPosts').doc(window._bpEditId).update(payload)
+      : db.collection('blogPosts').add(payload);
+    op.then(function () {
       statusEl.textContent = publish ? 'PUBLISHED \u2726' : 'DRAFT SAVED \u2726';
       statusEl.className   = 'status-msg status-ok';
       document.getElementById('bp-title').value    = '';
@@ -1966,6 +1973,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       document.getElementById('bp-date').value     = new Date().toISOString().slice(0,10);
       document.getElementById('bp-publish-btn').disabled = false;
       document.getElementById('bp-draft-btn').disabled   = false;
+      if (window._bpEditId) { window.cancelEditPost(); }
       loadRecentPosts();
     }).catch(function (e) {
       statusEl.textContent = 'Error: ' + e.message;
@@ -1982,12 +1990,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var html = '';
       snap.forEach(function (doc) {
         var d = doc.data();
+        window._bpPostData[doc.id] = d;
         var eid = 'bp-'+doc.id;
         var pub = d.published ? '<span class="badge badge-green">Published</span>' : '<span class="badge badge-dim">Draft</span>';
+        var raw = (d.content || d.excerpt || '').replace(/<[^>]*>/g,'');
+        var preview = raw.length > 80 ? raw.slice(0,80) + '…' : raw;
         html += '<div class="post-row" id="row-'+eid+'">'
           + '<div class="post-row-title">' + esc(d.title) + ' ' + pub + '</div>'
           + '<div class="post-row-meta">' + esc(d.dateFormatted || d.date || '—') + (d.category ? ' &nbsp;·&nbsp; ' + esc(d.category) : '') + '</div>'
+          + (preview ? '<div style="font-size:0.7rem;color:rgba(240,230,211,0.5);margin-top:4px;font-style:italic;">' + esc(preview) + '</div>' : '')
           + '<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">'
+          + '<button class="btn-ghost btn-sm" onclick="editPost(\'' + doc.id + '\')">Edit</button>'
+          + (!d.published ? '<button class="btn-gold btn-sm" onclick="publishPost(\'' + doc.id + '\')">Publish</button>' : '')
           + (d.published ? '<button class="btn-danger btn-sm" onclick="unpublishPost(\'' + doc.id + '\')">Unpublish</button>' : '')
           + '<button class="btn-danger btn-sm" onclick="askDelete(\'' + eid + '\')">Delete</button>'
           + makeDeleteRow('blogPosts', doc.id, eid)
@@ -2001,6 +2015,51 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   window.unpublishPost = function (id) {
     db.collection('blogPosts').doc(id).update({ published: false })
       .then(loadRecentPosts).catch(function(){});
+  };
+
+  window.publishPost = function (id) {
+    db.collection('blogPosts').doc(id).update({
+      published: true,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(loadRecentPosts).catch(function(){});
+  };
+
+  window.editPost = function (id) {
+    var d = window._bpPostData[id];
+    if (!d) return;
+    window._bpEditId = id;
+    document.getElementById('bp-title').value    = d.title    || '';
+    document.getElementById('bp-date').value     = d.date     || '';
+    document.getElementById('bp-category').value = d.category || '';
+    document.getElementById('bp-content').value  = d.content  || '';
+    document.getElementById('bp-excerpt').value  = d.excerpt  || '';
+    var heading = document.querySelector('#sec-4 .adm-section-title');
+    if (heading) heading.textContent = '✦ Edit Transmission';
+    document.getElementById('bp-publish-btn').textContent = 'Update';
+    document.getElementById('bp-draft-btn').textContent   = 'Save as Draft';
+    if (!document.getElementById('bp-cancel-edit')) {
+      var cancelBtn = document.createElement('button');
+      cancelBtn.id = 'bp-cancel-edit';
+      cancelBtn.className = 'btn-ghost';
+      cancelBtn.textContent = 'Cancel';
+      cancelBtn.onclick = function () { window.cancelEditPost(); };
+      document.getElementById('bp-publish-btn').parentNode.appendChild(cancelBtn);
+    }
+    var sec = document.getElementById('sec-4');
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  window.cancelEditPost = function () {
+    window._bpEditId = null;
+    var heading = document.querySelector('#sec-4 .adm-section-title');
+    if (heading) heading.textContent = '✦ New Transmission';
+    document.getElementById('bp-publish-btn').textContent = 'Publish';
+    document.getElementById('bp-draft-btn').textContent   = 'Save Draft';
+    var cancelBtn = document.getElementById('bp-cancel-edit');
+    if (cancelBtn) cancelBtn.remove();
+    var statusEl = document.getElementById('bp-status');
+    statusEl.textContent = '';
+    statusEl.className = 'status-msg';
   };
 
   /* ══════════════ SECTION 24: TREATS ══════════════ */
