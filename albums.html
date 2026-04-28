@@ -725,6 +725,10 @@ window._albumPlayTrack=function(btn,idx,card){
   function replaceGrid(secEl, albums) {
     var grid = secEl.querySelector('.album-grid');
     if (!grid || albums.length === 0) return;
+    var hasTrackUrls = albums.some(function(a) {
+      return (a.tracks || []).some(function(t) { return typeof t === 'object'; });
+    });
+    if (!hasTrackUrls) return;
     if (window._activeDrawer && grid.contains(window._activeDrawer)) {
       if (window._activeDrawer.parentNode) window._activeDrawer.parentNode.removeChild(window._activeDrawer);
       window._activeDrawer = null; window._activeCard = null;
