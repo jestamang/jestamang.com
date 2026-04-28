@@ -672,7 +672,7 @@ function pressSectionToggle(){
           var postId='admin-'+doc.id;
           var date=d.dateFormatted||d.date||'';
           var article=document.createElement('article');
-          article.className='post';
+          article.className='post visible';
           article.style.background=_bgC[idx%3];
           article.innerHTML=
             (d.category?'<span class="post-tag">'+escHtml(d.category)+'</span>':'')+
