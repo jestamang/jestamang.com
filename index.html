@@ -730,9 +730,25 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     var mobile=document.getElementById('hp-login-mobile');
     [desktop,mobile].forEach(function(el){
       if(!el)return;
-      var label=el.querySelector('.nav-label');
-      if(user){el.href='profile.html';if(label)label.textContent='Profile';}
-      else{el.href='login.html';if(label)label.textContent='Login';}
+      // Mobile uses .mob-nav-label; desktop uses .nav-label — handle both
+      var label=el.querySelector('.nav-label,.mob-nav-label');
+      var icon=el.querySelector('img');
+      if(user){
+        el.href='profile.html';
+        if(label)label.textContent='Profile';
+        if(icon){
+          var av=null;try{av=localStorage.getItem('jesta_av_'+user.uid);}catch(e){}
+          icon.src=av||user.photoURL||'assets/homepage/jesta jr.jpg';
+          icon.style.borderRadius='50%';icon.style.objectFit='cover';
+        }
+      }else{
+        el.href='login.html';
+        if(label)label.textContent='Login';
+        if(icon){
+          icon.src='assets/homepage/nav-icons/log%20in.png';
+          icon.style.borderRadius='';icon.style.objectFit='';
+        }
+      }
     });
   }
   function initHomeAuth(){
