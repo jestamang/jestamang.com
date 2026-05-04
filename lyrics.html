@@ -13295,7 +13295,7 @@ if(!isOpen){btn.classList.add('open');if(body)body.classList.add('open');}});});
 /* ── Lyrics Firestore dynamic loader ── */
 var _LYRICS_FALLBACK = []; /* DOM is the fallback */
 function toSlug(s){return String(s||'').toLowerCase().replace(/[àáâ]/g,'a').replace(/[èéê]/g,'e').replace(/[ìíî]/g,'i').replace(/[òóô]/g,'o').replace(/[ùúû]/g,'u').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
-function artistSlug(name){for(var k in ARTIST_NAMES){if(ARTIST_NAMES[k]===name)return k;}return toSlug(name);}
+function artistSlug(name){var nl=name.toLowerCase();for(var k in ARTIST_NAMES){if(ARTIST_NAMES[k].toLowerCase()===nl)return k;}return toSlug(name);}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function ytVidId(url){if(!url)return'';var m=url.match(/[?&]v=([^&]+)|youtu\.be\/([^?#]+)/);return m?(m[1]||m[2]):'';}
 
