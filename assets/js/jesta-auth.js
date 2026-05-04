@@ -633,3 +633,28 @@
   }());
 
 })();
+
+// ── Social deep-link helper ───────────────────────────────────────────────────
+window.openSocial = function(platform) {
+  var configs = {
+    spotify:      { app: 'spotify://artist/7cbDkEdfEILr6evXmvLO7P',                   web: 'https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P' },
+    youtube:      { app: 'youtube://www.youtube.com/channel/UC7rNn7Lwt0OatA9c4sSYz0g', web: 'https://www.youtube.com/channel/UC7rNn7Lwt0OatA9c4sSYz0g' },
+    'apple-music':{ app: 'music://music.apple.com/us/artist/jestamang/1665724106',     web: 'https://music.apple.com/us/artist/jestamang/1665724106' },
+    instagram:    { app: 'instagram://user?username=thejestamang',                     web: 'https://www.instagram.com/thejestamang/' },
+    bandcamp:     { app: 'bandcamp://show/jestamang',                                  web: 'https://jestamang.bandcamp.com/' }
+  };
+  var config = configs[platform];
+  if (!config) return;
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (!isMobile) { window.open(config.web, '_blank', 'noopener,noreferrer'); return; }
+  var startTime = Date.now();
+  var fallbackTimer = setTimeout(function() {
+    if (Date.now() - startTime < 2500 && document.visibilityState !== 'hidden') {
+      window.location.href = config.web;
+    }
+  }, 1200);
+  document.addEventListener('visibilitychange', function onVis() {
+    if (document.hidden) { clearTimeout(fallbackTimer); document.removeEventListener('visibilitychange', onVis); }
+  });
+  window.location.href = config.app;
+};
