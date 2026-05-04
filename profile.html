@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols&amp;display=swap&amp;text=%E2%99%88%E2%99%89%E2%99%8A%E2%99%8B%E2%99%8C%E2%99%8D%E2%99%8E%E2%99%8F%E2%99%90%E2%99%91%E2%99%92%E2%99%93">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Profile | Jestamang</title>
 <meta name="description" content="Your Jestamang member profile. Edit your dossier, upload a photo, calculate your free natal chart, and track all your Inner Circle activity.">
@@ -801,7 +804,7 @@ body::before{
   margin-right:4px;
 }
 .sign-glyph {
-  font-family:'Luminari',Georgia,serif;
+  font-family:'Noto Sans Symbols','Luminari',Georgia,serif;
   color:#c9a84c;
   margin-right:3px;
   font-variant-emoji:text;
@@ -2873,7 +2876,7 @@ var NC = (function(){
     }
     if(moon&&INTERPRETATIONS.Moon[moon.sign]){
       html+='<div class="natal-interp-block">'
-          +'<div class="natal-interp-title"><span style="color:#c8d8f0;font-variant-emoji:text;">'+moon.glyph+'</span> Moon in '+moon.sign+'</div>'
+          +'<div class="natal-interp-title"><span style="color:#c9a84c;font-variant-emoji:text;">'+moon.glyph+'</span> Moon in '+moon.sign+'</div>'
           +'<div class="natal-interp-text">'+INTERPRETATIONS.Moon[moon.sign]+'</div>'
           +'</div>';
     }
