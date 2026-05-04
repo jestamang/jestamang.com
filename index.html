@@ -752,7 +752,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         }
       }
       var isMobile=(el.id==='hp-login-mobile');
-      var waitMs=isMobile?0:Math.max(0,2000-performance.now());
+      var elapsed=(document.timeline&&document.timeline.currentTime!=null)?document.timeline.currentTime:performance.now();
+      var waitMs=isMobile?0:Math.max(0,2000-elapsed);
       (function(e){setTimeout(function(){e.style.opacity='1';},waitMs);})(el);
     });
   }
