@@ -408,21 +408,13 @@ function flip(card){
     },200);
   } else {
     mismatches++;var a=first,b=second;first=null;second=null;
-    // Disable pointer events immediately — prevents queued taps re-flipping cards during hide delay
-    a.style.pointerEvents='none';b.style.pointerEvents='none';
     setTimeout(function(){
       a.classList.add('mismatch-shake');b.classList.add('mismatch-shake');playMismatchSound();
       setTimeout(function(){
         a.classList.remove('mismatch-shake','flipped');b.classList.remove('mismatch-shake','flipped');
-        playFlipSound();
-        // Wait for CSS flip-back transition (500ms) before restoring pointer events and unlocking
-        // Restoring earlier lets fast taps re-add .flipped mid-transition, causing the face-flash glitch
-        setTimeout(function(){
-          document.querySelectorAll('.mem-card:not(.matched):not(.flipped)').forEach(function(c){c.style.pointerEvents='';});
-          locked=false;
-        },500);
-      },550);
-    },300);
+        locked=false;
+      },450);
+    },800);
   }
 }
 
