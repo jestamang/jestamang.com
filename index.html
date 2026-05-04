@@ -51,8 +51,10 @@
   .mob-nav-item{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-decoration:none;gap:6px;}
   .mob-nav-icon{width:56px;height:56px;object-fit:contain;display:block;}
   .mob-nav-label{font-family:'Luminari',Georgia,serif;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,230,210,0.85);text-align:center;white-space:nowrap;}
+  #hp-login-mobile{opacity:0;transition:opacity 0.2s ease;}
 
 }
+#hp-login-desktop{animation:none;opacity:0;transition:opacity 0.35s ease;}
 /* background-attachment fix for touch devices (covers Instagram in-app browser) */
 @media (hover: none) and (pointer: coarse) {
   body, .bg-wrap { background-attachment: scroll !important; }
@@ -749,11 +751,14 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
           icon.style.borderRadius='';icon.style.objectFit='';
         }
       }
+      el.style.opacity='1';
     });
   }
+  var _authRetries=0;
   function initHomeAuth(){
     if(window.jestaAuth){window.jestaAuth.onAuthStateChanged(updateHomeLogin);}
-    else{setTimeout(initHomeAuth,200);}
+    else if(++_authRetries<25){setTimeout(initHomeAuth,200);}
+    else{updateHomeLogin(null);}
   }
   setTimeout(initHomeAuth,300);
 })();
