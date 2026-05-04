@@ -748,16 +748,37 @@ document.addEventListener('DOMContentLoaded', function(){
         });
     } else if (mode === 'signup') {
       var name = nameInput.value.trim();
+      // Suppress onAuthStateChanged redirect — we control it after sendEmailVerification
+      redirectPending = true;
       promise = firebase.auth().createUserWithEmailAndPassword(email, pw)
-        .then(function(cred){ if(name) return cred.user.updateProfile({displayName: name}); });
+        .then(function(cred) {
+          var user = cred.user;
+          var nameP = name ? user.updateProfile({displayName: name}).catch(function(){}) : Promise.resolve();
+          return nameP.then(function() { return user; });
+        })
+        .then(function(user) {
+          return user.sendEmailVerification()
+            .then(
+              function() {
+                showError('Your transmission has been received. Check your inbox to confirm your initiation.');
+              },
+              function() {
+                showError('Account created, but the verification signal failed to transmit. You may resend it from your profile.');
+              }
+            )
+            .then(function() {
+              setTimeout(function() { window.location.href = 'profile.html'; }, 2200);
+            });
+        });
     } else {
       promise = firebase.auth().setPersistence(getPersistence())
         .then(function(){ return firebase.auth().signInWithEmailAndPassword(email, pw); });
     }
 
     promise
-      .then(function(){ /* onAuthStateChanged handles redirect */ })
+      .then(function(){ /* onAuthStateChanged handles redirect for sign-in/link flows */ })
       .catch(function(err){
+        redirectPending = false;
         submitBtn.disabled = false;
         submitBtn.textContent = mode === 'link' ? 'Link & Sign In' : mode === 'signup' ? 'Declare Yourself' : 'Initiate';
         if (mode === 'signup') {
