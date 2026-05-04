@@ -1,0 +1,18 @@
+JESTAMANG — DIRECT SOCIAL MEDIA URLS
+
+These are the canonical destinations for the social media icons across the entire site — index.html social row, the mobile menu overlay, and anywhere else they appear. The icons use deep-link logic in openSocial() (in assets/js/jesta-auth.js) to open the native app if installed, falling back to the web URL if not. No intermediate redirect pages.
+
+If any URL changes here, also update the openSocial() configs in assets/js/jesta-auth.js — the deep-link schemes are constructed from the IDs in these URLs.
+
+================================================================================
+ACTIVE SOCIAL ICONS (have an icon visible on the site)
+================================================================================
+| spotify: https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P
+| apple music: https://music.apple.com/us/artist/jestamang/1665724106
+| instagram: https://www.instagram.com/thejestamang/
+| youtube: https://www.youtube.com/channel/UC7rNn7Lwt0OatA9c4sSYz0g
+
+================================================================================
+URL ONLY — NO ICON YET (deep-link config exists, awaiting icon asset)
+================================================================================
+| bandcamp: https://jestamang.bandcamp.com/
