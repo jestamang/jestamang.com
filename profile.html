@@ -3078,6 +3078,32 @@ document.addEventListener('DOMContentLoaded', function(){
   // enter animation.
   var _heroRevealed = false;
   var _heroTimer = null;
+
+  // ── Verify-email banner overlap fix ────────────────────────────────
+  // #j-verify-banner is position:fixed;top:52px but body only has padding-top:52px
+  // (for the nav). When the banner is present it overlaps the top of page content.
+  // Measure the banner's actual rendered height and add it as padding-top on
+  // #page-content so the profile hero sits fully below both fixed elements.
+  function _adjustForVerifyBanner() {
+    var banner = document.getElementById('j-verify-banner');
+    var pc = document.getElementById('page-content');
+    if (!pc) return;
+    if (banner) {
+      pc.style.paddingTop = (banner.offsetHeight + 4) + 'px';
+    } else {
+      pc.style.paddingTop = '';
+    }
+  }
+  // Watch for banner being injected or dismissed
+  (new MutationObserver(function(muts) {
+    muts.forEach(function(m) {
+      m.addedNodes.forEach(function(n) { if (n.id === 'j-verify-banner') _adjustForVerifyBanner(); });
+      m.removedNodes.forEach(function(n) { if (n.id === 'j-verify-banner') _adjustForVerifyBanner(); });
+    });
+  })).observe(document.body, { childList: true });
+  // Apply immediately if banner was already injected before this script ran
+  _adjustForVerifyBanner();
+
   function _revealHero(el) {
     if (!el || _heroRevealed) return;
     _heroRevealed = true;
@@ -3145,13 +3171,17 @@ document.addEventListener('DOMContentLoaded', function(){
     return false;
   }
 
-  // Show the user's initial in a gold circle instead of a grey placeholder
+  // Show the user's initial in a gold circle instead of a grey placeholder.
+  // IMPORTANT: use visibility:hidden (not display:none) to hide the <img> so that
+  // avatar-upload-wrap (inline-flex) keeps its dimensions. display:none collapses
+  // the container to 0×0, causing the position:absolute placeholder to float free
+  // of its anchor and render above the name heading instead of inside the circle.
   function _showInitialAvatar(name) {
     var img = document.getElementById('avatar-img');
     var ph  = document.getElementById('avatar-placeholder');
-    if (img) { img.style.display = 'none'; }
+    if (img) { img.style.opacity = '0'; img.style.visibility = 'hidden'; }
     if (ph) {
-      ph.style.cssText = 'position:absolute;width:120px;height:120px;border-radius:50%;'
+      ph.style.cssText = 'position:absolute;width:120px;height:120px;border-radius:50%;overflow:hidden;'
         + 'background:radial-gradient(circle at 40% 35%,rgba(201,168,76,0.22),rgba(0,0,0,0.85));'
         + 'border:2px solid rgba(201,168,76,0.55);z-index:1;display:flex;'
         + 'align-items:center;justify-content:center;'
@@ -3165,7 +3195,7 @@ document.addEventListener('DOMContentLoaded', function(){
   function _avatarFadeIn(){
     var img = document.getElementById('avatar-img');
     var ph  = document.getElementById('avatar-placeholder');
-    if(img) img.classList.add('av-loaded');
+    if(img) { img.style.visibility = ''; img.classList.add('av-loaded'); }
     if(ph)  ph.style.display = 'none';
   }
   function _setAvatarSrc(src, lsKey){
