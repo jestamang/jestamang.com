@@ -449,6 +449,70 @@ function pressSectionToggle(){
     return html;
   }
 
+  function parsePressTitle(line) {
+    var m = line.match(/^(.*?)\s*\((\d{1,2}\/\d{1,2}\/\d{4})\)\s*$/);
+    return m ? {title: m[1].trim(), date: m[2]} : {title: line, date: ''};
+  }
+  function fmtDateStr(d) {
+    if (!d) return '';
+    var p = d.split('/');
+    if (p.length < 3) return d;
+    var mo = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
+    return (mo[parseInt(p[0],10)]||p[0])+' '+parseInt(p[1],10)+', '+p[2];
+  }
+  function pubFromUrl(url) {
+    var m = url.match(/^https?:\/\/(?:www\.)?([^\/]+)/);
+    if (!m) return '';
+    var h = m[1];
+    var map = {
+      'aeafanzine.blogspot.com':'AEA Fanzine','pinchofsol.com':'Pinch of Sol',
+      'boredcity.co':'Bored City','justbangers.com':'Just Bangers',
+      'popdosemagazine.co.uk':'Pop Dose Magazine','pop-cultr.com':'Pop-Cultr',
+      'funkandplay.com':'Funk & Play','stereo-saints.com':'Stereo Saints',
+      'sweetnsourmagazine.com':'Sweet N Sour Magazine'
+    };
+    return map[h] || h;
+  }
+  function loadPressFromTxt() {
+    var overflowEl = document.getElementById('press-overflow');
+    var expandBtn  = document.getElementById('press-expand-btn');
+    if (!overflowEl || overflowEl.innerHTML.trim()) return;
+    var shownUrls = {};
+    document.querySelectorAll('#press-fallback .press-read-btn').forEach(function(a) {
+      shownUrls[(a.getAttribute('href')||'').toLowerCase()] = true;
+    });
+    fetch('assets/blog/Press.txt')
+      .then(function(r) { return r.text(); })
+      .then(function(txt) {
+        var lines = txt.split(/\r?\n/);
+        var articles = [], i = 0;
+        while (i < lines.length) {
+          var line = lines[i].trim();
+          var nextLine = i + 1 < lines.length ? lines[i + 1].trim() : '';
+          if (!line || line.indexOf('JESTAMANG PRESS') === 0 || line.indexOf('Sorted') === 0) { i++; continue; }
+          if (nextLine.match(/^https?:\/\//)) {
+            var parsed = parsePressTitle(line);
+            if (!shownUrls[nextLine.toLowerCase()]) {
+              articles.push({
+                title: parsed.title,
+                dateFormatted: fmtDateStr(parsed.date),
+                url: nextLine,
+                publication: pubFromUrl(nextLine)
+              });
+            }
+            i += 2;
+          } else {
+            i++;
+          }
+        }
+        if (articles.length) {
+          overflowEl.innerHTML = buildOverflowHtml(articles);
+          if (expandBtn) expandBtn.style.display = 'block';
+        }
+      })
+      .catch(function() {});
+  }
+
   function renderPress(allArticles) {
     var featured = [], rest = [];
     allArticles.forEach(function (a) {
@@ -472,7 +536,7 @@ function pressSectionToggle(){
     var fallbackEl = document.getElementById('press-fallback');
 
     if (!allArticles.length) {
-      // Fallback already showing — do nothing
+      loadPressFromTxt();
       return;
     }
 
@@ -506,7 +570,7 @@ function pressSectionToggle(){
         renderPress(articles);
       })
       .catch(function () {
-        // Fallback already shown
+        loadPressFromTxt();
       });
   }
 
@@ -516,7 +580,7 @@ function pressSectionToggle(){
       loadPress();
     } else if (++_jt > 80) {
       clearInterval(_jiv);
-      // Fallback already shown
+      loadPressFromTxt();
     }
   }, 100);
 
