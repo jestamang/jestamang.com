@@ -54,7 +54,7 @@
   #hp-login-mobile{opacity:0;transition:none;}
 
 }
-#hp-login-desktop{animation:none;opacity:0;transition:opacity 0.7s ease;}
+#hp-login-desktop{animation:none;opacity:0;}
 /* background-attachment fix for touch devices (covers Instagram in-app browser) */
 @media (hover: none) and (pointer: coarse) {
   body, .bg-wrap { background-attachment: scroll !important; }
@@ -752,9 +752,13 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         }
       }
       var isMobile=(el.id==='hp-login-mobile');
-      var elapsed=(document.timeline&&document.timeline.currentTime!=null)?document.timeline.currentTime:performance.now();
-      var waitMs=isMobile?0:Math.max(0,2000-elapsed);
-      (function(e){setTimeout(function(){e.style.opacity='1';},waitMs);})(el);
+      if(isMobile){
+        el.style.opacity='1';
+      }else{
+        var elapsed=(document.timeline&&document.timeline.currentTime!=null)?document.timeline.currentTime:performance.now();
+        var delay=Math.max(0,2000-elapsed);
+        el.style.animation='fadeIn 0.7s ease '+delay+'ms forwards';
+      }
     });
   }
   var _authRetries=0;
