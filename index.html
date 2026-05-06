@@ -51,10 +51,8 @@
   .mob-nav-item{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-decoration:none;gap:6px;}
   .mob-nav-icon{width:56px;height:56px;object-fit:contain;display:block;}
   .mob-nav-label{font-family:'Luminari',Georgia,serif;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,230,210,0.85);text-align:center;white-space:nowrap;}
-  #hp-login-mobile{opacity:0;transition:none;}
 
 }
-#hp-login-desktop{animation:none;opacity:0;}
 /* background-attachment fix for touch devices (covers Instagram in-app browser) */
 @media (hover: none) and (pointer: coarse) {
   body, .bg-wrap { background-attachment: scroll !important; }
@@ -732,32 +730,13 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     var mobile=document.getElementById('hp-login-mobile');
     [desktop,mobile].forEach(function(el){
       if(!el)return;
-      // Mobile uses .mob-nav-label; desktop uses .nav-label — handle both
       var label=el.querySelector('.nav-label,.mob-nav-label');
-      var icon=el.querySelector('img');
       if(user){
         el.href='profile.html';
         if(label)label.textContent='Profile';
-        if(icon){
-          var av=null;try{av=localStorage.getItem('jesta_av_'+user.uid);}catch(e){}
-          icon.src=av||user.photoURL||'assets/homepage/jesta jr.jpg';
-          icon.style.borderRadius='50%';icon.style.objectFit='cover';
-        }
       }else{
         el.href='login.html';
         if(label)label.textContent='Login';
-        if(icon){
-          icon.src='assets/homepage/nav-icons/log%20in.png';
-          icon.style.borderRadius='';icon.style.objectFit='';
-        }
-      }
-      var isMobile=(el.id==='hp-login-mobile');
-      if(isMobile){
-        el.style.opacity='1';
-      }else{
-        var elapsed=(document.timeline&&document.timeline.currentTime!=null)?document.timeline.currentTime:performance.now();
-        var delay=Math.max(0,2000-elapsed);
-        el.style.animation='fadeIn 0.7s ease '+delay+'ms forwards';
       }
     });
   }
@@ -765,7 +744,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   function initHomeAuth(){
     if(window.jestaAuth){window.jestaAuth.onAuthStateChanged(updateHomeLogin);}
     else if(++_authRetries<25){setTimeout(initHomeAuth,200);}
-    else{updateHomeLogin(null);}
   }
   setTimeout(initHomeAuth,300);
 })();
