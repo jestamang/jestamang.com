@@ -58,8 +58,15 @@
   body, .bg-wrap { background-attachment: scroll !important; }
   #jt-bg { transform: translate3d(0,0,0) !important; will-change: transform; }
 }
-/* Instagram icon: scale down to match visual size of other nav icons */
-#insta-icon-desktop { width: 34px !important; height: 34px !important; }
+/* Nav icon size overrides for visual consistency */
+#insta-icon-desktop{width:42px!important;height:42px!important}
+img.nav-icon[src*="apple"]{width:38px;height:38px}
+img.nav-icon[src*="comix2"]{width:38px;height:38px}
+.nav-icon.blog-icon{width:40px;height:40px}
+img.mob-nav-icon[src*="instagram"]{width:42px;height:42px}
+img.mob-nav-icon[src*="apple"]{width:38px;height:38px}
+img.mob-nav-icon[src*="comix2"]{width:38px;height:38px}
+img.mob-nav-icon[src*="blog"]{width:40px;height:40px}
 #hp-hero{height:100vh;position:relative;overflow:hidden}
 .hp-scroll-hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(201,168,76,0.45);font-size:0.55rem;letter-spacing:0.35em;text-transform:uppercase;animation:hpBounce 2.2s ease-in-out infinite;pointer-events:none;-webkit-user-select:none;user-select:none}
 .hp-scroll-hint span{font-size:1.1rem;line-height:1}
