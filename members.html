@@ -75,7 +75,7 @@ body::before{
 /* ── HERO ── */
 .ic-hero{
   text-align:center;
-  padding:64px 24px 56px;
+  padding:64px 24px 32px;
   position:relative;
   margin-bottom:8px;
 }
@@ -135,7 +135,7 @@ body::before{
 /* ── SECTION DIVIDER ── */
 .gold-rule{
   display:flex;align-items:center;gap:16px;
-  margin:48px 0 44px;
+  margin:28px 0 28px;
 }
 .gold-rule::before,.gold-rule::after{
   content:'';flex:1;height:1px;
@@ -425,7 +425,8 @@ body::before{
   background:linear-gradient(to right,transparent,rgba(201,168,76,0.4),transparent);
 }
 #chat-messages{
-  height:380px;
+  min-height:200px;
+  max-height:600px;
   overflow-y:auto;
   padding:20px 24px;
   display:flex;
@@ -487,15 +488,15 @@ body::before{
 }
 .chat-msg--me .chat-name{color:rgba(160,100,255,0.85);}
 .chat-time{
-  font-family:sans-serif;
+  font-family:'Luminari',serif;
   font-size:0.6rem;
-  color:rgba(255,255,255,0.5);
+  color:rgba(201,168,76,0.6);
 }
 .chat-text{
   background:rgba(20,16,30,0.9);
   border:1px solid rgba(201,168,76,0.1);
   padding:9px 14px;
-  font-family:sans-serif;
+  font-family:'Luminari',serif;
   font-size:0.8rem;
   line-height:1.55;
   color:rgba(240,230,210,0.92);
@@ -584,7 +585,7 @@ body::before{
   .portal-enter{display:none;}
   .tx-card{padding:28px 20px 24px;}
 
-  #chat-messages{height:300px;padding:14px 16px;}
+  #chat-messages{min-height:180px;max-height:400px;padding:14px 16px;}
   .chat-bubble{max-width:85%;}
   #chat-input{padding:14px 16px;}
   #chat-send{padding:14px 16px;}
@@ -609,6 +610,23 @@ body::before{
 h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .tx-title{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .tx-subtitle,.ic-recognize{text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 4px rgba(0,0,0,1),0 0 40px rgba(0,0,0,0.9),1px 1px 3px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+/* ── UPDATES EMPTY STATE ── */
+#updates-empty-state{text-align:center;padding:48px 24px 40px;border:1px solid rgba(201,168,76,0.12);background:rgba(0,0,0,0.3);}
+.ues-glyph{font-size:1.4rem;color:rgba(201,168,76,0.35);margin-bottom:18px;letter-spacing:0.3em;}
+.ues-title{font-size:0.72rem;letter-spacing:0.55em;text-transform:uppercase;color:rgba(201,168,76,0.6);margin-bottom:10px;}
+.ues-sub{font-style:italic;font-size:0.78rem;color:rgba(240,230,210,0.55);letter-spacing:0.08em;}
+/* ── TREATS HOVER SCALE ── */
+.treat-card{transition:border-color 0.3s,transform 0.3s;}
+.treat-card:hover{transform:scale(1.02);}
+/* ── NEW SINCE LAST VISIT ── */
+#new-since-section{display:none;}
+.ns-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.ns-card{background:rgba(5,3,12,0.97);border:1px solid rgba(201,168,76,0.15);padding:20px 18px 18px;text-decoration:none;display:block;transition:border-color 0.3s;}
+.ns-card:hover{border-color:rgba(201,168,76,0.4);}
+.ns-type{font-size:0.6rem;letter-spacing:0.45em;text-transform:uppercase;color:rgba(201,168,76,0.6);margin-bottom:8px;}
+.ns-title{font-size:0.82rem;letter-spacing:0.1em;color:rgba(240,230,210,0.92);line-height:1.35;}
+.ns-meta{font-size:0.62rem;letter-spacing:0.18em;color:rgba(201,168,76,0.5);margin-top:6px;text-transform:uppercase;}
+@media(max-width:768px){.ns-grid{grid-template-columns:1fr;}}
 </style>
 
 <!-- Cloudflare Web Analytics -->
@@ -639,7 +657,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 @media(max-width:767px){#jsearch-overlay{top:52px}#jsearch-inner{padding:12px 16px 12px}#jsearch-input{font-size:16px}.jsearch-hint{letter-spacing:0.08em;font-size:0.6rem;padding:12px 0;white-space:nowrap}}
 </style>
 
-<script>(function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[]).push(arguments);};l=d.createElement(e);l.async=1;l.src=u;n=d.getElementsByTagName(e)[0];n.parentNode.insertBefore(l,n);})(window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');ml('account','2245401');</script>
 </head>
 <body>
 <a href="#page-content" class="skip-link">Skip to main content</a>
@@ -671,12 +688,17 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   </div>
   <div class="gold-rule-sm"></div>
 
+  <div id="updates-empty-state">
+    <div class="ues-glyph">&#10022; &nbsp; &#10022; &nbsp; &#10022;</div>
+    <div class="ues-title">First Transmission Pending</div>
+    <p class="ues-sub">These signals are still forming. Return when the frequency clears.</p>
+  </div>
 
   <div class="gold-rule"><span class="gold-rule-glyph">◈ &nbsp; ◈ &nbsp; ◈</span></div>
 
   <!-- ── SECTION 2: HIDDEN CATALOG ─────────────────────── -->
-  <div class="section-header">
-    <h2 class="section-title">Treats</h2>
+  <div class="section-header" style="text-align:center;">
+    <h2 class="section-title" style="font-size:clamp(1.3rem,3.5vw,1.9rem);">&#10022; Treats &#10022;</h2>
     <p class="section-sub">Members-only links and shortcuts across the Jestamang universe.</p>
   </div>
   <div class="gold-rule-sm"></div>
@@ -802,35 +824,17 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     <div id="chat-status" class="status-msg" style="font-size:0.72rem;letter-spacing:0.1em;padding:4px 0;min-height:1.2em;"></div>
   </div>
 
+  <div id="new-since-section">
+    <div class="gold-rule"><span class="gold-rule-glyph">◈ &nbsp; ◈ &nbsp; ◈</span></div>
+    <div class="section-header" style="text-align:center;">
+      <div class="section-eyebrow">&#9670; Activity</div>
+      <h2 class="section-title">New Since Last Visit</h2>
+      <p class="section-sub" id="ns-sub-text"></p>
+    </div>
+    <div class="gold-rule-sm"></div>
+    <div class="ns-grid" id="ns-grid"></div>
+  </div>
 
-<style id="ml-signup-styles">
-.ml-signup-box{background:rgba(0,0,0,0.6);border:1px solid #c9a84c;padding:32px;max-width:500px;margin:0 auto;text-align:center}
-.ml-signup-title{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.5em;color:#c9a84c;text-transform:uppercase;margin-bottom:10px}
-/* MailerLite form skin — unified across shows.html, blog.html, members.html, and any future page using data-form="8EZtSf" */
-.ml-signup-box .ml-form-embedWrapper{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important}
-.ml-signup-box .ml-form-embedWrapper .ml-form-embedBody,
-.ml-signup-box .ml-form-embedWrapper .ml-form-embedBody .ml-form-formContent{padding:0!important;background:transparent!important}
-.ml-signup-box .ml-form-embedContent,.ml-signup-box .ml-form-embedContentDefault{display:none!important}
-.ml-signup-box input[type="email"],
-.ml-signup-box input[type="text"]{background:transparent!important;border:none!important;border-bottom:1px solid rgba(201,168,76,0.3)!important;border-radius:0!important;color:#e8e0d0!important;font-family:'Luminari',serif!important;font-size:16px!important;letter-spacing:0.12em!important;padding:8px 4px!important;outline:none!important;width:100%!important;max-width:320px!important;box-shadow:none!important;text-align:center!important;caret-color:#c9a84c!important;-webkit-appearance:none!important;appearance:none!important}
-.ml-signup-box input[type="email"]::placeholder,
-.ml-signup-box input[type="text"]::placeholder{color:rgba(201,168,76,0.22)!important;font-style:italic!important}
-.ml-signup-box .ml-subscribe-button,.ml-signup-box button[type="button"]{display:none!important;}
-.ml-signup-box #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit button[type="submit"],.ml-signup-box .ml-form-embedSubmit button[type="submit"]{background:#c9a84c!important;color:#08060a!important;font-family:'Luminari',serif!important;font-size:0.6rem!important;font-weight:normal!important;line-height:normal!important;letter-spacing:0.45em!important;text-transform:uppercase!important;text-align:center!important;border:none!important;border-radius:0!important;padding:0!important;width:auto!important;min-width:200px!important;min-height:46px!important;cursor:pointer!important;margin-top:18px!important;transition:box-shadow 0.2s!important;display:block!important;margin-left:auto!important;margin-right:auto!important;box-shadow:none!important}
-.ml-signup-box #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit,.ml-signup-box .ml-form-embedSubmit{float:none!important;text-align:center!important}
-.ml-signup-box #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit button[type="submit"]:hover,.ml-signup-box .ml-form-embedSubmit button[type="submit"]:hover{background:#c9a84c!important;box-shadow:0 0 24px rgba(201,168,76,0.35)!important}
-.ml-signup-box .ml-form-successBody,.ml-signup-box .ml-form-successContent{background:transparent!important;border:none!important;box-shadow:none!important}
-.ml-signup-box .ml-form-successContent h4{font-family:'Luminari',serif!important;color:rgba(201,168,76,0.7)!important;letter-spacing:0.3em!important;text-transform:uppercase!important;font-size:0.72rem!important;font-weight:normal!important}
-.ml-signup-box .ml-form-successContent p{font-family:'Luminari',serif!important;color:rgba(240,230,210,0.35)!important;font-size:0.62rem!important;letter-spacing:0.14em!important}
-.ml-signup-box .ml-form-fieldRow{margin-bottom:4px!important}
-.ml-signup-box label{display:none!important}
-.ml-signup-box .ml-form-embedSubmitLoad{display:none!important;}
-@media(max-width:520px){.ml-signup-box{padding:24px 16px}.ml-signup-box .ml-form-embedSubmit button[type="submit"]{min-width:180px!important}}
-</style>
-<div class="ml-signup-wrap ml-signup-box" style="position:relative;z-index:1;margin:0 auto 0;padding:32px 24px">
-  <p class="ml-signup-title">JOIN THE JESTAGANG</p>
-  <div class="ml-embedded" data-form="8EZtSf"></div>
-</div>
 </div><!-- /#page-content -->
 
 <!-- ── FIREBASE ─────────────────────────────────────────── -->
@@ -940,6 +944,7 @@ document.addEventListener('DOMContentLoaded', function(){
         document.getElementById('hero-name').textContent =
           'Jestamang sees you, '+fallback+'.';
         initChat();
+        initNewSince();
       })
       .catch(function(){
         currentUserPhoto = user.photoURL || '/assets/homepage/jesta jr.jpg';
@@ -947,6 +952,7 @@ document.addEventListener('DOMContentLoaded', function(){
         document.getElementById('hero-name').textContent =
           'Jestamang sees you, '+fallback+'.';
         initChat();
+        initNewSince();
       });
   });
 
@@ -1100,6 +1106,67 @@ document.addEventListener('DOMContentLoaded', function(){
     });
 
     if(atBottom) container.scrollTop = container.scrollHeight;
+  }
+
+  function initNewSince(){
+    var lastVisitStr = localStorage.getItem('lastMembersVisit');
+    localStorage.setItem('lastMembersVisit', new Date().toISOString());
+    if(!lastVisitStr) return;
+    var lastVisitDate = new Date(lastVisitStr);
+    if(isNaN(lastVisitDate.getTime())) return;
+    var lastVisitTs = firebase.firestore.Timestamp.fromDate(lastVisitDate);
+    var section = document.getElementById('new-since-section');
+    var grid    = document.getElementById('ns-grid');
+    var subText = document.getElementById('ns-sub-text');
+    if(!section || !grid) return;
+    var results = [];
+    var pending = 3;
+    function checkDone(){
+      if(--pending > 0) return;
+      if(!results.length) return;
+      results.sort(function(a,b){return b.ts-a.ts;});
+      results = results.slice(0,9);
+      var html = '';
+      results.forEach(function(item){
+        html += '<a class="ns-card" href="'+esc(item.url)+'">'
+          +'<div class="ns-type">'+esc(item.type)+'</div>'
+          +'<div class="ns-title">'+esc(item.title)+'</div>'
+          +(item.meta?'<div class="ns-meta">'+esc(item.meta)+'</div>':'')
+          +'</a>';
+      });
+      grid.innerHTML = html;
+      var days = Math.floor((Date.now()-lastVisitDate.getTime())/86400000);
+      var sinceStr = days===0?'since your last visit today':days===1?'since yesterday':'in the last '+days+' days';
+      if(subText) subText.textContent = results.length+' new signal'+(results.length!==1?'s':'')+' '+sinceStr+'.';
+      section.style.display = 'block';
+    }
+    db.collection('blogPosts')
+      .where('publishedAt','>',lastVisitTs).orderBy('publishedAt','desc').limit(5).get()
+      .then(function(snap){
+        snap.forEach(function(doc){
+          var d=doc.data();
+          results.push({type:'Blog',title:d.title||'New Post',meta:d.publishedAt?new Date(d.publishedAt.toMillis()).toLocaleDateString():'',url:'blog.html',ts:d.publishedAt?d.publishedAt.toMillis():0});
+        });
+        checkDone();
+      }).catch(function(){checkDone();});
+    db.collection('albums')
+      .where('createdAt','>',lastVisitTs).orderBy('createdAt','desc').limit(5).get()
+      .then(function(snap){
+        snap.forEach(function(doc){
+          var d=doc.data();
+          results.push({type:'Album',title:d.title||'New Album',meta:d.artist||'',url:'albums.html',ts:d.createdAt?d.createdAt.toMillis():0});
+        });
+        checkDone();
+      }).catch(function(){checkDone();});
+    db.collection('shows')
+      .where('createdAt','>',lastVisitTs).orderBy('createdAt','desc').limit(5).get()
+      .then(function(snap){
+        snap.forEach(function(doc){
+          var d=doc.data();
+          results.push({type:'Show',title:d.venue||d.title||'New Show',meta:d.city||'',url:'shows.html',ts:d.createdAt?d.createdAt.toMillis():0});
+        });
+        checkDone();
+      }).catch(function(){checkDone();});
   }
 
   function esc(s){
