@@ -401,18 +401,20 @@ body::before{
 .btn-danger{
   background:transparent;
   border:none;
-  color:rgba(255,255,255,0.2);
+  border-bottom:1px solid rgba(201,168,76,0.3);
+  color:rgba(201,168,76,0.6);
   font-family:'Luminari',serif;
-  font-size:0.65rem;
-  letter-spacing:0.14em;
-  text-decoration:underline;
-  text-underline-offset:3px;
+  font-size:0.8rem;
+  font-style:italic;
+  letter-spacing:0.1em;
+  text-decoration:none;
+  padding-bottom:2px;
   cursor:pointer;
   margin-left:auto;
-  transition:color 0.2s;
+  transition:color 0.2s,border-bottom-color 0.2s;
   min-height:44px;
 }
-.btn-danger:hover{color:rgba(251,56,56,0.6);}
+.btn-danger:hover{color:#FB3838;border-bottom-color:#FB3838;}
 
 /* ── Dossier header row ── */
 .dossier-header{
@@ -474,8 +476,27 @@ body::before{
   letter-spacing:0.08em;
   line-height:1.8;
   text-align:center;
-  padding:28px 0 12px;
+  padding:16px 0 8px;
 }
+.btn-catalog-cta{
+  display:inline-block;
+  margin-top:14px;
+  padding:9px 18px;
+  font-family:'Luminari',serif;
+  font-size:0.68rem;
+  font-style:normal;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:#c9a84c;
+  background:transparent;
+  border:1px solid rgba(201,168,76,0.6);
+  text-decoration:none;
+  cursor:pointer;
+  transition:border-color 0.2s,color 0.2s;
+}
+.btn-catalog-cta:hover{border-color:#c9a84c;color:#c9a84c;}
+#cp-submit{background:#c9a84c;border:1px solid #c9a84c;color:#0a0a0a;transition:background 0.2s,color 0.2s;}
+#cp-submit:hover{background:transparent;color:#c9a84c;box-shadow:none;transform:none;}
 
 /* ── Account actions ── */
 .account-actions{
@@ -1440,8 +1461,8 @@ body::before{
 .notif-title{font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.38em;text-transform:uppercase;color:#c9a84c;margin-bottom:8px;text-shadow:0 0 18px rgba(201,168,76,0.5),0 2px 6px rgba(0,0,0,1);}
 .notif-sub{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.12em;color:rgba(240,230,210,0.55);font-style:italic;margin-bottom:22px;line-height:1.7;}
 .notif-ios-note{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.1em;color:rgba(201,168,76,0.28);margin-top:16px;font-style:italic;}
-.btn-notif-enable{background:transparent;border:1px solid rgba(201,168,76,0.55);color:#c9a84c;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.32em;text-transform:uppercase;padding:12px 28px;cursor:pointer;transition:border-color 0.25s,box-shadow 0.25s,background 0.25s;}
-.btn-notif-enable:hover{border-color:#c9a84c;box-shadow:0 0 20px rgba(201,168,76,0.25);background:rgba(201,168,76,0.06);}
+.btn-notif-enable{background:#c9a84c;border:1px solid #c9a84c;color:#0a0a0a;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.32em;text-transform:uppercase;padding:12px 28px;cursor:pointer;transition:background 0.2s,color 0.2s;}
+.btn-notif-enable:hover{background:transparent;color:#c9a84c;}
 .btn-notif-enable:disabled{opacity:0.5;cursor:default;}
 .btn-notif-enable.notif-active{background:#c9a84c;color:#000;border-color:#c9a84c;}
 .btn-notif-enable.notif-active:hover{background:#dfc060;box-shadow:0 0 20px rgba(201,168,76,0.35);}
@@ -1801,11 +1822,12 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <button class="btn-notif-enable" id="notif-enable-btn">Enable Notifications</button>
       <div class="notif-status" id="notif-status"></div>
       <div class="notif-disabled-confirm" id="notif-disabled-confirm">Transmissions Disabled</div>
-      <div class="notif-ios-note">iOS support coming soon · Works on Android Chrome and desktop browsers</div>
+      <div class="notif-ios-note">&#10022; AVAILABLE ON DESKTOP AND ANDROID &middot; IOS TRANSMISSIONS SOON &#10022;</div>
     </div>
   </div>
 
   <!-- Account Actions -->
+  <div class="natal-section-header" id="sec-access-header" style="display:none;">&#10022; ACCESS &#10022;</div>
   <!-- Change / Set Password (unified section, shown for all authenticated users) -->
   <div class="dark-card profile-section" id="sec-change-password" data-section="change-password" style="display:none;">
     <div class="card-title" id="cp-heading">Change Password</div>
@@ -3560,7 +3582,7 @@ document.addEventListener('DOMContentLoaded', function(){
   function loadFavorites(uid){
     var listEl = document.getElementById('favorites-list');
     if(!uid || !(firebase.auth && firebase.auth().currentUser)){
-      if(listEl) listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.</div>';
+      if(listEl) listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.<br><a class="btn-catalog-cta" href="albums.html">EXPLORE THE CATALOG →</a></div>';
       return;
     }
     db.collection('favorites')
@@ -3569,7 +3591,7 @@ document.addEventListener('DOMContentLoaded', function(){
       .get()
       .then(function(snap){
         if(snap.empty){
-          listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.</div>';
+          listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.<br><a class="btn-catalog-cta" href="albums.html">EXPLORE THE CATALOG →</a></div>';
           return;
         }
         listEl.innerHTML = '';
@@ -3600,11 +3622,11 @@ document.addEventListener('DOMContentLoaded', function(){
       .catch(function(e){
         if(e && (e.code === 'permission-denied' || e.code === 'PERMISSION_DENIED')){
           /* new user — no favorites collection yet */
-          listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.</div>';
+          listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.<br><a class="btn-catalog-cta" href="albums.html">EXPLORE THE CATALOG →</a></div>';
           return;
         }
         console.warn('[profile] non-critical: favorites load failed:', e);
-        listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.</div>';
+        listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.<br><a class="btn-catalog-cta" href="albums.html">EXPLORE THE CATALOG →</a></div>';
       });
   }
 
@@ -3741,12 +3763,14 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // Called from onAuthStateChanged to configure the section for the current user
     window._initChangePassword = function(user) {
-      if (!user) { cpSection.style.display = 'none'; return; }
+      var accessHeader = document.getElementById('sec-access-header');
+      if (!user) { cpSection.style.display = 'none'; if(accessHeader) accessHeader.style.display='none'; return; }
       var providerIds = user.providerData.map(function(p) { return p.providerId; });
       var hasGoogle   = providerIds.indexOf('google.com') !== -1;
       var hasPassword = providerIds.indexOf('password') !== -1;
 
       cpSection.style.display = '';
+      if(accessHeader) accessHeader.style.display = '';
       cpClearMsg();
       cpNewInp.value     = '';
       cpConfirmInp.value = '';
