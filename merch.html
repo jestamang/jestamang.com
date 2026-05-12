@@ -324,34 +324,30 @@ body {
 /* ── PRODUCT GRID ── */
 .merch-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
-  align-items: stretch;
+  padding: 0 24px;
 }
 
 /* ── PRODUCT CARD ── */
 .product-card {
   display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  background: rgba(0, 0, 0, 0.4);
+  flex-direction: column;
+  background: rgba(10, 10, 10, 0.55);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 8px;
   padding: 0;
-  border: 1px solid rgba(201, 168, 76, 0.3);
-  border-radius: 4px;
+  overflow: hidden;
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
 }
 .merch-card-content {
   flex: 1;
-  min-width: 0;
-  padding: 22px 20px;
+  padding: 18px 20px 20px;
   display: flex;
   flex-direction: column;
-  text-align: left;
 }
 
 .product-card:hover {
@@ -361,13 +357,11 @@ body {
 }
 
 .product-image-wrap {
-  flex: 0 0 42%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.2);
+  width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
-  min-height: 280px;
+  background: rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
 }
 
 .product-image-wrap img {
@@ -377,12 +371,26 @@ body {
   display: block;
 }
 
+.bundle-collage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+.bundle-collage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .btn-container {
   margin-top: auto;
-  padding-top: 16px;
+  padding-top: 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .product-name {
@@ -399,7 +407,7 @@ body {
   font-family: 'Luminari', serif;
   font-size: 0.82rem;
   letter-spacing: 0.1em;
-  color: rgba(240, 230, 210, 0.7);
+  color: rgba(201, 168, 76, 0.85);
   margin-bottom: 16px;
   font-style: italic;
 }
@@ -418,10 +426,13 @@ body {
   font-size: 0.9rem;
   font-style: italic;
   color: rgba(240, 230, 210, 0.85);
-  line-height: 1.8;
+  line-height: 1.5;
   margin-bottom: 14px;
   letter-spacing: 0.03em;
-  max-width: 320px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 .product-tagline {
@@ -432,18 +443,21 @@ body {
   text-transform: uppercase;
   margin-bottom: 0;
   line-height: 1.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .acquire-btn {
   display: block;
   background: #c9a84c;
-  color: #000;
+  color: #0a0a0a;
   font-family: 'Luminari', serif;
   font-size: 0.85rem;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   border: 1px solid #c9a84c;
-  padding: 12px 20px;
+  padding: 11px 22px;
   cursor: pointer;
   transition: background 0.3s ease, color 0.3s ease;
   text-decoration: none;
@@ -453,7 +467,7 @@ body {
 }
 
 .acquire-btn:hover {
-  background: #000;
+  background: transparent;
   color: #c9a84c;
   border-color: #c9a84c;
 }
@@ -629,6 +643,9 @@ body {
 .modal-msg.success { color: rgba(2, 225, 39, 0.75); display: block; }
 .modal-msg.error   { color: rgba(251, 56, 56, 0.8); display: block; }
 
+@media (max-width: 1023px) {
+  .merch-grid { grid-template-columns: repeat(2, 1fr); }
+}
 @media (max-width: 600px) {
   .modal-panel { padding: 36px 24px; }
   .content { padding: 16px 20px 60px; }
@@ -668,15 +685,10 @@ body {
   .page-header h1 { font-size: clamp(1.7rem, 7vw, 2.4rem); }
   .page-header { padding-top: 28px; }
   .merch-grid { grid-template-columns: 1fr !important; gap: 16px; padding: 0 16px; }
-  .product-image-wrap { flex: 0 0 35%; min-height: 200px; }
   .merch-card-content { padding: 16px 14px; }
   .acquire-btn { min-height: 44px !important; font-size: 0.8rem !important; padding: 10px 16px !important; }
   .modal-panel, .inquiry-panel, #inquiry-modal .modal-content { width: 95vw !important; padding: 28px 20px !important; }
   .modal-panel input, .modal-panel textarea, .modal-panel select { width: 100% !important; }
-}
-@media (max-width: 420px) {
-  .product-card { flex-direction: column; }
-  .product-image-wrap { flex: none; width: 100%; min-height: 200px; max-height: 240px; }
 }
 
 #jtnav.jtnav-scrolled { background: rgba(0,0,0,0.95) !important; border-bottom: 1px solid rgba(201,168,76,0.5) !important; }
@@ -927,25 +939,28 @@ function _mEsc(s) {
 
 function renderMerchCards(docs) {
   _mGrid.innerHTML = '';
-  docs.forEach(function(item, i) {
+  docs.forEach(function(item) {
     var d = item.data;
     var priceStr = d.price !== undefined ? 'Offering: $' + d.price : '';
     var card = document.createElement('div');
     card.className = 'product-card';
     card.innerHTML =
       '<div class="product-image-wrap">' +
-        '<img src="' + _mEsc(d.imageUrl || '') + '" alt="' + _mEsc(d.name || '') + '" loading="lazy" width="180" height="220">' +
+        '<img src="' + _mEsc(d.imageUrl || '') + '" alt="' + _mEsc(d.name || '') + '" loading="lazy" width="400" height="400">' +
       '</div>' +
       '<div class="merch-card-content">' +
         '<div class="product-name">' + _mEsc(d.name || '') + '</div>' +
+        (d.subtitle ? '<div class="product-subtitle">' + _mEsc(d.subtitle) + '</div>' : '') +
         '<div class="product-price">' + _mEsc(priceStr) + '</div>' +
         '<div class="product-desc">' + _mEsc(d.description || '') + '</div>' +
+        (d.tagline ? '<div class="product-tagline">' + _mEsc(d.tagline) + '</div>' : '') +
         '<div class="btn-container">' +
           (d.gumroadUrl ? '<a class="acquire-btn" href="' + _mEsc(d.gumroadUrl) + '" target="_blank" rel="noopener noreferrer">Acquire This Artifact</a>' : '') +
           '<button class="ask-link" data-product="' + _mEsc(d.name || '') + '">Ask a Question</button>' +
         '</div>' +
       '</div>';
-    var _askLink=card.querySelector('.ask-link');if(_askLink)_askLink.addEventListener('click', function() {
+    var _askLink = card.querySelector('.ask-link');
+    if (_askLink) _askLink.addEventListener('click', function() {
       openModal(this.getAttribute('data-product'));
     });
     _mGrid.appendChild(card);
@@ -958,7 +973,7 @@ var _mFallback = [
     title: 'Quarter Days Cassette Bundle',
     subtitle: 'The Complete 2025 Cycle · Four Seasons on Tape',
     image: 'assets/merch/Bundle.jpg',
-    desc: 'The complete Quarter Days 2025 cycle on tape. Four seasons, four cassettes — Zodiac, New Aeon, Niga Denots, and Jestress Melody. One bundle to hold the full year.',
+    desc: 'The complete Quarter Days 2025 cycle on tape. Four seasons, four cassettes — Zodiac, New Aeon, Niga Denots, and Jestress Melody.',
     tagline: 'Four cassettes · Four seasons · Hand-labored · J-Card included',
     price: 'Offering: $85',
     gumroadUrl: 'https://jestamang.gumroad.com/l/quarter-days-bundle'
@@ -967,7 +982,7 @@ var _mFallback = [
     title: 'Zodiac Cassette',
     subtitle: 'Quarter Days · Spring Equinox 2025',
     image: 'assets/merch/zodiac-cassette.png',
-    desc: 'The Spring Equinox 2025 transmission. 12 tracks, one for each sign of the zodiac, channeled through Children. Psychedelic, ceremonial, mapped to the wheel of the year.',
+    desc: 'The Spring Equinox 2025 transmission. 12 tracks, one for each sign of the zodiac, channeled through Children.',
     tagline: '12 tracks · 25 copies · Hand-labored · J-Card included',
     price: 'Offering: $25',
     gumroadUrl: 'https://jestamang.gumroad.com/l/zodiac-cassette'
@@ -976,7 +991,7 @@ var _mFallback = [
     title: 'New Aeon Cassette',
     subtitle: 'Quarter Days · Summer Solstice 2025',
     image: 'assets/merch/new-aeon-cassette.png',
-    desc: 'The Summer Solstice 2025 transmission from Kek-Buh. Ritual, prophecy, descent, and rebirth — 11 tracks tracing a passage from awoken orb to the dawn of a new aeon. Released on the longest day of the year.',
+    desc: 'The Summer Solstice 2025 transmission from Kek-Buh. 11 tracks tracing a passage from awoken orb to the dawn of a new aeon.',
     tagline: '11 tracks · 25 copies · Hand-labored · J-Card included',
     price: 'Offering: $25',
     gumroadUrl: 'https://jestamang.gumroad.com/l/new-aeon-cassette'
@@ -985,7 +1000,7 @@ var _mFallback = [
     title: 'Niga Denots Cassette',
     subtitle: 'Quarter Days · Fall Equinox 2025',
     image: 'assets/merch/niga-denots-cassette.png',
-    desc: 'The Fall Equinox 2025 transmission from The Ace of Chase. 9 tracks of psychedelic Americana threaded through dream-logic — witch pits, war on hills, cyborgs, aliens. The autumn turn of the Jestamang calendar.',
+    desc: 'The Fall Equinox 2025 transmission from The Ace of Chase. 9 tracks of psychedelic Americana threaded through dream-logic.',
     tagline: '9 tracks · 25 copies · Hand-labored · J-Card included',
     price: 'Offering: $25',
     gumroadUrl: 'https://jestamang.gumroad.com/l/niga-denots-cassette'
@@ -994,7 +1009,7 @@ var _mFallback = [
     title: 'Jestress Melody Cassette',
     subtitle: 'Quarter Days · Winter Solstice 2025',
     image: 'assets/merch/jestress-melody-cassette.png',
-    desc: 'The Winter Solstice 2025 transmission from Cricket Om. 14 tracks spanning awkward birds, wired minds, plagues, quests, and the river bed beneath everything. The longest night of the year, pressed onto tape.',
+    desc: 'The Winter Solstice 2025 transmission from Cricket Om. 14 tracks spanning awkward birds, wired minds, plagues, quests, and the river bed beneath everything.',
     tagline: '14 tracks · 25 copies · Hand-labored · J-Card included',
     price: 'Offering: $25',
     gumroadUrl: 'https://jestamang.gumroad.com/l/jestress-melody-cassette'
@@ -1012,7 +1027,7 @@ var _mFallback = [
     title: 'Jestamang Comix',
     subtitle: 'The Original Publication',
     image: 'assets/merch/comix.png',
-    desc: 'The Jestamang story in sequential art. Sixteen pages of original illustration, printed and bound by hand. This is where the story lives when it is not music.',
+    desc: 'The Jestamang story in sequential art. Sixteen pages of original illustration, printed and bound by hand.',
     tagline: '16 pages · Original artwork · Hand assembled',
     price: 'Offering: $30',
     gumroadUrl: 'https://jestamang.gumroad.com/l/comix'
@@ -1030,7 +1045,7 @@ var _mFallback = [
     title: 'The Jestamang Puzzle',
     subtitle: 'Original Artwork',
     image: 'assets/merch/puzzle.png',
-    desc: 'An original Jestamang image rendered as a puzzle. The act of assembly is the point — the mythology reveals itself one piece at a time. Take your time with this one.',
+    desc: 'An original Jestamang image rendered as a puzzle. The act of assembly is the point — the mythology reveals itself one piece at a time.',
     tagline: 'Original artwork · High quality print · Ships assembled in box',
     price: 'Offering: $40',
     gumroadUrl: 'https://jestamang.gumroad.com/l/puzzle'
@@ -1039,7 +1054,7 @@ var _mFallback = [
     title: 'The Jestamang Card Deck',
     subtitle: '52 Unique Cards',
     image: 'assets/merch/cards.png',
-    desc: 'Fifty-two original illustrations drawn from the Jestamang universe. Each card is its own artifact — an entity, a symbol, a moment from the mythology rendered in ink. No reprints are planned. This deck will not exist forever.',
+    desc: 'Fifty-two original illustrations drawn from the Jestamang universe. Each card is its own artifact — an entity, a symbol, a moment from the mythology rendered in ink.',
     tagline: '52 unique illustrations · Standard deck size · Limited availability',
     price: 'Offering: $40',
     gumroadUrl: 'https://jestamang.gumroad.com/l/cards'
@@ -1048,13 +1063,26 @@ var _mFallback = [
 
 function showFallback() {
   _mGrid.innerHTML = '';
-  _mFallback.forEach(function(p, i) {
+  _mFallback.forEach(function(p) {
     var card = document.createElement('div');
     card.className = 'product-card';
+    var imageHtml;
+    if (p.title === 'Quarter Days Cassette Bundle') {
+      imageHtml =
+        '<div class="bundle-collage">' +
+          '<img src="assets/merch/zodiac-cassette.png" alt="Zodiac" loading="lazy">' +
+          '<img src="assets/merch/new-aeon-cassette.png" alt="New Aeon" loading="lazy">' +
+          '<img src="assets/merch/niga-denots-cassette.png" alt="Niga Denots" loading="lazy">' +
+          '<img src="assets/merch/jestress-melody-cassette.png" alt="Jestress Melody" loading="lazy">' +
+        '</div>';
+    } else {
+      imageHtml =
+        '<div class="product-image-wrap">' +
+          '<img src="' + p.image + '" alt="' + p.title + '" loading="lazy" width="400" height="400">' +
+        '</div>';
+    }
     card.innerHTML =
-      '<div class="product-image-wrap">' +
-        '<img src="' + p.image + '" alt="' + p.title + '" loading="lazy" width="180" height="220">' +
-      '</div>' +
+      imageHtml +
       '<div class="merch-card-content">' +
         '<div class="product-name">' + p.title + '</div>' +
         '<div class="product-subtitle">' + p.subtitle + '</div>' +
@@ -1066,7 +1094,8 @@ function showFallback() {
           '<button class="ask-link" data-product="' + p.title + '">Ask a Question</button>' +
         '</div>' +
       '</div>';
-    var _askLink=card.querySelector('.ask-link');if(_askLink)_askLink.addEventListener('click', function() {
+    var _askLink = card.querySelector('.ask-link');
+    if (_askLink) _askLink.addEventListener('click', function() {
       openModal(this.getAttribute('data-product'));
     });
     _mGrid.appendChild(card);
