@@ -329,7 +329,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 /* ── PRODUCT CARD ── */
@@ -367,19 +367,22 @@ body {
   justify-content: center;
   background: rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  min-height: 180px;
+  min-height: 280px;
 }
 
 .product-image-wrap img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
 }
 
 .btn-container {
   margin-top: auto;
-  padding-top: 14px;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .product-name {
@@ -427,7 +430,7 @@ body {
   letter-spacing: 0.15em;
   color: rgba(201, 168, 76, 0.85);
   text-transform: uppercase;
-  margin-bottom: 24px;
+  margin-bottom: 0;
   line-height: 1.7;
 }
 
@@ -445,7 +448,6 @@ body {
   transition: background 0.3s ease, color 0.3s ease;
   text-decoration: none;
   text-align: center;
-  margin-bottom: 10px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -466,7 +468,6 @@ body {
   cursor: pointer;
   background: none;
   border: none;
-  margin-bottom: 12px;
   transition: color 0.2s;
   text-decoration: none;
   text-align: center;
@@ -667,7 +668,7 @@ body {
   .page-header h1 { font-size: clamp(1.7rem, 7vw, 2.4rem); }
   .page-header { padding-top: 28px; }
   .merch-grid { grid-template-columns: 1fr !important; gap: 16px; padding: 0 16px; }
-  .product-image-wrap { flex: 0 0 35%; }
+  .product-image-wrap { flex: 0 0 35%; min-height: 200px; }
   .merch-card-content { padding: 16px 14px; }
   .acquire-btn { min-height: 44px !important; font-size: 0.8rem !important; padding: 10px 16px !important; }
   .modal-panel, .inquiry-panel, #inquiry-modal .modal-content { width: 95vw !important; padding: 28px 20px !important; }
