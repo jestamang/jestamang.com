@@ -329,6 +329,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
+  align-items: start;
 }
 
 /* ── PRODUCT CARD ── */
@@ -360,14 +361,19 @@ body {
   width: 100%;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.4);
+  background: #0a0a0a;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-image-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   display: block;
 }
 
@@ -377,6 +383,8 @@ body {
   grid-template-rows: 1fr 1fr;
   width: 100%;
   aspect-ratio: 1 / 1;
+  gap: 2px;
+  background: #0a0a0a;
 }
 .bundle-collage img {
   width: 100%;
@@ -427,12 +435,35 @@ body {
   font-style: italic;
   color: rgba(240, 230, 210, 0.85);
   line-height: 1.5;
-  margin-bottom: 14px;
+  margin-bottom: 4px;
   letter-spacing: 0.03em;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
+}
+.product-card.expanded .product-desc {
+  -webkit-line-clamp: unset;
+  display: block;
+  overflow: visible;
+}
+.read-more-btn {
+  background: none;
+  border: none;
+  color: #c9a84c;
+  font-family: 'Luminari', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  font-style: italic;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 2px;
+  margin-bottom: 10px;
+  text-align: left;
+  transition: color 0.15s;
+}
+.read-more-btn:hover {
+  color: rgba(201, 168, 76, 0.65);
 }
 
 .product-tagline {
@@ -965,6 +996,27 @@ function renderMerchCards(docs) {
     });
     _mGrid.appendChild(card);
   });
+  requestAnimationFrame(initReadMore);
+}
+
+function initReadMore() {
+  _mGrid.querySelectorAll('.product-desc').forEach(function(el) {
+    var existing = el.nextElementSibling;
+    if (existing && existing.classList.contains('read-more-btn')) existing.remove();
+    if (el.scrollHeight > el.clientHeight + 2) {
+      var btn = document.createElement('button');
+      btn.className = 'read-more-btn';
+      btn.textContent = 'READ MORE ↓';
+      btn.setAttribute('aria-expanded', 'false');
+      btn.addEventListener('click', function() {
+        var card = el.closest('.product-card');
+        var expanded = card.classList.toggle('expanded');
+        btn.textContent = expanded ? 'READ LESS ↑' : 'READ MORE ↓';
+        btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      });
+      el.insertAdjacentElement('afterend', btn);
+    }
+  });
 }
 
 // FALLBACK: pre-Firestore products — Update products via admin.html
@@ -1104,6 +1156,7 @@ function showFallback() {
 
 // Render fallback immediately — no loading state
 showFallback();
+requestAnimationFrame(initReadMore);
 
 // Silently swap with Firestore data if it differs from fallback
 var _jt = 0, _jiv = setInterval(function() {
