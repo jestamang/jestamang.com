@@ -244,6 +244,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <p class="show-date">MAY 29 · '26</p>
   <!-- VENUE: venue name -->
   <h3 class="show-venue" style="text-align:center">Madhouse</h3>
+  <p style="font-family:'Luminari',serif;font-style:italic;font-size:0.72rem;color:rgba(201,168,76,0.7);text-align:center;letter-spacing:0.06em;margin:4px 0 6px;">Madhouse - Sataria, Jestamang, Simon Says Nothing, Whatever</p>
   <!-- CITY: city and state -->
   <p class="show-city">Ft. Myers, FL</p>
   <div class="show-rule"></div>
@@ -252,7 +253,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <div class="show-ticket-wrap" style="text-align:center">
     <!-- TICKETS: replace # with real ticket URL when available -->
     <!-- Supports: Eventbrite, Dice.fm, Ticketmaster, direct venue links, or any URL -->
-    <a class="show-ticket-btn" href="#">Acquire Entry</a>
+    <a class="show-ticket-btn" href="https://www.eventbrite.com/e/madhouse-sataria-jestamang-whatever-simon-says-nothing-gutter-love-tickets-1986858167263?aff=oddtdtcreator" target="_blank" rel="noopener noreferrer">Get Tickets</a>
     <!-- FREE ENTRY: replace above line with this if no tickets needed: -->
     <!-- <span class="show-free-entry">Free Entry</span> -->
     <!-- SOLD OUT: replace above line with this if sold out: -->
@@ -435,7 +436,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       }
       var ticketHtml = '';
       if (show.ticketUrl && show.ticketUrl !== '#' && show.ticketUrl.trim()) {
-        ticketHtml = '<div class="show-ticket-wrap"><a class="show-ticket-btn" href="' + esc(show.ticketUrl) + '" target="_blank" rel="noopener noreferrer">Acquire Entry</a></div>';
+        ticketHtml = '<div class="show-ticket-wrap"><a class="show-ticket-btn" href="' + esc(show.ticketUrl) + '" target="_blank" rel="noopener noreferrer">Get Tickets</a></div>';
       } else if (show.price && show.price.toLowerCase().indexOf('free') !== -1) {
         ticketHtml = '<div class="show-ticket-wrap"><span class="show-free-entry">Free Entry</span></div>';
       }
