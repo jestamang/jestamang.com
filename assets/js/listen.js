@@ -3,7 +3,6 @@
 
   var MANIFEST   = 'https://pub-75f71ff978d340cfa0ee8e4b628e3ea4.r2.dev/manifest.json';
   var RECENT_KEY = 'listenRecentTransmissions';
-  var SHUFFLE_KEY = 'listenShuffleEnabled';
   var MAX_RECENT  = 10;
   var FADE_STEPS  = 10;
   var FADE_MS     = 20;
@@ -100,14 +99,6 @@
     b.textContent = p ? '⏸' : '⏯';
     b.setAttribute('aria-label', p ? 'Pause' : 'Play');
     b.setAttribute('data-playing', p ? '1' : '0');
-  }
-
-  function setShuffle(on) {
-    shuffleOn = on;
-    var b = $id('lc-shuffle');
-    if (!b) return;
-    b.setAttribute('data-active', on ? '1' : '0');
-    b.title = on ? 'Shuffle: on' : 'Shuffle: off';
   }
 
   function showLoad(v) {
@@ -228,13 +219,6 @@
     }
   }
 
-  function toggleShuffle() {
-    var on = !shuffleOn;
-    try { localStorage.setItem(SHUFFLE_KEY, on ? '1' : '0'); } catch (e) {}
-    setShuffle(on);
-    buildQ();
-  }
-
   /* ---- progress bar seek ---- */
   function initSeek() {
     var bar = $id('lc-progress');
@@ -294,8 +278,6 @@
 
   /* ---- init ---- */
   function init() {
-    try { if (localStorage.getItem(SHUFFLE_KEY) === '0') shuffleOn = false; } catch (e) {}
-    setShuffle(shuffleOn);
     renderRec();
 
     audio = $id('lc-audio');
@@ -316,14 +298,12 @@
     var pb   = $id('lc-play');
     var prev = $id('lc-prev');
     var next = $id('lc-next');
-    var sf   = $id('lc-shuffle');
     var rt   = $id('lc-retry');
     var ios  = $id('lc-ios');
 
     if (pb)   pb.addEventListener('click', togglePlay);
     if (prev) prev.addEventListener('click', playPrev);
     if (next) next.addEventListener('click', function () { playNext(true); });
-    if (sf)   sf.addEventListener('click', toggleShuffle);
     if (rt)   rt.addEventListener('click', fetchManifest);
     if (ios)  ios.addEventListener('click', function () {
       ios.style.display = 'none';
