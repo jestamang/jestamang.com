@@ -266,7 +266,9 @@
     xhr.onload = function () {
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
-          tracks = JSON.parse(xhr.responseText);
+          var data = JSON.parse(xhr.responseText);
+          tracks = Array.isArray(data) ? data : (data.tracks || []);
+          console.log('[listen] manifest loaded, tracks:', tracks.length);
           if (!tracks.length) { showLoad(false); showErr('Empty catalog.'); return; }
           buildQ();
           var isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
