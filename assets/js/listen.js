@@ -92,7 +92,6 @@
     if (me) me.textContent = t ? (t.artist + (t.album ? ' · ' + t.album : '')) : '';
     setArt(t && t.artwork ? t.artwork : null);
     document.title = t ? (t.title + ' — Jestamang Radio') : 'Listen | Jestamang';
-    if (t) setFreq(t.id);
   }
 
   function updProg() {
@@ -171,23 +170,6 @@
         });
       })(items[j]);
     }
-  }
-
-  /* ---- frequency display ---- */
-  function trackFreq(id) {
-    var s = String(id), h = 5381;
-    for (var i = 0; i < s.length; i++) {
-      h = ((h << 5) + h + s.charCodeAt(i)) & 0x7FFFFFFF;
-    }
-    return (88.0 + (h % 201) * 0.1).toFixed(1) + ' MHz';
-  }
-
-  function setFreq(id) {
-    var el = $id('lc-freq');
-    if (!el) return;
-    el.style.opacity = '0';
-    var freq = trackFreq(id || '0');
-    setTimeout(function () { el.textContent = freq; el.style.opacity = '1'; }, 200);
   }
 
   /* ---- waveform ---- */
