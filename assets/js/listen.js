@@ -16,6 +16,15 @@
   var fadeTmr    = null;
   var skipTmr    = null;
 
+  /* waveform */
+  var wCtx       = null;
+  var aCtx       = null;
+  var analyser   = null;
+  var waveReal   = false;
+  var zeroCnt    = 0;
+  var NUM_BARS   = 18;
+  var synthBars  = [];
+
   /* ---- queue ---- */
   function _shuf(a) {
     for (var i = a.length - 1; i > 0; i--) {
@@ -83,6 +92,7 @@
     if (me) me.textContent = t ? (t.artist + (t.album ? ' · ' + t.album : '')) : '';
     setArt(t && t.artwork ? t.artwork : null);
     document.title = t ? (t.title + ' — Jestamang Radio') : 'Listen | Jestamang';
+    if (t) setFreq(t.id);
   }
 
   function updProg() {
@@ -99,6 +109,12 @@
     b.textContent = p ? '⏸' : '⏯';
     b.setAttribute('aria-label', p ? 'Pause' : 'Play');
     b.setAttribute('data-playing', p ? '1' : '0');
+    var dot = $id('lc-onair-dot');
+    if (dot) {
+      if (p) dot.classList.remove('paused');
+      else   dot.classList.add('paused');
+    }
+    if (aCtx && aCtx.state === 'suspended') aCtx.resume().catch(function () {});
   }
 
   function showLoad(v) {
@@ -155,6 +171,105 @@
         });
       })(items[j]);
     }
+  }
+
+  /* ---- frequency display ---- */
+  function trackFreq(id) {
+    var s = String(id), h = 5381;
+    for (var i = 0; i < s.length; i++) {
+      h = ((h << 5) + h + s.charCodeAt(i)) & 0x7FFFFFFF;
+    }
+    return (88.0 + (h % 201) * 0.1).toFixed(1) + ' MHz';
+  }
+
+  function setFreq(id) {
+    var el = $id('lc-freq');
+    if (!el) return;
+    el.style.opacity = '0';
+    var freq = trackFreq(id || '0');
+    setTimeout(function () { el.textContent = freq; el.style.opacity = '1'; }, 200);
+  }
+
+  /* ---- waveform ---- */
+  function initSynthBars() {
+    synthBars = [];
+    for (var i = 0; i < NUM_BARS; i++) {
+      synthBars.push({
+        h: 0.08 + Math.random() * 0.35,
+        v: (0.004 + Math.random() * 0.012) * (Math.random() > 0.5 ? 1 : -1)
+      });
+    }
+  }
+
+  function drawWave() {
+    var canvas = $id('lc-wave');
+    if (!canvas || !wCtx) { requestAnimationFrame(drawWave); return; }
+    var W = canvas.offsetWidth  || 320;
+    var H = canvas.offsetHeight || 40;
+    if (canvas.width !== W)  canvas.width  = W;
+    if (canvas.height !== H) canvas.height = H;
+    var pb = $id('lc-play');
+    var playing = pb && pb.getAttribute('data-playing') === '1';
+    var barW = Math.max(2, Math.floor((W - (NUM_BARS + 1) * 2) / NUM_BARS));
+    wCtx.clearRect(0, 0, W, H);
+
+    if (waveReal && analyser && aCtx && aCtx.state !== 'closed') {
+      var buf = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteFrequencyData(buf);
+      var sum = 0;
+      for (var k = 0; k < buf.length; k++) sum += buf[k];
+      if (sum === 0 && playing) { zeroCnt++; if (zeroCnt > 30) waveReal = false; }
+      else zeroCnt = 0;
+      if (waveReal) {
+        for (var i = 0; i < NUM_BARS; i++) {
+          var val = buf[Math.floor(i * buf.length / NUM_BARS)] / 255;
+          if (!playing) val *= 0.3;
+          var bH = Math.max(2, val * H);
+          wCtx.fillStyle = 'rgba(201,168,76,' + (0.35 + val * 0.65) + ')';
+          wCtx.fillRect(2 + i * (barW + 2), (H - bH) / 2, barW, bH);
+        }
+        requestAnimationFrame(drawWave);
+        return;
+      }
+    }
+
+    /* synthetic fallback */
+    for (var j = 0; j < synthBars.length; j++) {
+      if (playing) {
+        synthBars[j].h += synthBars[j].v;
+        if (synthBars[j].h > 0.88 || synthBars[j].h < 0.04) {
+          synthBars[j].v = -synthBars[j].v + (Math.random() * 0.004 - 0.002);
+        }
+      }
+      var bH2   = Math.max(2, synthBars[j].h * H);
+      var alpha = playing ? (0.3 + synthBars[j].h * 0.7) : (0.12 + synthBars[j].h * 0.2);
+      wCtx.fillStyle = 'rgba(201,168,76,' + alpha + ')';
+      wCtx.fillRect(2 + j * (barW + 2), (H - bH2) / 2, barW, bH2);
+    }
+    requestAnimationFrame(drawWave);
+  }
+
+  function initWave() {
+    var canvas = $id('lc-wave');
+    if (!canvas) return;
+    wCtx = canvas.getContext('2d');
+    initSynthBars();
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) throw new Error('no AudioContext');
+      aCtx     = new AC();
+      analyser = aCtx.createAnalyser();
+      analyser.fftSize = 64;
+      analyser.smoothingTimeConstant = 0.8;
+      var src  = aCtx.createMediaElementSource(audio);
+      src.connect(analyser);
+      analyser.connect(aCtx.destination);
+      waveReal = true;
+    } catch (e) {
+      if (aCtx) { try { aCtx.close(); } catch (ex) {} aCtx = null; }
+      analyser = null; waveReal = false;
+    }
+    requestAnimationFrame(drawWave);
   }
 
   /* ---- playback ---- */
@@ -314,6 +429,7 @@
     });
 
     initSeek();
+    initWave();
     fetchManifest();
   }
 

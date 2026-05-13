@@ -71,6 +71,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* shuffle */
 .lc-shuffle-label{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.45em;text-transform:uppercase;color:#c9a84c;text-align:center;margin-top:2px;-webkit-user-select:none;user-select:none}
 
+/* ---- radio aesthetic ---- */
+.lc-onair{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;-webkit-user-select:none;user-select:none}
+#lc-onair-dot{width:8px;height:8px;border-radius:50%;background:#FB3838;flex-shrink:0;animation:lcDotPulse 1.5s ease-in-out infinite}
+#lc-onair-dot.paused{animation:none;opacity:0.3}
+@keyframes lcDotPulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.lc-onair-text{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.35em;text-transform:uppercase;color:#c9a84c}
+#lc-wave{display:block;width:320px;height:40px;max-width:100%;margin-bottom:8px}
+#lc-freq{position:absolute;top:12px;left:12px;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.2em;color:#c9a84c;text-transform:uppercase;pointer-events:none;z-index:2;transition:opacity 0.2s ease}
+.lc-station-id{font-family:'Luminari',serif;font-size:0.63rem;letter-spacing:0.4em;text-transform:uppercase;color:#c9a84c;text-align:center;margin-top:0;margin-bottom:6px;-webkit-user-select:none;user-select:none}
+.lc-now-bcast{font-family:'Luminari',serif;font-size:0.63rem;letter-spacing:0.38em;text-transform:uppercase;color:rgba(201,168,76,0.75);text-align:center;margin-bottom:8px;-webkit-user-select:none;user-select:none}
+
 /* ---- RIGHT aside ---- */
 .lc-right{}
 .lc-right-panel{margin-bottom:28px}
@@ -109,6 +120,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .lc-center{order:1}
   .lc-right{order:3}
   .lc-art-wrap,#lc-artwork{width:260px;height:260px}
+  #lc-wave{width:260px;height:36px}
 }
 @media (max-width:768px){
   input,textarea,select{font-size:16px!important}
@@ -121,6 +133,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .lc-stage{padding:28px 16px 80px}
   .lc-heading{letter-spacing:0.25em}
   .lc-art-wrap,#lc-artwork{width:240px;height:240px}
+  #lc-wave{width:240px!important;height:32px!important}
   .lc-prog-wrap,#lc-time,#lc-title,#lc-meta{max-width:100%}
   .lc-social-link{font-size:0.62rem}
 }
@@ -225,15 +238,33 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
     <!-- CENTER: PLAYER -->
     <div class="lc-center">
+
+      <!-- 1. ON AIR indicator -->
+      <div class="lc-onair" aria-hidden="true">
+        <span id="lc-onair-dot" class="lc-onair-dot paused"></span>
+        <span class="lc-onair-text">On Air</span>
+      </div>
+
+      <!-- 2. Waveform canvas -->
+      <canvas id="lc-wave" width="320" height="40" aria-hidden="true"></canvas>
+
+      <!-- 3. Artwork (with frequency display + loading overlay) -->
       <div class="lc-art-wrap">
+        <span id="lc-freq" aria-hidden="true">88.0 MHz</span>
         <img id="lc-artwork" src="assets/homepage/logo png.png" alt="Album artwork" width="320" height="320">
         <div id="lc-loading" style="display:flex">
           <span class="lc-spin">✦</span>
         </div>
       </div>
 
+      <!-- 4. Station identifier (static) -->
+      <p class="lc-station-id" aria-hidden="true">✦ Jestamang Radio ✦</p>
+
       <div id="lc-error"></div>
       <button id="lc-retry">Retry</button>
+
+      <!-- 5. Now Broadcasting label (static) -->
+      <p class="lc-now-bcast" aria-hidden="true">✦ Now Broadcasting ✦</p>
 
       <div id="lc-title">Loading…</div>
       <div id="lc-meta"></div>
