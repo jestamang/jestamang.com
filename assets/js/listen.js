@@ -224,7 +224,7 @@
         }
       }
       var bH2   = Math.max(2, synthBars[j].h * H);
-      var alpha = playing ? (0.3 + synthBars[j].h * 0.7) : (0.12 + synthBars[j].h * 0.2);
+      var alpha = playing ? (0.4 + synthBars[j].h * 0.6) : (0.25 + synthBars[j].h * 0.3);
       wCtx.fillStyle = 'rgba(201,168,76,' + alpha + ')';
       wCtx.fillRect(2 + j * (barW + 2), (H - bH2) / 2, barW, bH2);
     }
