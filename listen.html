@@ -3,19 +3,19 @@
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Listen | Jestamang</title>
-<meta name="description" content="Jestamang Radio — stream a random album from the full catalog. One transmission at a time. Discover Quarter Days, NONS, 2K2123, and the full archive.">
-<meta name="keywords" content="Jestamang, radio, listen, stream, music, psychedelic, bandcamp, shuffle">
+<meta name="description" content="Jestamang Radio — stream the full catalog continuously. 1,185 tracks, shuffled by default. No ads, no platform branding.">
+<meta name="keywords" content="Jestamang, radio, listen, stream, music, psychedelic, shuffle, R2">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://jestamang.com/listen.html">
 <meta property="og:site_name" content="Jestamang">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Listen | Jestamang">
-<meta property="og:description" content="Jestamang Radio — stream a random album from the full catalog. One transmission at a time. Discover Quarter Days, NONS, 2K2123, and the full archive.">
+<meta property="og:description" content="Jestamang Radio — stream the full catalog continuously. 1,185 tracks, shuffled by default.">
 <meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 <meta property="og:url" content="https://jestamang.com/listen.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Listen | Jestamang">
-<meta name="twitter:description" content="Jestamang Radio — stream a random album from the full catalog. One transmission at a time. Discover Quarter Days, NONS, 2K2123, and the full archive.">
+<meta name="twitter:description" content="Jestamang Radio — stream the full catalog continuously. 1,185 tracks, shuffled by default.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 <style>
 @font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
@@ -23,44 +23,121 @@
 html{scroll-behavior:smooth}
 body{font-family:'Luminari',serif;background:#000;background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;min-height:100vh;color:white;position:relative}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 35%,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.75) 100%);z-index:0;pointer-events:none}
-.radio-stage{position:relative;z-index:1;min-height:calc(100vh - 52px);display:flex;align-items:center;justify-content:center;padding:40px 24px 80px}
-.radio-inner{width:100%;max-width:700px;text-align:center}
-.radio-heading{font-family:'Luminari',serif;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:0.42em;text-transform:uppercase;color:#c9a84c;text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1);margin-bottom:12px}
-.radio-sub{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:1.05rem;color:rgba(240,230,210,0.95);letter-spacing:0.06em;text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 4px rgba(0,0,0,1),0 0 40px rgba(0,0,0,0.9),1px 1px 3px rgba(0,0,0,1);margin-bottom:28px}
-#radio-player-wrap{transition:opacity 0.15s ease;margin-bottom:16px;width:100%;max-width:700px}
-#radio-player{display:block;width:100%;border:0;border-radius:2px}
-#radio-title{font-family:'Luminari',serif;font-size:1.1rem;letter-spacing:0.08em;color:#c9a84c;text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 40px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1);transition:opacity 0.15s ease;margin-bottom:4px;min-height:1.4em}
-#radio-artist{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.9rem;color:rgba(240,230,210,0.95);text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 4px rgba(0,0,0,1),0 0 40px rgba(0,0,0,0.9),1px 1px 3px rgba(0,0,0,1);transition:opacity 0.15s ease;margin-bottom:24px;min-height:1.3em}
-.radio-shuffle-btn{font-family:'Luminari',Georgia,serif;font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;color:#c9a84c;background:rgba(0,0,0,0.6);border:1px solid rgba(201,168,76,0.55);padding:10px 32px;cursor:pointer;transition:border-color 0.2s,background 0.2s,box-shadow 0.2s;min-height:44px}
-.radio-shuffle-btn:hover{border-color:#c9a84c;background:rgba(201,168,76,0.08);box-shadow:0 0 16px rgba(201,168,76,0.15)}
-h1{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 
+/* ---- LISTENING CHAMBER ---- */
+.lc-stage{position:relative;z-index:1;padding:40px 24px 80px;min-height:calc(100vh - 52px)}
+.lc-page-head{max-width:1100px;margin:0 auto 36px;text-align:center}
+.lc-heading{font-family:'Luminari',serif;font-size:clamp(1.4rem,4vw,2.2rem);letter-spacing:0.45em;text-transform:uppercase;color:#c9a84c;text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8);margin-bottom:10px}
+.lc-sub{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.9rem;color:rgba(240,230,210,0.6);letter-spacing:0.1em}
 
+/* grid */
+.lc-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:200px 1fr 260px;gap:40px;align-items:start}
 
+/* panel headings */
+.lc-panel-h{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.45em;text-transform:uppercase;color:rgba(201,168,76,0.65);text-align:center;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid rgba(201,168,76,0.12)}
 
-@media (max-width: 768px) {
-  input, textarea, select { font-size: 16px !important; }
-  body { overflow-x: hidden; }
-  body, .bg-wrap { background-attachment: scroll !important; }
-  * { box-sizing: border-box; }
-  #jt-bg { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; object-position: center !important; transform: none !important; }
-  button, a, [role="button"] { min-height: 44px; }
-  .home-btn { display: none !important; }
-  .radio-stage { padding: 20px 16px 80px; align-items: flex-start; }
-  .radio-heading { font-size: clamp(1.6rem, 7vw, 2.2rem); letter-spacing: 0.22em; }
-  .radio-shuffle-btn { width: 100%; }
-  
-  
+/* ---- LEFT aside ---- */
+.lc-left{}
+.lc-social-link{display:flex;align-items:center;gap:10px;padding:11px 14px;text-decoration:none;color:rgba(240,230,210,0.8);border:1px solid rgba(201,168,76,0.12);margin-bottom:8px;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;transition:border-color 0.2s,color 0.2s;min-height:44px}
+.lc-social-link:hover{border-color:rgba(201,168,76,0.55);color:#c9a84c}
+.lc-social-link svg{flex-shrink:0;opacity:0.75}
+.lc-social-link:hover svg{opacity:1}
+
+/* ---- CENTER player ---- */
+.lc-center{display:flex;flex-direction:column;align-items:center}
+.lc-art-wrap{position:relative;width:320px;height:320px;margin-bottom:20px;flex-shrink:0}
+#lc-artwork{width:320px;height:320px;object-fit:cover;display:block;border:1px solid rgba(201,168,76,0.22);background:#050312}
+#lc-loading{position:absolute;inset:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center}
+.lc-spin{font-size:1.6rem;color:#c9a84c;display:inline-block;animation:lcSpin 1.4s linear infinite}
+@keyframes lcSpin{0%{opacity:0.2;transform:rotate(0deg)}50%{opacity:1;transform:rotate(180deg)}100%{opacity:0.2;transform:rotate(360deg)}}
+#lc-error{font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.2em;color:rgba(240,80,80,0.85);text-align:center;margin-bottom:8px;display:none}
+#lc-retry{display:none;font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.3em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.4);padding:6px 18px;cursor:pointer;margin-bottom:12px;transition:border-color 0.2s}
+#lc-retry:hover{border-color:#c9a84c}
+#lc-title{font-family:'Luminari',serif;font-size:1.05rem;letter-spacing:0.1em;color:#c9a84c;text-align:center;margin-bottom:6px;min-height:1.4em;text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 6px rgba(0,0,0,1);width:100%;max-width:360px}
+#lc-meta{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.82rem;color:rgba(240,230,210,0.65);text-align:center;letter-spacing:0.06em;margin-bottom:18px;min-height:1.2em;width:100%;max-width:360px}
+
+/* progress */
+.lc-prog-wrap{width:100%;max-width:360px;margin-bottom:6px}
+#lc-progress{width:100%;height:4px;background:rgba(201,168,76,0.12);cursor:pointer;position:relative;border-radius:2px}
+#lc-progress:hover{background:rgba(201,168,76,0.22)}
+#lc-fill{height:100%;background:#c9a84c;width:0%;border-radius:2px;pointer-events:none;transition:width 0.1s linear}
+#lc-time{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-align:right;margin-bottom:22px;width:100%;max-width:360px}
+
+/* controls */
+.lc-controls{display:flex;align-items:center;justify-content:center;gap:28px;margin-bottom:18px}
+.lc-ctrl{background:none;border:none;color:#c9a84c;font-size:1.5rem;cursor:pointer;padding:8px;line-height:1;transition:opacity 0.2s,transform 0.15s;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center}
+.lc-ctrl:hover{opacity:0.7;transform:scale(1.12)}
+#lc-play{font-size:1.9rem}
+
+/* shuffle */
+#lc-shuffle{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.4em;text-transform:uppercase;background:none;border:1px solid rgba(201,168,76,0.18);padding:8px 22px;cursor:pointer;transition:border-color 0.2s,color 0.2s;min-height:36px;color:rgba(201,168,76,0.3)}
+#lc-shuffle[data-active="1"]{color:#c9a84c;border-color:rgba(201,168,76,0.55)}
+#lc-shuffle:hover{border-color:rgba(201,168,76,0.5)}
+
+/* ---- RIGHT aside ---- */
+.lc-right{}
+.lc-right-panel{margin-bottom:28px}
+.lc-catalog-link{display:block;text-align:center;color:rgba(201,168,76,0.8);font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.28em;text-transform:uppercase;text-decoration:none;border:1px solid rgba(201,168,76,0.22);padding:13px 16px;transition:border-color 0.2s,color 0.2s,background 0.2s;min-height:44px;display:flex;align-items:center;justify-content:center}
+.lc-catalog-link:hover{border-color:#c9a84c;color:#c9a84c;background:rgba(201,168,76,0.05)}
+
+/* ---- RECENT TRANSMISSIONS ---- */
+.lc-recent{max-width:1100px;margin:48px auto 0;padding:0}
+.lc-recent-list{list-style:none;padding:0;margin:0;border-top:1px solid rgba(201,168,76,0.1)}
+.lc-re-item{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-bottom:1px solid rgba(201,168,76,0.07);cursor:pointer;transition:background 0.15s}
+.lc-re-item:hover{background:rgba(201,168,76,0.05)}
+.lc-re-n{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.15em;color:rgba(201,168,76,0.35);flex-shrink:0;width:20px;padding-top:3px}
+.lc-re-body{flex:1;min-width:0}
+.lc-re-t{display:block;font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.08em;color:rgba(240,230,210,0.9);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lc-re-m{display:block;font-family:Georgia,serif;font-style:italic;font-size:0.7rem;color:rgba(201,168,76,0.5);letter-spacing:0.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lc-re-empty{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.3em;color:rgba(201,168,76,0.3);text-align:center;padding:24px 0;list-style:none}
+
+/* ---- iOS overlay ---- */
+#lc-ios{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.93);display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px;cursor:pointer;text-align:center;padding:24px}
+.lc-ios-glyph{font-size:2rem;color:rgba(201,168,76,0.45);letter-spacing:0.4em}
+.lc-ios-text{font-family:'Luminari',serif;font-size:0.78rem;letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c}
+.lc-ios-hint{font-family:Georgia,serif;font-style:italic;font-size:0.8rem;color:rgba(240,230,210,0.45);letter-spacing:0.06em;margin-top:6px}
+
+/* MailerLite dark overrides */
+.ml-form-embedWrapper,.ml-embedded{background:transparent!important}
+.ml-form-embedWrapper .ml-form-embedBody,.ml-embedded .ml-form-embedBody{padding:0!important}
+.ml-form-embedWrapper input,.ml-embedded input{background:rgba(0,0,0,0.5)!important;border:1px solid rgba(201,168,76,0.3)!important;color:#c9a84c!important;font-family:'Luminari',serif!important;font-size:0.75rem!important;letter-spacing:0.1em!important;border-radius:0!important}
+.ml-form-embedWrapper input::placeholder,.ml-embedded input::placeholder{color:rgba(201,168,76,0.35)!important}
+.ml-form-embedWrapper button[type="submit"],.ml-embedded button[type="submit"]{background:rgba(201,168,76,0.12)!important;border:1px solid rgba(201,168,76,0.5)!important;color:#c9a84c!important;font-family:'Luminari',serif!important;font-size:0.65rem!important;letter-spacing:0.3em!important;text-transform:uppercase!important;border-radius:0!important;width:100%!important}
+.ml-form-successBody,.ml-subscribe-form-success{color:#c9a84c!important;font-family:'Luminari',serif!important;font-size:0.7rem!important;letter-spacing:0.15em!important;text-align:center!important}
+
+/* mobile */
+@media (max-width:900px){
+  .lc-grid{grid-template-columns:1fr;gap:32px}
+  .lc-left{order:2}
+  .lc-center{order:1}
+  .lc-right{order:3}
+  .lc-art-wrap,#lc-artwork{width:260px;height:260px}
 }
-@media (hover: none) and (pointer: coarse) {
-  body, .bg-wrap { background-attachment: scroll !important; }
-  #jt-bg { transform: translate3d(0,0,0) !important; will-change: transform; }
+@media (max-width:768px){
+  input,textarea,select{font-size:16px!important}
+  body{overflow-x:hidden}
+  body,.bg-wrap{background-attachment:scroll!important}
+  *{box-sizing:border-box}
+  #jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}
+  button,a,[role="button"]{min-height:44px}
+  .home-btn{display:none!important}
+  .lc-stage{padding:28px 16px 80px}
+  .lc-heading{letter-spacing:0.25em}
+  .lc-art-wrap,#lc-artwork{width:240px;height:240px}
+  .lc-prog-wrap,#lc-time,#lc-title,#lc-meta{max-width:100%}
+  .lc-social-link{font-size:0.62rem}
 }
-.skip-link{position:absolute;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;z-index:99999;text-decoration:none;font-family:'Luminari',serif;font-size:0.8rem;letter-spacing:0.1em;border-radius:0 0 4px 0;transition:top 0.1s}.skip-link:focus{top:0;outline:2px solid #000;outline-offset:2px}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#j-update-banner,#sw-update-banner,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}</style>
+@media (hover:none) and (pointer:coarse){
+  body,.bg-wrap{background-attachment:scroll!important}
+  #jt-bg{transform:translate3d(0,0,0)!important;will-change:transform}
+}
+
+.skip-link{position:absolute;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;z-index:99999;text-decoration:none;font-family:'Luminari',serif;font-size:0.8rem;letter-spacing:0.1em;border-radius:0 0 4px 0;transition:top 0.1s}.skip-link:focus{top:0;outline:2px solid #000;outline-offset:2px}
+@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#j-update-banner,#sw-update-banner,#jtnav-mobile-overlay{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}
+</style>
 <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/ttf" crossorigin>
 <link rel="dns-prefetch" href="https://www.gstatic.com">
 <link rel="dns-prefetch" href="https://apis.google.com">
-<link rel="dns-prefetch" href="https://firestore.googleapis.com">
 <style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#c9a84c">
@@ -73,6 +150,9 @@ h1{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0
 <!-- Cloudflare Web Analytics -->
 <script>(function(){if(localStorage.getItem('cookieAccepted')==='false')return;var s=document.createElement('script');s.defer=true;s.src='https://static.cloudflareinsights.com/beacon.min.js';s.setAttribute('data-cf-beacon','{"token":"278a3dd9772141e6a6e40a9c83c51d57"}');document.head.appendChild(s);})();</script>
 <!-- End Cloudflare Web Analytics -->
+<!-- MailerLite Universal -->
+<script>(function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[]).push(arguments);},l=d.createElement(e),l.async=1,l.src=u,n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})(window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');ml('account','2245401');</script>
+<!-- End MailerLite Universal -->
 <style id="jsearch-styles">
 #jsearch-btn{background:none;border:none;color:rgba(255,255,255,0.75);cursor:pointer;padding:0 10px;line-height:52px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:color 0.2s;min-width:40px;min-height:44px}
 #jsearch-btn:hover{color:#c9a84c}
@@ -94,38 +174,125 @@ h1{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0
 .jsearch-hint{text-align:center;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.6);padding:16px 0}
 @media(max-width:767px){#jsearch-overlay{top:52px}#jsearch-inner{padding:12px 16px 12px}#jsearch-input{font-size:16px}.jsearch-hint{letter-spacing:0.08em;font-size:0.6rem;padding:12px 0;white-space:nowrap}}
 </style>
-
 </head>
 <body>
-<a href="#radio-stage" class="skip-link">Skip to main content</a>
+<a href="#lc-stage" class="skip-link">Skip to main content</a>
 
 <picture><source srcset="assets/homepage/background/Jesta%20background.webp" type="image/webp"><img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72" loading="eager" width="1288" height="2564"></picture>
+
 <style>#jtnav{position:fixed;top:0;left:0;right:0;height:52px;z-index:9999;display:flex;align-items:center;background:rgba(0,0,0,0.75);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid rgba(201,168,76,0.3)}#jtnav-logo{display:flex;align-items:center;margin-left:16px;flex-shrink:0;text-decoration:none}#jtnav-logo img{height:32px;width:auto;display:block}#jtnav-links{display:flex;align-items:center;gap:0;flex:1;justify-content:space-evenly;flex-wrap:nowrap}.jtnav-link{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.8);text-decoration:none;padding:0 8px;white-space:nowrap;transition:color 0.2s ease;line-height:52px}.jtnav-link:hover{color:#c9a84c}.jtnav-link.jtnav-active{color:#c9a84c}.jtnav-dot{color:rgba(255,255,255,0.3);font-size:0.6rem;padding:0 2px;line-height:52px;-webkit-user-select:none;user-select:none}#jtnav-divider{width:1px;height:20px;background:rgba(201,168,76,0.3);margin:0 10px;flex-shrink:0}#jtnav-platforms{display:flex;align-items:center;margin-right:16px;flex-shrink:0;gap:0}#jtnav-platforms .jtnav-link{display:flex;align-items:center;padding:0 7px;line-height:52px}#jtnav-platforms .jtnav-link svg{display:block;opacity:0.8;transition:opacity 0.2s,color 0.2s}#jtnav-platforms .jtnav-link:hover svg,#jtnav-platforms .jtnav-link.jtnav-active svg{opacity:1}#jtnav-mobile-toggle{display:none;align-items:center;justify-content:center;margin-right:16px;cursor:pointer;background:none;border:none;padding:0;flex-shrink:0}#jtnav-mobile-toggle img{height:32px;width:auto;display:block}#jtnav-mobile-overlay{display:none;position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,0.96);overflow-y:auto;overflow-x:hidden;opacity:0;transition:opacity 0.3s ease;-webkit-overflow-scrolling:touch}#jtnav-mobile-overlay.jtnav-mob-open{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;padding:70px 16px 24px;align-content:start;opacity:1}#jtnav-mob-bg{position:absolute;inset:0;opacity:0.08;pointer-events:none}#jtnav-mob-close{position:fixed;top:14px;right:16px;background:none;border:none;color:#c9a84c;font-size:1.5rem;cursor:pointer;line-height:1;font-family:sans-serif;z-index:1200;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}#jtnav-mob-close:hover{color:#c9a84c}.jtnav-mob-link{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,230,210,0.8);text-decoration:none;padding:12px 8px;position:relative;z-index:1;transition:color 0.2s ease,border-color 0.2s ease;font-weight:normal;text-align:center;border:1px solid rgba(201,168,76,0.2);border-radius:4px;display:flex;align-items:center;justify-content:center;min-height:44px;box-sizing:border-box}.jtnav-mob-link:hover,.jtnav-mob-link.jtnav-active{color:#c9a84c;border-color:rgba(201,168,76,0.6)}.jtnav-mob-divider{width:100%;height:1px;background:rgba(201,168,76,0.3);margin:4px 0;position:relative;z-index:1;grid-column:1/-1}@media (max-width:767px){#jtnav-links,#jtnav-divider,#jtnav-platforms{display:none}#jtnav-mobile-toggle{display:flex;position:static;margin-left:16px}#jtnav-mob-login{display:flex!important;align-items:center;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;padding:0 14px;white-space:nowrap;line-height:52px;margin-left:auto}#jtnav-mob-login:hover{color:#c9a84c}#jtnav{position:fixed;width:100%;-webkit-transform:translateZ(0);transform:translateZ(0);will-change:transform}#jtnav-logo{position:absolute;left:50%;transform:translateX(-50%);margin:0}.home-btn{display:none!important}}}body{padding-top:52px!important}#jtnav.jtnav-scrolled{background:rgba(0,0,0,0.95)!important;border-bottom:1px solid rgba(201,168,76,0.5)!important}</style>
-<div id="jtnav"> <a id="jtnav-logo" href="index.html"> <picture><source srcset="assets/homepage/logo%20png.webp" type="image/webp"><img src="assets/homepage/logo png.png" alt="Jestamang" loading="eager" width="300" fetchpriority="high" height="300"></picture> </a> <div id="jtnav-links"> <a class="jtnav-link" href="entities.html" data-page="entities.html">Entities</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="albums.html" data-page="albums.html">Albums</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="lyrics.html" data-page="lyrics.html">Lyrics</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="merch.html" data-page="merch.html">Merch</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="photos.html" data-page="photos.html">Photos</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="videos.html" data-page="videos.html">Videos</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="shows.html" data-page="shows.html">Shows</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="blog.html" data-page="blog.html">Blog</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="comix.html" data-page="comix.html">Comix</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="arcade.html" data-page="arcade.html">Games</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="email.html" data-page="email.html">Email</a> </div> <div id="jtnav-divider"></div> <div id="jtnav-platforms"> <a class="jtnav-link" href="https://www.instagram.com/thejestamang/" onclick="event.preventDefault();openSocial('instagram');return false;" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://www.youtube.com/channel/UC7rNn7Lwt0OatA9c4sSYz0g" onclick="event.preventDefault();openSocial('youtube');return false;" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" onclick="event.preventDefault();openSocial('spotify');return false;" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://music.apple.com/us/artist/jestamang/1665724106" onclick="event.preventDefault();openSocial('apple-music');return false;" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg></a> </div> <div id="jtnav-auth"></div> <button id="jsearch-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button> <button id="jtnav-mobile-toggle" aria-label="Open navigation"><span style="font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.2em;color:rgba(255,255,255,0.85);">MENU</span></button> <a id="jtnav-mob-login" href="login.html">Log In</a> </div>
-<div id="jtnav-mobile-overlay"> <div id="jtnav-mob-bg"></div> <button id="jtnav-mob-close" aria-label="Close menu">✕</button> <a class="jtnav-mob-link" href="index.html" data-page="index.html">Home</a> <a class="jtnav-mob-link" href="entities.html" data-page="entities.html">Entities</a> <a class="jtnav-mob-link" href="albums.html" data-page="albums.html">Albums</a> <a class="jtnav-mob-link" href="lyrics.html" data-page="lyrics.html">Lyrics</a> <a class="jtnav-mob-link" href="merch.html" data-page="merch.html">Merch</a> <a class="jtnav-mob-link" href="photos.html" data-page="photos.html">Photos</a> <a class="jtnav-mob-link" href="videos.html" data-page="videos.html">Videos</a> <a class="jtnav-mob-link" href="shows.html" data-page="shows.html">Shows</a> <a class="jtnav-mob-link" href="blog.html" data-page="blog.html">Blog</a> <a class="jtnav-mob-link" href="comix.html" data-page="comix.html">Comix</a> <a class="jtnav-mob-link" href="arcade.html" data-page="arcade.html">Games</a> <a class="jtnav-mob-link" href="email.html" data-page="email.html">Email</a> <div class="jtnav-mob-divider"></div> <a class="jtnav-mob-link" href="https://www.instagram.com/thejestamang/" onclick="event.preventDefault();openSocial('instagram');return false;" target="_blank" rel="noopener noreferrer">Instagram</a> <a class="jtnav-mob-link" href="https://www.youtube.com/channel/UC7rNn7Lwt0OatA9c4sSYz0g" onclick="event.preventDefault();openSocial('youtube');return false;" target="_blank" rel="noopener noreferrer">YouTube</a> <a class="jtnav-mob-link" href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" onclick="event.preventDefault();openSocial('spotify');return false;" target="_blank" rel="noopener noreferrer">Spotify</a> <a class="jtnav-mob-link" href="https://music.apple.com/us/artist/jestamang/1665724106" onclick="event.preventDefault();openSocial('apple-music');return false;" target="_blank" rel="noopener noreferrer">Apple Music</a> </div>
+<div id="jtnav"> <a id="jtnav-logo" href="index.html"> <picture><source srcset="assets/homepage/logo%20png.webp" type="image/webp"><img src="assets/homepage/logo png.png" alt="Jestamang" loading="eager" width="300" fetchpriority="high" height="300"></picture> </a> <div id="jtnav-links"> <a class="jtnav-link" href="entities.html" data-page="entities.html">Entities</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="albums.html" data-page="albums.html">Albums</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="listen.html" data-page="listen.html">Listen</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="lyrics.html" data-page="lyrics.html">Lyrics</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="merch.html" data-page="merch.html">Merch</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="photos.html" data-page="photos.html">Photos</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="videos.html" data-page="videos.html">Videos</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="shows.html" data-page="shows.html">Shows</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="blog.html" data-page="blog.html">Blog</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="comix.html" data-page="comix.html">Comix</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="arcade.html" data-page="arcade.html">Games</a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="email.html" data-page="email.html">Email</a> </div> <div id="jtnav-divider"></div> <div id="jtnav-platforms"> <a class="jtnav-link" href="https://www.instagram.com/thejestamang/" onclick="event.preventDefault();openSocial('instagram');return false;" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://www.youtube.com/channel/UC7rNn7Lwt0OatA9c4sSYz0g" onclick="event.preventDefault();openSocial('youtube');return false;" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" onclick="event.preventDefault();openSocial('spotify');return false;" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></a> <span class="jtnav-dot">·</span> <a class="jtnav-link" href="https://music.apple.com/us/artist/jestamang/1665724106" onclick="event.preventDefault();openSocial('apple-music');return false;" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg></a> </div> <div id="jtnav-auth"></div> <button id="jsearch-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button> <button id="jtnav-mobile-toggle" aria-label="Open navigation"><span style="font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.2em;color:rgba(255,255,255,0.85);">MENU</span></button> <a id="jtnav-mob-login" href="login.html">Log In</a> </div>
+<div id="jtnav-mobile-overlay"> <div id="jtnav-mob-bg"></div> <button id="jtnav-mob-close" aria-label="Close menu">✕</button> <a class="jtnav-mob-link" href="index.html" data-page="index.html">Home</a> <a class="jtnav-mob-link" href="entities.html" data-page="entities.html">Entities</a> <a class="jtnav-mob-link" href="albums.html" data-page="albums.html">Albums</a> <a class="jtnav-mob-link" href="listen.html" data-page="listen.html">Listen</a> <a class="jtnav-mob-link" href="lyrics.html" data-page="lyrics.html">Lyrics</a> <a class="jtnav-mob-link" href="merch.html" data-page="merch.html">Merch</a> <a class="jtnav-mob-link" href="photos.html" data-page="photos.html">Photos</a> <a class="jtnav-mob-link" href="videos.html" data-page="videos.html">Videos</a> <a class="jtnav-mob-link" href="shows.html" data-page="shows.html">Shows</a> <a class="jtnav-mob-link" href="blog.html" data-page="blog.html">Blog</a> <a class="jtnav-mob-link" href="comix.html" data-page="comix.html">Comix</a> <a class="jtnav-mob-link" href="arcade.html" data-page="arcade.html">Games</a> <a class="jtnav-mob-link" href="email.html" data-page="email.html">Email</a> <div class="jtnav-mob-divider"></div> <a class="jtnav-mob-link" href="https://www.instagram.com/thejestamang/" onclick="event.preventDefault();openSocial('instagram');return false;" target="_blank" rel="noopener noreferrer">Instagram</a> <a class="jtnav-mob-link" href="https://www.youtube.com/channel/UC7rNn7Lwt0OatA9c4sSYz0g" onclick="event.preventDefault();openSocial('youtube');return false;" target="_blank" rel="noopener noreferrer">YouTube</a> <a class="jtnav-mob-link" href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" onclick="event.preventDefault();openSocial('spotify');return false;" target="_blank" rel="noopener noreferrer">Spotify</a> <a class="jtnav-mob-link" href="https://music.apple.com/us/artist/jestamang/1665724106" onclick="event.preventDefault();openSocial('apple-music');return false;" target="_blank" rel="noopener noreferrer">Apple Music</a> </div>
 <script>(function(){var page=window.location.pathname.split('/').pop()||'index.html';var path=window.location.pathname;document.querySelectorAll('.jtnav-link, .jtnav-mob-link').forEach(function(el){if(el.getAttribute('data-page')===page){el.classList.add('jtnav-active');}});var toggle=document.getElementById('jtnav-mobile-toggle');var overlay=document.getElementById('jtnav-mobile-overlay');var closeBtn=document.getElementById('jtnav-mob-close');function openMenu(){document.body.style.overflow='hidden';overlay.classList.add('jtnav-mob-open');toggle.setAttribute('aria-label','Close navigation');}function closeMenu(){overlay.classList.remove('jtnav-mob-open');document.body.style.overflow='';toggle.setAttribute('aria-label','Open navigation');}function isCurrentPage(link){var dp=link.getAttribute('data-page')||'';if(dp==='index.html'&&(page===''||page==='index.html'))return true;if(dp==='arcade.html'&&path.indexOf('/games/')!==-1)return true;return dp===page;}if(toggle&&overlay){toggle.addEventListener('click',function(){if(overlay.classList.contains('jtnav-mob-open')){closeMenu();}else{openMenu();}});if(closeBtn)closeBtn.addEventListener('click',closeMenu);overlay.addEventListener('click',function(e){if(e.target===overlay)closeMenu();});overlay.querySelectorAll('.jtnav-mob-link').forEach(function(link){link.addEventListener('click',function(e){if(isCurrentPage(link)){e.preventDefault();}closeMenu();});});document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMenu();});}})();</script>
 <script>(function(){var nav=document.getElementById('jtnav');if(nav){window.addEventListener('scroll',function(){if(window.scrollY>50){nav.classList.add('jtnav-scrolled');}else{nav.classList.remove('jtnav-scrolled');}},{passive:true});}})();</script>
-<div class="radio-stage">
-  <div class="radio-inner">
-    <h1 class="radio-heading">Jestamang Radio</h1>
-    <p class="radio-sub">A transmission is waiting.</p>
-    <div id="radio-player-wrap">
-      <iframe id="radio-player" src="" height="350" style="width:100%;border:0;display:block;border-radius:2px;" allow="autoplay" title="Jestamang Radio Player"></iframe>
-    </div>
-    <div id="radio-title">&nbsp;</div>
-    <div id="radio-artist">&nbsp;</div>
-    <button class="radio-shuffle-btn" onclick="jRadioShuffle()">Shuffle</button>
-  </div>
+
+<!-- iOS tap-to-start overlay -->
+<div id="lc-ios" role="dialog" aria-label="Tap to begin transmission">
+  <p class="lc-ios-glyph">✦</p>
+  <p class="lc-ios-text">Tap to Begin Transmission ✦</p>
+  <p class="lc-ios-hint">iOS requires a tap before audio can play.</p>
 </div>
+
+<!-- hidden audio element -->
+<audio id="lc-audio" preload="auto" aria-hidden="true"></audio>
+
+<main id="lc-stage" class="lc-stage">
+
+  <div class="lc-page-head">
+    <h1 class="lc-heading">✦ Listening Chamber ✦</h1>
+    <p class="lc-sub">A continuous transmission from the catalog.</p>
+  </div>
+
+  <div class="lc-grid">
+
+    <!-- LEFT: ELSEWHERE -->
+    <aside class="lc-left" aria-label="Find us elsewhere">
+      <h2 class="lc-panel-h">✦ Elsewhere ✦</h2>
+      <a class="lc-social-link" href="https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P" onclick="event.preventDefault();openSocial('spotify');return false;" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        Spotify
+      </a>
+      <a class="lc-social-link" href="https://music.apple.com/us/artist/jestamang/1665724106" onclick="event.preventDefault();openSocial('apple-music');return false;" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        Apple Music
+      </a>
+      <a class="lc-social-link" href="https://www.youtube.com/channel/UC7rNn7Lwt0OatA9c4sSYz0g" onclick="event.preventDefault();openSocial('youtube');return false;" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+        YouTube
+      </a>
+      <a class="lc-social-link" href="https://jestamang.bandcamp.com" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M0 18.75l7.437-13.5H24l-7.438 13.5z"/></svg>
+        Bandcamp
+      </a>
+    </aside>
+
+    <!-- CENTER: PLAYER -->
+    <div class="lc-center">
+      <div class="lc-art-wrap">
+        <img id="lc-artwork" src="assets/homepage/logo png.png" alt="Album artwork" width="320" height="320">
+        <div id="lc-loading" style="display:flex">
+          <span class="lc-spin">✦</span>
+        </div>
+      </div>
+
+      <div id="lc-error"></div>
+      <button id="lc-retry">Retry</button>
+
+      <div id="lc-title">Loading…</div>
+      <div id="lc-meta"></div>
+
+      <div class="lc-prog-wrap">
+        <div id="lc-progress" role="progressbar" aria-label="Track progress">
+          <div id="lc-fill"></div>
+        </div>
+      </div>
+      <div id="lc-time">0:00 / 0:00</div>
+
+      <div class="lc-controls">
+        <button id="lc-prev" class="lc-ctrl" aria-label="Previous">⏮</button>
+        <button id="lc-play" class="lc-ctrl" aria-label="Play" data-playing="0">⏯</button>
+        <button id="lc-next" class="lc-ctrl" aria-label="Next">⏭</button>
+      </div>
+
+      <button id="lc-shuffle" data-active="1" title="Shuffle: on">✦ Shuffle</button>
+    </div>
+
+    <!-- RIGHT: JOIN + CATALOG -->
+    <aside class="lc-right" aria-label="Join and explore">
+      <div class="lc-right-panel">
+        <h2 class="lc-panel-h">✦ Join the Jestagang ✦</h2>
+        <div class="ml-embedded" data-form="8EZtSf"></div>
+      </div>
+      <div class="lc-right-panel">
+        <h2 class="lc-panel-h">✦ The Catalog ✦</h2>
+        <a href="albums.html" class="lc-catalog-link">Browse Every Album →</a>
+      </div>
+    </aside>
+
+  </div><!-- /.lc-grid -->
+
+  <!-- RECENT TRANSMISSIONS -->
+  <div class="lc-recent">
+    <h2 class="lc-panel-h" style="text-align:left;margin-bottom:12px">✦ Recent Transmissions ✦</h2>
+    <ul id="lc-recent-list" class="lc-recent-list" aria-label="Recently played tracks">
+      <li class="lc-re-empty">— No transmissions logged yet —</li>
+    </ul>
+  </div>
+
+</main>
+
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>©<span class="jcyr"></span>&nbsp;Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a></footer>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
+<script src="assets/js/listen.js" defer></script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
-<script>(function(){function jVCheck(){if(!window.jestaDB)return;window.jestaDB.collection('siteConfig').doc('cacheVersion').onSnapshot(function(doc){if(!doc.exists)return;var v=doc.data().version;if(!v)return;var s=localStorage.getItem('jSiteVersion');if(s&&s!==v){jUpdateBanner();}localStorage.setItem('jSiteVersion',v);},function(e){/* cacheVersion unavailable – non-critical */void e;});}function jUpdateBanner(){if(document.getElementById('j-update-banner'))return;var b=document.createElement('div');b.id='j-update-banner';b.style.cssText='position:fixed;top:0;left:0;width:100%;z-index:99999;background:#c9a84c;color:#000;text-align:center;padding:12px;font-family:Luminari,Georgia,serif;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;';b.textContent='SITE UPDATED \u00b7 TAP TO REFRESH \u2726';b.onclick=function(){var r=function(){window.location.reload(true);};try{caches.keys().then(function(k){return Promise.all(k.map(function(n){return caches.delete(n);}));}).then(r).catch(r);}catch(e){r();}};document.body.prepend(b);}var _jt=0,_jiv=setInterval(function(){if(window.jestaDB){clearInterval(_jiv);jVCheck();}else if(++_jt>80){clearInterval(_jiv);}},100);})();</script>
+<script>(function(){function jVCheck(){if(!window.jestaDB)return;window.jestaDB.collection('siteConfig').doc('cacheVersion').onSnapshot(function(doc){if(!doc.exists)return;var v=doc.data().version;if(!v)return;var s=localStorage.getItem('jSiteVersion');if(s&&s!==v){jUpdateBanner();}localStorage.setItem('jSiteVersion',v);},function(e){void e;});}function jUpdateBanner(){if(document.getElementById('j-update-banner'))return;var b=document.createElement('div');b.id='j-update-banner';b.style.cssText='position:fixed;top:0;left:0;width:100%;z-index:99999;background:#c9a84c;color:#000;text-align:center;padding:12px;font-family:Luminari,Georgia,serif;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;';b.textContent='SITE UPDATED · TAP TO REFRESH ✦';b.onclick=function(){var r=function(){window.location.reload(true);};try{caches.keys().then(function(k){return Promise.all(k.map(function(n){return caches.delete(n);}));}).then(r).catch(r);}catch(e){r();}};document.body.prepend(b);}var _jt=0,_jiv=setInterval(function(){if(window.jestaDB){clearInterval(_jiv);jVCheck();}else if(++_jt>80){clearInterval(_jiv);}},100);})();</script>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+
 <div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
 <div id="jsearch-inner">
 <input id="jsearch-input" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="SEARCH THE JESTAMANG UNIVERSE..." aria-label="Search">
@@ -155,108 +322,9 @@ var IDX=[
 function jHL(name,q){var t=q.trim().toLowerCase();var l=name.toLowerCase();var i=l.indexOf(t);if(i<0)return name;return name.slice(0,i)+'<mark>'+name.slice(i,i+t.length)+'</mark>'+name.slice(i+t.length);}
 window.jSearchOpen=function(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.add('jsearch-open');var btn=document.getElementById('jsearch-btn');if(btn)btn.classList.add('jsearch-active');var inp=document.getElementById('jsearch-input');if(inp){inp.value='';inp.focus();jSearchRender('');}}};
 window.jSearchClose=function(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.remove('jsearch-open');var btn=document.getElementById('jsearch-btn');if(btn)btn.classList.remove('jsearch-active');}};
-function jSearchRender(q){var box=document.getElementById('jsearch-results');if(!box)return;if(!q.trim()){box.innerHTML='<div class="jsearch-hint">ENTER A NAME \u00b7 PAGE \u00b7 ALBUM \u00b7 ENTITY</div>';return;}var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);var scored=[];IDX.forEach(function(e){var nl=e.n.toLowerCase();var score=0;tokens.forEach(function(tok){if(nl===tok)score+=100;else if(nl.startsWith(tok))score+=50;else if(nl.indexOf(tok)!==-1)score+=30;});if(score>0)scored.push({e:e,s:score});});scored.sort(function(a,b){return b.s-a.s;});scored=scored.slice(0,10);if(!scored.length){box.innerHTML='<div class="jsearch-empty">NO TRANSMISSIONS FOUND</div>';return;}var html='';scored.forEach(function(r){var e=r.e;html+='<a class="jsearch-item" href="'+e.u+'" onclick="jSearchClose()"><span class="jsearch-item-icon">'+e.i+'</span><span class="jsearch-item-name">'+jHL(e.n,q)+'</span><span class="jsearch-item-cat">'+e.c+'</span></a>';});box.innerHTML=html;}
+function jSearchRender(q){var box=document.getElementById('jsearch-results');if(!box)return;if(!q.trim()){box.innerHTML='<div class="jsearch-hint">ENTER A NAME · PAGE · ALBUM · ENTITY</div>';return;}var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);var scored=[];IDX.forEach(function(e){var nl=e.n.toLowerCase();var score=0;tokens.forEach(function(tok){if(nl===tok)score+=100;else if(nl.startsWith(tok))score+=50;else if(nl.indexOf(tok)!==-1)score+=30;});if(score>0)scored.push({e:e,s:score});});scored.sort(function(a,b){return b.s-a.s;});scored=scored.slice(0,10);if(!scored.length){box.innerHTML='<div class="jsearch-empty">NO TRANSMISSIONS FOUND</div>';return;}var html='';scored.forEach(function(r){var e=r.e;html+='<a class="jsearch-item" href="'+e.u+'" onclick="jSearchClose()"><span class="jsearch-item-icon">'+e.i+'</span><span class="jsearch-item-name">'+jHL(e.n,q)+'</span><span class="jsearch-item-cat">'+e.c+'</span></a>';});box.innerHTML=html;}
 document.addEventListener('DOMContentLoaded',function(){var inp=document.getElementById('jsearch-input');var closeBtn=document.getElementById('jsearch-close');if(inp)inp.addEventListener('input',function(){jSearchRender(this.value);});if(closeBtn)closeBtn.addEventListener('click',jSearchClose);document.addEventListener('click',function(e){var o=document.getElementById('jsearch-overlay');if(!o||!o.classList.contains('jsearch-open'))return;var btn=document.getElementById('jsearch-btn');if(o.contains(e.target))return;if(btn&&btn.contains(e.target))return;jSearchClose();});document.addEventListener('keydown',function(e){if(e.key==='Escape')jSearchClose();if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();jSearchOpen();}});});
 </script>
-
-<script></script>
-<script>
-(function() {
-  var albums = [
-    { title: "Jestress Melody", artist: "Cricket Om", src: "https://bandcamp.com/EmbeddedPlayer/album=4146732134/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Niga Denots", artist: "The Ace of Chase", src: "https://bandcamp.com/EmbeddedPlayer/album=278519092/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "New \u00c6on", artist: "Kek-Buh", src: "https://bandcamp.com/EmbeddedPlayer/album=1452019058/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Zodiac", artist: "Children", src: "https://bandcamp.com/EmbeddedPlayer/album=3265318938/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Revolution Epilogue: 2K2123 & 2K2323", artist: "Jestamang", src: "https://bandcamp.com/EmbeddedPlayer/album=3867642322/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Xmas 23", artist: "Hodge", src: "https://bandcamp.com/EmbeddedPlayer/album=3022230042/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Jestawomang", artist: "The Ace of Chase", src: "https://bandcamp.com/EmbeddedPlayer/album=3947470321/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "8slush", artist: "Ode to Bonnie", src: "https://bandcamp.com/EmbeddedPlayer/album=1761164004/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "\ua4d8", artist: "Atlas Is Alice-Lillenger", src: "https://bandcamp.com/EmbeddedPlayer/album=2809963063/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Summer O' Sahr", artist: "The Boston Society of the Temple of Psychick Youth", src: "https://bandcamp.com/EmbeddedPlayer/album=3073563967/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Jonas Kyle Meets The Perfect Trip", artist: "Jonas Kyle", src: "https://bandcamp.com/EmbeddedPlayer/album=2386583243/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Big Boy, New Cat. Records", artist: "Big Boy, New Cat. Records", src: "https://bandcamp.com/EmbeddedPlayer/album=411061715/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "The Ace of Chase", artist: "Venus and the Flytrap", src: "https://bandcamp.com/EmbeddedPlayer/album=1629236301/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Sleep Cycle", artist: "Mutt Tour", src: "https://bandcamp.com/EmbeddedPlayer/album=3404695125/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Covers the Taste", artist: "Blue Jays", src: "https://bandcamp.com/EmbeddedPlayer/album=3843353999/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Peter Thy Godfather", artist: "Father P. Journee", src: "https://bandcamp.com/EmbeddedPlayer/album=2501859753/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "The Naples Society of the Temple of Psychick Youth", artist: "J.R. Mason", src: "https://bandcamp.com/EmbeddedPlayer/album=3297397847/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Covers the Greats", artist: "The Perfect Trip", src: "https://bandcamp.com/EmbeddedPlayer/album=2221733918/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Venus and the Flytrap", artist: "Venus and the Flytrap", src: "https://bandcamp.com/EmbeddedPlayer/album=1721869432/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Babylon's Final Hours", artist: "J.R. Mason", src: "https://bandcamp.com/EmbeddedPlayer/album=452811266/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Ball of Energy", artist: "Mike 55", src: "https://bandcamp.com/EmbeddedPlayer/album=3857660756/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Sounds Across the World A-K", artist: "Sounds Across the World", src: "https://bandcamp.com/EmbeddedPlayer/album=3464458678/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Sounds Across the World L-Z", artist: "Sounds Across the World", src: "https://bandcamp.com/EmbeddedPlayer/album=3965101057/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "The Colours", artist: "The Colours", src: "https://bandcamp.com/EmbeddedPlayer/album=1475282654/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "The Woodland Singapore Orchestra", artist: "The Woodland Singapore Orchestra", src: "https://bandcamp.com/EmbeddedPlayer/album=3982260349/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Alissa Orange", artist: "Alissa Orange", src: "https://bandcamp.com/EmbeddedPlayer/album=3408728670/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "The Boston Society of the Temple of Psychick Youth", artist: "The Boston Society of the Temple of Psychick Youth", src: "https://bandcamp.com/EmbeddedPlayer/album=4190430058/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Green House", artist: "Blue Jays", src: "https://bandcamp.com/EmbeddedPlayer/album=1225543994/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Talkin' Jesus", artist: "Father P. Journee", src: "https://bandcamp.com/EmbeddedPlayer/album=949477757/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "I Can Touch the Revolution From My Home", artist: "The Perfect Trip", src: "https://bandcamp.com/EmbeddedPlayer/album=671283223/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Ode to Bonnie", artist: "Ode to Bonnie", src: "https://bandcamp.com/EmbeddedPlayer/album=838231877/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "El Santo De Gangster - Volume II", artist: "Big Smoke, lil Skeez, DEW, Sno Bunni", src: "https://bandcamp.com/EmbeddedPlayer/album=1979274882/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "You and the 7.5 Evils of the World", artist: "You and the 7.5 Evils of the World", src: "https://bandcamp.com/EmbeddedPlayer/album=1417074329/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Hit!", artist: "Mutt Tour", src: "https://bandcamp.com/EmbeddedPlayer/album=2007457570/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "The Perfect Trip", artist: "The Perfect Trip", src: "https://bandcamp.com/EmbeddedPlayer/album=2435208511/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Cell Life", artist: "Mutt Tour", src: "https://bandcamp.com/EmbeddedPlayer/album=3369482772/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "The Magic Eye", artist: "Caleb Mars", src: "https://bandcamp.com/EmbeddedPlayer/album=3838000266/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" },
-    { title: "Psycho Classical", artist: "Caleb Mars", src: "https://bandcamp.com/EmbeddedPlayer/album=2651680846/size=large/bgcol=000000/linkcol=c9a84c/transparent=true/" }
-  ];
-
-  var queue = [];
-  var currentIdx = -1;
-
-  function buildQueue() {
-    queue = albums.map(function(_, i) { return i; });
-    for (var i = queue.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var t = queue[i]; queue[i] = queue[j]; queue[j] = t;
-    }
-    if (currentIdx !== -1 && queue.length > 1 && queue[0] === currentIdx) {
-      var tmp = queue[0]; queue[0] = queue[1]; queue[1] = tmp;
-    }
-  }
-
-  function nextIdx() {
-    if (queue.length === 0) buildQueue();
-    var idx = queue.shift();
-    currentIdx = idx;
-    return idx;
-  }
-
-  function applyAlbum(idx) {
-    var a = albums[idx];
-    document.getElementById('radio-player').src = a.src;
-    document.getElementById('radio-title').textContent = a.title;
-    document.getElementById('radio-artist').textContent = a.artist;
-    currentIdx = idx;
-  }
-
-  function setAlbum(idx, animate) {
-    if (animate) {
-      var wrap = document.getElementById('radio-player-wrap');
-      var titleEl = document.getElementById('radio-title');
-      var artistEl = document.getElementById('radio-artist');
-      wrap.style.opacity = '0';
-      titleEl.style.opacity = '0';
-      artistEl.style.opacity = '0';
-      setTimeout(function() {
-        applyAlbum(idx);
-        wrap.style.opacity = '1';
-        titleEl.style.opacity = '1';
-        artistEl.style.opacity = '1';
-      }, 150);
-    } else {
-      applyAlbum(idx);
-    }
-  }
-
-  window.jRadioShuffle = function() { setAlbum(nextIdx(), true); };
-
-  setAlbum(nextIdx(), false);
-})();
-</script>
-<!-- footer-single-line-mobile -->
 
 <style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;gap:0!important;background:transparent;padding:16px 24px 20px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10;}.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none;white-space:nowrap!important;}.hp-footer a:hover{color:#c9a84c!important;}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4);white-space:nowrap!important;}@media(max-width:768px){.hp-footer{padding:8px 12px 20px!important;font-size:0.7rem!important;flex-direction:row!important;flex-wrap:nowrap!important;}}</style>
 <style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
