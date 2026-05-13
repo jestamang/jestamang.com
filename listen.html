@@ -78,7 +78,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 @keyframes lcDotPulse{0%,100%{opacity:1}50%{opacity:0.4}}
 .lc-onair-text{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.35em;text-transform:uppercase;color:#c9a84c}
 #lc-wave{display:block;width:320px;height:40px;max-width:100%;margin-bottom:8px}
-#lc-freq{position:absolute;top:12px;left:12px;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.2em;color:#c9a84c;text-transform:uppercase;pointer-events:none;z-index:2;transition:opacity 0.2s ease}
 .lc-station-id{font-family:'Luminari',serif;font-size:0.63rem;letter-spacing:0.4em;text-transform:uppercase;color:#c9a84c;text-align:center;margin-top:0;margin-bottom:6px;-webkit-user-select:none;user-select:none}
 .lc-now-bcast{font-family:'Luminari',serif;font-size:0.63rem;letter-spacing:0.38em;text-transform:uppercase;color:rgba(201,168,76,0.75);text-align:center;margin-bottom:8px;-webkit-user-select:none;user-select:none}
 
@@ -250,8 +249,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
       <!-- 3. Artwork (with frequency display + loading overlay) -->
       <div class="lc-art-wrap">
-        <span id="lc-freq" aria-hidden="true">88.0 MHz</span>
-        <img id="lc-artwork" src="assets/homepage/logo png.png" alt="Album artwork" width="320" height="320">
+<img id="lc-artwork" src="assets/homepage/logo png.png" alt="Album artwork" width="320" height="320">
         <div id="lc-loading" style="display:flex">
           <span class="lc-spin">✦</span>
         </div>
