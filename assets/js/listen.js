@@ -151,6 +151,8 @@
       if (p) dot.classList.remove('paused');
       else   dot.classList.add('paused');
     }
+    var ov = $id('lc-art-overlay');
+    if (ov) ov.textContent = p ? '⏸' : '▶';
   }
 
   function showLoad(v) {
@@ -419,6 +421,14 @@
         audio.play().then(function () { setPlayBtn(true); saveRec(tracks[cur]); }).catch(function () {});
       }
     });
+
+    var artWrap = document.querySelector('.lc-art-wrap');
+    if (artWrap) {
+      artWrap.addEventListener('click', togglePlay);
+      artWrap.addEventListener('keydown', function (e) {
+        if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); togglePlay(); }
+      });
+    }
 
     initSeek();
     initWave();
