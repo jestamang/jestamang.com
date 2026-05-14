@@ -137,7 +137,7 @@
     var p  = audio.currentTime / audio.duration;
     var f  = $id('lc-fill'), ti = $id('lc-time');
     if (f)  f.style.width = (p * 100).toFixed(2) + '%';
-    if (ti) ti.textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
+    if (ti) ti.innerHTML = '<span>' + fmt(audio.currentTime) + '</span><span>' + fmt(audio.duration) + '</span>';
   }
 
   function setPlayBtn(p) {
