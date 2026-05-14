@@ -49,6 +49,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .lc-stat-row:last-child{border-bottom:none}
 .lc-stat-num{font-family:'Luminari',serif;font-size:1.05rem;letter-spacing:0.05em;color:#c9a84c}
 .lc-stat-label{font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.55)}
+.lc-sess-divider{border:none;border-top:1px solid rgba(201,168,76,0.15);margin:4px 0}
+.lc-sess-row{display:flex;flex-direction:column;align-items:center;padding:8px 0 2px}
+.lc-sess-label{font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.55);margin-bottom:4px}
+#lc-sess-time{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.12em;color:#c9a84c;min-height:1em}
 .lc-panel-btn{display:flex;align-items:center;justify-content:center;text-align:center;color:rgba(201,168,76,0.8);font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;text-decoration:none;border:1px solid rgba(201,168,76,0.35);padding:11px 16px;transition:border-color 0.2s,color 0.2s,background 0.2s;min-height:44px;margin-top:16px}
 .lc-panel-btn:hover{border-color:#c9a84c;color:#c9a84c;background:rgba(201,168,76,0.05)}
 #lc-arriving-date{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.32em;text-transform:uppercase;color:#c9a84c;text-align:center;margin-bottom:4px}
@@ -310,6 +314,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <div class="lc-stat-row"><span class="lc-stat-num">37</span><span class="lc-stat-label">Albums</span></div>
           <div class="lc-stat-row"><span class="lc-stat-num">1,185</span><span class="lc-stat-label">Compositions</span></div>
           <div class="lc-stat-row"><span class="lc-stat-num">21</span><span class="lc-stat-label">Entities</span></div>
+          <hr class="lc-sess-divider">
+          <div class="lc-sess-row"><span class="lc-sess-label">Your Session</span><span id="lc-sess-time">—</span></div>
         </div>
       </div>
 
