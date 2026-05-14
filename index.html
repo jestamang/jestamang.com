@@ -107,6 +107,12 @@ img.mob-nav-icon[src*="blog"]{width:40px}
 .hp-album-card img{width:136px;height:136px;object-fit:cover;border:1px solid rgba(201,168,76,0.18);display:block;filter:brightness(0.82);transition:filter 0.3s,transform 0.3s}
 .hp-album-card:hover img{filter:brightness(1.05);transform:scale(1.02)}
 .hp-album-card span{display:block;font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-top:8px}
+.hp-lc-wrap{padding:64px 40px;text-align:center;max-width:700px;margin:0 auto;opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s cubic-bezier(0.16,1,0.3,1)}
+.hp-section.jesta-revealed .hp-lc-wrap{opacity:1;transform:translateY(0)}
+.hp-lc-stations{display:flex;gap:12px;justify-content:center;margin:22px 0 26px;flex-wrap:wrap}
+.hp-lc-st-btn{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;background:none;border:1px solid rgba(201,168,76,0.5);color:rgba(201,168,76,0.75);padding:9px 22px;text-decoration:none;border-radius:3px;transition:background 0.15s,color 0.15s,border-color 0.15s;min-height:40px;display:inline-flex;align-items:center;line-height:1}
+.hp-lc-st-btn:hover{border-color:#c9a84c;color:#c9a84c;background:rgba(201,168,76,0.08)}
+@media(max-width:768px){.hp-lc-wrap{padding:44px 20px}}
 .hp-lyric-card{background:rgba(0,0,0,0.3);padding:40px 36px 32px;position:relative;box-shadow:inset 0 0 60px rgba(0,0,0,0.4);opacity:0;transition:opacity 1s ease}
 .hp-lyric-card.lyr-ready{opacity:1}
 .hp-lyric-lines{margin:0;padding:0;list-style:none}
@@ -149,12 +155,12 @@ img.mob-nav-icon[src*="blog"]{width:40px}
 .hp-photo-item{overflow:hidden;cursor:pointer;aspect-ratio:1}.hp-photo-item img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block;filter:brightness(0.92);transition:transform 0.3s ease,filter 0.3s ease}.hp-photo-item:hover img{transform:scale(1.02);filter:brightness(1)}
 
 @media(max-width:900px){.hp-inner{padding:48px 28px;gap:48px}}
-@media(max-width:768px){#hp-hero{height:auto;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}.hp-scroll-hint{display:none}#hp-preview{padding:0}.hp-inner{flex-direction:column!important;gap:24px;padding:36px 16px}.hp-text{flex:none;width:100%}.hp-title{font-size:clamp(1.8rem,6vw,2.5rem)}.hp-visual{width:100%}.hp-text>*:not(.hp-cta){opacity:0}.hp-section.jesta-revealed .hp-text>*:nth-child(1){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(2){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(3){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(4){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(5){animation-duration:0.5s}.hp-section.jesta-revealed .hp-visual{animation-duration:0.5s}.hp-strip img{height:110px}.hp-album-card{width:100px}.hp-album-card img{width:100px;height:100px}.hp-comix-strip{width:100%}.hp-comix-strip img{width:90px;height:128px}.hp-photo-grid{grid-template-columns:repeat(3,1fr)}.hp-merch-item{width:100px}.hp-merch-item img{width:100px;height:100px}.hp-entity-grid{grid-template-columns:repeat(4,1fr);gap:12px 8px}.hp-entity-img{width:64px;height:64px}.hp-entity-name{font-size:0.7rem}.hp-cta{display:block;text-align:center;padding:14px 20px;min-height:44px}}
+@media(max-width:768px){#hp-hero{height:auto;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}.hp-scroll-hint{display:none}#hp-preview{padding:0}.hp-inner{flex-direction:column!important;gap:24px;padding:36px 16px}.hp-text{flex:none;width:100%}.hp-title{font-size:clamp(1.8rem,6vw,2.5rem)}.hp-visual{width:100%}.hp-text>*:not(.hp-cta){opacity:0}.hp-section.jesta-revealed .hp-text>*:nth-child(1){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(2){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(3){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(4){animation-duration:0.5s}.hp-section.jesta-revealed .hp-text>*:nth-child(5){animation-duration:0.5s}.hp-section.jesta-revealed .hp-visual{animation-duration:0.5s}.hp-strip img{height:110px}.hp-album-card{width:100px}.hp-album-card img{width:100px;height:100px}.hp-comix-strip{width:100%}.hp-comix-strip img{width:90px;height:128px}.hp-photo-grid{grid-template-columns:repeat(3,1fr)}.hp-merch-item{width:100px}.hp-merch-item img{width:100px;height:100px}.hp-entity-grid{grid-template-columns:repeat(4,1fr);gap:12px 8px}.hp-entity-img{width:64px;height:64px}.hp-entity-name{font-size:0.7rem}.hp-cta{display:block;text-align:center;padding:14px 20px;min-height:44px}.hp-show-card{animation:none!important;box-shadow:0 4px 30px rgba(0,0,0,0.7)!important}}
 /* jt-text-treatments */
 h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .hp-title,.hp-eyebrow,.hp-album-card span,.hp-entity-name,.hp-lyric-count,.hp-merch-name{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .hp-desc,.hp-blog-excerpt,.hp-lyric-artist,.hp-merch-price{text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 4px rgba(0,0,0,1),0 0 40px rgba(0,0,0,0.9),1px 1px 3px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-.skip-link{position:absolute;top:-40px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#j-update-banner,#sw-update-banner,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}</style>
+.skip-link{position:fixed;top:-40px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#j-update-banner,#sw-update-banner,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}</style>
   <link rel="preload" as="image" href="assets/homepage/background/Jesta%20background.jpg" fetchpriority="high">
 <link rel="preload" as="image" href="assets/homepage/logo%20txt.png" fetchpriority="high">
 <link rel="prefetch" href="albums.html">
@@ -263,41 +269,16 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
   <!-- LISTENING CHAMBER -->
   <div class="hp-section hp-section--green">
-    <div class="hp-inner">
-      <div class="hp-text">
-        <h2 class="hp-title">Listening Chamber</h2>
-        <div class="hp-rule"></div>
-        <p class="hp-desc">A signal from our inner world. Tune in.</p>
-        <a href="radio.html" class="hp-cta">Enter</a>
+    <div class="hp-lc-wrap">
+      <h2 class="hp-title">Listening Chamber</h2>
+      <div class="hp-rule"></div>
+      <p class="hp-desc">A signal from our inner world. Tune in.</p>
+      <div class="hp-lc-stations">
+        <a href="radio.html?station=all" class="hp-lc-st-btn">All</a>
+        <a href="radio.html?station=collective" class="hp-lc-st-btn">Collective</a>
+        <a href="radio.html?station=world" class="hp-lc-st-btn">World</a>
       </div>
-      <div class="hp-visual">
-        <div class="hp-album-strip">
-          <div class="hp-album-card">
-            <img src="assets/albums/2K2123/sounds across the world/2k2123nov.jpg" alt="Sounds Across the World" loading="lazy" width="136" height="136">
-            <span>Sounds Across the World</span>
-          </div>
-          <div class="hp-album-card">
-            <img src="assets/albums/2K2123/boston society of the temple of psychick youth/2k2123july.jpg" alt="Boston Society" loading="lazy" width="136" height="136">
-            <span>Boston Society</span>
-          </div>
-          <div class="hp-album-card">
-            <img src="assets/albums/2K2123/colours/2k2123oct.jpg" alt="Colours" loading="lazy" width="136" height="136">
-            <span>Colours</span>
-          </div>
-          <div class="hp-album-card">
-            <img src="assets/albums/NONS/perfect trip/non4.jpg" alt="The Perfect Trip" loading="lazy" width="136" height="136">
-            <span>The Perfect Trip</span>
-          </div>
-          <div class="hp-album-card">
-            <img src="assets/albums/2K2123/you and the 7.5 evils of the world/2k2123jan.jpg" alt="You and the 7.5 Evils" loading="lazy" width="136" height="136">
-            <span>7.5 Evils</span>
-          </div>
-          <div class="hp-album-card">
-            <img src="assets/albums/NONS/caleb mars/non2.jpg" alt="Caleb Mars" loading="lazy" width="136" height="136">
-            <span>Caleb Mars</span>
-          </div>
-        </div>
-      </div>
+      <a href="radio.html" class="hp-cta">Enter</a>
     </div>
   </div>
 
@@ -1040,5 +1021,5 @@ document.addEventListener('DOMContentLoaded',eotdInit);
 <!-- mobile-audit-fixes --><style>@media(max-width:768px){body{overflow-x:hidden}.entity-of-day,.eotd-wrap{display:block!important}.hp-events-section,.events-section{display:block!important}input,textarea,select{font-size:16px!important}.hp-cta{min-height:44px;display:block;text-align:center}}@media(hover:none){.nav-item:hover{transform:none!important}.hp-strip img:hover{transform:none!important}.hp-entity-item:hover .hp-entity-img{transform:none!important}.hp-album-card:hover img{transform:none!important}.hp-comix-strip img:hover{transform:none!important}.hp-merch-item:hover img{transform:none!important}}</style>
 
 <style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;gap:0!important;background:rgba(35,10,55,0.85)!important;padding:16px 24px 20px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.75);position:relative;z-index:10;}.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none;white-space:nowrap!important;}.hp-footer a:hover{color:#c9a84c!important;}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4);white-space:nowrap!important;}@media(max-width:768px){.hp-footer{padding:8px 12px 20px!important;font-size:0.7rem!important;flex-direction:row!important;flex-wrap:nowrap!important;}}</style>
-<style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
+<style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:translate3d(0,0,0)!important;will-change:transform}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
 </body> </html>
