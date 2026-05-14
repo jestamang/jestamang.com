@@ -183,7 +183,7 @@
     if (te) te.textContent = t ? t.title : '…';
     if (me) me.textContent = t ? (t.artist === t.album ? t.artist : t.artist + (t.album ? ' · ' + t.album : '')) : '';
     setArt(t && t.artwork ? t.artwork : null);
-    document.title = t ? (t.title + ' — Jestamang Radio') : 'Listen | Jestamang';
+    document.title = t ? (t.title + ' — Jestamang Radio') : 'Radio | Jestamang';
     if (t) {
       var center = document.querySelector('.lc-center');
       if (center) center.classList.remove('lc-sk');
