@@ -494,12 +494,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-25')">Theme</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-28')">Text Styles</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-1')">Analytics</button>
-  <button class="adm-sidenav-link" onclick="admNavTo('sec-12')">Cache Bust</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-20')">Backup</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-17')">Maintenance</button>
 </nav>
 <div id="adm-mobtabs" role="navigation" aria-label="Section tabs">
-  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-29')">Lyrics</button><button class="adm-mobtab" onclick="admNavTo('sec-30')">Captions</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-28')">TxtStyle</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-12')">Cache</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
+  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-29')">Lyrics</button><button class="adm-mobtab" onclick="admNavTo('sec-30')">Captions</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-16')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-28')">TxtStyle</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
 </div>
 
   <div class="adm-header">
@@ -1444,7 +1443,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div style="margin-top:24px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <div class="field-label" style="margin-bottom:0;">Active Rules</div>
-          <button class="btn-ghost" id="tse-apply-btn" style="font-size:0.6rem;padding:4px 12px;">Apply All (Cache Bust)</button>
         </div>
         <div id="tse-rules-wrap">
           <div style="color:rgba(201,168,76,0.3);font-size:0.7rem;">Loading rules...</div>
@@ -1464,29 +1462,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div class="stat-card"><div class="stat-glyph">✍</div><div class="stat-num" id="stat-guestbook"><span class="spinner"></span></div><div class="stat-label">Guestbook Entries</div></div>
         <div class="stat-card"><div class="stat-glyph">◉</div><div class="stat-num" id="stat-inquiries"><span class="spinner"></span></div><div class="stat-label">Merch Inquiries</div></div>
         <div class="stat-card"><div class="stat-glyph">✦</div><div class="stat-num" id="stat-subscribers"><span class="spinner"></span></div><div class="stat-label">Email Subscribers</div></div>
-      </div>
-    </div>
-    <div class="adm-ornament">✦</div>
-    <div class="adm-section" id="sec-12">
-      <div class="adm-section-title">✦ Force Site Update</div>
-      <div class="adm-section-underline"></div>
-      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Push latest changes to all visitors instantly.</div>
-
-      <div id="cb-current" style="font-size:0.72rem;color:rgba(201,168,76,0.4);margin-bottom:20px;letter-spacing:0.08em;">Reading current cache version...</div>
-
-      <button class="btn-gold btn-gold-full" id="cb-bust-btn" style="font-size:0.85rem;letter-spacing:0.35em;padding:20px 24px;">BUST THE CACHE ✦</button>
-      <div class="status-msg" id="cb-status"></div>
-
-      <div style="margin-top:20px;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.1);padding:16px;border-radius:2px;">
-        <div style="font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.35);margin-bottom:8px;">How it works</div>
-        <div style="font-size:0.7rem;color:rgba(240,230,210,0.85);line-height:1.7;">
-          Clicking the button writes a new version to Firestore → <code style="color:rgba(201,168,76,0.5);">siteConfig/cacheVersion</code>. All visitors with the site open see a gold banner prompting them to refresh. This device's service worker also activates immediately via SKIP_WAITING.
-        </div>
-      </div>
-
-      <div style="margin-top:18px;">
-        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:10px;">Version History</div>
-        <div id="cb-history" style="font-size:0.7rem;color:rgba(240,230,210,0.85);line-height:2;">Loading...</div>
       </div>
     </div>
     <div class="adm-ornament">✦</div>
@@ -1556,24 +1531,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   </div>
 </div>
 
-<div id="cb-modal" role="dialog" aria-modal="true" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.88);align-items:center;justify-content:center;padding:20px;">
-  <div class="modal-box" style="max-width:520px;">
-    <button class="modal-close" id="cb-modal-close" aria-label="Close">✦</button>
-    <div class="modal-title">CACHE BUSTED ✦</div>
-    <div style="font-size:0.72rem;color:rgba(201,168,76,0.6);letter-spacing:0.08em;line-height:1.9;">
-      <p style="margin-bottom:14px;color:rgba(240,230,210,0.7);">This device has been updated. All other visitors will see a gold banner prompting them to refresh.</p>
-      <p style="margin-bottom:8px;color:rgba(201,168,76,0.45);letter-spacing:0.28em;font-size:0.62rem;text-transform:uppercase;">To force all devices to update permanently:</p>
-      <p style="margin-bottom:6px;">In Claude Code, run:</p>
-      <div style="background:rgba(0,0,0,0.6);border:1px solid rgba(201,168,76,0.2);padding:14px 16px;font-family:monospace;font-size:0.78rem;color:#c9a84c;line-height:2;border-radius:2px;letter-spacing:0.04em;">
-        In sw.js change CACHE_NAME to:<br>
-        'jestamang-<span id="cb-modal-version"></span>'<br><br>
-        git add sw.js<br>
-        git commit -m "pwa: cache busted"<br>
-        git push
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
@@ -1660,7 +1617,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initPressManager();
     initAlbumManager();
     if (window.initLeaderboards)    window.initLeaderboards();
-    initCacheBust();
     initAlbumAnnouncer();
     initVideoManager();
     initMerchManager();
@@ -1914,13 +1870,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   });
   var _memberModal=document.getElementById('member-modal');if(_memberModal)_memberModal.addEventListener('click', function (e) {
     if (e.target === this) this.classList.remove('open');
-  });
-
-  var _cbModalClose=document.getElementById('cb-modal-close');if(_cbModalClose)_cbModalClose.addEventListener('click', function () {
-    document.getElementById('cb-modal').style.display='none';
-  });
-  var _cbModal=document.getElementById('cb-modal');if(_cbModal)_cbModal.addEventListener('click', function (e) {
-    if (e.target === this) this.style.display='none';
   });
 
   /* ══════════════ SECTION 4: BLOG PUBLISHER ══════════════ */
@@ -2753,71 +2702,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       loadReleases();
     }).catch(function(e) { alert('Error: ' + e.message); });
   };
-
-  /* ══════════════ SECTION 12: CACHE BUST ══════════════ */
-  function initCacheBust() {
-    // Show current cache version from Firestore
-    db.collection('siteConfig').doc('cacheVersion').get().then(function(doc){
-      var el=document.getElementById('cb-current');
-      if(doc.exists && doc.data().version){
-        el.textContent='Current cache version: '+doc.data().version+' · last busted '+fmtTime(doc.data().timestamp);
-      } else {
-        el.textContent='No cache version set yet — click to initialise.';
-      }
-    }).catch(function(){ document.getElementById('cb-current').textContent='Could not read cache version.'; });
-
-    // Version history
-    db.collection('siteConfig').doc('cacheVersion').collection('history')
-      .orderBy('timestamp','desc').limit(8).get()
-      .then(function(snap){
-        var el=document.getElementById('cb-history');
-        if(snap.empty){el.textContent='No history yet.';return;}
-        var html='';
-        snap.forEach(function(doc){
-          var d=doc.data();
-          html+='<div>'+esc(String(d.version||'—'))+' &nbsp;·&nbsp; '+fmtTime(d.timestamp)+'</div>';
-        });
-        el.innerHTML=html;
-      }).catch(function(){document.getElementById('cb-history').textContent='—';});
-
-    var _cbBustBtn=document.getElementById('cb-bust-btn');if(_cbBustBtn)_cbBustBtn.addEventListener('click', function(){
-      var btn=this;
-      var statusEl=document.getElementById('cb-status');
-      btn.disabled=true;
-      statusEl.textContent='';
-      var version='jestamang-'+Date.now();
-      var ts=firebase.firestore.FieldValue.serverTimestamp();
-      var batch=db.batch();
-      batch.set(db.collection('siteConfig').doc('cacheVersion'),{version:version,timestamp:ts});
-      batch.set(db.collection('siteConfig').doc('cacheVersion').collection('history').doc(),{version:version,timestamp:ts});
-      batch.commit().then(function(){
-        statusEl.textContent='CACHE BUSTED \u2726 Notifying visitors...';
-        statusEl.className='status-msg status-ok';
-        document.getElementById('cb-current').textContent='Current cache version: '+version;
-        btn.disabled=false;
-        // Tell the active service worker to skip waiting and activate immediately
-        if(navigator.serviceWorker&&navigator.serviceWorker.controller){
-          navigator.serviceWorker.controller.postMessage({type:'SKIP_WAITING'});
-        }
-        // Show instructions modal with the new version string
-        document.getElementById('cb-modal-version').textContent=version.replace('jestamang-','');
-        var modal=document.getElementById('cb-modal');
-        modal.style.display='flex';
-        // Reload history
-        db.collection('siteConfig').doc('cacheVersion').collection('history')
-          .orderBy('timestamp','desc').limit(8).get()
-          .then(function(snap){
-            var el=document.getElementById('cb-history'); var html='';
-            snap.forEach(function(doc){var d=doc.data();html+='<div>'+esc(String(d.version||'—'))+' &nbsp;·&nbsp; '+fmtTime(d.timestamp)+'</div>';});
-            el.innerHTML=html||'No history.';
-          }).catch(function(){});
-      }).catch(function(e){
-        statusEl.textContent='Error: '+e.message;
-        statusEl.className='status-msg status-err';
-        btn.disabled=false;
-      });
-    });
-  }
 
   /* ══════════════ SECTION 13: ALBUM ANNOUNCER ══════════════ */
   function initAlbumAnnouncer() {
@@ -3990,7 +3874,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       obs.observe(el, { childList: true, characterData: true, subtree: true });
     });
   }
-  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-26','sec-27','sec-29','sec-30','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-25','sec-28','sec-1','sec-12','sec-20','sec-17'];
+  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-26','sec-27','sec-29','sec-30','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-16','sec-11','sec-22','sec-25','sec-28','sec-1','sec-20','sec-17'];
   function initScrollSpy() {
     var secs = SEC_IDS.map(function(id){ return document.getElementById(id); }).filter(Boolean);
     var links = document.querySelectorAll('.adm-sidenav-link,.adm-mobtab');
