@@ -80,6 +80,12 @@
 
   function $id(id) { return document.getElementById(id); }
 
+  function trackFreq(t) {
+    var h = 0, s = String(t.id);
+    for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) & 0xFFFF;
+    return (88.0 + (h % 2001) / 100.0).toFixed(1);
+  }
+
   /* ---- UI ---- */
   function setArt(url) {
     var el = $id('lc-artwork');
@@ -87,9 +93,10 @@
   }
 
   function setInfo(t) {
-    var te = $id('lc-title'), me = $id('lc-meta');
+    var te = $id('lc-title'), me = $id('lc-meta'), fe = $id('lc-freq');
     if (te) te.textContent = t ? t.title : '…';
     if (me) me.textContent = t ? (t.artist + (t.album ? ' · ' + t.album : '')) : '';
+    if (fe) fe.textContent = t ? (trackFreq(t) + ' MHz') : '';
     setArt(t && t.artwork ? t.artwork : null);
     document.title = t ? (t.title + ' — Jestamang Radio') : 'Listen | Jestamang';
   }
@@ -413,6 +420,11 @@
     initSeek();
     initWave();
     fetchManifest();
+
+    /* restart rAF loop if it went dark while page was backgrounded */
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden && wCtx) requestAnimationFrame(drawWave);
+    });
   }
 
   if (document.readyState === 'loading') {
