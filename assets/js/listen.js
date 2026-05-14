@@ -133,6 +133,7 @@
     if (t) {
       var center = document.querySelector('.lc-center');
       if (center) center.classList.remove('lc-sk');
+      markRecActive();
     }
   }
 
@@ -157,6 +158,11 @@
     }
     var ov = $id('lc-art-overlay');
     if (ov) ov.textContent = p ? '⏸' : '▶';
+    var list = $id('lc-recent-list');
+    if (list) {
+      if (p) list.classList.add('lc-playing');
+      else   list.classList.remove('lc-playing');
+    }
   }
 
   function flashBtn(id) {
@@ -194,6 +200,20 @@
     renderRec(r);
   }
 
+  function markRecActive() {
+    var list = $id('lc-recent-list');
+    if (!list) return;
+    var curId = (cur >= 0 && tracks[cur]) ? String(tracks[cur].id) : null;
+    var items = list.querySelectorAll('.lc-re-item');
+    for (var i = 0; i < items.length; i++) {
+      if (curId && items[i].getAttribute('data-id') === curId) {
+        items[i].classList.add('lc-re-active');
+      } else {
+        items[i].classList.remove('lc-re-active');
+      }
+    }
+  }
+
   function renderRec(r) {
     var list = $id('lc-recent-list');
     if (!list) return;
@@ -206,7 +226,7 @@
     for (var i = 0; i < r.length; i++) {
       var ri = r[i];
       html += '<li class="lc-re-item" data-id="' + esc(String(ri.id)) + '">' +
-        '<span class="lc-re-n">' + (i + 1) + '</span>' +
+        '<span class="lc-re-n"><span class="lc-re-n-num">' + (i + 1) + '</span><span class="lc-re-n-play">&#9655;</span></span>' +
         '<span class="lc-re-body">' +
           '<span class="lc-re-t">' + esc(ri.title) + '</span>' +
           '<span class="lc-re-m">' + (ri.artist === ri.album ? esc(ri.artist) : esc(ri.artist) + (ri.album ? ' · ' + esc(ri.album) : '')) + '</span>' +
@@ -224,6 +244,7 @@
         });
       })(items[j]);
     }
+    markRecActive();
   }
 
   /* ---- waveform (synthetic only — no Web Audio API to avoid CORS audio muting) ---- */

@@ -121,6 +121,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .lc-re-t{display:block;font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.08em;color:rgba(240,230,210,0.9);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lc-re-m{display:block;font-family:Georgia,serif;font-style:italic;font-size:0.7rem;color:rgba(201,168,76,0.65);letter-spacing:0.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lc-re-empty{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.3em;color:rgba(201,168,76,0.3);text-align:center;padding:24px 0;list-style:none}
+.lc-re-item.lc-re-active{box-shadow:inset 3px 0 0 #c9a84c;background:rgba(201,168,76,0.06)}
+.lc-re-item.lc-re-active .lc-re-t{color:rgba(240,230,210,1)}
+.lc-re-item.lc-re-active .lc-re-m{color:rgba(201,168,76,0.82)}
+.lc-re-n-num{display:inline}
+.lc-re-n-play{display:none;color:#c9a84c}
+.lc-re-item.lc-re-active .lc-re-n-num{display:none}
+.lc-re-item.lc-re-active .lc-re-n-play{display:inline}
+#lc-recent-list.lc-playing .lc-re-item.lc-re-active .lc-re-n-play{animation:lcRecPulse 1.5s ease-in-out infinite}
+@keyframes lcRecPulse{0%,100%{opacity:0.6}50%{opacity:1}}
 
 /* ---- iOS overlay ---- */
 #lc-ios{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.93);display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px;cursor:pointer;text-align:center;padding:24px}
