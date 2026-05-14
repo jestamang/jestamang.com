@@ -185,6 +185,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   #jt-bg{transform:translate3d(0,0,0)!important;will-change:transform}
 }
 
+/* ---- toast notification ---- */
+#lc-toast{position:fixed;bottom:24px;left:24px;background:rgba(0,0,0,0.92);border:1px solid rgba(201,168,76,0.45);border-radius:6px;padding:12px 18px;max-width:320px;box-shadow:0 4px 16px rgba(0,0,0,0.4);z-index:9990;pointer-events:none;opacity:0;transform:translateY(20px);transition:opacity 0.3s ease-out,transform 0.3s ease-out}
+#lc-toast.lc-ti{opacity:1;transform:translateY(0)}
+#lc-toast.lc-to{opacity:0;transform:translateY(0);transition:opacity 0.3s ease-in}
+#lc-toast-label{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.32em;text-transform:uppercase;color:#c9a84c;margin-bottom:5px}
+#lc-toast-title{font-family:'Luminari',serif;font-size:0.875rem;color:#c9a84c;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#lc-toast-meta{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.69rem;color:rgba(201,168,76,0.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:768px){#lc-toast{left:0;right:0;max-width:260px;margin:0 auto}}
 .skip-link{position:absolute;top:-40px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}
 @media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#j-update-banner,#sw-update-banner,#jtnav-mobile-overlay{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}
 </style>
@@ -244,6 +252,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <p class="lc-ios-glyph">✦</p>
   <p class="lc-ios-text">Tap to Begin Transmission ✦</p>
   <p class="lc-ios-hint">iOS requires a tap before audio can play.</p>
+</div>
+
+<div id="lc-toast" aria-live="polite" aria-atomic="true">
+  <div id="lc-toast-label">▸ Now Broadcasting</div>
+  <div id="lc-toast-title"></div>
+  <div id="lc-toast-meta"></div>
 </div>
 
 <!-- hidden audio element — no controls attribute means no native UI renders; element needs to be in normal flow for playback to work -->

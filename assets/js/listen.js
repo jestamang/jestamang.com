@@ -17,6 +17,8 @@
   var audio      = null;
   var fadeTmr    = null;
   var skipTmr    = null;
+  var firstTrack = true;
+  var toastTmr   = null;
 
   /* waveform — synthetic only */
   var wCtx      = null;
@@ -124,6 +126,26 @@
     if (el) el.src = url || 'assets/homepage/logo png.png';
   }
 
+  function showToast(t) {
+    if (!t) return;
+    var toast = $id('lc-toast');
+    var ttl   = $id('lc-toast-title');
+    var tmeta = $id('lc-toast-meta');
+    if (!toast || !ttl || !tmeta) return;
+    if (toastTmr) clearTimeout(toastTmr);
+    ttl.textContent   = t.title;
+    tmeta.textContent = t.artist === t.album ? t.artist : t.artist + (t.album ? ' · ' + t.album : '');
+    toast.classList.remove('lc-to');
+    toast.classList.add('lc-ti');
+    toastTmr = setTimeout(function () {
+      toast.classList.remove('lc-ti');
+      toast.classList.add('lc-to');
+      toastTmr = setTimeout(function () {
+        toast.classList.remove('lc-to');
+      }, 350);
+    }, 3000);
+  }
+
   function setInfo(t) {
     var te = $id('lc-title'), me = $id('lc-meta');
     if (te) te.textContent = t ? t.title : '…';
@@ -134,6 +156,11 @@
       var center = document.querySelector('.lc-center');
       if (center) center.classList.remove('lc-sk');
       markRecActive();
+      if (!firstTrack) {
+        showToast(t);
+      } else {
+        firstTrack = false;
+      }
     }
   }
 
