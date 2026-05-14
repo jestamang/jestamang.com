@@ -61,13 +61,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* ---- CENTER player ---- */
 .lc-center{display:flex;flex-direction:column;align-items:center;background:rgba(10,10,10,0.85);border:1px solid rgba(201,168,76,0.5);box-shadow:inset 0 0 60px rgba(201,168,76,0.08);border-radius:8px;padding:40px}
-.lc-art-wrap{position:relative;width:320px;height:320px;margin-bottom:20px;flex-shrink:0;cursor:pointer}
+.lc-art-wrap{position:relative;width:320px;height:320px;margin-bottom:20px;flex-shrink:0}
 #lc-artwork{width:320px;height:320px;object-fit:cover;display:block;border:1px solid rgba(201,168,76,0.22);background:#050312;pointer-events:none}
 #lc-artwork.lc-art-fallback{object-fit:contain;padding:40px}
 #lc-artwork.lc-art-err{opacity:0.35}
 #lc-loading{position:absolute;inset:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;pointer-events:none}
-#lc-art-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3.5rem;color:rgba(201,168,76,0);pointer-events:none;transition:color 0.2s ease;-webkit-user-select:none;user-select:none;text-shadow:0 0 20px rgba(0,0,0,0.8)}
-.lc-art-wrap:hover #lc-art-overlay{color:rgba(201,168,76,0.45)}
+#lc-audio{position:absolute;width:1px;height:1px;left:-9999px;opacity:0;pointer-events:none}
 .lc-spin{font-size:1.6rem;color:#c9a84c;display:inline-block;animation:lcSpin 1.4s linear infinite}
 @keyframes lcSpin{0%{opacity:0.2;transform:rotate(0deg)}50%{opacity:1;transform:rotate(180deg)}100%{opacity:0.2;transform:rotate(360deg)}}
 #lc-error{text-align:center;margin-bottom:8px;display:none}
@@ -344,14 +343,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <!-- 2. Waveform canvas -->
       <canvas id="lc-wave" width="320" height="40" aria-hidden="true"></canvas>
 
-      <!-- 3. Artwork (with loading overlay + play/pause hover overlay) -->
-      <div class="lc-art-wrap" role="button" aria-label="Play / Pause" tabindex="0">
+      <!-- 3. Artwork (display only) -->
+      <div class="lc-art-wrap">
 <img id="lc-artwork" class="lc-art-fallback" src="assets/homepage/logo png.png" alt="Album artwork" width="320" height="320">
         <div id="lc-skel-art" aria-hidden="true"></div>
         <div id="lc-loading" style="display:none">
           <span class="lc-spin">✦</span>
         </div>
-        <div id="lc-art-overlay" aria-hidden="true">▶</div>
       </div>
 
       <!-- 4. Station identifier (static) -->
