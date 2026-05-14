@@ -563,14 +563,6 @@
       }
     });
 
-    var artWrap = document.querySelector('.lc-art-wrap');
-    if (artWrap) {
-      artWrap.addEventListener('click', togglePlay);
-      artWrap.addEventListener('keydown', function (e) {
-        if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); togglePlay(); }
-      });
-    }
-
     initSeek();
     initWave();
 
