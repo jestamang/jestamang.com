@@ -155,6 +155,13 @@
     if (ov) ov.textContent = p ? '⏸' : '▶';
   }
 
+  function flashBtn(id) {
+    var b = $id(id);
+    if (!b) return;
+    b.style.boxShadow = '0 0 18px rgba(201,168,76,0.7)';
+    setTimeout(function () { b.style.boxShadow = ''; }, 200);
+  }
+
   function showLoad(v) {
     var el = $id('lc-loading');
     if (el) el.style.display = v ? 'flex' : 'none';
@@ -433,6 +440,16 @@
     initSeek();
     initWave();
     fetchManifest();
+
+    /* keyboard shortcuts */
+    document.addEventListener('keydown', function (e) {
+      var tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (e.target.isContentEditable) return;
+      if (e.key === ' ') { e.preventDefault(); togglePlay(); flashBtn('lc-play'); }
+      else if (e.key === 'ArrowRight') { playNext(true); flashBtn('lc-next'); }
+      else if (e.key === 'ArrowLeft')  { playPrev();    flashBtn('lc-prev'); }
+    });
 
     /* restart rAF loop if it went dark while page was backgrounded */
     document.addEventListener('visibilitychange', function () {
