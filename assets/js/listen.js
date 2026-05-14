@@ -1,12 +1,14 @@
 (function () {
   'use strict';
 
-  var MANIFEST   = 'https://pub-75f71ff978d340cfa0ee8e4b628e3ea4.r2.dev/manifest.json';
-  var RECENT_KEY = 'listenRecentTransmissions';
-  var MAX_RECENT  = 10;
-  var FADE_STEPS  = 10;
-  var FADE_MS     = 20;
+  var MANIFEST     = 'https://pub-75f71ff978d340cfa0ee8e4b628e3ea4.r2.dev/manifest.json';
+  var RECENT_KEY   = 'listenRecentTransmissions';
+  var STATION_KEY  = 'listenSelectedStation';
+  var MAX_RECENT   = 10;
+  var FADE_STEPS   = 10;
+  var FADE_MS      = 20;
 
+  var allTracks  = [];
   var tracks     = [];
   var queue      = [];
   var hist       = [];
@@ -20,6 +22,46 @@
   var wCtx      = null;
   var NUM_BARS  = 18;
   var synthBars = [];
+
+  /* ---- station ---- */
+  function applyStation(id) {
+    if (id === 'STATION_COLLECTIVE') {
+      tracks = allTracks.filter(function (t) { return t.album !== 'Sounds Across the World'; });
+    } else if (id === 'STATION_WORLD') {
+      tracks = allTracks.filter(function (t) { return t.album === 'Sounds Across the World'; });
+    } else {
+      id = 'STATION_ALL';
+      tracks = allTracks.slice();
+    }
+    hist  = [];
+    queue = [];
+    buildQ();
+    var btns = ['lc-st-all', 'lc-st-collective', 'lc-st-world'];
+    var ids  = ['STATION_ALL', 'STATION_COLLECTIVE', 'STATION_WORLD'];
+    for (var i = 0; i < btns.length; i++) {
+      var b = $id(btns[i]);
+      if (b) {
+        if (ids[i] === id) b.classList.add('active');
+        else               b.classList.remove('active');
+      }
+    }
+  }
+
+  function switchStation(id) {
+    localStorage.setItem(STATION_KEY, id);
+    applyStation(id);
+    if (audio && !audio.paused) {
+      var steps = 50, sv = audio.volume, step = 0;
+      clearFade();
+      fadeTmr = setInterval(function () {
+        step++;
+        audio.volume = Math.max(0, sv * (1 - step / steps));
+        if (step >= steps) { clearFade(); playNext(false); }
+      }, 20);
+    } else {
+      playNext(false);
+    }
+  }
 
   /* ---- queue ---- */
   function _shuf(a) {
@@ -85,7 +127,7 @@
   function setInfo(t) {
     var te = $id('lc-title'), me = $id('lc-meta');
     if (te) te.textContent = t ? t.title : '…';
-    if (me) me.textContent = t ? (t.artist + (t.album ? ' · ' + t.album : '')) : '';
+    if (me) me.textContent = t ? (t.artist === t.album ? t.artist : t.artist + (t.album ? ' · ' + t.album : '')) : '';
     setArt(t && t.artwork ? t.artwork : null);
     document.title = t ? (t.title + ' — Jestamang Radio') : 'Listen | Jestamang';
   }
@@ -150,7 +192,7 @@
         '<span class="lc-re-n">' + (i + 1) + '</span>' +
         '<span class="lc-re-body">' +
           '<span class="lc-re-t">' + esc(ri.title) + '</span>' +
-          '<span class="lc-re-m">' + esc(ri.artist) + (ri.album ? ' · ' + esc(ri.album) : '') + '</span>' +
+          '<span class="lc-re-m">' + (ri.artist === ri.album ? esc(ri.artist) : esc(ri.artist) + (ri.album ? ' · ' + esc(ri.album) : '')) + '</span>' +
         '</span></li>';
     }
     list.innerHTML = html;
@@ -309,10 +351,11 @@
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
           var data = JSON.parse(xhr.responseText);
-          tracks = Array.isArray(data) ? data : (data.tracks || []);
-          console.log('[listen] manifest loaded, tracks:', tracks.length);
-          if (!tracks.length) { showLoad(false); showErr('Empty catalog.'); return; }
-          buildQ();
+          var raw = Array.isArray(data) ? data : (data.tracks || []);
+          console.log('[listen] manifest loaded, tracks:', raw.length);
+          if (!raw.length) { showLoad(false); showErr('Empty catalog.'); return; }
+          allTracks = raw;
+          applyStation(localStorage.getItem(STATION_KEY) || 'STATION_ALL');
           var isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
           if (isIos) {
             var idx = deq(); cur = idx;
@@ -358,11 +401,17 @@
     var next = $id('lc-next');
     var rt   = $id('lc-retry');
     var ios  = $id('lc-ios');
+    var stAll = $id('lc-st-all');
+    var stCol = $id('lc-st-collective');
+    var stWld = $id('lc-st-world');
 
-    if (pb)   pb.addEventListener('click', togglePlay);
-    if (prev) prev.addEventListener('click', playPrev);
-    if (next) next.addEventListener('click', function () { playNext(true); });
-    if (rt)   rt.addEventListener('click', fetchManifest);
+    if (pb)    pb.addEventListener('click', togglePlay);
+    if (prev)  prev.addEventListener('click', playPrev);
+    if (next)  next.addEventListener('click', function () { playNext(true); });
+    if (rt)    rt.addEventListener('click', fetchManifest);
+    if (stAll) stAll.addEventListener('click', function () { switchStation('STATION_ALL'); });
+    if (stCol) stCol.addEventListener('click', function () { switchStation('STATION_COLLECTIVE'); });
+    if (stWld) stWld.addEventListener('click', function () { switchStation('STATION_WORLD'); });
     if (ios)  ios.addEventListener('click', function () {
       ios.style.display = 'none';
       if (cur >= 0 && tracks[cur]) {
