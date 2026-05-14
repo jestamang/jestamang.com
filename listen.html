@@ -99,8 +99,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .lc-st-btn:hover:not(.active){border-color:#c9a84c;color:#c9a84c}
 /* ---- radio aesthetic ---- */
 .lc-onair{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;-webkit-user-select:none;user-select:none}
-#lc-onair-dot{width:12px;height:12px;border-radius:50%;background:#FB3838;flex-shrink:0;animation:lcDotPulse 1.5s ease-in-out infinite;box-shadow:0 0 8px rgba(251,56,56,0.8);filter:drop-shadow(0 0 4px rgba(251,56,56,0.4));transition:filter 0.4s,opacity 0.4s,box-shadow 0.4s}
+#lc-onair-dot{width:12px;height:12px;border-radius:50%;background:#FB3838;flex-shrink:0;animation:lcDotPulse 1.5s ease-in-out infinite;box-shadow:0 0 8px rgba(251,56,56,0.8);filter:drop-shadow(0 0 4px rgba(251,56,56,0.4));transition:background 0.3s,filter 0.4s,opacity 0.4s,box-shadow 0.4s}
 #lc-onair-dot.paused{animation:none;opacity:0.45;box-shadow:none;filter:none}
+#lc-onair-dot.buffering:not(.paused){background:#c9a84c;box-shadow:0 0 8px rgba(201,168,76,0.9);filter:drop-shadow(0 0 4px rgba(201,168,76,0.6));animation:lcDotPulse 0.5s ease-in-out infinite}
 @keyframes lcDotPulse{0%,100%{opacity:1}50%{opacity:0.4}}
 .lc-onair-text{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.38em;text-transform:uppercase;color:#c9a84c;transition:filter 0.4s}
 #lc-onair-dot:not(.paused)~.lc-onair-text{filter:drop-shadow(0 0 4px rgba(201,168,76,0.3))}

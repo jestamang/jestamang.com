@@ -17,6 +17,7 @@
   var audio      = null;
   var fadeTmr    = null;
   var skipTmr    = null;
+  var bufTmr     = null;
   var firstTrack = true;
   var toastTmr   = null;
 
@@ -458,8 +459,21 @@
       skipTmr = setTimeout(function () { if (tracks.length) playNext(false); }, 300);
     });
     audio.addEventListener('timeupdate', updProg);
-    audio.addEventListener('canplay',   function () { showLoad(false); });
-    audio.addEventListener('waiting',   function () { showLoad(true); });
+    audio.addEventListener('canplay', function () {
+      showLoad(false);
+      clearTimeout(bufTmr);
+      bufTmr = null;
+      var dot = $id('lc-onair-dot');
+      if (dot) dot.classList.remove('buffering');
+    });
+    audio.addEventListener('waiting', function () {
+      showLoad(true);
+      clearTimeout(bufTmr);
+      bufTmr = setTimeout(function () {
+        var dot = $id('lc-onair-dot');
+        if (dot) dot.classList.add('buffering');
+      }, 200);
+    });
 
     var pb   = $id('lc-play');
     var prev = $id('lc-prev');
