@@ -573,6 +573,19 @@
 
     initSeek();
     initWave();
+
+    var stSearch = window.location.search;
+    if (stSearch) {
+      var stMatch = stSearch.match(/[?&]station=([^&]+)/);
+      if (stMatch) {
+        var stParam = stMatch[1].toLowerCase();
+        var stId = 'STATION_ALL';
+        if (stParam === 'collective') stId = 'STATION_COLLECTIVE';
+        else if (stParam === 'world') stId = 'STATION_WORLD';
+        localStorage.setItem(STATION_KEY, stId);
+      }
+    }
+
     fetchManifest();
 
     /* keyboard shortcuts */
