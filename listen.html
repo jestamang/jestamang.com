@@ -63,12 +63,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .lc-center{display:flex;flex-direction:column;align-items:center;background:rgba(10,10,10,0.85);border:1px solid rgba(201,168,76,0.5);box-shadow:inset 0 0 60px rgba(201,168,76,0.08);border-radius:8px;padding:40px}
 .lc-art-wrap{position:relative;width:320px;height:320px;margin-bottom:20px;flex-shrink:0;cursor:pointer}
 #lc-artwork{width:320px;height:320px;object-fit:cover;display:block;border:1px solid rgba(201,168,76,0.22);background:#050312;pointer-events:none}
+#lc-artwork.lc-art-fallback{object-fit:contain;padding:40px}
+#lc-artwork.lc-art-err{opacity:0.35}
 #lc-loading{position:absolute;inset:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;pointer-events:none}
 #lc-art-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3.5rem;color:rgba(201,168,76,0);pointer-events:none;transition:color 0.2s ease;-webkit-user-select:none;user-select:none;text-shadow:0 0 20px rgba(0,0,0,0.8)}
 .lc-art-wrap:hover #lc-art-overlay{color:rgba(201,168,76,0.45)}
 .lc-spin{font-size:1.6rem;color:#c9a84c;display:inline-block;animation:lcSpin 1.4s linear infinite}
 @keyframes lcSpin{0%{opacity:0.2;transform:rotate(0deg)}50%{opacity:1;transform:rotate(180deg)}100%{opacity:0.2;transform:rotate(360deg)}}
-#lc-error{font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.2em;color:rgba(240,80,80,0.85);text-align:center;margin-bottom:8px;display:none}
+#lc-error{text-align:center;margin-bottom:8px;display:none}
+.lc-err-head{display:block;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.4em;text-transform:uppercase;color:#c9a84c;margin-bottom:10px}
+.lc-err-body{display:block;font-family:'Luminari',Georgia,serif;font-style:italic;font-size:0.75rem;color:rgba(201,168,76,0.7);line-height:1.7}
 #lc-retry{display:none;font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.3em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.4);padding:6px 18px;cursor:pointer;margin-bottom:12px;transition:border-color 0.2s}
 #lc-retry:hover{border-color:#c9a84c}
 #lc-title{font-family:'Luminari',serif;font-size:2rem;letter-spacing:0.08em;color:#c9a84c;text-align:center;margin-bottom:6px;min-height:1.2em;text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1);width:100%;max-width:360px;line-height:1.2;transition:opacity 0.3s ease}
@@ -342,7 +346,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
       <!-- 3. Artwork (with loading overlay + play/pause hover overlay) -->
       <div class="lc-art-wrap" role="button" aria-label="Play / Pause" tabindex="0">
-<img id="lc-artwork" src="assets/homepage/logo png.png" alt="Album artwork" width="320" height="320">
+<img id="lc-artwork" class="lc-art-fallback" src="assets/homepage/logo png.png" alt="Album artwork" width="320" height="320">
         <div id="lc-skel-art" aria-hidden="true"></div>
         <div id="lc-loading" style="display:none">
           <span class="lc-spin">✦</span>

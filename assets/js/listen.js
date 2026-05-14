@@ -127,7 +127,14 @@
   /* ---- UI ---- */
   function setArt(url) {
     var el = $id('lc-artwork');
-    if (el) el.src = url || 'assets/homepage/logo png.png';
+    if (!el) return;
+    if (url) {
+      el.src = url;
+      el.classList.remove('lc-art-fallback');
+    } else {
+      el.src = 'assets/homepage/logo png.png';
+      el.classList.add('lc-art-fallback');
+    }
   }
 
   function fmtSess(s) {
@@ -230,9 +237,20 @@
   }
 
   function showErr(msg) {
-    var el = $id('lc-error'), rb = $id('lc-retry');
-    if (el) { el.textContent = msg || ''; el.style.display = msg ? 'block' : 'none'; }
+    var el = $id('lc-error'), rb = $id('lc-retry'), art = $id('lc-artwork');
+    if (el) {
+      if (msg) {
+        el.innerHTML = '<span class="lc-err-head">✦ Tuning the Signal ✦</span><span class="lc-err-body">The transmission is briefly out of range. Try again in a moment.</span>';
+      } else {
+        el.innerHTML = '';
+      }
+      el.style.display = msg ? 'block' : 'none';
+    }
     if (rb) rb.style.display = msg ? 'inline-block' : 'none';
+    if (art) {
+      if (msg) art.classList.add('lc-art-err');
+      else     art.classList.remove('lc-art-err');
+    }
     if (msg) {
       var center = document.querySelector('.lc-center');
       if (center) center.classList.remove('lc-sk');
@@ -436,7 +454,7 @@
     showLoad(true);
     showErr(null);
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', MANIFEST, true);
+    xhr.open('GET', MANIFEST + '?t=' + Date.now(), true);
     xhr.onload = function () {
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
