@@ -453,15 +453,21 @@
   function fetchManifest() {
     showLoad(true);
     showErr(null);
+    var url = MANIFEST + '?t=' + Date.now();
+    console.log('[radio] fetching manifest at:', new Date().toISOString());
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', MANIFEST + '?t=' + Date.now(), true);
+    xhr.open('GET', url, true);
     xhr.onload = function () {
+      console.log('[radio] manifest response status:', xhr.status);
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
           var data = JSON.parse(xhr.responseText);
           var raw = Array.isArray(data) ? data : (data.tracks || []);
-          console.log('[listen] manifest loaded, tracks:', raw.length);
-          if (!raw.length) { showLoad(false); showErr('Empty catalog.'); return; }
+          console.log('[radio] manifest parsed, tracks:', raw.length);
+          if (!raw.length) {
+            console.log('[radio] FALLBACK TRIGGERED — empty tracks array');
+            showLoad(false); showErr('empty'); return;
+          }
           allTracks = raw;
           applyStation(localStorage.getItem(STATION_KEY) || 'STATION_ALL');
           var isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -475,13 +481,18 @@
             playNext(false);
           }
         } catch (ex) {
-          showLoad(false); showErr('Catalog error. ✦ Retry?');
+          console.log('[radio] FALLBACK TRIGGERED — parse error:', ex);
+          showLoad(false); showErr('error');
         }
       } else {
-        showLoad(false); showErr('Catalog unavailable. ✦ Retry?');
+        console.log('[radio] FALLBACK TRIGGERED — HTTP', xhr.status);
+        showLoad(false); showErr('error');
       }
     };
-    xhr.onerror = function () { showLoad(false); showErr('Network error. ✦ Retry?'); };
+    xhr.onerror = function () {
+      console.log('[radio] FALLBACK TRIGGERED — network error');
+      showLoad(false); showErr('error');
+    };
     xhr.send();
   }
 

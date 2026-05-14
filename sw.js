@@ -4,7 +4,7 @@
 // UPDATE CACHE_VERSION DATE ON EVERY PUSH
 // ════════════════════════════════════════════════════════════════
 
-var CACHE_NAME = 'jestamang-v4';
+var CACHE_NAME = 'jestamang-v5';
 var BADGE      = '/assets/icons/icon-192.png';
 
 var PRECACHE_URLS = [
@@ -25,6 +25,7 @@ var PRECACHE_URLS = [
   '/members.html',
   '/dossier.html',
   '/listen.html',
+  '/radio.html',
   '/game-oracle.html',
   '/game-memory.html',
   '/games/entity-pair.html',
