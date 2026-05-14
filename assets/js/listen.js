@@ -20,6 +20,9 @@
   var bufTmr     = null;
   var firstTrack = true;
   var toastTmr   = null;
+  var sessSecs   = 0;
+  var sessStarted = false;
+  var sessTmr    = null;
 
   /* waveform — synthetic only */
   var wCtx      = null;
@@ -125,6 +128,27 @@
   function setArt(url) {
     var el = $id('lc-artwork');
     if (el) el.src = url || 'assets/homepage/logo png.png';
+  }
+
+  function fmtSess(s) {
+    var h = Math.floor(s / 3600);
+    var m = Math.floor((s % 3600) / 60);
+    var sec = s % 60;
+    return h + ':' + (m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  function startSessTmr() {
+    if (sessTmr) return;
+    sessTmr = setInterval(function () {
+      sessSecs++;
+      var el = $id('lc-sess-time');
+      if (el) el.textContent = fmtSess(sessSecs);
+    }, 1000);
+  }
+
+  function stopSessTmr() {
+    clearInterval(sessTmr);
+    sessTmr = null;
   }
 
   function showToast(t) {
@@ -451,8 +475,19 @@
     if (!audio) { audio = document.createElement('audio'); audio.id = 'lc-audio'; document.body.appendChild(audio); }
     audio.preload = 'auto';
 
-    audio.addEventListener('play',      function () { setPlayBtn(true); });
-    audio.addEventListener('pause',     function () { setPlayBtn(false); });
+    audio.addEventListener('play',  function () {
+      setPlayBtn(true);
+      if (!sessStarted) {
+        sessStarted = true;
+        var el = $id('lc-sess-time');
+        if (el) el.textContent = fmtSess(0);
+      }
+      startSessTmr();
+    });
+    audio.addEventListener('pause', function () {
+      setPlayBtn(false);
+      stopSessTmr();
+    });
     audio.addEventListener('ended',     function () { playNext(false); });
     audio.addEventListener('error',     function () {
       showLoad(false); clearTimeout(skipTmr);
