@@ -25,7 +25,7 @@ body{font-family:'Luminari',serif;background:#000;background-size:cover;backgrou
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 35%,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.75) 100%);z-index:0;pointer-events:none}
 
 /* ---- LISTENING CHAMBER ---- */
-.lc-stage{position:relative;z-index:1;padding:40px 24px 80px;min-height:calc(100vh - 52px)}
+.lc-stage{position:relative;z-index:1;padding:72px 24px 80px;min-height:calc(100vh - 52px)}
 .lc-page-head{max-width:1100px;margin:0 auto 36px;text-align:center}
 .lc-heading{font-family:'Luminari',serif;font-size:clamp(1.4rem,4vw,2.2rem);letter-spacing:0.45em;text-transform:uppercase;color:#c9a84c;text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8);margin-bottom:10px}
 .lc-sub{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.9rem;color:rgba(240,230,210,0.6);letter-spacing:0.1em}
@@ -43,8 +43,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .lc-social-link svg{flex-shrink:0;opacity:1}
 
 /* ---- CENTER player ---- */
-.lc-center{display:flex;flex-direction:column;align-items:center;background:rgba(10,10,10,0.85);border:1px solid rgba(201,168,76,0.5);box-shadow:inset 0 0 60px rgba(201,168,76,0.08);border-radius:8px;padding:32px;position:relative}
-#lc-freq{position:absolute;top:10px;left:16px;font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.18em;color:rgba(201,168,76,0.55);transition:opacity 0.8s;-webkit-user-select:none;user-select:none}
+.lc-center{display:flex;flex-direction:column;align-items:center;background:rgba(10,10,10,0.85);border:1px solid rgba(201,168,76,0.5);box-shadow:inset 0 0 60px rgba(201,168,76,0.08);border-radius:8px;padding:32px}
 .lc-art-wrap{position:relative;width:320px;height:320px;margin-bottom:20px;flex-shrink:0}
 #lc-artwork{width:320px;height:320px;object-fit:cover;display:block;border:1px solid rgba(201,168,76,0.22);background:#050312}
 #lc-loading{position:absolute;inset:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center}
@@ -102,13 +101,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .lc-ios-text{font-family:'Luminari',serif;font-size:0.78rem;letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c}
 .lc-ios-hint{font-family:Georgia,serif;font-style:italic;font-size:0.8rem;color:rgba(240,230,210,0.45);letter-spacing:0.06em;margin-top:6px}
 
-/* MailerLite dark overrides */
-.ml-form-embedWrapper,.ml-embedded{background:transparent!important}
-.ml-form-embedWrapper .ml-form-embedBody,.ml-embedded .ml-form-embedBody{padding:0!important}
-.ml-form-embedWrapper input,.ml-embedded input{background:rgba(0,0,0,0.5)!important;border:1px solid rgba(201,168,76,0.3)!important;color:#c9a84c!important;font-family:'Luminari',serif!important;font-size:0.75rem!important;letter-spacing:0.1em!important;border-radius:0!important}
-.ml-form-embedWrapper input::placeholder,.ml-embedded input::placeholder{color:rgba(201,168,76,0.35)!important}
-.ml-form-embedWrapper button[type="submit"],.ml-embedded button[type="submit"]{background:#c9a84c!important;border:1px solid #c9a84c!important;color:#08060a!important;font-family:'Luminari',serif!important;font-size:0.65rem!important;letter-spacing:0.3em!important;text-transform:uppercase!important;border-radius:0!important;width:100%!important}
-.ml-form-successBody,.ml-subscribe-form-success{color:#c9a84c!important;font-family:'Luminari',serif!important;font-size:0.7rem!important;letter-spacing:0.15em!important;text-align:center!important}
+/* MailerLite — scoped to .ml-signup-box, matches blog.html exactly */
+.ml-signup-title{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.5em;color:#c9a84c;text-transform:uppercase;margin-bottom:10px;text-align:center}
+.ml-signup-box{background:rgba(0,0,0,0.6);border:1px solid #c9a84c;padding:28px 24px;margin:0}
+.ml-signup-box .ml-form-embedWrapper{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important}
+.ml-signup-box .ml-form-embedWrapper .ml-form-embedBody,.ml-signup-box .ml-form-embedWrapper .ml-form-embedBody .ml-form-formContent{padding:0!important;background:transparent!important}
+.ml-signup-box .ml-form-embedContent,.ml-signup-box .ml-form-embedContentDefault{display:none!important}
+.ml-signup-box input[type="email"],.ml-signup-box input[type="text"]{background:transparent!important;border:none!important;border-bottom:1px solid rgba(201,168,76,0.3)!important;border-radius:0!important;color:#e8e0d0!important;font-family:'Luminari',serif!important;font-size:16px!important;letter-spacing:0.12em!important;padding:8px 4px!important;outline:none!important;width:100%!important;box-shadow:none!important;text-align:center!important;caret-color:#c9a84c!important;-webkit-appearance:none!important;appearance:none!important}
+.ml-signup-box input[type="email"]::placeholder,.ml-signup-box input[type="text"]::placeholder{color:rgba(201,168,76,0.22)!important;font-style:italic!important}
+.ml-signup-box .ml-subscribe-button,.ml-signup-box button[type="button"]{display:none!important}
+.ml-signup-box .ml-form-embedSubmit button[type="submit"]{background:#c9a84c!important;color:#08060a!important;font-family:'Luminari',serif!important;font-size:0.6rem!important;font-weight:normal!important;letter-spacing:0.45em!important;text-transform:uppercase!important;text-align:center!important;border:none!important;border-radius:0!important;padding:0!important;width:auto!important;min-width:180px!important;min-height:46px!important;cursor:pointer!important;margin-top:18px!important;display:block!important;margin-left:auto!important;margin-right:auto!important;box-shadow:none!important}
+.ml-signup-box .ml-form-embedSubmit button[type="submit"]:hover{box-shadow:0 0 24px rgba(201,168,76,0.35)!important}
+.ml-signup-box .ml-form-embedSubmit{float:none!important;text-align:center!important}
+.ml-signup-box .ml-form-successBody,.ml-signup-box .ml-form-successContent{background:transparent!important;border:none!important;box-shadow:none!important}
+.ml-signup-box .ml-form-successContent h4{font-family:'Luminari',serif!important;color:rgba(201,168,76,0.7)!important;letter-spacing:0.3em!important;text-transform:uppercase!important;font-size:0.72rem!important;font-weight:normal!important}
+.ml-signup-box .ml-form-successContent p{font-family:'Luminari',serif!important;color:rgba(240,230,210,0.35)!important;font-size:0.62rem!important;letter-spacing:0.14em!important}
+.ml-signup-box label{display:none!important}
+.ml-signup-box .ml-form-embedSubmitLoad{display:none!important}
 
 /* mobile */
 @media (max-width:900px){
@@ -200,8 +209,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <p class="lc-ios-hint">iOS requires a tap before audio can play.</p>
 </div>
 
-<!-- hidden audio element — no controls attribute; display:none suppresses any browser-injected native UI on mobile -->
-<audio id="lc-audio" preload="auto" aria-hidden="true" style="display:none"></audio>
+<!-- hidden audio element — no controls attribute means no native UI renders; element needs to be in normal flow for playback to work -->
+<audio id="lc-audio" preload="auto" aria-hidden="true"></audio>
 
 <main id="lc-stage" class="lc-stage">
 
@@ -235,9 +244,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
     <!-- CENTER: PLAYER -->
     <div class="lc-center">
-
-      <!-- frequency display: top-left, deterministic per track -->
-      <div id="lc-freq" aria-hidden="true"></div>
 
       <!-- 1. ON AIR indicator -->
       <div class="lc-onair" aria-hidden="true">
@@ -277,7 +283,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
       <div class="lc-controls">
         <button id="lc-prev" class="lc-ctrl" aria-label="Previous">⏮</button>
-        <button id="lc-play" class="lc-ctrl" aria-label="Play" data-playing="0">⏯</button>
+        <button id="lc-play" class="lc-ctrl" aria-label="Play" data-playing="0">▶</button>
         <button id="lc-next" class="lc-ctrl" aria-label="Next">⏭</button>
       </div>
 
@@ -285,9 +291,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
     <!-- RIGHT: JOIN + CATALOG -->
     <aside class="lc-right" aria-label="Join and explore">
-      <div class="lc-right-panel">
-        <h2 class="lc-panel-h">✦ Join the Jestagang ✦</h2>
-        <div class="ml-embedded" data-form="8EZtSf"></div>
+      <div style="margin-bottom:28px">
+        <div class="ml-signup-box">
+          <p class="ml-signup-title">✦ Join the Jestagang ✦</p>
+          <div class="ml-embedded" data-form="8EZtSf"></div>
+        </div>
       </div>
       <div class="lc-right-panel">
         <h2 class="lc-panel-h">✦ The Catalog ✦</h2>
