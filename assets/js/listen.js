@@ -130,6 +130,10 @@
     if (me) me.textContent = t ? (t.artist === t.album ? t.artist : t.artist + (t.album ? ' · ' + t.album : '')) : '';
     setArt(t && t.artwork ? t.artwork : null);
     document.title = t ? (t.title + ' — Jestamang Radio') : 'Listen | Jestamang';
+    if (t) {
+      var center = document.querySelector('.lc-center');
+      if (center) center.classList.remove('lc-sk');
+    }
   }
 
   function updProg() {
@@ -171,6 +175,10 @@
     var el = $id('lc-error'), rb = $id('lc-retry');
     if (el) { el.textContent = msg || ''; el.style.display = msg ? 'block' : 'none'; }
     if (rb) rb.style.display = msg ? 'inline-block' : 'none';
+    if (msg) {
+      var center = document.querySelector('.lc-center');
+      if (center) center.classList.remove('lc-sk');
+    }
   }
 
   /* ---- recent ---- */
