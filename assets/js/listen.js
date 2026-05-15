@@ -18,6 +18,7 @@
   var fadeTmr    = null;
   var skipTmr    = null;
   var bufTmr     = null;
+  var switchTmr  = null;
   var firstTrack = true;
   var toastTmr   = null;
   var sessSecs   = 0;
@@ -54,6 +55,14 @@
   }
 
   function switchStation(id) {
+    var center = document.querySelector('.lc-center');
+    if (center) center.classList.add('lc-switching');
+    if (switchTmr) clearTimeout(switchTmr);
+    switchTmr = setTimeout(function () {
+      switchTmr = null;
+      var c = document.querySelector('.lc-center');
+      if (c) c.classList.remove('lc-switching');
+    }, 5000);
     localStorage.setItem(STATION_KEY, id);
     applyStation(id);
     if (audio && !audio.paused) {
@@ -529,6 +538,9 @@
       bufTmr = null;
       var dot = $id('lc-onair-dot');
       if (dot) dot.classList.remove('buffering');
+      if (switchTmr) { clearTimeout(switchTmr); switchTmr = null; }
+      var center = document.querySelector('.lc-center');
+      if (center) center.classList.remove('lc-switching');
     });
     audio.addEventListener('waiting', function () {
       showLoad(true);
