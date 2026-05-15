@@ -66,7 +66,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 #lc-artwork.lc-art-fallback{object-fit:contain;padding:40px}
 #lc-artwork.lc-art-err{opacity:0.35}
 #lc-loading{position:absolute;inset:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;pointer-events:none}
-#lc-audio{position:absolute;width:1px;height:1px;left:-9999px;opacity:0;pointer-events:none}
+#lc-audio{position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
 .lc-spin{font-size:1.6rem;color:#c9a84c;display:inline-block;animation:lcSpin 1.4s linear infinite}
 @keyframes lcSpin{0%{opacity:0.2;transform:rotate(0deg)}50%{opacity:1;transform:rotate(180deg)}100%{opacity:0.2;transform:rotate(360deg)}}
 #lc-error{text-align:center;margin-bottom:8px;display:none}
@@ -180,7 +180,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   #jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}
   button,a,[role="button"]{min-height:44px}
   .home-btn{display:none!important}
-  .lc-stage{padding:28px 16px 80px}
+  .lc-stage{padding:80px 16px 80px}
   .lc-heading{letter-spacing:0.25em}
   .lc-art-wrap,#lc-artwork{width:240px;height:240px}
   #lc-wave{width:240px!important;height:32px!important}
@@ -201,7 +201,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 #lc-toast-title{font-family:'Luminari',serif;font-size:0.875rem;color:#c9a84c;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #lc-toast-meta{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.69rem;color:rgba(201,168,76,0.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:768px){#lc-toast{left:0;right:0;max-width:260px;margin:0 auto}}
-.skip-link{position:absolute;top:-40px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}
+.skip-link{position:fixed;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}
 @media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#jtnav-mobile-overlay{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}
 </style>
 <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/ttf" crossorigin>
