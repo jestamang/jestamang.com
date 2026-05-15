@@ -256,16 +256,6 @@ function capClear(){
   if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = 'Save Caption'; delete saveBtn.dataset.editIdx; }
 }
 
-function capPublish(){
-  var statusEl = document.getElementById('cap-status');
-  window.jestaDB.collection('siteConfig').doc('cacheVersion').set({ v: Date.now() }, { merge: true })
-    .then(function(){
-      if(statusEl){ statusEl.textContent = 'Published \u2014 cache busted \u2726'; statusEl.className = 'status-msg status-ok'; }
-    })
-    .catch(function(e){
-      if(statusEl){ statusEl.textContent = 'Publish failed: '+(e.message||String(e)); statusEl.className = 'status-msg status-err'; }
-    });
-}
 
 /* ── Boot ── */
 (function(){
@@ -277,7 +267,6 @@ function capPublish(){
   var publishBtn= document.getElementById('cap-publish-btn');
   if(saveBtn)    saveBtn.addEventListener('click', capSave);
   if(clearBtn)   clearBtn.addEventListener('click', capClear);
-  if(publishBtn) publishBtn.addEventListener('click', capPublish);
   var _jt=0, _jiv=setInterval(function(){
     if(window.jestaDB){ clearInterval(_jiv); capLoad(); }
     else if(++_jt>80){ clearInterval(_jiv); var el=document.getElementById('cap-list-inner'); if(el) el.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>'; }
@@ -460,15 +449,7 @@ function tseLoad(){
   var clearBtn=document.getElementById('tse-clear-btn');
   if(clearBtn)clearBtn.addEventListener('click',function(){tseClearForm();var s=document.getElementById('tse-status');if(s)s.textContent='';});
 
-  /* Apply All (cache bust) */
-  var applyBtn=document.getElementById('tse-apply-btn');
-  if(applyBtn)applyBtn.addEventListener('click',function(){
-    if(!window.jestaDB)return;
-    applyBtn.disabled=true;
-    window.jestaDB.collection('siteConfig').doc('cacheVersion').set({v:Date.now()},{merge:true})
-      .then(function(){var s=document.getElementById('tse-status');if(s){s.textContent='Cache busted ✦';s.className='status-msg status-ok';}applyBtn.disabled=false;})
-      .catch(function(e){var s=document.getElementById('tse-status');if(s){s.textContent='Error: '+e.message;s.className='status-msg status-err';}applyBtn.disabled=false;});
-  });
+
 
   /* Boot: poll for jestaDB then load */
   var _jt=0,_jiv=setInterval(function(){
@@ -566,8 +547,6 @@ function tseLoad(){
       saveBtn.textContent = 'Saving\u2026';
       var batch = window.jestaDB.batch();
       batch.set(window.jestaDB.collection('siteConfig').doc('theme'), vals, {merge:true});
-      batch.set(window.jestaDB.collection('siteConfig').doc('cacheVersion'),
-        {v: Date.now(), updatedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});
       batch.commit()
         .then(function() {
           showStatus('Theme saved. Changes propagate on next page load.', false);
