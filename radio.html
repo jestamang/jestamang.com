@@ -94,7 +94,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* controls */
 .lc-controls{display:flex;align-items:center;justify-content:center;gap:32px;margin-bottom:18px}
-.lc-ctrl{background:none;border:none;color:#c9a84c;font-size:1.5rem;cursor:pointer;padding:8px;line-height:1;transition:opacity 0.2s,transform 0.15s,box-shadow 0.2s;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.lc-ctrl{-webkit-appearance:none;appearance:none;background:none;background-image:none;border:none;-webkit-tap-highlight-color:transparent;color:#c9a84c;font-size:1.5rem;cursor:pointer;padding:8px;line-height:1;transition:opacity 0.2s,transform 0.15s,box-shadow 0.2s;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;border-radius:50%}
 .lc-ctrl:hover{opacity:1;transform:scale(1.08);box-shadow:0 0 14px rgba(201,168,76,0.4)}
 .lc-ctrl:active{transform:scale(0.92)}
 #lc-play{font-size:1.9rem;min-height:52px;min-width:52px}
@@ -371,9 +371,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div id="lc-time">0:00 / 0:00</div>
 
       <div class="lc-controls">
-        <button id="lc-prev" class="lc-ctrl" aria-label="Previous">⏮</button>
-        <button id="lc-play" class="lc-ctrl" aria-label="Play" data-playing="0">▶</button>
-        <button id="lc-next" class="lc-ctrl" aria-label="Next">⏭</button>
+        <button id="lc-prev" class="lc-ctrl" aria-label="Previous"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true" style="display:block"><rect x="6" y="5" width="2" height="14"/><polygon points="20,5 9,12 20,19"/></svg></button>
+        <button id="lc-play" class="lc-ctrl" aria-label="Play" data-playing="0"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true" style="display:block"><polygon points="8,5 19,12 8,19"/></svg></button>
+        <button id="lc-next" class="lc-ctrl" aria-label="Next"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true" style="display:block"><polygon points="4,5 15,12 4,19"/><rect x="16" y="5" width="2" height="14"/></svg></button>
       </div>
 
     </div>

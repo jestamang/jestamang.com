@@ -207,7 +207,7 @@
   function setPlayBtn(p) {
     var b = $id('lc-play');
     if (!b) return;
-    b.textContent = p ? '⏸' : '▶';
+    b.innerHTML = p ? '<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true" style="display:block"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>' : '<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true" style="display:block"><polygon points="8,5 19,12 8,19"/></svg>';
     b.setAttribute('aria-label', p ? 'Pause' : 'Play');
     b.setAttribute('data-playing', p ? '1' : '0');
     var dot = $id('lc-onair-dot');
