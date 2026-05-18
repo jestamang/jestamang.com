@@ -144,6 +144,17 @@
       el.src = 'assets/homepage/logo png.png';
       el.classList.add('lc-art-fallback');
     }
+    function _clearSwitching() {
+      if (switchTmr) { clearTimeout(switchTmr); switchTmr = null; }
+      var c = document.querySelector('.lc-center');
+      if (c) c.classList.remove('lc-switching');
+    }
+    if (typeof el.decode === 'function') {
+      el.decode().then(_clearSwitching).catch(_clearSwitching);
+    } else {
+      el.onload  = function () { _clearSwitching(); el.onload  = null; };
+      el.onerror = function () { _clearSwitching(); el.onerror = null; };
+    }
   }
 
   function fmtSess(s) {
@@ -380,6 +391,14 @@
     if (cur >= 0) { hist.push(cur); if (hist.length > 50) hist = hist.slice(-50); }
     cur = idx;
     var t = tracks[idx];
+    var _pc = document.querySelector('.lc-center');
+    if (_pc) _pc.classList.add('lc-switching');
+    if (switchTmr) clearTimeout(switchTmr);
+    switchTmr = setTimeout(function () {
+      switchTmr = null;
+      var c = document.querySelector('.lc-center');
+      if (c) c.classList.remove('lc-switching');
+    }, 3000);
     setInfo(t);
     showErr(null);
     showLoad(true);
@@ -395,6 +414,10 @@
         showLoad(false);
         setPlayBtn(true);
         saveRec(t);
+        if (queue.length > 0) {
+          var _nt = tracks[queue[0]];
+          if (_nt && _nt.artwork) { (new Image()).src = _nt.artwork; }
+        }
       }).catch(function () {
         showLoad(false);
         setPlayBtn(false);
@@ -538,9 +561,6 @@
       bufTmr = null;
       var dot = $id('lc-onair-dot');
       if (dot) dot.classList.remove('buffering');
-      if (switchTmr) { clearTimeout(switchTmr); switchTmr = null; }
-      var center = document.querySelector('.lc-center');
-      if (center) center.classList.remove('lc-switching');
     });
     audio.addEventListener('waiting', function () {
       showLoad(true);
