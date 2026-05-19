@@ -409,7 +409,7 @@ function updateStreak(){
   var yesterday=new Date(today);yesterday.setDate(yesterday.getDate()-1);
   var yStr=yesterday.getFullYear()+'-'+(yesterday.getMonth()+1)+'-'+yesterday.getDate();
   var newStreak=(data.lastDate===yStr)?data.streak+1:1;
-  localStorage.setItem('sigilStreak',JSON.stringify({streak:newStreak,lastDate:todayStr}));
+  try{localStorage.setItem('sigilStreak',JSON.stringify({streak:newStreak,lastDate:todayStr}));}catch(e){}
   return newStreak;
 }
 function showStreak(){
@@ -531,8 +531,8 @@ function showDrawState(){
 /* ── Lock draw ── */
 function lockDraw(idx){
   var now=Date.now();
-  localStorage.setItem('sigilLastDraw',now.toString());
-  localStorage.setItem('sigilLastCard',idx.toString());
+  try{localStorage.setItem('sigilLastDraw',now.toString());}catch(e){}
+  try{localStorage.setItem('sigilLastCard',idx.toString());}catch(e){}
   updateStreak();
   document.getElementById('oracle-title').textContent='YOUR SIGIL HAS BEEN CAST';
   document.getElementById('oracle-sub').textContent='Your card for today has been drawn';
@@ -662,8 +662,8 @@ document.addEventListener('DOMContentLoaded',function(){
         var fsTs=d.sigilLastDraw,fsCard=d.sigilLastCard;
         var localTs=parseInt(localStorage.getItem('sigilLastDraw')||'0');
         if(fsTs>localTs){
-          localStorage.setItem('sigilLastDraw',fsTs.toString());
-          localStorage.setItem('sigilLastCard',fsCard.toString());
+          try{localStorage.setItem('sigilLastDraw',fsTs.toString());}catch(e){}
+          try{localStorage.setItem('sigilLastCard',fsCard.toString());}catch(e){}
           if((Date.now()-fsTs)<TWENTY_FOUR){
             showLockedState(fsCard,fsTs);
           }else{

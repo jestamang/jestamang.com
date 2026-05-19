@@ -181,7 +181,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   #jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}
   button,a,[role="button"]{min-height:44px}
   .home-btn{display:none!important}
-  .lc-stage{padding:80px 16px 80px;min-height:calc(100svh - 52px)}
+  .lc-stage{padding:80px 16px 80px;min-height:calc(100vh - 52px);min-height:calc(100svh - 52px)}
   .lc-heading{letter-spacing:0.25em}
   .lc-art-wrap,#lc-artwork{width:240px;height:240px}
   #lc-wave{width:240px!important;height:32px!important}
@@ -283,7 +283,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <span id="wv-msg">For the best listening experience, open this page in your browser. Tap ⋯ and select &#8220;Open in Safari&#8221; or &#8220;Open in Chrome&#8221;.</span>
   <button id="wv-close" aria-label="Dismiss">&#215;</button>
 </div>
-<script>(function(){var ua=navigator.userAgent;if(!/FBAN|FBAV|Instagram/.test(ua))return;try{if(sessionStorage.getItem('wv-dismissed'))return;}catch(e){}var b=document.getElementById('wv-banner');if(!b)return;b.classList.add('wv-show');var x=document.getElementById('wv-close');if(x)x.addEventListener('click',function(){b.classList.remove('wv-show');try{sessionStorage.setItem('wv-dismissed','1');}catch(e){}});})();</script>
+<script>(function(){var ua=navigator.userAgent;if(!/FBAN|FBAV|Instagram|ByteDance|musical_ly|Twitter|LinkedInApp|Discord|Reddit|WhatsApp|Snapchat/.test(ua))return;try{if(sessionStorage.getItem('wv-dismissed'))return;}catch(e){}var b=document.getElementById('wv-banner');if(!b)return;b.classList.add('wv-show');var x=document.getElementById('wv-close');if(x)x.addEventListener('click',function(){b.classList.remove('wv-show');try{sessionStorage.setItem('wv-dismissed','1');}catch(e){}});})();</script>
 
 <main id="lc-stage" class="lc-stage">
 

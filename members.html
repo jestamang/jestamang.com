@@ -1110,7 +1110,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   function initNewSince(){
     var lastVisitStr = localStorage.getItem('lastMembersVisit');
-    localStorage.setItem('lastMembersVisit', new Date().toISOString());
+    try { localStorage.setItem('lastMembersVisit', new Date().toISOString()); } catch(e) {}
     if(!lastVisitStr) return;
     var lastVisitDate = new Date(lastVisitStr);
     if(isNaN(lastVisitDate.getTime())) return;
