@@ -63,7 +63,7 @@
       var c = document.querySelector('.lc-center');
       if (c) c.classList.remove('lc-switching');
     }, 5000);
-    localStorage.setItem(STATION_KEY, id);
+    try { localStorage.setItem(STATION_KEY, id); } catch(e) {}
     applyStation(id);
     if (audio && !audio.paused) {
       var steps = 50, sv = audio.volume, step = 0;
@@ -606,7 +606,7 @@
         var stId = 'STATION_ALL';
         if (stParam === 'collective') stId = 'STATION_COLLECTIVE';
         else if (stParam === 'world') stId = 'STATION_WORLD';
-        localStorage.setItem(STATION_KEY, stId);
+        try { localStorage.setItem(STATION_KEY, stId); } catch(e) {}
       }
     }
 
