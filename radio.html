@@ -204,6 +204,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 @media(max-width:768px){#lc-toast{left:0;right:0;max-width:260px;margin:0 auto}}
 .skip-link{position:fixed;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}
 @media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#jtnav-mobile-overlay{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}
+/* ---- webview warning banner ---- */
+#wv-banner{display:none;position:relative;z-index:9990;background:rgba(0,0,0,0.95);border-bottom:1px solid rgba(201,168,76,0.6);padding:12px 52px 12px 20px;align-items:center}
+#wv-banner.wv-show{display:flex}
+#wv-msg{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.06em;color:rgba(240,230,210,0.85);line-height:1.6}
+#wv-close{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#c9a84c;font-size:1.3rem;cursor:pointer;padding:4px 8px;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;line-height:1}
+#wv-close:hover{color:#fff}
 </style>
 <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/ttf" crossorigin>
 <link rel="dns-prefetch" href="https://www.gstatic.com">
@@ -271,6 +277,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <!-- hidden audio element — no controls attribute means no native UI renders; element needs to be in normal flow for playback to work -->
 <audio id="lc-audio" preload="metadata"></audio>
+
+<!-- webview warning — shown only inside Facebook/Instagram in-app browsers -->
+<div id="wv-banner" role="alert">
+  <span id="wv-msg">For the best listening experience, open this page in your browser. Tap ⋯ and select &#8220;Open in Safari&#8221; or &#8220;Open in Chrome&#8221;.</span>
+  <button id="wv-close" aria-label="Dismiss">&#215;</button>
+</div>
+<script>(function(){var ua=navigator.userAgent;if(!/FBAN|FBAV|Instagram/.test(ua))return;try{if(sessionStorage.getItem('wv-dismissed'))return;}catch(e){}var b=document.getElementById('wv-banner');if(!b)return;b.classList.add('wv-show');var x=document.getElementById('wv-close');if(x)x.addEventListener('click',function(){b.classList.remove('wv-show');try{sessionStorage.setItem('wv-dismissed','1');}catch(e){}});})();</script>
 
 <main id="lc-stage" class="lc-stage">
 
