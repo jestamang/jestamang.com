@@ -782,4 +782,46 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 <style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
 <style>/* reserve space before Firestore video grid loads */@media(max-width:768px){#videoGrid{min-height:800px}}</style>
 <style>@media(max-width:768px){body{background-attachment:scroll!important}}</style>
+
+<!-- videos-fixes --><style>
+/* FIX 2+3: Reliable 16:9 via aspect-ratio (works in flex columns too);
+   black bg stops transparency checkerboard on any thumbnail */
+.video-thumb{
+  aspect-ratio:16/9;
+  height:auto!important;
+  padding-bottom:0!important;
+  background:#000!important;
+}
+.video-thumb img{
+  object-fit:cover!important;
+  object-position:center!important;
+}
+
+/* FIX 4: Hero subtitle scrim */
+.page-header{
+  background:rgba(0,0,0,0.5);
+  border-radius:12px;
+  padding:20px 24px 52px;
+}
+
+/* FIX 5: Video card dark fill (overrides gold-treatment 0.4) */
+.video-card{
+  background:rgba(0,0,0,0.55)!important;
+}
+
+/* FIX 1: Modal — snug centered card on mobile; desktop already fine */
+@media(max-width:768px){
+  .lightbox-inner{
+    width:calc(100vw - 24px);
+    background:rgba(10,8,5,0.98);
+    border:1px solid rgba(201,168,76,0.35);
+    border-radius:8px;
+    padding:44px 12px 16px;
+  }
+  .lightbox-close{
+    top:10px;
+    right:12px;
+  }
+}
+</style>
 </body> </html>
