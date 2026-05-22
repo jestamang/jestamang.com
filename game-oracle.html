@@ -580,35 +580,107 @@ var _drawBtn=document.getElementById('draw-btn');if(_drawBtn)_drawBtn.addEventLi
   },60);
 });
 
-/* ── Share button ── */
+/* ── Share button — generates PNG of the drawn sigil card ── */
+function buildSigilPNG(onDone){
+  if(_currentCardIdx===null){onDone(null,'No card drawn');return;}
+  var card=ACTIVE_CARDS[_currentCardIdx];
+  var SCALE=2,CW=260*SCALE,CH=380*SCALE,CAP=60*SCALE,PAD=20*SCALE;
+  function draw(){
+    var canvas=document.createElement('canvas');
+    canvas.width=CW;canvas.height=CH+CAP;
+    var ctx=canvas.getContext('2d');
+    ctx.fillStyle='rgb(6,2,1)';ctx.fillRect(0,0,CW,CH+CAP);
+    ctx.strokeStyle='rgba(201,168,76,0.3)';ctx.lineWidth=SCALE;
+    ctx.strokeRect(SCALE/2,SCALE/2,CW-SCALE,CH-SCALE);
+    ctx.textAlign='center';
+    // Arcana section
+    var arcY1=PAD,arcY2=PAD+30,arcTextY=(arcY1+arcY2)/2+7;
+    ctx.strokeStyle='rgba(201,168,76,0.15)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(PAD,arcY1);ctx.lineTo(CW-PAD,arcY1);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(PAD,arcY2);ctx.lineTo(CW-PAD,arcY2);ctx.stroke();
+    ctx.font=(9*SCALE)+'px Luminari,Georgia,serif';
+    ctx.fillStyle='rgba(201,168,76,0.5)';
+    ctx.fillText((card.arcana||'').toUpperCase(),CW/2,arcTextY);
+    // Card name
+    ctx.font='bold '+(17*SCALE)+'px Luminari,Georgia,serif';
+    ctx.fillStyle='#c9a84c';
+    ctx.fillText(card.name||'',CW/2,arcY2+36);
+    // Glyph
+    ctx.font=(16*SCALE)+'px Georgia,"Times New Roman",serif';
+    ctx.fillStyle='rgba(201,168,76,0.55)';
+    ctx.fillText(card.glyph||'',CW/2,arcY2+72);
+    // Rule gradient
+    var ruleY=arcY2+90;
+    var grad=ctx.createLinearGradient(CW/2-50,0,CW/2+50,0);
+    grad.addColorStop(0,'rgba(201,168,76,0)');grad.addColorStop(0.5,'rgba(201,168,76,0.5)');grad.addColorStop(1,'rgba(201,168,76,0)');
+    ctx.strokeStyle=grad;ctx.lineWidth=SCALE;
+    ctx.beginPath();ctx.moveTo(CW/2-50,ruleY);ctx.lineTo(CW/2+50,ruleY);ctx.stroke();
+    // Reading text (word-wrapped)
+    var readY=ruleY+22,lineH=28;
+    ctx.font='italic '+(9*SCALE)+'px Luminari,Georgia,serif';
+    ctx.fillStyle='rgba(240,228,208,0.85)';
+    var maxW=CW-PAD*2;
+    var words=(card.reading||'').split(' '),lines=[],line='';
+    for(var wi=0;wi<words.length;wi++){
+      var test=line?line+' '+words[wi]:words[wi];
+      if(ctx.measureText(test).width>maxW&&line){lines.push(line);line=words[wi];}else{line=test;}
+    }
+    if(line)lines.push(line);
+    var sigY=CH-22,maxLines=Math.floor((sigY-readY)/lineH);
+    lines=lines.slice(0,maxLines);
+    for(var li=0;li<lines.length;li++){ctx.fillText(lines[li],CW/2,readY+lineH*(li+1));}
+    // Signature
+    ctx.font=(6*SCALE)+'px Luminari,Georgia,serif';
+    ctx.fillStyle='rgba(201,168,76,0.3)';
+    ctx.fillText('— the oracle of jestamang',CW/2,sigY);
+    // Caption divider + watermark
+    ctx.strokeStyle='rgba(201,168,76,0.2)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(CW*0.25,CH+16*SCALE);ctx.lineTo(CW*0.75,CH+16*SCALE);ctx.stroke();
+    ctx.font=(9*SCALE)+'px Georgia,serif';
+    ctx.fillStyle='rgba(201,168,76,0.25)';
+    ctx.fillText('jestamang.com',CW/2,CH+CAP-14*SCALE);
+    canvas.toBlob(function(blob){onDone(blob,blob?null:'canvas.toBlob failed');},'image/png');
+  }
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(draw);}else{draw();}
+}
+function _downloadSigilPNG(blob,name){
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='jestamang-sigil-'+(name||'card')+'.png';
+  a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},10000);
+}
+function _copySigilToClipboard(blob,name,btn,orig){
+  try{
+    navigator.clipboard.write([new ClipboardItem({'image/png':blob})])
+      .then(function(){if(btn){btn.textContent='COPIED ❖';setTimeout(function(){btn.textContent=orig;},2000);}})
+      .catch(function(){_downloadSigilPNG(blob,name);});
+  }catch(e){_downloadSigilPNG(blob,name);}
+}
 var _shareBtn=document.getElementById('share-btn');if(_shareBtn)_shareBtn.addEventListener('click',function(){
   var btn=this;
   if(_currentCardIdx===null)return;
-  var card=ACTIVE_CARDS[_currentCardIdx];
-  var shortReading=card.reading.split('.')[0]+'.';
-  var text='My Daily Sigil on jestamang.com: '+card.name+' — '+shortReading;
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text).then(function(){
-      _playTick();
-      var orig=btn.textContent;
-      btn.textContent='COPIED ✦';
-      setTimeout(function(){btn.textContent=orig;},2000);
-    }).catch(function(){_shareFallback(text,btn);});
-  }else{
-    _shareFallback(text,btn);
-  }
-});
-function _shareFallback(text,btn){
-  var ta=document.createElement('textarea');
-  ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
-  document.body.appendChild(ta);ta.select();
-  try{document.execCommand('copy');}catch(e){}
-  document.body.removeChild(ta);
-  _playTick();
+  btn.disabled=true;
   var orig=btn.textContent;
-  btn.textContent='COPIED ✦';
-  setTimeout(function(){btn.textContent=orig;},2000);
-}
+  btn.textContent='PREPARING…';
+  var card=ACTIVE_CARDS[_currentCardIdx];
+  var safeName=(card.name||'sigil').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  buildSigilPNG(function(blob,err){
+    if(!blob){btn.disabled=false;btn.textContent=orig;return;}
+    var file=new File([blob],'jestamang-sigil-'+safeName+'.png',{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      navigator.share({files:[file],title:'My Daily Sigil — '+card.name,text:'Drew '+card.name+' from the Jestamang Oracle — jestamang.com'})
+        .then(function(){btn.disabled=false;btn.textContent=orig;})
+        .catch(function(e){btn.disabled=false;btn.textContent=orig;if(e.name!=='AbortError')_copySigilToClipboard(blob,safeName,btn,orig);});
+    }else if(navigator.clipboard&&window.ClipboardItem){
+      btn.disabled=false;btn.textContent=orig;
+      _copySigilToClipboard(blob,safeName,btn,orig);
+    }else{
+      btn.disabled=false;btn.textContent=orig;
+      _downloadSigilPNG(blob,safeName);
+    }
+  });
+});
 
 /* ── Load cards from Firestore, fall back to defaults ── */
 var ACTIVE_CARDS = null;
