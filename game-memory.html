@@ -21,8 +21,8 @@
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 
 
+<link rel="stylesheet" href="assets/css/games.css">
 <style>
-@font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{min-height:100%}
 body{font-family:'Luminari',serif;color:#fff;background-image: #000;background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh;padding-top:52px}
@@ -179,6 +179,12 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 <!-- Cloudflare Web Analytics -->
 <script>(function(){if(localStorage.getItem('cookieAccepted')==='false')return;var s=document.createElement('script');s.defer=true;s.src='https://static.cloudflareinsights.com/beacon.min.js';s.setAttribute('data-cf-beacon','{"token":"278a3dd9772141e6a6e40a9c83c51d57"}');document.head.appendChild(s);})();</script>
 <!-- End Cloudflare Web Analytics -->
+<style>
+@media(min-width:769px){
+  .game-sub{color:rgba(255,255,255,0.50)}
+  .stat-label{color:rgba(255,255,255,0.52)}
+}
+</style>
 </head>
 <body>
 <a href="#game-wrap" class="skip-link">Skip to main content</a>
@@ -500,22 +506,19 @@ window.openLB=function(game,title,lowerBetter){
   db.collection('leaderboards').where('game','==',game).limit(50).get()
     .then(function(snap){
       if(snap.empty){
-        var pbHtml=pb?'<div class="lb-row lb-head-row" style="margin-bottom:8px"><span class="lb-name" colspan="4" style="color:rgba(201,168,76,0.5);font-size:0.6rem;letter-spacing:0.2em">YOUR BEST: '+pb.score+' MOVES</span></div>':'';
+        var pbHtml=pb?'<div class="lb-row lb-head-row" style="margin-bottom:8px"><span class="lb-name" colspan="4" style="color:rgba(201,168,76,0.5);font-size:0.6rem;letter-spacing:0.2em">YOUR BEST: '+JestaLeaderboard.formatScrollScore(pb.score,'points')+' MOVES</span></div>':'';
         list.innerHTML=pbHtml+'<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;
       }
       var docs=snap.docs.map(function(d){return d.data();});
       docs.sort(function(a,b){return lowerBetter?a.score-b.score:b.score-a.score;});
       docs=docs.slice(0,10);
       var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Moves</span><span class="lb-date">Date</span></div>';
-      window.lbAvErr=function(img){img.onerror=null;var nm=img.getAttribute('data-name')||'?';var sp=document.createElement('span');sp.className='lb-av-init';sp.textContent=nm.charAt(0).toUpperCase();if(img.parentNode)img.parentNode.replaceChild(sp,img);};
-  function lbAvHtml(d){var nm=d.name||'?';var init=nm.charAt(0).toUpperCase();if(d.photoURL){return'<img class="lb-av" src="'+d.photoURL+'" data-name="'+_esc(nm)+'" alt="" loading="lazy" width="28" height="28" onerror="lbAvErr(this)">';}if(d.uid){return'<span class="lb-av-init" data-lb-uid="'+d.uid+'" data-lb-name="'+_esc(nm)+'">'+ init+'</span>';}return'<span class="lb-av-init">'+init+'</span>';}
-  function lbFetchMissingAvatars(container){if(!window.jestaDB)return;var spans=(container||document).querySelectorAll('.lb-av-init[data-lb-uid]');for(var i=0;i<spans.length;i++){(function(span){var uid=span.getAttribute('data-lb-uid');var nm=span.getAttribute('data-lb-name')||'?';window.jestaDB.collection('users').doc(uid).get().then(function(doc){if(!doc.exists)return;var data=doc.data();if(!data.photoURL)return;var img=document.createElement('img');img.className='lb-av';img.src=data.photoURL;img.setAttribute('data-name',nm);img.alt='';img.loading='lazy';img.width=28;img.height=28;img.onerror=function(){window.lbAvErr(img);};if(span.parentNode)span.parentNode.replaceChild(img,span);}).catch(function(){});})(spans[i]);}}
   docs.forEach(function(d,i){
-        var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">✦</span>':(i+1);
-        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+lbAvHtml(d)+'<span class="lb-name-txt">'+_esc(d.name)+'</span></span><span class="lb-score">'+d.score+'</span><span class="lb-date">'+_fmtDate(d.timestamp)+'</span></div>';
+        var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">'+JestaLeaderboard.SCROLL_RANK1_MARKER+'</span>':(i+1);
+        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+JestaLeaderboard.scrollAvatar(d)+'<span class="lb-name-txt">'+_esc(d.name)+'</span></span><span class="lb-score">'+JestaLeaderboard.formatScrollScore(d.score,'points')+'</span><span class="lb-date">'+JestaLeaderboard.formatScrollDate(d.timestamp)+'</span></div>';
       });
       list.innerHTML=html;
-      lbFetchMissingAvatars(list);
+      JestaLeaderboard.lbFetchMissingAvatars(list);
     }).catch(function(){list.innerHTML='<div class="lb-empty">Scores temporarily unavailable.</div>';});
 };
 window.closeLB=function(){document.getElementById('lb-modal').classList.remove('open');};
@@ -545,6 +548,7 @@ window.submitScore=function(game,score,lowerBetter,cb){
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
+<script src="assets/js/jesta-leaderboard.js" defer></script>
 <script>window.addEventListener('pagehide',function(){clearInterval(ticker);clearTimeout(hintTimer);});</script><script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download")||a.hasAttribute("data-native-nav"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();window.addEventListener('pageshow',function(e){if(e.persisted){document.body.style.opacity='';document.body.style.transition='';}});</script>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>

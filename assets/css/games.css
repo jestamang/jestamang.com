@@ -1,0 +1,7 @@
+/* ════════════════════════════════════════════════════════════════
+   JESTAMANG GAMES — Shared stylesheet
+   Loaded by all 10 game pages. Contains only blocks that are
+   byte-for-byte identical across files (path-adjusted for CSS location).
+   ════════════════════════════════════════════════════════════════ */
+
+@font-face{font-family:'Luminari';src:url('../fonts/Luminari.ttf') format('truetype');font-display:swap}

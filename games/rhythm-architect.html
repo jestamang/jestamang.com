@@ -20,8 +20,8 @@
 <meta name="twitter:title" content="Rhythm Architect · Jestamang Games — Time Signature Training">
 <meta name="twitter:description" content="Rhythm Architect — identify time signatures and rhythmic patterns by ear. An educational rhythm game from the Jestamang universe. Four levels deep.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
+<link rel="stylesheet" href="../assets/css/games.css">
 <style>
-@font-face{font-family:'Luminari';src:url('../assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{background:#000;font-family:'Luminari',serif;color:#e8dcc8;overflow-x:hidden;-webkit-user-select:none;user-select:none}
 
@@ -200,6 +200,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .ans-btn:not(:disabled):hover{background:rgba(5,3,15,0.88)!important;border-color:rgba(201,168,76,0.28)!important;color:rgba(201,168,76,0.85)!important;box-shadow:none!important}
 }
 .skip-link{position:fixed;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}</style>
+<style>
+@media(min-width:769px){
+  .sub{color:rgba(255,255,255,0.46)}
+  #hud-level{color:rgba(201,168,76,0.60)}
+  #hud-streak{color:rgba(201,168,76,0.55)}
+  #q-counter{color:rgba(201,168,76,0.55)}
+  #level-name{color:rgba(201,168,76,0.55)}
+  #replay-btn{color:rgba(201,168,76,0.60)}
+  #back{color:rgba(201,168,76,0.60)}
+  #ra-hud{border-bottom:1px solid rgba(201,168,76,0.15)}
+  #lb-box{box-shadow:0 0 24px rgba(201,168,76,0.12)}
+}
+</style>
 </head>
 <body>
 <a href="#scr-start" class="skip-link">Skip to main content</a>
@@ -325,6 +338,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="../assets/js/firebase-config.js" defer></script>
 <script src="../assets/js/jesta-auth.js" defer></script>
+<script src="../assets/js/jesta-leaderboard.js" defer></script>
 
 <!-- ══════════════════════════════════════════════════════
      LEADERBOARD
@@ -348,7 +362,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var pbRow=document.getElementById('lb-pb-row');
     if(pbRow){
       if(_pb&&_pb.score>0){
-        pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.15)"><span style="color:rgba(201,168,76,0.5);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;display:block;margin-bottom:4px">Your Personal Best</span><span style="color:#c9a84c;font-size:0.9rem">✦ '+fmtS(_pb.score)+'</span></td>';
+        pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.15)"><span style="color:rgba(201,168,76,0.5);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;display:block;margin-bottom:4px">Your Personal Best</span><span style="color:#c9a84c;font-size:0.9rem">'+JestaLeaderboard.SCROLL_PB_MARKER+' '+JestaLeaderboard.formatScrollScore(_pb.score,'points')+'</span></td>';
       } else {
         pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.6rem;letter-spacing:0.06em">Be the first to seal a score</td>';
       }
@@ -363,19 +377,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       if(isTop&&bn)bn.style.display='block';
       tb.innerHTML='';
       if(!rows.length){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Be the first to seal a score</td></tr>';return;}
-      window.lbAvErr=function(img){img.onerror=null;var nm=img.getAttribute('data-name')||'?';var sp=document.createElement('span');sp.className='lb-av-init';sp.textContent=nm.charAt(0).toUpperCase();if(img.parentNode)img.parentNode.replaceChild(sp,img);};
-      function lbAvHtml(r){var nm=r.name||'?';var init=nm.charAt(0).toUpperCase();if(r.photoURL){return'<img class="lb-av" src="'+r.photoURL+'" data-name="'+esc(nm)+'" alt="" loading="lazy" width="28" height="28" onerror="lbAvErr(this)">';}if(r.uid){return'<span class="lb-av-init" data-lb-uid="'+r.uid+'" data-lb-name="'+esc(nm)+'">'+ init+'</span>';}return'<span class="lb-av-init">'+init+'</span>';}
-      function lbFetchMissingAvatars(container){if(!window.jestaDB)return;var spans=(container||document).querySelectorAll('.lb-av-init[data-lb-uid]');for(var i=0;i<spans.length;i++){(function(span){var uid=span.getAttribute('data-lb-uid');var nm=span.getAttribute('data-lb-name')||'?';window.jestaDB.collection('users').doc(uid).get().then(function(doc){if(!doc.exists)return;var data=doc.data();if(!data.photoURL)return;var img=document.createElement('img');img.className='lb-av';img.src=data.photoURL;img.setAttribute('data-name',nm);img.alt='';img.loading='lazy';img.width=28;img.height=28;img.onerror=function(){window.lbAvErr(img);};if(span.parentNode)span.parentNode.replaceChild(img,span);}).catch(function(){});})(spans[i]);}}
-      rows.forEach(function(r,i){
+            rows.forEach(function(r,i){
         var tr=document.createElement('tr');
         var cls=i===0?'lb-r1':i<3?'lb-r23':'';
         if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
         tr.className=cls;
         var cr=i===0?'<span style="margin-right:4px">✦</span>':'';
-        tr.innerHTML='<td>'+(i+1)+'</td><td>'+lbAvHtml(r)+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
+        tr.innerHTML='<td>'+(i+1)+'</td><td>'+JestaLeaderboard.scrollAvatar(r)+cr+esc(r.name||'?')+'</td><td>'+JestaLeaderboard.formatScrollScore(r.score,'points')+'</td><td>'+(r.ts?JestaLeaderboard.formatScrollDate(r.ts):'—')+'</td>';
         tb.appendChild(tr);
       });
-      lbFetchMissingAvatars(tb);
+      JestaLeaderboard.lbFetchMissingAvatars(tb);
     }).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Signal lost</td></tr>';});
   }
 

@@ -31,8 +31,8 @@
 <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicon-16.png">
 <link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
 
+<link rel="stylesheet" href="../assets/css/games.css">
 <style>
-@font-face{font-family:'Luminari';src:url('../assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{background:#000}
 body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;padding-bottom:60px;opacity:0;animation:jPageIn 0.35s ease forwards}
@@ -681,30 +681,16 @@ function openLB(curScore){
     if(isTop&&bn)bn.style.display='block';
     tb.innerHTML='';
     if(!rows.length){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Be the first to mark your score</td></tr>';return;}
-    window.lbAvErr=function(img){img.onerror=null;var nm=img.getAttribute('data-name')||'?';var sp=document.createElement('span');sp.className='lb-av-init';sp.textContent=nm.charAt(0).toUpperCase();if(img.parentNode)img.parentNode.replaceChild(sp,img);};
-    function avHtml(r){var nm=r.name||'?';var init=nm.charAt(0).toUpperCase();if(r.photoURL){return'<img class="lb-av" src="'+r.photoURL+'" data-name="'+esc(nm)+'" alt="" loading="lazy" width="26" height="26" onerror="lbAvErr(this)">';}if(r.uid){return'<span class="lb-av-init" data-lb-uid="'+r.uid+'" data-lb-name="'+esc(nm)+'">'+init+'</span>';}return'<span class="lb-av-init">'+init+'</span>';}
     rows.forEach(function(r,i){
       var tr=document.createElement('tr');
       var cls=i===0?'lb-r1':i<3?'lb-r23':'';
       if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
       tr.className=cls;
-      var cr=i===0?'<span style="margin-right:4px">\u2605</span>':'';
-      tr.innerHTML='<td>'+(i+1)+'</td><td style="display:flex;align-items:center;gap:6px">'+avHtml(r)+cr+esc(r.name||'?')+'</td><td>'+fmtScore(r.score)+'</td><td>'+fmtDate(r.ts)+'</td>';
+      var cr=i===0?'<span style="margin-right:4px">'+JestaLeaderboard.SCROLL_RANK1_MARKER+'</span>':'';
+      tr.innerHTML='<td>'+(i+1)+'</td><td style="display:flex;align-items:center;gap:6px">'+JestaLeaderboard.scrollAvatar(r)+cr+esc(r.name||'?')+'</td><td>'+JestaLeaderboard.formatScrollScore(r.score,'points')+'</td><td>'+JestaLeaderboard.formatScrollDate(r.ts)+'</td>';
       tb.appendChild(tr);
     });
-    // Fetch missing avatars
-    (function(){
-      var spans=(tb).querySelectorAll('.lb-av-init[data-lb-uid]');
-      for(var i=0;i<spans.length;i++){(function(span){
-        var uid=span.getAttribute('data-lb-uid');
-        var nm=span.getAttribute('data-lb-name')||'?';
-        db.collection('users').doc(uid).get().then(function(doc){
-          if(!doc.exists)return;var data=doc.data();if(!data.photoURL)return;
-          var img=document.createElement('img');img.className='lb-av';img.src=data.photoURL;img.setAttribute('data-name',nm);img.alt='';img.loading='lazy';img.width=26;img.height=26;img.onerror=function(){window.lbAvErr(img);};
-          if(span.parentNode)span.parentNode.replaceChild(img,span);
-        }).catch(function(){});
-      })(spans[i]);}
-    })();
+    JestaLeaderboard.lbFetchMissingAvatars(tb);
   }).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Signal lost</td></tr>';});
 }
 function closeLB(){document.getElementById('lb-modal').classList.remove('lb-open');}
@@ -804,6 +790,7 @@ function startLoadPoll(){
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="../assets/js/firebase-config.js" defer></script>
 <script src="../assets/js/jesta-auth.js" defer></script>
+<script src="../assets/js/jesta-leaderboard.js" defer></script>
 
 <!-- Cloudflare Web Analytics -->
 <script>(function(){if(localStorage.getItem('cookieAccepted')==='false')return;var s=document.createElement('script');s.defer=true;s.src='https://static.cloudflareinsights.com/beacon.min.js';s.setAttribute('data-cf-beacon','{"token":"278a3dd9772141e6a6e40a9c83c51d57"}');document.head.appendChild(s);})();</script>

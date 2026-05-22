@@ -21,8 +21,8 @@
 <meta name="twitter:description" content="Pitch Oracle — identify musical notes and intervals by ear. An ear training game from the Jestamang universe. Train your hearing across four levels.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 
+<link rel="stylesheet" href="../assets/css/games.css">
 <style>
-@font-face{font-family:'Luminari';src:url('../assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Luminari',serif;-webkit-user-select:none;user-select:none}
 
@@ -220,6 +220,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Lu
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="../assets/js/firebase-config.js" defer></script>
 <script src="../assets/js/jesta-auth.js" defer></script>
+<script src="../assets/js/jesta-leaderboard.js" defer></script>
 <script>(function(GID,GDISP,FLFLOAT){
 var _score=0,_docId=null;
 var MON=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
@@ -239,7 +240,7 @@ var _pb=null;try{_pb=JSON.parse(localStorage.getItem(_pbKey)||'null');}catch(e){
 var pbRow=document.getElementById('lb-pb-row');
 if(pbRow){
   if(_pb&&_pb.score>0){
-    var _pbDate='';try{var _pbd=new Date(_pb.date);_pbDate=MON[_pbd.getMonth()].slice(0,3)+' '+_pbd.getFullYear();}catch(e){}
+    var _pbDate='';try{_pbDate=JestaLeaderboard.formatScrollDate(_pb.date);}catch(e){}
     pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.15);"><span style="color:rgba(201,168,76,0.55);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;display:block;margin-bottom:4px;">Your Personal Best</span><span style="color:#c9a84c;font-size:0.9rem;">\u2605 '+fmtS(_pb.score)+'</span>'+(_pbDate?'<span style="color:rgba(201,168,76,0.4);font-size:0.6rem;margin-left:8px;">\u00b7 '+_pbDate+'</span>':'')+'</td>';
   } else {
     pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.06em;">BE THE FIRST TO MARK YOUR SCORE</td>';
@@ -254,19 +255,16 @@ var isTop=cur>0&&(rows.length===0||cur>rows[0].score);
 if(isTop&&bn)bn.style.display='block';
 tb.innerHTML='';
 if(!rows.length){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">BE THE FIRST TO MARK YOUR SCORE</td></tr>';return;}
-window.lbAvErr=function(img){img.onerror=null;var nm=img.getAttribute('data-name')||'?';var sp=document.createElement('span');sp.className='lb-av-init';sp.textContent=nm.charAt(0).toUpperCase();if(img.parentNode)img.parentNode.replaceChild(sp,img);};
-function lbAvHtml(r){var nm=r.name||'?';var init=nm.charAt(0).toUpperCase();if(r.photoURL){return'<img class="lb-av" src="'+r.photoURL+'" data-name="'+esc(nm)+'" alt="" loading="lazy" width="28" height="28" onerror="lbAvErr(this)">';}if(r.uid){return'<span class="lb-av-init" data-lb-uid="'+r.uid+'" data-lb-name="'+esc(nm)+'">'+ init+'</span>';}return'<span class="lb-av-init">'+init+'</span>';}
-function lbFetchMissingAvatars(container){if(!window.jestaDB)return;var spans=(container||document).querySelectorAll('.lb-av-init[data-lb-uid]');for(var i=0;i<spans.length;i++){(function(span){var uid=span.getAttribute('data-lb-uid');var nm=span.getAttribute('data-lb-name')||'?';window.jestaDB.collection('users').doc(uid).get().then(function(doc){if(!doc.exists)return;var data=doc.data();if(!data.photoURL)return;var img=document.createElement('img');img.className='lb-av';img.src=data.photoURL;img.setAttribute('data-name',nm);img.alt='';img.loading='lazy';img.width=28;img.height=28;img.onerror=function(){window.lbAvErr(img);};if(span.parentNode)span.parentNode.replaceChild(img,span);}).catch(function(){});})(spans[i]);}}
 rows.forEach(function(r,i){
 var tr=document.createElement('tr');
 var cls=i===0?'lb-r1':i<3?'lb-r23':'';
 if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
 tr.className=cls;
 var cr=i===0?'<span style="margin-right:5px">✦</span>':'';
-tr.innerHTML='<td>'+(i+1)+'</td><td><img class="lb-av" src="../assets/homepage/jesta jr.jpg" onerror="this.onerror=null;this.src=\'../assets/homepage/jesta jr.jpg\'" alt="" loading="lazy" width="28" height="28">'+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
+tr.innerHTML='<td>'+(i+1)+'</td><td>'+JestaLeaderboard.scrollAvatar(r)+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
 tb.appendChild(tr);
 });
-lbFetchMissingAvatars(tb);
+JestaLeaderboard.lbFetchMissingAvatars(tb);
 }).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">SIGNAL LOST</td></tr>';});
 }
 function saveScore(name,score){
@@ -312,6 +310,18 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 <!-- Cloudflare Web Analytics -->
 <script>(function(){if(localStorage.getItem('cookieAccepted')==='false')return;var s=document.createElement('script');s.defer=true;s.src='https://static.cloudflareinsights.com/beacon.min.js';s.setAttribute('data-cf-beacon','{"token":"278a3dd9772141e6a6e40a9c83c51d57"}');document.head.appendChild(s);})();</script>
 <!-- End Cloudflare Web Analytics -->
+<style>
+@media(min-width:769px){
+  .sub{color:rgba(255,255,255,0.46)}
+  .score-lbl{color:rgba(255,255,255,0.55)}
+  #po-round{color:rgba(201,168,76,0.60)}
+  #po-sub{color:rgba(201,168,76,0.52)}
+  #po-msg{color:rgba(255,255,255,0.58)}
+  #interval-label{color:rgba(201,168,76,0.58)}
+  #back{color:rgba(201,168,76,0.60)}
+  #lb-modal-inner{box-shadow:0 0 24px rgba(201,168,76,0.12)}
+}
+</style>
 </head>
 <body>
 <a href="#ss" class="skip-link">Skip to main content</a>

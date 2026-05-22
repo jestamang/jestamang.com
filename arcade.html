@@ -20,8 +20,8 @@
 <meta name="twitter:description" content="Mystic browser games crafted by the Jestamang collective — oracles, rhythm tests, memory vaults, pitch training, and cosmic adventures. Play free.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 
+<link rel="stylesheet" href="assets/css/games.css">
 <style>
-@font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%}
 body{font-family:'Luminari',serif;color:#fff;background:#000;overflow-x:hidden}
@@ -220,6 +220,13 @@ h1{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0
   ]
 }
 </script>
+<style>
+@media(min-width:769px){
+  .arc-eyebrow{color:rgba(201,168,76,0.58)}
+  .arc-desc{color:rgba(255,255,255,0.60)}
+  .lb-date{color:rgba(201,168,76,0.52)}
+}
+</style>
 </head>
 <body>
 <a href="#arcGrid" class="skip-link">Skip to main content</a>
@@ -321,8 +328,8 @@ window.openLB=function(game,title,lowerBetter){
   var pbEl=document.getElementById('lb-personal-best');
   if(pbEl){
     if(_pb&&_pb.score!==undefined){
-      var _pbDate='';try{var _pbd=new Date(_pb.date);_pbDate=(_pbd.getMonth()+1)+'/'+_pbd.getDate()+'/'+String(_pbd.getFullYear()).slice(2);}catch(e){}
-      pbEl.innerHTML='<div class="lb-row" style="justify-content:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.18);"><span style="color:rgba(201,168,76,0.55);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;margin-right:10px;">Your Best</span><span style="color:#c9a84c;">\u2605 '+_pb.score+'</span>'+(_pbDate?'<span style="color:rgba(201,168,76,0.4);font-size:0.6rem;margin-left:8px;">\u00b7 '+_pbDate+'</span>':'')+'</div>';
+      var _pbDate='';try{_pbDate=JestaLeaderboard.formatScrollDate(_pb.date);}catch(e){}
+      pbEl.innerHTML='<div class="lb-row" style="justify-content:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.18);"><span style="color:rgba(201,168,76,0.55);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;margin-right:10px;">Your Best</span><span style="color:#c9a84c;">'+JestaLeaderboard.SCROLL_PB_MARKER+' '+JestaLeaderboard.formatScrollScore(_pb.score,game==='void'?'time':'points')+'</span>'+(_pbDate?'<span style="color:rgba(201,168,76,0.4);font-size:0.6rem;margin-left:8px;">\u00b7 '+_pbDate+'</span>':'')+'</div>';
     } else {
       pbEl.innerHTML='<div style="text-align:center;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.05em;">No personal best yet \u2014 play to set one</div>';
     }
@@ -333,10 +340,11 @@ window.openLB=function(game,title,lowerBetter){
       var docs=snap.docs.map(function(d){return d.data();});
       var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Score</span><span class="lb-date">Date</span></div>';
       docs.forEach(function(d,i){
-        var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">✦</span>':(i+1);
-        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+_esc(d.name)+'</span><span class="lb-score">'+d.score+'</span><span class="lb-date">'+_fmtDate(d.timestamp)+'</span></div>';
+        var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">'+JestaLeaderboard.SCROLL_RANK1_MARKER+'</span>':(i+1);
+        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+JestaLeaderboard.scrollAvatar(d)+_esc(d.name)+'</span><span class="lb-score">'+JestaLeaderboard.formatScrollScore(d.score,game==='void'?'time':'points')+'</span><span class="lb-date">'+JestaLeaderboard.formatScrollDate(d.timestamp)+'</span></div>';
       });
       list.innerHTML=html;
+      JestaLeaderboard.lbFetchMissingAvatars(list);
     }).catch(function(){list.innerHTML='<div class="lb-empty">Scores temporarily unavailable.</div>';});
 };
 window.closeLB=function(){document.getElementById('lb-modal').classList.remove('open');};
@@ -350,6 +358,7 @@ var _lbModal=document.getElementById('lb-modal');if(_lbModal)_lbModal.addEventLi
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
+<script src="assets/js/jesta-leaderboard.js" defer></script>
 
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();</script>
