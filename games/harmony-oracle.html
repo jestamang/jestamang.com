@@ -861,7 +861,8 @@ function handleL1Answer(chosen, btn){
     state.streak++;
     state.correctTotal++;
     state.levelCorrect[1]++;
-    addScore(10);
+    var bonus = state.streak >= 5 ? Math.floor(10 * 0.5) : 0;
+    addScore(10 + bonus);
   } else {
     state.streak = 0;
   }
@@ -927,7 +928,8 @@ function handleL2Answer(chosen, btn){
     state.streak++;
     state.correctTotal++;
     state.levelCorrect[2]++;
-    addScore(20);
+    var bonus = state.streak >= 5 ? Math.floor(20 * 0.5) : 0;
+    addScore(20 + bonus);
   } else {
     state.streak = 0;
   }
@@ -995,7 +997,8 @@ function handleL3Answer(chosen, btn){
     state.streak++;
     state.correctTotal++;
     state.levelCorrect[3]++;
-    addScore(30);
+    var bonus = state.streak >= 5 ? Math.floor(30 * 0.5) : 0;
+    addScore(30 + bonus);
   } else {
     state.streak = 0;
   }
@@ -1092,7 +1095,8 @@ function handleL4Phase(phase, chosen, btn, correctValue){
     state.streak++;
     state.correctTotal++;
     state.levelCorrect[4]++;
-    addScore(50);
+    var bonus = state.streak >= 5 ? Math.floor(50 * 0.5) : 0;
+    addScore(50 + bonus);
   } else {
     state.streak = 0;
   }
