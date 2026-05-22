@@ -844,9 +844,9 @@ function handleNoteAnswer(chosen) {
   if (ALL_BTNS[state.correctNote]) ALL_BTNS[state.correctNote].className = 'note-btn nb-correct';
   if (!correct && ALL_BTNS[chosen]) ALL_BTNS[chosen].className = 'note-btn nb-wrong';
   if (correct) {
+    state.streak++; state.correctCount++;
     var bonus = state.streak >= 5 ? Math.floor(DIFFS[state.diff].pts * 0.5) : 0;
     state.score += DIFFS[state.diff].pts + bonus;
-    state.streak++; state.correctCount++;
     setMsg('✦ YOUR EAR IS ATTUNED', '+' + DIFFS[state.diff].pts + (bonus ? ' +' + bonus + ' FIRE BONUS' : '') + ' PTS');
     playTone(state.correctFreq, 1.0, 0); triggerPulse(true);
     checkUnlock();
@@ -877,9 +877,9 @@ function handleIntervalAnswer(chosenName) {
   });
   var advanceDelay = 2200;
   if (correct) {
+    state.streak++; state.correctCount++;
     var bonus = state.streak >= 5 ? Math.floor(DIFFS[state.diff].pts * 0.5) : 0;
     state.score += DIFFS[state.diff].pts + bonus;
-    state.streak++; state.correctCount++;
     setMsg('✦ THE INTERVAL REVEALED', '+' + DIFFS[state.diff].pts + (bonus ? ' +' + bonus : '') + ' PTS');
     playTone(replayData.freq1, 1.0, 0); playTone(replayData.freq2, 1.0, 1.1); triggerPulse(true);
     checkUnlock();
