@@ -733,6 +733,7 @@ var _lbModal=document.getElementById('lb-modal');if(_lbModal)_lbModal.addEventLi
 <button class="jsearch-float-btn" aria-label="Search" onclick="jSearchOpen()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="15.65" y2="15.65"/></svg></button>
 <div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
 <div id="jsearch-inner">
+<button id="jsearch-close" aria-label="Close search" style="position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(201,168,76,0.7);font-size:1.1rem;cursor:pointer;font-family:'Luminari',serif;line-height:1;padding:4px 8px;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center">✕</button>
 <input id="jsearch-input" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="SEARCH THE JESTAMANG UNIVERSE..." aria-label="Search">
 <div id="jsearch-results"><div class="jsearch-hint">ENTER A NAME &nbsp;·&nbsp; PAGE &nbsp;·&nbsp; ALBUM &nbsp;·&nbsp; ENTITY</div></div>
 </div>
@@ -777,6 +778,7 @@ if(inp&&res){
 var closeBtn=document.getElementById('jsearch-close');
 if(closeBtn)closeBtn.addEventListener('click',jSearchClose);
 document.addEventListener('keydown',function(e){if(e.key==='Escape')jSearchClose();});
+document.addEventListener('click',function(e){var o=document.getElementById('jsearch-overlay');if(!o||!o.classList.contains('jsearch-open'))return;var fbtn=document.querySelector('.jsearch-float-btn');if(o.contains(e.target))return;if(fbtn&&fbtn.contains(e.target))return;jSearchClose();});
 })();</script>
 
 <style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
