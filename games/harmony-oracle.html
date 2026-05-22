@@ -859,8 +859,8 @@ function handleL1Answer(chosen, btn){
    LEVEL 2 — MODAL TONALITY
 ══════════════════════════════════════════════════════════════ */
 function getL2Options(){
-  // Initiate (first 8 correct): major vs minor only
-  if(state.correctTotal < 8){
+  // Ramp: first 5 correct L2 answers are binary major/minor warm-up
+  if(state.levelCorrect[2] < 5){
     return ['major','minor'];
   }
   return Object.keys(MODES);
