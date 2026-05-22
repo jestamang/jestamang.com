@@ -516,6 +516,7 @@ var DIFFS={
     choices:5,pts:35,unlockAt:null,unlocks:null
   }
 };
+var INV_FOIL_CHANCE=0.45;
 
 /* State */
 var state={
@@ -661,6 +662,15 @@ function generateOptions(correctRoot,correctType,correctInv,numChoices){
   var d=DIFFS[state.diff];
   var sameRootCount=numChoices-2;
 
+  // Oracle only: occasionally add an inversion foil (same root+type, opposite inv state)
+  var invFoil=null;
+  if(state.diff==='oracle'&&Math.random()<INV_FOIL_CHANCE){
+    var foilInv=correctInv?0:1;
+    var foilLabel=correctRoot+' '+correctType+(correctInv?'':' (inv)');
+    invFoil={root:correctRoot,type:correctType,inv:foilInv,label:foilLabel,isCorrect:false};
+    sameRootCount=sameRootCount-1;
+  }
+
   var sameRootPool=[];
   d.types.forEach(function(t){
     if(t!==correctType){
@@ -691,7 +701,8 @@ function generateOptions(correctRoot,correctType,correctInv,numChoices){
 
   var invLbl=correctInv?' (inv)':'';
   var correct={root:correctRoot,type:correctType,inv:correctInv,label:correctRoot+' '+correctType+invLbl,isCorrect:true};
-  return shuffle([correct].concat(sameRootFoils,crossRootFoil));
+  var foils=invFoil?[invFoil].concat(sameRootFoils):sameRootFoils;
+  return shuffle([correct].concat(foils,crossRootFoil));
 }
 
 /* ── UI helpers ── */
