@@ -663,6 +663,15 @@ var state = {
 // Unlock thresholds (correct answers needed)
 var UNLOCK = {2:8, 3:20, 4:36};
 
+(function(){
+  try{var u=JSON.parse(localStorage.getItem('hoUnlocked')||'{}');
+    if(u[2])state.unlocked[2]=true;
+    if(u[3])state.unlocked[3]=true;
+    if(u[4])state.unlocked[4]=true;
+  }catch(e){}
+})();
+function saveUnlocks(){try{localStorage.setItem('hoUnlocked',JSON.stringify(state.unlocked));}catch(e){}}
+
 var HTP_TEXT = {
   1:'Level I: Two notes play at once. Decide if they sound Consonant (stable, pleasant) or Dissonant (tense, clashing). Listen for smoothness vs. roughness. 10 pts per correct answer.',
   2:'Level II: A short 4-note phrase plays in a specific mode. Identify the tonality — Major, Minor, or one of four modes. Listen for the overall emotional color. 20 pts per correct answer.',
@@ -717,6 +726,7 @@ function updateProgress(){
   // Check unlock
   if(state.correctTotal >= threshold && !state.unlocked[nextLevel]){
     state.unlocked[nextLevel] = true;
+    saveUnlocks();
     unlockTab(nextLevel);
   }
 }
@@ -1131,14 +1141,16 @@ function showGame(){
   state.streak = 0;
   state.correctTotal = 0;
   state.levelCorrect = {1:0,2:0,3:0,4:0};
-  state.unlocked = {1:true,2:false,3:false,4:false};
-  // Reset tabs
-  document.querySelectorAll('.game-tab').forEach(function(t,i){
+  state.unlocked[1] = true;
+  // Reset tabs — respect persisted unlocks
+  document.querySelectorAll('.game-tab').forEach(function(t){
     var lvl = parseInt(t.dataset.level);
     t.classList.remove('active','locked');
     if(lvl===1){
       t.classList.add('active');
       t.innerHTML = '<span class="tab-label">I<span class="tab-dash"> — </span> Consonance</span>';
+    } else if(state.unlocked[lvl]){
+      unlockTab(lvl);
     } else {
       t.classList.add('locked');
       var labels = {2:'II<span class="tab-dash"> — </span> Tonality',3:'III<span class="tab-dash"> — </span> Progressions',4:'IV<span class="tab-dash"> — </span> Analysis'};
