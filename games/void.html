@@ -236,7 +236,7 @@ window.addEventListener('resize', resize);
   if (el && pb > 0) el.textContent = 'Personal Best: ' + pb.toFixed(1) + 's';
 })();
 
-var PAL = { triangle:'#8800FF', ring:'#0099FF', hexagon:'#39FF14', diamond:'#FF1493', star:'#FF6600', spiral:'#FF6600', chaser:'#FF1493' };
+var PAL = { triangle:'#7800DE', ring:'#FB3838', hexagon:'#02E127', diamond:'#FB3838', star:'#FF6600', spiral:'#FF6600', chaser:'#FB3838' };
 
 var ST = 'start';
 var player, trail, shapes, parts, keys, touch, t0, bgHue, spawnT, flashA;
@@ -418,7 +418,7 @@ function drawShape(s) {
     X.stroke();
   } else if (type === 'chaser') {
     var p = 1 + 0.12 * Math.sin(t * 0.08);
-    poly(4, x, y, sz*p, rot); X.stroke(); X.fillStyle = '#FF1493' + '22'; X.fill();
+    poly(4, x, y, sz*p, rot); X.stroke(); X.fillStyle = col + '22'; X.fill();
   }
   X.restore();
 }
@@ -464,7 +464,7 @@ function die() {
   ST = 'dying'; flashA = 1.0;
   soundDeath();
   // Gold death particles (20+ gold + mixed)
-  var cols = ['#c9a84c','#c9a84c','#c9a84c','#FFD700','#8800FF','#0099FF','#39FF14','#fff'];
+  var cols = ['#c9a84c','#c9a84c','#c9a84c','#FFD700','#7800DE','#FB3838','#02E127','#fff'];
   for (var i = 0; i < 140; i++) {
     var a = Math.random() * 6.283, spd = 2 + Math.random() * 11;
     parts.push({
