@@ -613,7 +613,7 @@ function drawHUD() {
   var fs = Math.max(12, Math.min(20, W * 0.014));
   X.font = fs + "px 'Luminari'"; X.textAlign = 'left';
   X.fillStyle = 'rgba(201,168,76,0.85)'; X.shadowColor = '#c9a84c'; X.shadowBlur = 10;
-  X.fillText(score.toLocaleString(), 18, 34);
+  X.fillText(score.toLocaleString(), 18, 72);
   X.shadowBlur = 0;
   // Combo + streak display
   if (combo >= 2 || streak >= 2) {
