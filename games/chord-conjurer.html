@@ -355,7 +355,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
   <div class="big-title">Chord<br>Conjurer</div>
   <div class="sub">Build chords from their sacred intervals<br>Learn the architecture of harmony itself</div>
   <button class="btn" id="startBtn">Begin the Conjuration</button>
-  <div style="font-size:0.58rem;letter-spacing:0.25em;color:rgba(255,255,255,0.12);text-transform:uppercase;margin-top:20px;line-height:2">5 levels · major · minor · 7ths · inversions · ear training</div>
+  <div style="font-size:0.58rem;letter-spacing:0.25em;color:rgba(255,255,255,0.12);text-transform:uppercase;margin-top:20px;line-height:2">3 tiers · major · minor · 7ths · inversions · ear training</div>
 </div>
 
 <!-- GAME SCREEN -->
@@ -798,14 +798,14 @@ function handleAnswer(chosen,opts){
     else btn.classList.add('opt-dim');
   });
   if(isCorrect){
+    state.streak++;state.correctCount++;
     var bonus=state.streak>=5?Math.floor(DIFFS[state.diff].pts*0.5):0;
     state.score+=DIFFS[state.diff].pts+bonus;
-    state.streak++;state.correctCount++;
     setFeedback('+'+DIFFS[state.diff].pts+(bonus?' +'+bonus+' FIRE BONUS':''),'fb-correct');
     checkUnlock();
   } else {
     state.streak=0;
-    setFeedback('\u2014 '+state.currentChord.root+' '+state.currentChord.type,'fb-wrong');
+    setFeedback('\u2014 '+state.currentChord.root+' '+state.currentChord.type+(state.currentChord.inv?' (inv)':''),'fb-wrong');
   }
   updateHUD();
   showExplanation(state.currentChord.type);
