@@ -24,17 +24,16 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%}
-body{font-family:'Luminari',serif;color:#fff;background-image:#000;background-size:cover;background-position:center;background-attachment:fixed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:72px 20px 60px}
+body{font-family:'Luminari',serif;color:#fff;background-image:#000;background-size:cover;background-position:center;background-attachment:fixed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:48px 20px 48px}
 body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:0;pointer-events:none}
 .oracle-wrap{position:relative;z-index:1;text-align:center;max-width:560px;width:100%}
 .oracle-title{font-size:clamp(1.6rem,5vw,2.8rem);letter-spacing:0.55em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.55);margin-bottom:6px;font-family:'Luminari',serif;transition:all 0.3s ease}
-.oracle-sub{font-size:0.75rem;letter-spacing:0.45em;color:rgba(255,255,255,0.25);text-transform:uppercase;margin-bottom:28px;font-family:'Luminari',serif}
-.drawn-count{font-size:0.75rem;letter-spacing:0.3em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:8px;min-height:1.2em;font-family:'Luminari',serif;transition:all 0.3s ease}
+.oracle-sub{font-size:0.75rem;letter-spacing:0.45em;color:rgba(255,255,255,0.25);text-transform:uppercase;margin-bottom:16px;font-family:'Luminari',serif}
 .streak-display{font-size:0.78rem;letter-spacing:0.35em;color:rgba(201,168,76,0.6);text-transform:uppercase;margin-bottom:8px;min-height:1.2em;font-family:'Luminari',serif;transition:opacity 0.3s ease}
 .next-sigil{font-size:0.7rem;letter-spacing:0.3em;color:rgba(201,168,76,0.4);text-transform:uppercase;margin-bottom:16px;min-height:1.2em;font-family:'Luminari',serif;transition:opacity 0.3s ease}
 
 /* Card stage */
-.card-stage{width:260px;height:380px;margin:0 auto 28px;perspective:1200px}
+.card-stage{width:260px;height:320px;margin:0 auto 16px;perspective:1200px}
 .oracle-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.8s cubic-bezier(0.4,0,0.2,1)}
 .oracle-card.revealed{transform:rotateY(180deg)}
 .card-face,.card-back{
@@ -91,34 +90,6 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.88);z-ind
 
 /* Particles */
 .oracle-particle{position:fixed;width:4px;height:4px;border-radius:50%;background:#c9a84c;pointer-events:none;z-index:9999}
-
-/* Parchment reading container */
-.reading-parchment{
-  margin:0 auto 20px;
-  max-width:480px;
-  width:100%;
-  background:linear-gradient(180deg,#1a1208 0%,#0d0b04 100%);
-  border:1px solid rgba(201,168,76,0.5);
-  border-radius:4px;
-  padding:20px 24px 24px;
-  opacity:0;
-  transform:translateY(10px);
-  transition:opacity 0.5s ease,transform 0.5s ease;
-  display:none
-}
-.reading-parchment.visible{opacity:1;transform:translateY(0);display:block}
-.reading-parchment-header{
-  font-family:'Luminari',serif;
-  font-size:0.72rem;letter-spacing:0.5em;
-  color:#c9a84c;text-transform:uppercase;
-  margin-bottom:14px;text-align:center
-}
-.reading-parchment-text{
-  font-family:'Luminari',serif;
-  font-size:0.82rem;font-style:italic;
-  line-height:1.6;color:rgba(240,228,208,0.85);
-  letter-spacing:0.03em;text-align:left
-}
 
 /* Buttons */
 .oracle-btns{display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -243,7 +214,6 @@ a.back-link:hover{color:#c9a84c}
 <style>
 @media(min-width:769px){
   .oracle-sub{color:rgba(255,255,255,0.50)}
-  .drawn-count{color:rgba(201,168,76,0.55)}
   .next-sigil{color:rgba(201,168,76,0.58)}
   .card-arcana{color:rgba(201,168,76,0.62)}
   .card-signature{color:rgba(201,168,76,0.52)}
@@ -259,7 +229,6 @@ a.back-link:hover{color:#c9a84c}
   <h1 class="oracle-title" id="oracle-title">The Oracle</h1>
   <p class="oracle-sub" id="oracle-sub">Draw from the deck of the Jestamang Universe</p>
   <div class="streak-display" id="streak-display">&nbsp;</div>
-  <div class="drawn-count" id="drawn-count">&nbsp;</div>
   <div class="next-sigil" id="next-sigil">&nbsp;</div>
 
   <div class="card-stage">
@@ -277,12 +246,6 @@ a.back-link:hover{color:#c9a84c}
         <div class="card-signature">— the oracle of jestamang</div>
       </div>
     </div>
-  </div>
-
-  <!-- Parchment reading panel (shown after reveal) -->
-  <div class="reading-parchment" id="reading-parchment">
-    <div class="reading-parchment-header">✦ THE READING ✦</div>
-    <div class="reading-parchment-text" id="reading-parchment-text"></div>
   </div>
 
   <div class="oracle-btns">
@@ -332,7 +295,6 @@ var CARDS_DEFAULT = [
 ];
 
 var TWENTY_FOUR = 24 * 60 * 60 * 1000;
-var _countdownTimer = null;
 var _nextSigilTimer = null;
 var _currentCardIdx = null;
 
@@ -459,46 +421,9 @@ function fillCard(idx){
   document.getElementById('c-name').textContent=c.name;
   document.getElementById('c-glyph').textContent=c.glyph;
   document.getElementById('c-reading').textContent=c.reading;
-  document.getElementById('reading-parchment-text').textContent=c.reading;
   _currentCardIdx=idx;
 }
 
-/* ── Countdown (24h lock) ── */
-function getCountdownText(drawTime){
-  var remaining=TWENTY_FOUR-(Date.now()-drawTime);
-  if(remaining<=0)return null;
-  var totalMins=Math.floor(remaining/60000);
-  var h=Math.floor(totalMins/60);
-  var m=totalMins%60;
-  return'RETURN IN '+h+(h!==1?' HOURS':' HOUR')+' · '+m+(m!==1?' MINUTES':' MINUTE');
-}
-function startCountdown(drawTime){
-  clearInterval(_countdownTimer);
-  var el=document.getElementById('drawn-count');
-  function tick(){
-    var txt=getCountdownText(drawTime);
-    if(!txt){clearInterval(_countdownTimer);showDrawState();return;}
-    el.textContent=txt;
-  }
-  tick();
-  _countdownTimer=setInterval(tick,60000);
-}
-
-/* ── Show parchment ── */
-function showParchment(){
-  var p=document.getElementById('reading-parchment');
-  p.style.display='block';
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){
-      p.classList.add('visible');
-    });
-  });
-}
-function hideParchment(){
-  var p=document.getElementById('reading-parchment');
-  p.classList.remove('visible');
-  setTimeout(function(){p.style.display='none';},500);
-}
 
 /* ── State: locked ── */
 function showLockedState(idx,drawTime){
@@ -508,20 +433,16 @@ function showLockedState(idx,drawTime){
   fillCard(idx);
   var ocard=document.getElementById('oracle-card');
   if(!ocard.classList.contains('revealed'))ocard.classList.add('revealed');
-  startCountdown(drawTime);
   startNextSigilTimer();
   showStreak();
-  showParchment();
   document.getElementById('share-btn').classList.add('show');
 }
 
 /* ── State: draw ── */
 function showDrawState(){
-  clearInterval(_countdownTimer);
   clearInterval(_nextSigilTimer);
   document.getElementById('oracle-title').textContent='THE ORACLE AWAITS';
   document.getElementById('oracle-sub').textContent='Draw from the deck of the Jestamang Universe';
-  document.getElementById('drawn-count').innerHTML='&nbsp;';
   document.getElementById('next-sigil').innerHTML='&nbsp;';
   document.getElementById('streak-display').innerHTML='&nbsp;';
   document.getElementById('draw-btn').style.display='';
@@ -533,7 +454,6 @@ function showDrawState(){
   document.getElementById('c-name').innerHTML='&nbsp;';
   document.getElementById('c-glyph').innerHTML='&nbsp;';
   document.getElementById('c-reading').innerHTML='&nbsp;';
-  hideParchment();
   _currentCardIdx=null;
 }
 
@@ -546,7 +466,6 @@ function lockDraw(idx){
   document.getElementById('oracle-title').textContent='YOUR SIGIL HAS BEEN CAST';
   document.getElementById('oracle-sub').textContent='Your card for today has been drawn';
   document.getElementById('draw-btn').style.display='none';
-  startCountdown(now);
   startNextSigilTimer();
   showStreak();
 }
@@ -580,7 +499,6 @@ var _drawBtn=document.getElementById('draw-btn');if(_drawBtn)_drawBtn.addEventLi
     setTimeout(function(){
       _playChord();
       burstParticles(ocard);
-      showParchment();
       document.getElementById('share-btn').classList.add('show');
       lockDraw(idx);
       syncToFirestore(idx,parseInt(localStorage.getItem('sigilLastDraw')));
@@ -806,7 +724,7 @@ var _lbModal=document.getElementById('lb-modal');if(_lbModal)_lbModal.addEventLi
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
 <script src="assets/js/jesta-leaderboard.js" defer></script>
-<script>window.addEventListener('pagehide',function(){clearInterval(_countdownTimer);clearInterval(_nextSigilTimer);});</script><script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
+<script>window.addEventListener('pagehide',function(){clearInterval(_nextSigilTimer);});</script><script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download")||a.hasAttribute("data-native-nav"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();window.addEventListener('pageshow',function(e){if(e.persisted){document.body.style.opacity='';document.body.style.transition='';}});</script>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
 <div id="jsearch-overlay" role="dialog" aria-modal="true" aria-label="Search">
@@ -863,7 +781,6 @@ document.addEventListener('click',function(e){var o=document.getElementById('jse
 <style>@media(max-width:768px){body{background-attachment:scroll!important}}</style>
 <style>@media(max-width:768px){
   .oracle-sub{color:rgba(255,255,255,0.50)}
-  .drawn-count{color:rgba(201,168,76,0.55)}
   .next-sigil{color:rgba(201,168,76,0.58)}
   .card-arcana{color:rgba(201,168,76,0.62)}
   .card-signature{color:rgba(201,168,76,0.52)}
