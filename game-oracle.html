@@ -693,8 +693,7 @@ window.openLB=function(game,title,lowerBetter){
   var pbEl=document.getElementById('lb-personal-best');
   if(pbEl){
     if(_pb&&_pb.score!==undefined){
-      var _pbDate='';try{_pbDate=JestaLeaderboard.formatScrollDate(_pb.date);}catch(e){}
-      pbEl.innerHTML='<div class="lb-row" style="justify-content:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.18);"><span style="color:rgba(201,168,76,0.55);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;margin-right:10px;">Your Best</span><span style="color:#c9a84c;">'+JestaLeaderboard.SCROLL_PB_MARKER+' '+JestaLeaderboard.formatScrollScore(_pb.score,'points')+'</span>'+(_pbDate?'<span style="color:rgba(201,168,76,0.4);font-size:0.6rem;margin-left:8px;">· '+_pbDate+'</span>':'')+'</div>';
+      pbEl.innerHTML='<div class="lb-row" style="justify-content:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.18);"><span style="color:rgba(201,168,76,0.55);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;margin-right:10px;">Your Best</span><span style="color:#c9a84c;">'+JestaLeaderboard.SCROLL_PB_MARKER+' '+JestaLeaderboard.formatScrollScore(_pb.score,'points')+'</span></div>';
     }else{
       pbEl.innerHTML='<div style="text-align:center;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.05em;font-family:\'Luminari\',serif;">BE THE FIRST TO MARK YOUR SCORE</div>';
     }

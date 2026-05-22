@@ -491,7 +491,7 @@ window.openLB=function(game,title,lowerBetter){
   db.collection('leaderboards').where('game','==',game).limit(50).get()
     .then(function(snap){
       if(snap.empty){
-        var pbHtml=pb?'<div class="lb-row lb-head-row" style="margin-bottom:8px"><span class="lb-name" colspan="4" style="color:rgba(201,168,76,0.5);font-size:0.6rem;letter-spacing:0.2em">YOUR BEST: '+JestaLeaderboard.formatScrollScore(pb.score,'points')+' MOVES</span></div>':'';
+        var pbHtml=pb?'<div class="lb-row" style="justify-content:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.18);"><span style="color:rgba(201,168,76,0.55);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;margin-right:10px;">YOUR BEST</span><span style="color:#c9a84c;">'+JestaLeaderboard.formatScrollScore(pb.score,'points')+' MOVES</span></div>':'';
         list.innerHTML=pbHtml+'<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;
       }
       var docs=snap.docs.map(function(d){return d.data();});
