@@ -258,13 +258,13 @@ window.addEventListener('resize', resize);
 var PERFECT_WINDOW = 18;
 var GOOD_WINDOW    = 36;
 var LANE_KEYS = ['a','s','d','f'];
-var LANE_COLORS = ['#8800FF','#0099FF','#39FF14','#FF1493'];
+var LANE_COLORS = ['#c9a84c','#02E127','#7800DE','#FB3838'];
 // Lane tint colors (subtle background per column)
 var LANE_TINTS = [
-  'rgba(201,168,76,0.08)',   // gold
-  'rgba(120,0,222,0.08)',    // purple
-  'rgba(251,56,56,0.08)',    // red
-  'rgba(2,225,39,0.08)'      // green
+  'rgba(201,168,76,0.08)',   // Lane 0 / A — gold   (matches gold orb)
+  'rgba(2,225,39,0.08)',     // Lane 1 / S — green  (matches green orb)
+  'rgba(120,0,222,0.08)',    // Lane 2 / D — purple (matches purple orb)
+  'rgba(251,56,56,0.08)'     // Lane 3 / F — red    (matches red orb)
 ];
 var ORB_R = 18;
 
@@ -435,7 +435,7 @@ function pressLane(li) {
     combo++; maxCombo = Math.max(maxCombo, combo);
     var mult = Math.min(8, 1 + Math.floor(combo / 5));
     score += 50 * mult;
-    spawnEffect(closest.lane, 'GOOD', '#aaaaff', '');
+    spawnEffect(closest.lane, 'GOOD', '#9a8038', '');
     playHit('good');
   }
 }
@@ -658,7 +658,7 @@ _rafId = requestAnimationFrame(function loop(ts) {
 
   var tY = targetY();
   for (var o of orbs) {
-    if (!o.hit) o.y += orbSpeed * 60 / 60;
+    if (!o.hit) o.y += orbSpeed * dt * 60;
   }
 
   for (var i = orbs.length - 1; i >= 0; i--) {
