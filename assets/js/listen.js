@@ -8,6 +8,7 @@
   var FADE_STEPS   = 10;
   var FADE_MS      = 20;
 
+  var pendingStation = 'STATION_ALL';
   var allTracks  = [];
   var tracks     = [];
   var queue      = [];
@@ -501,7 +502,7 @@
             showLoad(false); showErr('empty'); return;
           }
           allTracks = raw;
-          applyStation(localStorage.getItem(STATION_KEY) || 'STATION_ALL');
+          applyStation(pendingStation);
           var isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
           if (isIos) {
             var idx = deq(); cur = idx;
@@ -603,10 +604,9 @@
       var stMatch = stSearch.match(/[?&]station=([^&]+)/);
       if (stMatch) {
         var stParam = stMatch[1].toLowerCase();
-        var stId = 'STATION_ALL';
-        if (stParam === 'collective') stId = 'STATION_COLLECTIVE';
-        else if (stParam === 'world') stId = 'STATION_WORLD';
-        try { localStorage.setItem(STATION_KEY, stId); } catch(e) {}
+        if (stParam === 'collective') pendingStation = 'STATION_COLLECTIVE';
+        else if (stParam === 'world') pendingStation = 'STATION_WORLD';
+        else pendingStation = 'STATION_ALL';
       }
     }
 
