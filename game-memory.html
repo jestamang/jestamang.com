@@ -436,7 +436,7 @@ function win(){
   document.getElementById('win-stat-txt').textContent=moves+' moves  \u00b7  '+timeStr;
   var bestEl=document.getElementById('win-best-txt');if(bestEl)bestEl.textContent=bestTxt;
   if(mismatches===0){
-    showFlawless();playLevelCompleteSound();submitScore('memory-vault',moves+' (FLAWLESS +500)',true,null);
+    showFlawless();playLevelCompleteSound();submitScore('memory-vault',moves,true,null);
   } else {
     playLevelCompleteSound();document.getElementById('win-overlay').classList.add('show');submitScore('memory-vault',moves,true,null);
   }
@@ -510,7 +510,13 @@ window.openLB=function(game,title,lowerBetter){
         list.innerHTML=pbHtml+'<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;
       }
       var docs=snap.docs.map(function(d){return d.data();});
-      docs.sort(function(a,b){return lowerBetter?a.score-b.score:b.score-a.score;});
+      docs.sort(function(a,b){
+        var d=lowerBetter?(a.score-b.score):(b.score-a.score);
+        if(d!==0)return d;
+        var at=(a.timestamp&&a.timestamp.toMillis)?a.timestamp.toMillis():0;
+        var bt=(b.timestamp&&b.timestamp.toMillis)?b.timestamp.toMillis():0;
+        return at-bt;
+      });
       docs=docs.slice(0,10);
       var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Moves</span><span class="lb-date">Date</span></div>';
   docs.forEach(function(d,i){
