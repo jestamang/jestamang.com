@@ -873,12 +873,13 @@ function handleNoteAnswer(chosen) {
     state.score += DIFFS[state.diff].pts + bonus;
     state.streak++; state.correctCount++;
     setMsg('✦ YOUR EAR IS ATTUNED', '+' + DIFFS[state.diff].pts + (bonus ? ' +' + bonus + ' FIRE BONUS' : '') + ' PTS');
-    playCorrectChime(); triggerPulse(true);
+    playTone(state.correctFreq, 1.0, 0); triggerPulse(true);
     checkUnlock();
   } else {
     state.streak = 0;
     setMsg('THE PITCH ELUDES YOU', 'THE NOTE WAS ' + state.correctNote + state.correctOctave);
-    playWrongBuzz(); triggerPulse(false);
+    var guessFreq = noteFreq(chosen, state.correctOctave);
+    playTone(guessFreq, 0.8, 0); playTone(state.correctFreq, 0.8, 0.9); triggerPulse(false);
   }
   updateHUD();
   showExplanation(noteInfo.desc);
