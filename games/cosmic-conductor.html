@@ -380,6 +380,7 @@ function scheduleOrb() {
   var elapsed = (now - t0) / 1000;
   beatInterval = Math.max(260, 640 - Math.floor(elapsed / 20) * 55);
   orbSpeed = H * (0.0034 + Math.floor(elapsed / 30) * 0.0006);
+  orbSpeed = Math.min(orbSpeed, H * 0.012);
   var lanePool = [0,1,2,3];
   var count = elapsed > 60 && Math.random() < 0.25 ? 3 :
                 elapsed > 30 && Math.random() < 0.3 ? 2 : 1;
@@ -396,7 +397,7 @@ function scheduleOrb() {
 function pressLane(li) {
   laneFlash[li] = 12;
   var laneOrbs = orbs.filter(function(o) { return o.lane === li && !o.hit; });
-  if (!laneOrbs.length) return;
+  if (!laneOrbs.length) { streak = 0; return; }
   var tY = targetY();
   var closest = laneOrbs.reduce(function(a, b) { return Math.abs(a.y - tY) < Math.abs(b.y - tY) ? a : b; });
   var dist = Math.abs(closest.y - tY);
@@ -468,13 +469,15 @@ function drawLanes() {
     X.strokeStyle = active ? 'rgba(201,168,76,0.22)' : 'rgba(255,255,255,0.06)';
     X.lineWidth = 1;
     X.strokeRect(x + 1, 0, laneW - 2, H);
-    // Key label
-    var ky = H * (window.innerWidth <= 900 ? 0.76 : 0.78);
-    var fs = Math.max(12, Math.min(20, W * 0.013));
-    X.font = fs + "px 'Luminari'";
-    X.textAlign = 'center';
-    X.fillStyle = laneFlash[i] > 0 ? 'rgba(201,168,76,0.85)' : 'rgba(201,168,76,0.3)';
-    X.fillText(LANE_KEYS[i].toUpperCase(), getLaneX(i), ky);
+    // Key label — canvas letters only on desktop; mobile uses DOM touch-zone labels
+    if (window.innerWidth > 900) {
+      var ky = H * 0.78;
+      var fs = Math.max(12, Math.min(20, W * 0.013));
+      X.font = fs + "px 'Luminari'";
+      X.textAlign = 'center';
+      X.fillStyle = laneFlash[i] > 0 ? 'rgba(201,168,76,0.85)' : 'rgba(201,168,76,0.3)';
+      X.fillText(LANE_KEYS[i].toUpperCase(), getLaneX(i), ky);
+    }
     if (laneFlash[i] > 0) laneFlash[i]--;
   }
 }
@@ -699,9 +702,8 @@ function gameOver(elapsed) {
   document.getElementById('rankLbl').textContent = rank + ' · ' + maxCombo + 'x max combo';
 
   // Stats + grade
-  var attempted = totalHits + totalMisses;
-  var accuracy = attempted > 0 ? Math.round((totalHits / attempted) * 100) : 0;
-  var grade = accuracy >= 95 ? 'S' : accuracy >= 80 ? 'A' : accuracy >= 65 ? 'B' : accuracy >= 50 ? 'C' : 'F';
+  var accuracy = (totalHits + totalMisses) > 0 ? Math.round((totalHits / (totalHits + totalMisses)) * 100) : 0;
+  var grade = accuracy >= 95 ? 'S' : accuracy >= 80 ? 'A' : accuracy >= 65 ? 'B' : accuracy >= 50 ? 'C' : accuracy >= 35 ? 'D' : 'F';
   document.getElementById('statsLbl').innerHTML =
     'Perfect: ' + totalPerfect + ' &nbsp;·&nbsp; Hits: ' + totalHits + ' &nbsp;·&nbsp; Misses: ' + totalMisses + '<br>' +
     'Accuracy: ' + accuracy + '% &nbsp;·&nbsp; Best Streak: ' + maxStreak;
