@@ -621,9 +621,9 @@ function buildBeatDots(sig){
 // ── Options Generation ────────────────────────────────
 function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=a[i];a[i]=a[j];a[j]=tmp;}return a;}
 
-function generateOptions(correctSig){
-  var allSigs = Object.keys(BEAT_MAPS);
-  var wrong = shuffle(allSigs.filter(function(s){ return s !== correctSig; })).slice(0, 3);
+function generateOptions(correctSig, levelNum){
+  var pool = LEVEL_PATTERNS[levelNum] || LEVEL_PATTERNS[1];
+  var wrong = shuffle(pool.filter(function(s){ return s !== correctSig; })).slice(0, 3);
   return shuffle([correctSig].concat(wrong));
 }
 
@@ -814,7 +814,7 @@ function newRound(){
   state.currentSig = sig;
   console.log('[RA] Round ' + state.qNum + ' | Level ' + levelNum + ' | Pattern: ' + sig);
 
-  var options = generateOptions(sig);
+  var options = generateOptions(sig, levelNum);
   buildBeatDots(sig);
   setStateLabel('LISTEN', true);
   updateHUD();
