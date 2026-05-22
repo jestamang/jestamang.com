@@ -495,24 +495,21 @@ var NOTE_INFO = {
 };
 
 var INTERVALS_DATA = [
-  {name:'Minor 2nd',  semitones:1, desc:'The smallest Western interval. Creates maximum dissonance — the sound of suspense.'},
   {name:'Major 2nd',  semitones:2, desc:'A whole step — the building block of major and minor scales.'},
   {name:'Minor 3rd',  semitones:3, desc:'The sound of melancholy. Found at the heart of every minor chord.'},
   {name:'Major 3rd',  semitones:4, desc:'Bright and happy — the defining interval of a major chord.'},
   {name:'Perfect 4th',semitones:5, desc:'Strong and stable. The opening of "Here Comes the Bride."'},
   {name:'Tritone',    semitones:6, desc:'The devil\u2019s interval \u2014 exactly halfway through the octave. Maximally dissonant.'},
   {name:'Perfect 5th',semitones:7, desc:'Pure and powerful. Heard in Superman\u2019s theme and countless fanfares.'},
-  {name:'Minor 6th',  semitones:8, desc:'Expressive and yearning. Creates a deep sense of longing.'},
-  {name:'Major 6th',  semitones:9, desc:'Sweet and singing. The opening of "My Bonnie Lies Over the Ocean."'},
   {name:'Octave',     semitones:12,desc:'Perfect equivalence — the same note doubled in frequency. The most consonant interval.'}
 ];
 var INTERVAL_POOL = ['Perfect 5th','Minor 3rd','Major 2nd','Tritone','Octave','Major 3rd','Perfect 4th'];
 
 /* Difficulty configs */
 var DIFFS = {
-  initiate:{name:'Initiate',sublabel:'Natural notes only',pool:'nat',pts:10,unlockAt:10,unlocks:'adept'},
-  adept:   {name:'Adept',   sublabel:'All 12 chromatic notes',pool:'all',pts:20,unlockAt:15,unlocks:'oracle'},
-  oracle:  {name:'Oracle',  sublabel:'Identify intervals',pool:'interval',pts:35,unlockAt:null,unlocks:null}
+  initiate:{name:'Initiate',pool:'nat',     pts:10, unlockAt:10, unlocks:'adept'},
+  adept:   {name:'Adept',   pool:'all',     pts:20, unlockAt:15, unlocks:'oracle'},
+  oracle:  {name:'Oracle',  pool:'interval',pts:35, unlockAt:null,unlocks:null}
 };
 var MAX_ROUNDS = 20;
 
@@ -968,10 +965,24 @@ function startIntervalRound() {
   var secondOct = Math.floor(secondMidi / 12) - 1;
   var secondFreq = noteFreq(secondNote, secondOct);
   replayData = {freq1: rootFreq, freq2: secondFreq};
+  var corrSemitones = state.correctInterval.semitones;
   var wrongChoices = INTERVAL_POOL.filter(function(n) { return n !== corrName; });
-  var wrongs = []; while (wrongs.length < 3) {
-    var wi = 0 | Math.random() * wrongChoices.length;
-    if (wrongs.indexOf(wrongChoices[wi]) === -1) wrongs.push(wrongChoices[wi]);
+  var wPool = [];
+  for (var ci = 0; ci < wrongChoices.length; ci++) {
+    var cSemi = INTERVALS_DATA.filter(function(iv) { return iv.name === wrongChoices[ci]; })[0].semitones;
+    wPool.push({ name: wrongChoices[ci], weight: 1 / (Math.abs(cSemi - corrSemitones) + 1) });
+  }
+  var wrongs = [];
+  while (wrongs.length < 3) {
+    var total = 0, i;
+    for (i = 0; i < wPool.length; i++) total += wPool[i].weight;
+    var r = Math.random() * total, acc = 0, pick = wPool.length - 1;
+    for (i = 0; i < wPool.length; i++) {
+      acc += wPool[i].weight;
+      if (r <= acc) { pick = i; break; }
+    }
+    wrongs.push(wPool[pick].name);
+    wPool.splice(pick, 1);
   }
   var choices = wrongs.concat(corrName).sort(function() { return Math.random() - 0.5; });
   showIntervalButtons(choices, false);
