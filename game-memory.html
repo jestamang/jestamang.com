@@ -45,10 +45,10 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-ind
 .mem-card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1)}
 .mem-card.flipped .mem-card-inner,.mem-card.matched .mem-card-inner{transform:rotateY(180deg)}
 .mem-front,.mem-back{position:absolute;inset:0;backface-visibility:hidden;border:1px solid rgba(201,168,76,0.18);overflow:hidden}
-.mem-back{background:rgba(6,3,1,0.96);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transition:border-color 0.25s}
-.mem-back-glyph{font-size:clamp(1.4rem,3vw,2rem);color:rgba(201,168,76,0.35)}
-.mem-back-text{font-size:0.42rem;letter-spacing:0.4em;color:rgba(201,168,76,0.18);text-transform:uppercase}
-.mem-card:not(.flipped):not(.matched):hover .mem-back{border-color:rgba(201,168,76,0.55)}
+.mem-back{background:rgba(6,3,1,0.96);border:1px solid rgba(201,168,76,0.45);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transition:border-color 0.25s}
+.mem-back-glyph{font-size:clamp(1.4rem,3vw,2rem);color:rgba(201,168,76,0.6);display:flex;align-items:center;justify-content:center;width:1.9em;height:1.9em;border:0.5px solid rgba(201,168,76,0.4);border-radius:50%;flex-shrink:0}
+.mem-back-text{font-size:0.42rem;letter-spacing:0.4em;color:rgba(201,168,76,0.35);text-transform:uppercase}
+.mem-card:not(.flipped):not(.matched):hover .mem-back{border-color:rgba(201,168,76,0.7)}
 .mem-front{transform:rotateY(180deg)}
 .mem-front img{width:100%;height:100%;object-fit:cover;display:block}
 .mem-card.matched .mem-front{border-color:rgba(201,168,76,0.85);box-shadow:0 0 22px rgba(201,168,76,0.35),inset 0 0 14px rgba(201,168,76,0.07)}
@@ -158,6 +158,16 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 @media(min-width:769px){
   .game-sub{color:rgba(255,255,255,0.50)}
   .stat-label{color:rgba(255,255,255,0.52)}
+  /* Layout compression — desktop only */
+  .game-wrap{padding:40px 20px 40px}
+  .game-sub{margin-bottom:14px}
+  .gold-rule{margin:0 auto 14px}
+  .diff-btns{margin-bottom:14px}
+  .stats{margin-bottom:16px}
+  .stat-val{font-size:1.1rem}
+  .controls{margin-top:16px}
+  .card-grid{max-width:480px}
+  .card-grid.hard{max-width:450px}
 }
 </style>
 </head>
