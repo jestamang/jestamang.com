@@ -847,6 +847,8 @@ function checkUnlock(){
 
 function switchDiff(diff){
   if(!state.unlocked[diff])return;
+  if(diff===state.diff)return;
+  if((state.score>0||state.roundNum>1)&&!window.confirm('Switching to '+DIFFS[diff].name+' will reset your current score and round. Continue?'))return;
   state.diff=diff;state.score=0;state.streak=0;state.correctCount=0;state.roundNum=0;
   clearDiagram();hideExplanation();setFeedback('');
   updateDiffTabs();updateHUD();newRound();
