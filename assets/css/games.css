@@ -5,3 +5,9 @@
    ════════════════════════════════════════════════════════════════ */
 
 @font-face{font-family:'Luminari';src:url('../fonts/Luminari.ttf') format('truetype');font-display:swap}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid rgba(201,168,76,0.6);
+  outline-offset: 2px;
+}

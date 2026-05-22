@@ -336,7 +336,7 @@ window.openLB=function(game,title,lowerBetter){
   }
   db.collection('leaderboards').where('game','==',game).orderBy('score','desc').limit(10).get()
     .then(function(snap){
-      if(snap.empty){list.innerHTML='<div class="lb-empty">No entries yet. Be the first.</div>';return;}
+      if(snap.empty){list.innerHTML='<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;}
       var docs=snap.docs.map(function(d){return d.data();});
       var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Score</span><span class="lb-date">Date</span></div>';
       docs.forEach(function(d,i){
