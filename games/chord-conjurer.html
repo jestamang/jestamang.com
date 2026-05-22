@@ -107,7 +107,8 @@ body{font-family:'Luminari',serif;background:#000;color:#fff;min-height:100vh;ov
 .bk.k-hint{background:rgba(201,168,76,0.35)!important;border-color:rgba(201,168,76,0.7)!important;box-shadow:0 0 10px rgba(201,168,76,0.45) inset!important}
 
 /* Progress + feedback */
-#cc-chord-progress{font-size:0.58rem;letter-spacing:0.3em;color:rgba(255,255,255,0.18);text-transform:uppercase;margin-bottom:8px}
+#cc-chord-progress{font-size:0.58rem;letter-spacing:0.3em;color:rgba(255,255,255,0.18);text-transform:uppercase;margin-bottom:4px}
+#cc-accuracy{font-size:0.58rem;letter-spacing:0.3em;color:rgba(255,255,255,0.18);text-transform:uppercase;margin-bottom:8px}
 #cc-feedback{font-size:clamp(0.63rem,1.8vw,0.75rem);letter-spacing:0.35em;color:rgba(255,255,255,0.3);text-transform:uppercase;min-height:1.4em;text-align:center;margin-top:6px}
 #cc-feedback.fb-correct{color:rgba(2,225,39,0.75)}
 #cc-feedback.fb-wrong{color:rgba(251,56,56,0.7)}
@@ -379,8 +380,9 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
     <div id="cc-progress-label"></div>
   </div>
 
-  <!-- Round counter -->
+  <!-- Round counter + Accuracy -->
   <div id="cc-chord-progress"></div>
+  <div id="cc-accuracy"></div>
 
   <!-- Listen + Replay -->
   <div id="cc-listen-wrap">
@@ -713,6 +715,8 @@ function updateHUD(){
   document.getElementById('cc-score-lbl').textContent='SCORE '+state.score.toLocaleString();
   var cp=document.getElementById('cc-chord-progress');
   if(cp)cp.textContent='ROUND '+state.roundNum+' / '+state.MAX_ROUNDS;
+  var ca=document.getElementById('cc-accuracy');
+  if(ca){var acc=state.roundNum>0?Math.round(state.correctCount/state.roundNum*100):null;ca.textContent=acc!==null?'ACCURACY '+acc+'%':'';}
   updateStreakDisplay();updateProgressBar();updateReplayDots();updateDiffTabs();
 }
 function updateStreakDisplay(){
