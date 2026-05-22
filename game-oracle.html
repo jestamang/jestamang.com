@@ -20,8 +20,8 @@
 <meta name="twitter:description" content="Draw your Daily Sigil — one oracle card from the Jestamang deck each day. A cosmic transmission from the universe. New reading available every day.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 
+<link rel="stylesheet" href="assets/css/games.css">
 <style>
-@font-face{font-family:'Luminari';src:url('assets/fonts/Luminari.ttf') format('truetype');font-display:swap}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%}
 body{font-family:'Luminari',serif;color:#fff;background-image:#000;background-size:cover;background-position:center;background-attachment:fixed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:72px 20px 60px}
@@ -240,6 +240,15 @@ a.back-link:hover{color:#c9a84c}
 <!-- Cloudflare Web Analytics -->
 <script>(function(){if(localStorage.getItem('cookieAccepted')==='false')return;var s=document.createElement('script');s.defer=true;s.src='https://static.cloudflareinsights.com/beacon.min.js';s.setAttribute('data-cf-beacon','{"token":"278a3dd9772141e6a6e40a9c83c51d57"}');document.head.appendChild(s);})();</script>
 <!-- End Cloudflare Web Analytics -->
+<style>
+@media(min-width:769px){
+  .oracle-sub{color:rgba(255,255,255,0.50)}
+  .drawn-count{color:rgba(201,168,76,0.55)}
+  .next-sigil{color:rgba(201,168,76,0.58)}
+  .card-arcana{color:rgba(201,168,76,0.62)}
+  .card-signature{color:rgba(201,168,76,0.52)}
+}
+</style>
 </head>
 <body>
 <a href="#oracle-wrap" class="skip-link">Skip to main content</a>
@@ -766,8 +775,8 @@ window.openLB=function(game,title,lowerBetter){
   var pbEl=document.getElementById('lb-personal-best');
   if(pbEl){
     if(_pb&&_pb.score!==undefined){
-      var _pbDate='';try{var _pbd=new Date(_pb.date);_pbDate=(_pbd.getMonth()+1)+'/'+_pbd.getDate()+'/'+String(_pbd.getFullYear()).slice(2);}catch(e){}
-      pbEl.innerHTML='<div class="lb-row" style="justify-content:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.18);"><span style="color:rgba(201,168,76,0.55);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;margin-right:10px;">Your Best</span><span style="color:#c9a84c;">✦ '+_pb.score+'</span>'+(_pbDate?'<span style="color:rgba(201,168,76,0.4);font-size:0.6rem;margin-left:8px;">· '+_pbDate+'</span>':'')+'</div>';
+      var _pbDate='';try{_pbDate=JestaLeaderboard.formatScrollDate(_pb.date);}catch(e){}
+      pbEl.innerHTML='<div class="lb-row" style="justify-content:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.18);"><span style="color:rgba(201,168,76,0.55);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;margin-right:10px;">Your Best</span><span style="color:#c9a84c;">'+JestaLeaderboard.SCROLL_PB_MARKER+' '+JestaLeaderboard.formatScrollScore(_pb.score,'points')+'</span>'+(_pbDate?'<span style="color:rgba(201,168,76,0.4);font-size:0.6rem;margin-left:8px;">· '+_pbDate+'</span>':'')+'</div>';
     }else{
       pbEl.innerHTML='<div style="text-align:center;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.05em;font-family:\'Luminari\',serif;">BE THE FIRST TO MARK YOUR SCORE</div>';
     }
@@ -777,15 +786,12 @@ window.openLB=function(game,title,lowerBetter){
       if(snap.empty){list.innerHTML='<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;}
       var docs=snap.docs.map(function(d){return d.data();});
       var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Score</span><span class="lb-date">Date</span></div>';
-      window.lbAvErr=function(img){img.onerror=null;var nm=img.getAttribute('data-name')||'?';var sp=document.createElement('span');sp.className='lb-av-init';sp.textContent=nm.charAt(0).toUpperCase();if(img.parentNode)img.parentNode.replaceChild(sp,img);};
-  function lbAvHtml(d){var nm=d.name||'?';var init=nm.charAt(0).toUpperCase();if(d.photoURL){return'<img class="lb-av" src="'+d.photoURL+'" data-name="'+_esc(nm)+'" alt="" loading="lazy" width="28" height="28" onerror="lbAvErr(this)">';}if(d.uid){return'<span class="lb-av-init" data-lb-uid="'+d.uid+'" data-lb-name="'+_esc(nm)+'">'+ init+'</span>';}return'<span class="lb-av-init">'+init+'</span>';}
-  function lbFetchMissingAvatars(container){if(!window.jestaDB)return;var spans=(container||document).querySelectorAll('.lb-av-init[data-lb-uid]');for(var i=0;i<spans.length;i++){(function(span){var uid=span.getAttribute('data-lb-uid');var nm=span.getAttribute('data-lb-name')||'?';window.jestaDB.collection('users').doc(uid).get().then(function(doc){if(!doc.exists)return;var data=doc.data();if(!data.photoURL)return;var img=document.createElement('img');img.className='lb-av';img.src=data.photoURL;img.setAttribute('data-name',nm);img.alt='';img.loading='lazy';img.width=28;img.height=28;img.onerror=function(){window.lbAvErr(img);};if(span.parentNode)span.parentNode.replaceChild(img,span);}).catch(function(){});})(spans[i]);}}
   docs.forEach(function(d,i){
-        var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">✦</span>':(i+1);
-        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+lbAvHtml(d)+'<span class="lb-name-txt">'+_esc(d.name)+'</span></span><span class="lb-score">'+d.score+'</span><span class="lb-date">'+_fmtDate(d.timestamp)+'</span></div>';
+        var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">'+JestaLeaderboard.SCROLL_RANK1_MARKER+'</span>':(i+1);
+        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+JestaLeaderboard.scrollAvatar(d)+'<span class="lb-name-txt">'+_esc(d.name)+'</span></span><span class="lb-score">'+JestaLeaderboard.formatScrollScore(d.score,'points')+'</span><span class="lb-date">'+JestaLeaderboard.formatScrollDate(d.timestamp)+'</span></div>';
       });
       list.innerHTML=html;
-      lbFetchMissingAvatars(list);
+      JestaLeaderboard.lbFetchMissingAvatars(list);
     }).catch(function(){list.innerHTML='<div class="lb-empty">Scores temporarily unavailable.</div>';});
 };
 window.closeLB=function(){document.getElementById('lb-modal').classList.remove('open');};
@@ -799,6 +805,7 @@ var _lbModal=document.getElementById('lb-modal');if(_lbModal)_lbModal.addEventLi
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
+<script src="assets/js/jesta-leaderboard.js" defer></script>
 <script>window.addEventListener('pagehide',function(){clearInterval(_countdownTimer);clearInterval(_nextSigilTimer);});</script><script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(https?:|mailto:|tel:|javascript:)/i.test(h)||a.getAttribute("target")==="_blank"||a.hasAttribute("download")||a.hasAttribute("data-native-nav"))return;e.preventDefault();document.body.style.transition="opacity 0.3s ease";document.body.style.opacity="0";var t=h;setTimeout(function(){window.location.href=t;},300);});})();window.addEventListener('pageshow',function(e){if(e.persisted){document.body.style.opacity='';document.body.style.transition='';}});</script>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
