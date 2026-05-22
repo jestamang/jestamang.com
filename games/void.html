@@ -181,7 +181,7 @@ if(ob)ob.addEventListener('click',function(){openLB(_score);});
 if(sb&&hb)sb.addEventListener('click',function(){hb.style.display='block';});
 if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_score=0;_docId=null;});
 });
-})('void','THE VOID',true);</script>
+})('void','THE VOID',false);</script>
 <!-- Cloudflare Web Analytics -->
 <!-- End Cloudflare Web Analytics -->
 <style>
@@ -215,7 +215,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 <div id="os" class="scr off">
   <div class="eyebrow">You were consumed</div>
   <div class="score-big" id="finalScore">0.0</div>
-  <div class="score-lbl">Seconds Survived</div>
+  <div class="score-lbl">Void Score</div>
   <div class="best-lbl" id="bestLbl"></div>
   <button class="btn" id="restartBtn">Descend Again</button>
 <button id="lb-btn-over">The Cosmic Scrolls</button>
@@ -233,7 +233,7 @@ window.addEventListener('resize', resize);
 (function(){
   var pb = parseFloat(localStorage.getItem('void_best') || 0);
   var el = document.getElementById('ss-best');
-  if (el && pb > 0) el.textContent = 'Personal Best: ' + pb.toFixed(1) + 's';
+  if (el && pb > 0) el.textContent = 'Personal Best: ' + pb;
 })();
 
 var PAL = { triangle:'#7800DE', ring:'#FB3838', hexagon:'#02E127', diamond:'#FB3838', star:'#FF6600', spiral:'#FF6600', chaser:'#FB3838' };
@@ -285,7 +285,7 @@ function init() {
   // Update start screen personal best each init
   var pb = parseFloat(localStorage.getItem('void_best') || 0);
   var el = document.getElementById('ss-best');
-  if (el && pb > 0) el.textContent = 'Personal Best: ' + pb.toFixed(1) + 's';
+  if (el && pb > 0) el.textContent = 'Personal Best: ' + pb;
 }
 
 window.addEventListener('keydown', function(e) {
@@ -477,18 +477,18 @@ function die() {
   var sec = ((performance.now() - t0) / 1000).toFixed(1);
   setTimeout(function() {
     ST = 'over';
-    document.getElementById('finalScore').textContent = sec;
+    var s = Math.round(displayScore);
+    document.getElementById('finalScore').textContent = s;
     var best = parseFloat(localStorage.getItem('void_best') || 0);
-    var s = parseFloat(sec);
     if (s > best) {
-      localStorage.setItem('void_best', sec);
+      localStorage.setItem('void_best', s);
       document.getElementById('bestLbl').textContent = '✦ New Record ✦';
     } else {
-      document.getElementById('bestLbl').textContent = 'Best: ' + best.toFixed(1) + 's';
+      document.getElementById('bestLbl').textContent = 'Best: ' + best;
     }
     document.getElementById('os').classList.remove('off');
     HUD.style.display = 'none';
-    if(typeof lbOnGameOver==='function')lbOnGameOver(parseFloat(sec));
+    if(typeof lbOnGameOver==='function')lbOnGameOver(s);
     shapes = []; trail = [];
   }, 1800);
 }
