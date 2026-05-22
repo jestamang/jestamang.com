@@ -616,28 +616,36 @@ var L4_ROUNDS = [
     modulates:false,
     mood:'Bright',
     chords:[[0,4,7],[5,9,12],[7,11,14],[0,4,7],[0,4,7],[5,9,12],[7,11,14],[0,4,7]],
-    desc:'Classic C Major cycle — tonic, subdominant, dominant repeated. Stable, bright, resolved. The textbook example of diatonic Western harmony.'
+    desc:'Classic C Major cycle — tonic, subdominant, dominant repeated. Stable, bright, resolved. The textbook example of diatonic Western harmony.',
+    keyDesc:'The chords circle back to C and settle there — that bright, stable pull toward a single home chord is the sound of C major.',
+    modDesc:'It stays in one key throughout — the same home chord opens and closes the progression with no shift to new tonal ground.'
   },
   {
     key:'A Minor',
     modulates:false,
     mood:'Dark',
     chords:[[9,12,16],[5,9,12],[7,11,14],[9,12,16],[9,12,16],[2,5,9],[7,11,14],[9,12,16]],
-    desc:'Natural minor progression — dark and introspective. The VI–VII–i movement is deeply expressive. Heard in countless classical and rock works.'
+    desc:'Natural minor progression — dark and introspective. The VI–VII–i movement is deeply expressive. Heard in countless classical and rock works.',
+    keyDesc:'The home chord here is a minor chord — that darker, shadowed color you hear comes directly from A minor as the tonal center.',
+    modDesc:'It stays in A minor throughout — the minor home never shifts, holding that consistent introspective shade from first chord to last.'
   },
   {
     key:'G Major',
     modulates:true,
     mood:'Tense',
     chords:[[7,11,14],[7,11,14],[2,5,9],[2,5,9],[0,4,7],[0,4,7],[5,9,12],[7,11,14]],
-    desc:'This progression begins in G but pivots through D major and briefly touches C, suggesting a modulation to C Major before returning — a classic pivot chord modulation.'
+    desc:'This progression begins in G but pivots through D major and briefly touches C, suggesting a modulation to C Major before returning — a classic pivot chord modulation.',
+    keyDesc:'The progression opens and anchors on G major chords — that is where the tonal home begins.',
+    modDesc:'The key shifts mid-progression — it starts in G, pivots through D, briefly touches C, then returns; that sense of the ground moving under you is modulation.'
   },
   {
     key:'D Minor',
     modulates:false,
     mood:'Resolved',
     chords:[[2,5,9],[5,9,12],[7,11,14],[2,5,9],[5,9,12],[9,12,16],[7,11,14],[2,5,9]],
-    desc:'D Minor circular progression — tension builds across the middle chords then releases cleanly back to the tonic. A sense of journey and return.'
+    desc:'D Minor circular progression — tension builds across the middle chords then releases cleanly back to the tonic. A sense of journey and return.',
+    keyDesc:'The tonal home is D minor — that searching, minor-flavored center the progression keeps returning to gives it its sense of journey and resolution.',
+    modDesc:'It stays in D minor throughout — the progression travels but always returns to the same home key, never truly departing.'
   }
 ];
 
@@ -1032,6 +1040,7 @@ function startL4Round(){
 }
 
 function showL4Phase(phase){
+  hideExplanation();
   state.l4Phase = phase;
   state.answering = false;
 
@@ -1095,7 +1104,9 @@ function handleL4Phase(phase, chosen, btn, correctValue){
     showExplanation(state.currentRound.data.desc);
     setTimeout(function(){ startL4Round(); }, 2800);
   } else {
-    setTimeout(function(){ showL4Phase(phase + 1); }, 900);
+    var phaseReveal = phase === 0 ? state.currentRound.data.keyDesc : state.currentRound.data.modDesc;
+    showExplanation(phaseReveal);
+    setTimeout(function(){ showL4Phase(phase + 1); }, 2400);
   }
 }
 
