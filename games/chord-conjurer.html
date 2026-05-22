@@ -660,18 +660,39 @@ function shuffle(arr){
 }
 function generateOptions(correctRoot,correctType,correctInv,numChoices){
   var d=DIFFS[state.diff];
-  var allCombos=[];
-  d.roots.forEach(function(r){
-    d.types.forEach(function(t){
-      if(!(r===correctRoot&&t===correctType)){
-        allCombos.push({root:r,type:t,inv:0,label:r+' '+t,isCorrect:false});
-      }
-    });
+  var sameRootCount=numChoices-2;
+
+  var sameRootPool=[];
+  d.types.forEach(function(t){
+    if(t!==correctType){
+      sameRootPool.push({root:correctRoot,type:t,inv:0,label:correctRoot+' '+t,isCorrect:false});
+    }
   });
-  var wrongs=shuffle(allCombos).slice(0,numChoices-1);
+
+  var crossRootPool=[];
+  d.roots.forEach(function(r){
+    if(r!==correctRoot){
+      d.types.forEach(function(t){
+        crossRootPool.push({root:r,type:t,inv:0,label:r+' '+t,isCorrect:false});
+      });
+    }
+  });
+
+  var shuffledSame=shuffle(sameRootPool);
+  var shuffledCross=shuffle(crossRootPool);
+
+  var sameRootFoils=shuffledSame.slice(0,sameRootCount);
+  var shortfall=sameRootCount-sameRootFoils.length;
+  var crossOffset=0;
+  if(shortfall>0){
+    sameRootFoils=sameRootFoils.concat(shuffledCross.slice(0,shortfall));
+    crossOffset=shortfall;
+  }
+  var crossRootFoil=shuffledCross.slice(crossOffset,crossOffset+1);
+
   var invLbl=correctInv?' (inv)':'';
   var correct={root:correctRoot,type:correctType,inv:correctInv,label:correctRoot+' '+correctType+invLbl,isCorrect:true};
-  return shuffle([correct].concat(wrongs));
+  return shuffle([correct].concat(sameRootFoils,crossRootFoil));
 }
 
 /* ── UI helpers ── */
