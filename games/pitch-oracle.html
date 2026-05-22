@@ -579,29 +579,6 @@ function playTone(freq, dur, delay, vol) {
   });
 }
 
-function playCorrectChime() {
-  var c = getAC(), now = c.currentTime;
-  [[523.25, 0], [659.25, 0.16]].forEach(function(p) {
-    var osc = c.createOscillator(), g = c.createGain();
-    osc.type = 'sine'; osc.frequency.value = p[0];
-    var t = now + p[1];
-    g.gain.setValueAtTime(0.001, t);
-    g.gain.linearRampToValueAtTime(0.32, t + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
-    osc.connect(g); g.connect(c.destination);
-    osc.start(t); osc.stop(t + 0.25);
-  });
-}
-function playWrongBuzz() {
-  var c = getAC(), now = c.currentTime;
-  var osc = c.createOscillator(), g = c.createGain();
-  osc.type = 'sawtooth'; osc.frequency.value = 160;
-  g.gain.setValueAtTime(0.001, now);
-  g.gain.linearRampToValueAtTime(0.2, now + 0.02);
-  g.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
-  osc.connect(g); g.connect(c.destination);
-  osc.start(now); osc.stop(now + 0.35);
-}
 
 /* ── Wave canvas ── */
 var wPhase = 0, wActive = false, wDecay = 0, wRAF = null;
@@ -900,24 +877,31 @@ function handleIntervalAnswer(chosenName) {
     else if (btn.dataset.interval === chosenName && !correct) btn.className = 'interval-btn nb-wrong';
     else btn.className = 'interval-btn nb-dim';
   });
+  var advanceDelay = 2200;
   if (correct) {
     var bonus = state.streak >= 5 ? Math.floor(DIFFS[state.diff].pts * 0.5) : 0;
     state.score += DIFFS[state.diff].pts + bonus;
     state.streak++; state.correctCount++;
     setMsg('✦ THE INTERVAL REVEALED', '+' + DIFFS[state.diff].pts + (bonus ? ' +' + bonus : '') + ' PTS');
-    playCorrectChime(); triggerPulse(true);
+    playTone(replayData.freq1, 1.0, 0); playTone(replayData.freq2, 1.0, 1.1); triggerPulse(true);
     checkUnlock();
   } else {
     state.streak = 0;
     setMsg('NOT QUITE', 'THE INTERVAL WAS ' + state.correctInterval.name.toUpperCase());
-    playWrongBuzz(); triggerPulse(false);
+    var ivData = INTERVALS_DATA.filter(function(iv){ return iv.name === chosenName; })[0];
+    var guessSemitones = ivData ? ivData.semitones : state.correctInterval.semitones;
+    var guessFreq2 = replayData.freq1 * Math.pow(2, guessSemitones / 12);
+    playTone(replayData.freq1, 1.0, 0); playTone(guessFreq2, 1.0, 1.1);
+    playTone(replayData.freq1, 1.0, 2.3); playTone(replayData.freq2, 1.0, 3.4);
+    triggerPulse(false);
+    advanceDelay = 4800;
   }
   updateHUD();
   showExplanation(state.correctInterval.desc);
   setTimeout(function() {
     hideExplanation();
     if (state.roundNum >= MAX_ROUNDS) { endGame(); } else { startRound(); }
-  }, 2200);
+  }, advanceDelay);
 }
 
 function checkUnlock() {
