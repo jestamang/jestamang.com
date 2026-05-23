@@ -24,8 +24,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%}
-body{font-family:'Luminari',serif;color:#fff;background-image:#000;background-size:cover;background-position:center;background-attachment:fixed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:48px 20px 48px}
-body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:0;pointer-events:none}
+body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cover;background-position:center;background-attachment:fixed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:48px 20px 48px}
 .oracle-wrap{position:relative;z-index:1;text-align:center;max-width:560px;width:100%}
 .oracle-title{font-size:clamp(1.6rem,5vw,2.8rem);letter-spacing:0.55em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.55);margin-bottom:6px;font-family:'Luminari',serif;transition:all 0.3s ease}
 .oracle-sub{font-size:0.75rem;letter-spacing:0.45em;color:rgba(255,255,255,0.25);text-transform:uppercase;margin-bottom:16px;font-family:'Luminari',serif}
@@ -126,7 +125,6 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.88);z-ind
   body { overflow-x: hidden; }
   body, .bg-wrap { background-attachment: scroll !important; }
   * { box-sizing: border-box; }
-  #jt-bg { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; object-position: center !important; transform: none !important; }
   button, a, [role="button"] { min-height: 44px; }
   .home-btn { display: none !important; }
   .card-stage{width:220px;height:320px;margin:0 auto 20px}
@@ -134,7 +132,6 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.88);z-ind
 }
 @media (hover: none) and (pointer: coarse) {
   body, .bg-wrap { background-attachment: scroll !important; }
-  #jt-bg { transform: translate3d(0,0,0) !important; will-change: transform; }
 }
 /* jt-mobile-game_oracle */
 @media (max-width: 768px) {
@@ -199,7 +196,6 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.88);z-ind
 <body>
 <a href="#oracle-wrap" class="skip-link">Skip to main content</a>
 
-<picture><source srcset="assets/homepage/background/Jesta%20background.webp" type="image/webp"><img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72" loading="eager" width="1288" height="2564"></picture>
 
 <a href="/arcade.html" id="back" data-native-nav>← Games</a>
 
@@ -702,7 +698,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')jSearchClose
 document.addEventListener('click',function(e){var o=document.getElementById('jsearch-overlay');if(!o||!o.classList.contains('jsearch-open'))return;var fbtn=document.querySelector('.jsearch-float-btn');if(o.contains(e.target))return;if(fbtn&&fbtn.contains(e.target))return;jSearchClose();});
 })();</script>
 
-<style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
+<style>@media(max-width:768px){body{min-height:100vh!important;overflow-x:hidden!important}}</style>
 <style>@media(max-width:768px){body{background-attachment:scroll!important}}</style>
 <style>@media(max-width:768px){
   .oracle-sub{color:rgba(255,255,255,0.50)}
