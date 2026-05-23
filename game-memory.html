@@ -25,8 +25,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{min-height:100%}
-body{font-family:'Luminari',serif;color:#fff;background-image: #000;background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh}
-body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:0;pointer-events:none}
+body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh}
 .game-wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:48px 20px 80px;text-align:center}
 .game-title{font-size:clamp(1.8rem,5vw,3rem);letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.6),0 0 80px rgba(201,168,76,0.2);margin-bottom:6px}
 .game-sub{font-size:0.75rem;letter-spacing:0.4em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:32px}
@@ -119,8 +118,6 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
   body, .bg-wrap { background-attachment: scroll !important; }
   /* All containers box-sizing */
   * { box-sizing: border-box; }
-  /* Background: keep fixed so it covers full viewport on mobile */
-  #jt-bg { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; object-position: center !important; transform: none !important; }
   /* Minimum touch targets */
   button, a, [role="button"] { min-height: 44px; }
   /* Hide home-btn on mobile */
@@ -128,7 +125,6 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 }
 @media (hover: none) and (pointer: coarse) {
   body, .bg-wrap { background-attachment: scroll !important; }
-  #jt-bg { transform: translate3d(0,0,0) !important; will-change: transform; }
 }
 /* jt-mobile-game_memory */
 @media (max-width: 768px) {
@@ -180,7 +176,6 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 <body>
 <a href="#game-wrap" class="skip-link">Skip to main content</a>
 
-<picture><source srcset="assets/homepage/background/Jesta%20background.webp" type="image/webp"><img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72" loading="eager" width="1288" height="2564"></picture>
 
 <a href="/arcade.html" id="back" data-native-nav>← Games</a>
 <button id="lb-btn-hud" onclick="openLB('memory-vault','Memory Vault',true)">✦ Cosmic Scrolls</button>
@@ -550,7 +545,7 @@ window.submitScore=function(game,score,lowerBetter,cb){
 
 <!-- mobile-audit-fixes --><style>@media(max-width:768px){.game-wrap{padding:60px 12px 40px;overflow-x:hidden}.card-grid,.memory-grid{grid-template-columns:repeat(4,1fr)!important;gap:6px!important}.mem-card{min-height:56px}.game-stats,.status-bar{font-size:0.75rem;flex-wrap:wrap;gap:6px}.game-btn,.gbtn{min-height:44px;width:100%;font-size:0.8rem}}</style>
 
-<style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
+<style>@media(max-width:768px){body{min-height:100vh!important;overflow-x:hidden!important}}</style>
 <style>@media(max-width:768px){body{background-attachment:scroll!important}}</style>
 <style>@media(max-width:768px){
   .game-sub{color:rgba(255,255,255,0.50)}
