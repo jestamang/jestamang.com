@@ -70,7 +70,7 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
 .ep-stat-lbl{font-size:0.52rem;letter-spacing:0.3em;color:rgba(255,255,255,0.28);text-transform:uppercase;margin-top:2px}
 
 /* ── Card Grid ── */
-#ep-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:640px;margin:0 auto 18px}
+#ep-grid{display:grid;grid-template-columns:repeat(4,auto);gap:8px;width:100%;max-width:640px;margin:0 auto 18px;justify-content:center}
 
 /* ── Card ── */
 .ep-card{aspect-ratio:3/4;cursor:pointer;perspective:900px;position:relative;outline:none}
@@ -107,6 +107,8 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
 #ep-controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
 .ep-ctrl-btn{font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.7);background:none;border:1px solid rgba(201,168,76,0.3);padding:8px 22px;cursor:pointer;transition:all 0.2s;min-height:44px;text-decoration:none;display:inline-flex;align-items:center}
 .ep-ctrl-btn:hover{border-color:rgba(201,168,76,0.7);color:#c9a84c;background:rgba(201,168,76,0.06)}
+#ep-lb-hud{font-family:'Luminari',serif;font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.7);background:none;border:1px solid rgba(201,168,76,0.3);padding:6px 10px;cursor:pointer;transition:all 0.2s;min-height:44px;white-space:nowrap;display:inline-flex;align-items:center}
+#ep-lb-hud:hover{border-color:rgba(201,168,76,0.7);color:#c9a84c;background:rgba(201,168,76,0.06)}
 
 /* ── Win Overlay ── */
 #win-overlay{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.96);align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;padding:24px}
@@ -164,13 +166,14 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
 /* ── Mobile global ── */
 @media(max-width:768px){
   #ep-grid{gap:5px}
+  .ep-card{max-height:min(calc((100dvh - 350px) / 3),160px)}
   .ep-card-name-txt{font-size:clamp(0.5rem,1.3vw,0.7rem)}
   .ep-stat-val{font-size:1rem}
   input,textarea,select{font-size:16px!important}
   body{overflow-x:hidden}
 }
 @media(max-width:360px){
-  #ep-grid{grid-template-columns:repeat(4,1fr);gap:4px}
+  #ep-grid{grid-template-columns:repeat(4,auto);justify-content:center;gap:4px}
   .ep-face-back-glyph{font-size:1rem}
 }
 @media(min-width:769px){
@@ -181,6 +184,7 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
   #ep-stats{margin-bottom:10px}
   .ep-stat-val{font-size:1.05rem}
   #ep-grid{max-width:580px;margin-bottom:14px}
+  .ep-card{max-height:min(calc((100dvh - 300px) / 3),180px)}
 }
 </style>
 </head>
@@ -190,7 +194,7 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
 <div id="ep-header">
   <a id="back-link" href="/arcade.html" data-native-nav>← Games</a>
   <div id="ep-title">Entity Pair <span id="ep-symbol">⊕</span></div>
-  <div style="width:64px"></div>
+  <button id="ep-lb-hud">✦ Cosmic Scrolls</button>
 </div>
 
 <!-- LEVEL TABS -->
@@ -224,7 +228,6 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
   <!-- Controls -->
   <div id="ep-controls" style="display:none">
     <button class="ep-ctrl-btn" id="btn-restart">Shuffle &amp; Restart</button>
-    <button class="ep-ctrl-btn" id="btn-lb">✦ Cosmic Scrolls</button>
   </div>
 </div>
 
@@ -742,7 +745,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
   // Controls
   document.getElementById('btn-restart').addEventListener('click',function(){playAgain();});
-  document.getElementById('btn-lb').addEventListener('click',function(){openLB(_score);});
+  document.getElementById('ep-lb-hud').addEventListener('click',function(){openLB(_score);});
   document.getElementById('btn-again').addEventListener('click',function(){playAgain();});
   document.getElementById('btn-lb-win').addEventListener('click',function(){openLB(_score);});
   document.getElementById('ep-retry-btn').addEventListener('click',function(){
