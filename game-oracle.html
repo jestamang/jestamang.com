@@ -110,14 +110,6 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.88);z-ind
 }
 .share-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.8);background:rgba(201,168,76,0.07)}
 .share-btn.show{display:inline-flex;align-items:center;justify-content:center}
-.cosmic-scrolls-btn{
-  font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.3em;
-  text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;
-  border:1px solid rgba(201,168,76,0.25);padding:10px 24px;cursor:pointer;
-  transition:color 0.3s,border-color 0.3s;min-height:44px;
-  display:inline-flex;align-items:center;justify-content:center
-}
-.cosmic-scrolls-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.6)}
 .reset-btn{
   font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.3em;
   text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;
@@ -126,25 +118,7 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.88);z-ind
 }
 .reset-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.6)}
 .reset-btn.show{visibility:visible}
-a.back-link{font-size:0.75rem;letter-spacing:0.3em;color:rgba(201,168,76,0.4);text-decoration:none;text-transform:uppercase;transition:color 0.3s;min-height:44px;display:inline-flex;align-items:center}
-a.back-link:hover{color:#c9a84c}
 
-/* LEADERBOARD */
-.lb-modal-wrap{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:16px}
-.lb-modal-wrap.open{display:flex}
-.lb-box{background:#0a0604;border:1px solid rgba(201,168,76,0.7);max-width:460px;width:100%;max-height:80vh;overflow-y:auto;padding:28px 22px;position:relative;box-shadow:0 0 60px rgba(201,168,76,0.12)}
-.lb-close{position:absolute;top:10px;right:14px;background:none;border:none;color:rgba(201,168,76,0.7);font-size:1.1rem;cursor:pointer;font-family:'Luminari',serif;line-height:1;padding:4px 8px;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center}
-.lb-close:hover{color:#c9a84c}
-.lb-head{font-size:0.62rem;letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;margin-bottom:22px;text-align:center;font-family:'Luminari',serif}
-.lb-row{display:grid;grid-template-columns:36px 1fr 80px 54px;gap:4px;align-items:center;border-bottom:1px solid rgba(201,168,76,0.07);padding:7px 0;font-size:0.72rem;font-family:'Luminari',serif}
-.lb-row.lb-head-row{font-size:0.52rem;letter-spacing:0.3em;color:rgba(201,168,76,0.4);text-transform:uppercase;border-bottom:1px solid rgba(201,168,76,0.18);padding-bottom:8px;margin-bottom:2px}
-.lb-rank{color:rgba(201,168,76,0.55);text-align:center}
-.lb-av{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.4);background:#111;vertical-align:middle;flex-shrink:0}.lb-av-init{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#c9a84c;color:#000;font-size:13px;font-family:serif;font-weight:bold;flex-shrink:0}.lb-name{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.75);letter-spacing:0.06em;overflow:hidden}.lb-name-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lb-score{color:#c9a84c;letter-spacing:0.1em;text-align:right}
-.lb-date{color:rgba(201,168,76,0.32);font-size:0.58rem;text-align:right}
-.lb-empty{text-align:center;color:rgba(201,168,76,0.35);font-size:0.72rem;letter-spacing:0.2em;padding:24px 0;font-family:'Luminari',serif}
-.lb-loading{text-align:center;color:rgba(201,168,76,0.35);font-size:0.65rem;letter-spacing:0.22em;padding:24px 0;animation:lbpulse 1.4s ease-in-out infinite;font-family:'Luminari',serif}
-@keyframes lbpulse{0%,100%{opacity:0.4}50%{opacity:1}}
 
 /* jt-mobile-global-base */
 @media (max-width: 768px) {
@@ -168,7 +142,9 @@ a.back-link:hover{color:#c9a84c}
   .game-ui, .game-panel { padding: 12px 16px !important; font-size: 0.85rem !important; }
 }
 
-.skip-link{position:fixed;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}</style>
+.skip-link{position:fixed;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}
+#back{position:fixed;top:12px;left:14px;z-index:30;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.3s;min-height:44px;display:flex;align-items:center}
+#back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}</style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/ttf" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="dns-prefetch" href="https://apis.google.com">
@@ -225,6 +201,8 @@ a.back-link:hover{color:#c9a84c}
 
 <picture><source srcset="assets/homepage/background/Jesta%20background.webp" type="image/webp"><img id="jt-bg" src="assets/homepage/background/Jesta background.jpg" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;opacity:0.72" loading="eager" width="1288" height="2564"></picture>
 
+<a href="/arcade.html" id="back" data-native-nav>← Games</a>
+
 <div class="oracle-wrap">
   <h1 class="oracle-title" id="oracle-title">The Oracle</h1>
   <p class="oracle-sub" id="oracle-sub">Draw from the deck of the Jestamang Universe</p>
@@ -251,21 +229,10 @@ a.back-link:hover{color:#c9a84c}
   <div class="oracle-btns">
     <button class="draw-btn" id="draw-btn">Draw a Card</button>
     <button class="share-btn" id="share-btn">✦ SHARE MY SIGIL</button>
-    <button class="cosmic-scrolls-btn" id="cosmic-scrolls-btn" onclick="openLB('oracle','Oracle',false)">✦ COSMIC SCROLLS</button>
     <button class="reset-btn" id="reset-btn" style="display:none" aria-label="Reset game"></button>
-    <a href="/arcade.html" class="back-link" data-native-nav>← Return to the Vault</a>
   </div>
 </div>
 
-<!-- LEADERBOARD MODAL -->
-<div class="lb-modal-wrap" id="lb-modal">
-  <div class="lb-box">
-    <button class="lb-close" onclick="closeLB()" aria-label="Close leaderboard">✕</button>
-    <div class="lb-head" id="lb-title">Oracle · Cosmic Scrolls</div>
-    <div id="lb-personal-best"></div>
-    <div id="lb-list"><div class="lb-loading">CONSULTING THE STARS...</div></div>
-  </div>
-</div>
 
 <script>
 var CARDS_DEFAULT = [
@@ -674,47 +641,6 @@ document.addEventListener('DOMContentLoaded',function(){
   },100);
 });
 
-/* ── Leaderboard ── */
-(function(){
-'use strict';
-function _esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function _fmtDate(ts){try{var d=ts&&ts.toDate?ts.toDate():new Date(ts);return(d.getMonth()+1)+'/'+d.getDate()+'/'+String(d.getFullYear()).slice(2);}catch(e){return'—';}}
-function _getDb(){try{return window.jestaDB||(window.firebase&&window.firebase.apps&&window.firebase.apps.length&&window.firebase.firestore())||null;}catch(e){return null;}}
-window.openLB=function(game,title,lowerBetter){
-  var modal=document.getElementById('lb-modal');
-  var list=document.getElementById('lb-list');
-  document.getElementById('lb-title').textContent=title+' · Cosmic Scrolls';
-  list.innerHTML='<div class="lb-loading">CONSULTING THE STARS...</div>';
-  modal.classList.add('open');
-  var db=_getDb();
-  if(!db){list.innerHTML='<div class="lb-empty">The scrolls are unavailable.</div>';return;}
-  var _pbKey='lbBest_'+game;
-  var _pb=null;try{_pb=JSON.parse(localStorage.getItem(_pbKey)||'null');}catch(e){}
-  var pbEl=document.getElementById('lb-personal-best');
-  if(pbEl){
-    if(_pb&&_pb.score!==undefined){
-      pbEl.innerHTML='<div class="lb-row" style="justify-content:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.18);"><span style="color:rgba(201,168,76,0.55);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;margin-right:10px;">Your Best</span><span style="color:#c9a84c;">'+JestaLeaderboard.SCROLL_PB_MARKER+' '+JestaLeaderboard.formatScrollScore(_pb.score,'points')+'</span></div>';
-    }else{
-      pbEl.innerHTML='<div style="text-align:center;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.05em;font-family:\'Luminari\',serif;">BE THE FIRST TO MARK YOUR SCORE</div>';
-    }
-  }
-  db.collection('leaderboards').where('game','==',game).orderBy('score','desc').limit(10).get()
-    .then(function(snap){
-      if(snap.empty){list.innerHTML='<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;}
-      var docs=snap.docs.map(function(d){return d.data();});
-      var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Score</span><span class="lb-date">Date</span></div>';
-  docs.forEach(function(d,i){
-        var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">'+JestaLeaderboard.SCROLL_RANK1_MARKER+'</span>':(i+1);
-        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+JestaLeaderboard.scrollAvatar(d)+'<span class="lb-name-txt">'+_esc(d.name)+'</span></span><span class="lb-score">'+JestaLeaderboard.formatScrollScore(d.score,'points')+'</span><span class="lb-date">'+JestaLeaderboard.formatScrollDate(d.timestamp)+'</span></div>';
-      });
-      list.innerHTML=html;
-      JestaLeaderboard.lbFetchMissingAvatars(list);
-    }).catch(function(){list.innerHTML='<div class="lb-empty">Scores temporarily unavailable.</div>';});
-};
-window.closeLB=function(){document.getElementById('lb-modal').classList.remove('open');};
-document.addEventListener('keydown',function(e){if(e.key==='Escape')window.closeLB();});
-var _lbModal=document.getElementById('lb-modal');if(_lbModal)_lbModal.addEventListener('click',function(e){if(e.target===this)window.closeLB();});
-})();
 </script>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" defer></script>
