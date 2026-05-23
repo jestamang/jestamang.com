@@ -25,7 +25,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{min-height:100%}
-body{font-family:'Luminari',serif;color:#fff;background-image: #000;background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh;padding-top:52px}
+body{font-family:'Luminari',serif;color:#fff;background-image: #000;background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh}
 body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:0;pointer-events:none}
 .game-wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:48px 20px 80px;text-align:center}
 .game-title{font-size:clamp(1.8rem,5vw,3rem);letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.6),0 0 80px rgba(201,168,76,0.2);margin-bottom:6px}
@@ -35,8 +35,8 @@ body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-ind
 .stat{text-align:center}
 .stat-val{font-size:1.5rem;color:#c9a84c;letter-spacing:0.05em}
 .stat-label{font-size:0.75rem;letter-spacing:0.35em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-top:3px}
-.card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:660px;margin:0 auto}
-.card-grid.hard{grid-template-columns:repeat(5,1fr);max-width:780px}
+.card-grid{display:grid;grid-template-columns:repeat(4,auto);gap:10px;max-width:660px;margin:0 auto;justify-content:center}
+.card-grid.hard{grid-template-columns:repeat(5,auto);max-width:780px}
 .diff-btns{display:flex;justify-content:center;gap:10px;margin-bottom:20px}
 .diff-btn{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;border:1px solid rgba(201,168,76,0.3);padding:7px 18px;cursor:pointer;transition:all 0.2s;min-height:44px}
 .diff-btn.active{color:#c9a84c;border-color:#c9a84c;background:rgba(201,168,76,0.08)}
@@ -168,6 +168,8 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
   .controls{margin-top:16px}
   .card-grid{max-width:480px}
   .card-grid.hard{max-width:450px}
+  .card-grid .mem-card{max-height:min(calc((100dvh - 380px) / 3),160px)}
+  .card-grid.hard .mem-card{max-height:min(calc((100dvh - 390px) / 4),130px)}
 }
 </style>
 </head>
@@ -551,5 +553,6 @@ window.submitScore=function(game,score,lowerBetter,cb){
   .game-sub{color:rgba(255,255,255,0.50)}
   .stat-label{color:rgba(255,255,255,0.52)}
 }</style>
+
 </body>
 </html>
