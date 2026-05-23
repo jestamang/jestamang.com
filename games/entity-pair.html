@@ -70,7 +70,7 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
 .ep-stat-lbl{font-size:0.52rem;letter-spacing:0.3em;color:rgba(255,255,255,0.28);text-transform:uppercase;margin-top:2px}
 
 /* ── Card Grid ── */
-#ep-grid{display:grid;grid-template-columns:repeat(4,auto);gap:8px;width:100%;max-width:640px;margin:0 auto 18px;justify-content:center}
+#ep-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:640px;margin:0 auto 18px;justify-content:center}
 
 /* ── Card ── */
 .ep-card{aspect-ratio:3/4;cursor:pointer;perspective:900px;position:relative;outline:none}
@@ -173,7 +173,7 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
   body{overflow-x:hidden}
 }
 @media(max-width:360px){
-  #ep-grid{grid-template-columns:repeat(4,auto);justify-content:center;gap:4px}
+  #ep-grid{grid-template-columns:repeat(4,1fr);justify-content:center;gap:4px}
   .ep-face-back-glyph{font-size:1rem}
 }
 @media(min-width:769px){

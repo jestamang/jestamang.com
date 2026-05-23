@@ -34,8 +34,8 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cov
 .stat{text-align:center}
 .stat-val{font-size:1.5rem;color:#c9a84c;letter-spacing:0.05em}
 .stat-label{font-size:0.75rem;letter-spacing:0.35em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-top:3px}
-.card-grid{display:grid;grid-template-columns:repeat(4,auto);gap:10px;max-width:660px;margin:0 auto;justify-content:center}
-.card-grid.hard{grid-template-columns:repeat(5,auto);max-width:780px}
+.card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:660px;margin:0 auto;justify-content:center}
+.card-grid.hard{grid-template-columns:repeat(5,1fr);max-width:780px}
 .diff-btns{display:flex;justify-content:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
 .diff-btn{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;border:1px solid rgba(201,168,76,0.3);padding:7px 18px;cursor:pointer;transition:all 0.2s;min-height:44px}
 .diff-btn.active{color:#c9a84c;border-color:#c9a84c;background:rgba(201,168,76,0.08)}
@@ -178,7 +178,7 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 
 
 <a href="/arcade.html" id="back" data-native-nav>← Games</a>
-<button id="lb-btn-hud" onclick="openLB('memory-vault','Memory Vault',true)">✦ Cosmic Scrolls</button>
+<button id="lb-btn-hud" onclick="openLB('memory-vault-'+DIFF,'Memory Vault — '+(DIFF==='hard'?'Hard':'Easy'),true)">✦ Cosmic Scrolls</button>
 
 <div class="game-wrap">
   <h1 class="game-title">Memory Vault</h1>
@@ -421,9 +421,9 @@ function win(){
   document.getElementById('win-stat-txt').textContent=moves+' moves  \u00b7  '+timeStr;
   var bestEl=document.getElementById('win-best-txt');if(bestEl)bestEl.textContent=bestTxt;
   if(mismatches===0){
-    showFlawless();playLevelCompleteSound();submitScore('memory-vault',moves,true,null);
+    showFlawless();playLevelCompleteSound();submitScore('memory-vault-'+DIFF,moves,true,null,{flawless:true});
   } else {
-    playLevelCompleteSound();document.getElementById('win-overlay').classList.add('show');submitScore('memory-vault',moves,true,null);
+    playLevelCompleteSound();document.getElementById('win-overlay').classList.add('show');submitScore('memory-vault-'+DIFF,moves,true,null,{flawless:false});
   }
 }
 
@@ -485,14 +485,10 @@ window.openLB=function(game,title,lowerBetter){
   modal.classList.add('open');
   var db=_getDb();
   if(!db){list.innerHTML='<div class="lb-empty">The scrolls are unavailable.</div>';return;}
-  // Personal best from localStorage
-  var pbKey='lbBest_memory-vault';
-  var pb=null;try{pb=JSON.parse(localStorage.getItem(pbKey)||'null');}catch(e){}
   db.collection('leaderboards').where('game','==',game).limit(50).get()
     .then(function(snap){
       if(snap.empty){
-        var pbHtml=pb?'<div class="lb-row" style="justify-content:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.18);"><span style="color:rgba(201,168,76,0.55);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;margin-right:10px;">YOUR BEST</span><span style="color:#c9a84c;">'+JestaLeaderboard.formatScrollScore(pb.score,'points')+' MOVES</span></div>':'';
-        list.innerHTML=pbHtml+'<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;
+        list.innerHTML='<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;
       }
       var docs=snap.docs.map(function(d){return d.data();});
       docs.sort(function(a,b){
@@ -506,7 +502,7 @@ window.openLB=function(game,title,lowerBetter){
       var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Moves</span><span class="lb-date">Date</span></div>';
   docs.forEach(function(d,i){
         var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">'+JestaLeaderboard.SCROLL_RANK1_MARKER+'</span>':(i+1);
-        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+JestaLeaderboard.scrollAvatar(d)+'<span class="lb-name-txt">'+_esc(d.name)+'</span></span><span class="lb-score">'+JestaLeaderboard.formatScrollScore(d.score,'points')+'</span><span class="lb-date">'+JestaLeaderboard.formatScrollDate(d.timestamp)+'</span></div>';
+        html+='<div class="lb-row"><span class="lb-rank">'+rankDisp+'</span><span class="lb-name">'+JestaLeaderboard.scrollAvatar(d)+'<span class="lb-name-txt">'+_esc(d.name)+'</span>'+(d.flawless?'<span style="color:#02E127;font-size:0.7em;margin-left:4px">✦</span>':'')+'</span><span class="lb-score">'+JestaLeaderboard.formatScrollScore(d.score,'points')+'</span><span class="lb-date">'+JestaLeaderboard.formatScrollDate(d.timestamp)+'</span></div>';
       });
       list.innerHTML=html;
       JestaLeaderboard.lbFetchMissingAvatars(list);
@@ -515,11 +511,13 @@ window.openLB=function(game,title,lowerBetter){
 window.closeLB=function(){document.getElementById('lb-modal').classList.remove('open');};
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){window.closeLB();document.getElementById('lb-name-modal').classList.remove('open');}});
 var _lbModal=document.getElementById('lb-modal');if(_lbModal)_lbModal.addEventListener('click',function(e){if(e.target===this)window.closeLB();});
-window.submitScore=function(game,score,lowerBetter,cb){
+window.submitScore=function(game,score,lowerBetter,cb,extra){
   function doSave(name){
     var db=_getDb();if(!db){if(cb)cb();return;}
     var _uid=null,_photo=null;try{var _cu=window.firebase&&window.firebase.auth&&window.firebase.auth().currentUser;if(_cu){_uid=_cu.uid||null;_photo=_cu.photoURL||null;}}catch(e){}
-    db.collection('leaderboards').add({game:game,name:_san(name),score:score,uid:_uid,photoURL:_photo,timestamp:window.firebase.firestore.FieldValue.serverTimestamp()})
+    var _rec={game:game,name:_san(name),score:score,uid:_uid,photoURL:_photo,timestamp:window.firebase.firestore.FieldValue.serverTimestamp()};
+    if(extra){for(var _k in extra){if(Object.prototype.hasOwnProperty.call(extra,_k)&&_k!=='game'&&_k!=='score'&&_k!=='name'&&_k!=='uid'&&_k!=='photoURL'&&_k!=='timestamp')_rec[_k]=extra[_k];}}
+    db.collection('leaderboards').add(_rec)
       .then(function(){if(cb)cb();}).catch(function(){if(cb)cb();});
   }
   try{var auth=window.firebase&&window.firebase.auth&&window.firebase.auth();if(auth&&auth.currentUser&&auth.currentUser.displayName){doSave(auth.currentUser.displayName);return;}}catch(e){}
