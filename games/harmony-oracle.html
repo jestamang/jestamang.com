@@ -382,6 +382,8 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
       <div id="ho-explain-text"></div>
     </div>
   </div>
+
+  <button id="ho-end-btn" class="btn-learn" style="margin-top:14px;opacity:0.7">End Session</button>
 </div>
 
 <!-- ══════════════════════════════════
@@ -1221,6 +1223,9 @@ document.addEventListener('DOMContentLoaded', function(){
     var open = body.classList.toggle('open');
     $('htp-toggle').textContent = (open ? '▾ ' : '▸ ') + 'How to Play';
   });
+
+  var eb = $('ho-end-btn');
+  if(eb) eb.addEventListener('click', function(){ showOver(); });
 });
 
 })();
