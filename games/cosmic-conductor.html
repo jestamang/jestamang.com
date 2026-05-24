@@ -454,7 +454,7 @@ function getLaneX(lane) {
   return (W / 4) * lane + (W / 4) / 2;
 }
 
-function drawLanes() {
+function drawLanes(dt) {
   var laneW = W / 4;
   for (var i = 0; i < 4; i++) {
     var x = laneW * i;
@@ -479,7 +479,7 @@ function drawLanes() {
       X.fillStyle = laneFlash[i] > 0 ? 'rgba(201,168,76,0.85)' : 'rgba(201,168,76,0.3)';
       X.fillText(LANE_KEYS[i].toUpperCase(), getLaneX(i), ky);
     }
-    if (laneFlash[i] > 0) laneFlash[i]--;
+    if (laneFlash[i] > 0) laneFlash[i] = Math.max(0, laneFlash[i] - dt * 60);
   }
 }
 
@@ -553,7 +553,7 @@ function drawExplosions() {
   }
 }
 
-function drawEffects() {
+function drawEffects(dt) {
   for (var e of effects) {
     X.globalAlpha = e.life;
     X.textAlign = 'center';
@@ -567,7 +567,7 @@ function drawEffects() {
       X.fillText(e.sub, e.x, e.y + fs + 2);
     }
     X.shadowBlur = 0; X.globalAlpha = 1;
-    e.y -= 1.2; e.life -= e.dec;
+    e.y -= 1.2 * dt * 60; e.life -= e.dec * dt * 60;
   }
   for (var i = effects.length - 1; i >= 0; i--) {
     if (effects[i].life <= 0) effects.splice(i, 1);
@@ -648,14 +648,14 @@ _rafId = requestAnimationFrame(function loop(ts) {
 
   // Stars
   for (var s of stars) {
-    s.y += s.sp; if (s.y > H) { s.y = 0; s.x = Math.random()*W; }
+    s.y += s.sp * dt * 60; if (s.y > H) { s.y = 0; s.x = Math.random()*W; }
     X.beginPath(); X.arc(s.x, s.y, s.r, 0, 6.283);
     X.fillStyle = 'rgba(255,255,255,' + (s.alpha * 0.75) + ')'; X.fill();
   }
 
   if (ST !== 'playing') return;
 
-  orbPulse += 0.08;
+  orbPulse += 0.08 * dt * 60;
   var elapsed = (ts - t0) / 1000;
 
   scheduleOrb();
@@ -680,11 +680,11 @@ _rafId = requestAnimationFrame(function loop(ts) {
     }
   }
 
-  drawLanes();
+  drawLanes(dt);
   drawTargetLine();
   drawOrbs(ts);
   drawExplosions();
-  drawEffects();
+  drawEffects(dt);
   drawHUD();
 });
 
