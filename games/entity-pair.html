@@ -39,10 +39,10 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
 @keyframes jPageIn{from{opacity:0}to{opacity:1}}
 
 /* ── Header ── */
-#ep-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 10px;border-bottom:1px solid rgba(201,168,76,0.12)}
-#back-link{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.6);text-decoration:none;transition:color 0.2s}
+#ep-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 10px;border-bottom:1px solid rgba(201,168,76,0.12);position:relative;min-height:60px}
+#back-link{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.6);text-decoration:none;transition:color 0.2s;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);min-height:44px;display:inline-flex;align-items:center}
 #back-link:hover{color:#c9a84c}
-#ep-title{font-size:clamp(1rem,3.5vw,1.5rem);letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 24px rgba(201,168,76,0.45);text-align:center}
+#ep-title{font-size:clamp(1rem,3.5vw,1.5rem);letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 24px rgba(201,168,76,0.45);text-indent:0.45em;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap}
 #ep-symbol{font-size:0.9rem;color:rgba(201,168,76,0.45)}
 
 /* ── Tabs ── */
