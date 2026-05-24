@@ -27,7 +27,8 @@
 html{min-height:100%}
 body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh}
 .game-wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:48px 20px 80px;text-align:center}
-.game-title{font-size:clamp(1.8rem,5vw,3rem);letter-spacing:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.6),0 0 80px rgba(201,168,76,0.2);margin-bottom:6px}
+.game-title{font-size:clamp(1.8rem,5vw,3rem);letter-spacing:0.45em;text-indent:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.6),0 0 80px rgba(201,168,76,0.2);margin-bottom:6px}
+@media(max-width:480px){.game-title{font-size:clamp(1.5rem,4.5vw,1.8rem);letter-spacing:0.25em;text-indent:0.25em;white-space:nowrap}}
 .game-sub{font-size:0.75rem;letter-spacing:0.4em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:32px}
 .gold-rule{width:100px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.6),transparent);margin:0 auto 28px}
 .stats{display:flex;justify-content:center;gap:48px;margin-bottom:32px}
