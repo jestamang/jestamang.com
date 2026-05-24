@@ -1093,6 +1093,55 @@ document.addEventListener('DOMContentLoaded', function() {
     btn.addEventListener('click', function() { playLearnNote(note, oct, freq, btn); });
     btn.addEventListener('touchstart', function(e) { e.preventDefault(); playLearnNote(note, oct, freq, btn); }, {passive:false});
   });
+
+  // ── Learn the Notes inline panel ──
+  var _ltnPanel = document.getElementById('ltn-panel');
+  var _ltnSS = document.getElementById('ss');
+  var _ltnGrid = document.getElementById('ltn-note-grid');
+  var _ltnClose = document.getElementById('ltn-close');
+  var _ltnPlayBtn = null;
+
+  if (_ltnGrid) {
+    NOTES_ALL.forEach(function(note) {
+      var freq = noteFreq(note, 4);
+      var info = NOTE_INFO[note] || {};
+      var card = document.createElement('div');
+      card.className = 'ltn-card';
+      card.innerHTML =
+        '<div class="ltn-note-name">' + note + '</div>' +
+        '<div class="ltn-freq">' + freq.toFixed(1) + ' Hz</div>' +
+        '<div class="ltn-desc">' + (info.desc || '') + '</div>' +
+        '<button class="ltn-hear-btn">&#9654; Hear</button>';
+      var hearBtn = card.querySelector('.ltn-hear-btn');
+      hearBtn.addEventListener('click', function() {
+        getAC();
+        if (_ltnPlayBtn) _ltnPlayBtn.classList.remove('ltn-playing');
+        _ltnPlayBtn = hearBtn;
+        hearBtn.classList.add('ltn-playing');
+        playTone(freq, 1.5, 0, 0.3);
+        setTimeout(function() {
+          hearBtn.classList.remove('ltn-playing');
+          if (_ltnPlayBtn === hearBtn) _ltnPlayBtn = null;
+        }, 1500);
+      });
+      _ltnGrid.appendChild(card);
+    });
+  }
+
+  window.ltnToggle = function() {
+    if (!_ltnPanel || !_ltnSS) return;
+    var opening = !_ltnPanel.classList.contains('ltn-open');
+    _ltnPanel.classList.toggle('ltn-open');
+    _ltnSS.classList.toggle('ltn-open');
+    if (opening) _ltnSS.scrollTop = 0;
+  };
+
+  if (_ltnClose) {
+    _ltnClose.addEventListener('click', function() {
+      if (_ltnPanel) _ltnPanel.classList.remove('ltn-open');
+      if (_ltnSS) _ltnSS.classList.remove('ltn-open');
+    });
+  }
 });
 
 })();
