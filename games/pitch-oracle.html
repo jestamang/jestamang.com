@@ -33,6 +33,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Lu
 /* ── Typography ── */
 .eyebrow{font-size:clamp(0.58rem,1.8vw,0.78rem);letter-spacing:0.65em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:20px;font-family:'Luminari',serif}
 .big-title{font-size:clamp(2.8rem,11vw,7rem);letter-spacing:0.35em;color:#c9a84c;text-shadow:0 0 50px rgba(201,168,76,0.7),0 0 100px rgba(201,168,76,0.2);text-transform:uppercase;line-height:1.05;margin-bottom:16px;font-family:'Luminari',serif}
+.bl{display:block;text-indent:0.35em}
 .sub{font-size:clamp(0.68rem,2vw,0.88rem);letter-spacing:0.35em;color:rgba(255,255,255,0.32);text-transform:uppercase;margin-bottom:32px;line-height:2.1;font-family:'Luminari',serif}
 
 /* ── Buttons ── */
@@ -307,7 +308,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 ════════════════════════════════════ -->
 <div id="ss" class="scr">
   <div class="eyebrow">Jestamang Universe</div>
-  <div class="big-title">Pitch<br>Oracle</div>
+  <div class="big-title"><span class="bl">Pitch</span><span class="bl">Oracle</span></div>
   <div class="sub">The Oracle speaks in pure tone<br>Train your ear · Name what you hear</div>
   <button class="btn" id="startBtn">Consult the Oracle</button>
   <button class="btn-learn" id="learnBtn">Learn the Notes</button>

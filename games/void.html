@@ -32,6 +32,7 @@ canvas{display:block;position:fixed;inset:0;touch-action:none}
 .scr.off{display:none}
 .eyebrow{font-size:clamp(0.58rem,1.8vw,0.78rem);letter-spacing:0.65em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:20px}
 .big-title{font-size:clamp(3.5rem,14vw,9rem);letter-spacing:0.45em;color:#c9a84c;text-shadow:0 0 50px rgba(201,168,76,0.7),0 0 100px rgba(201,168,76,0.2);text-transform:uppercase;line-height:1;margin-bottom:14px}
+.bl{display:block;text-indent:0.45em}
 .sub{font-size:clamp(0.68rem,2vw,0.88rem);letter-spacing:0.35em;color:rgba(255,255,255,0.32);text-transform:uppercase;margin-bottom:52px;line-height:2.1}
 .btn{font-family:'Luminari',serif;font-size:clamp(0.78rem,2.5vw,0.95rem);letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:15px 50px;cursor:pointer;transition:all 0.3s;min-height:52px}
 .btn:hover,.btn:active{background:rgba(201,168,76,0.1);border-color:#c9a84c;box-shadow:0 0 28px rgba(201,168,76,0.2)}
@@ -205,7 +206,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 
 <div id="ss" class="scr">
   <div class="eyebrow">Jestamang Universe</div>
-  <div class="big-title">The<br>Void</div>
+  <div class="big-title"><span class="bl">The</span><span class="bl">Void</span></div>
   <div class="sub">Shapes descend from every edge<br>Survive as long as you can</div>
   <div id="ss-best" style="font-size:clamp(0.62rem,1.8vw,0.78rem);letter-spacing:0.35em;color:rgba(201,168,76,0.45);text-transform:uppercase;margin-bottom:28px;"></div>
   <button class="btn" id="startBtn">Enter the Void</button>

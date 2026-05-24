@@ -32,6 +32,7 @@ body{font-family:'Luminari',serif;background:#000;color:#fff;min-height:100vh;ov
 
 .eyebrow{font-size:clamp(0.58rem,1.8vw,0.76rem);letter-spacing:0.65em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:18px}
 .big-title{font-size:clamp(2.5rem,10vw,6rem);letter-spacing:0.3em;color:#c9a84c;text-shadow:0 0 50px rgba(201,168,76,0.7),0 0 100px rgba(201,168,76,0.2);text-transform:uppercase;line-height:1.05;margin-bottom:16px}
+.bl{display:block;text-indent:0.3em}
 .sub{font-size:clamp(0.68rem,2vw,0.86rem);letter-spacing:0.3em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:44px;line-height:2.1}
 .btn{font-family:'Luminari',serif;font-size:clamp(0.78rem,2.5vw,0.93rem);letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:14px 46px;cursor:pointer;transition:all 0.3s;min-height:52px;margin:4px}
 .btn:hover,.btn:active{background:rgba(201,168,76,0.1);border-color:#c9a84c;box-shadow:0 0 24px rgba(201,168,76,0.2)}
@@ -352,7 +353,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 <!-- START SCREEN -->
 <div id="ss" class="scr active">
   <div class="eyebrow">Jestamang Universe</div>
-  <div class="big-title">Chord<br>Conjurer</div>
+  <div class="big-title"><span class="bl">Chord</span><span class="bl">Conjurer</span></div>
   <div class="sub">Build chords from their sacred intervals<br>Learn the architecture of harmony itself</div>
   <button class="btn" id="startBtn">Begin the Conjuration</button>
   <div style="font-size:0.58rem;letter-spacing:0.25em;color:rgba(255,255,255,0.12);text-transform:uppercase;margin-top:20px;line-height:2">3 tiers · major · minor · 7ths · inversions · ear training</div>

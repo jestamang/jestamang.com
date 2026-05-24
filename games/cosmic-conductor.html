@@ -31,6 +31,7 @@ canvas{display:block;position:fixed;inset:0;touch-action:none}
 .scr.off{display:none}
 .eyebrow{font-size:clamp(0.58rem,1.8vw,0.78rem);letter-spacing:0.65em;color:rgba(201,168,76,0.35);text-transform:uppercase;margin-bottom:16px}
 .big-title{font-size:clamp(2rem,8vw,5.5rem);letter-spacing:0.4em;color:#c9a84c;text-shadow:0 0 40px rgba(201,168,76,0.7);text-transform:uppercase;line-height:1.15;margin-bottom:12px}
+.bl{display:block;text-indent:0.4em}
 .sub{font-size:clamp(0.68rem,2vw,0.85rem);letter-spacing:0.3em;color:rgba(255,255,255,0.32);text-transform:uppercase;margin-bottom:44px;line-height:2.1}
 .btn{font-family:'Luminari',serif;font-size:clamp(0.78rem,2.5vw,0.95rem);letter-spacing:0.5em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:15px 50px;cursor:pointer;transition:all 0.3s;min-height:52px}
 .btn:hover,.btn:active{background:rgba(201,168,76,0.1);border-color:#c9a84c;box-shadow:0 0 24px rgba(201,168,76,0.2)}
@@ -220,7 +221,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 
 <div id="ss" class="scr">
   <div class="eyebrow">Jestamang Universe</div>
-  <div class="big-title">Cosmic<br>Conductor</div>
+  <div class="big-title"><span class="bl">Cosmic</span><span class="bl">Conductor</span></div>
   <div class="sub">Hit the orbs as they reach the gold line<br>Perfect timing · Build your combo</div>
   <button class="btn" id="startBtn">Take the Stage</button>
   <div class="ctrl-hint">A · S · D · F Keys &nbsp;·&nbsp; Touch the Zones</div>
