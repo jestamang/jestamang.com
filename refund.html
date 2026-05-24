@@ -53,6 +53,12 @@ body::before{
   max-width:800px;
   margin:0 auto;
   padding:56px 40px 100px;
+  background:rgba(0,0,0,0.95);
+  border:1px solid rgba(201,168,76,0.6);
+}
+.page-wrap::before{
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,0.5),transparent);
 }
 .page-title{
   font-family:'Luminari',serif;
