@@ -176,6 +176,27 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
   #ep-grid{grid-template-columns:repeat(4,1fr);justify-content:center;gap:4px}
   .ep-face-back-glyph{font-size:1rem}
 }
+@media(max-width:420px){
+  #ep-title{
+    letter-spacing:0.1em;
+    text-indent:0.1em;        /* equals letter-spacing — v114/v117 pairing, prevents re-lean */
+  }
+  #back-link{
+    padding:7px 8px;          /* was 7px 14px */
+    letter-spacing:0.15em;    /* was 0.35em */
+  }
+  #ep-lb-hud{
+    padding:6px 4px;          /* was 6px 10px */
+    letter-spacing:0;         /* was 0.22em */
+  }
+}
+@media(max-width:340px){
+  #ep-title{
+    font-size:clamp(0.8rem,3.5vw,1.5rem);   /* floor 1rem → 0.8rem */
+    letter-spacing:0.05em;
+    text-indent:0.05em;                       /* equals letter-spacing — v114/v117 pairing */
+  }
+}
 @media(min-width:769px){
   .ep-stat-lbl{color:rgba(255,255,255,0.52)}
   body{padding-bottom:24px}
