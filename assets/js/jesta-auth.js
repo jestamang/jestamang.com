@@ -14,6 +14,7 @@
     '.jtnav-auth-link:hover{color:#c9a84c}',
     '.jtnav-auth-star{font-size:0.8rem;color:rgba(201,168,76,0.55);text-decoration:none;padding:0 6px;line-height:52px;transition:color 0.2s}',
     '.jtnav-auth-star:hover{color:#c9a84c}',
+    '.hp-footer a:link{color:#c9a84c!important;text-decoration:none!important}',
     /* On mobile: hide the desktop auth div, show only the right mob-login link */
     '@media(max-width:767px){#jtnav-auth{display:none!important}}',
     '@media(max-width:767px){#jtnav-mob-auth{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;width:100%;gap:8px}#jtnav-mob-auth .jtnav-mob-link{width:60%;max-width:220px;text-align:center}#jtnav-mob-auth .jtnav-mob-divider{width:100%}}',
