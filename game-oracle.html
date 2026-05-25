@@ -127,7 +127,7 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cov
   * { box-sizing: border-box; }
   button, a, [role="button"] { min-height: 44px; }
   .home-btn { display: none !important; }
-  .card-stage{width:220px;height:320px;margin:0 auto 20px}
+  .card-stage{width:220px;height:min(320px,calc(100dvh - 420px));margin:0 auto 20px}
   .oracle-wrap{padding:0 8px}
 }
 @media (hover: none) and (pointer: coarse) {
