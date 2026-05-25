@@ -32,10 +32,12 @@
     '@media(max-width:768px){#jsearch-mob-close-btn{display:flex!important;align-items:center;justify-content:center;background:none;border:none;color:rgba(201,168,76,0.8);font-family:\'Luminari\',Georgia,serif;font-size:1rem;cursor:pointer;min-width:44px;min-height:44px;flex-shrink:0;padding:0;line-height:1}}',
     '@media(max-width:768px){.jsearch-hint{display:flex!important;align-items:center;text-align:left;gap:0}}',
     'input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;display:none}',
-    /* Mid-width hamburger collapse: 768–1200px was broken (link-rail overflow buried right cluster) */
-    '@media(min-width:768px) and (max-width:1200px){#jtnav-links,#jtnav-divider,#jtnav-platforms,#jtnav-auth,#jsearch-btn{display:none!important}#jtnav-mobile-toggle{display:flex!important;position:static;margin-left:16px}#jtnav-logo{position:absolute;left:50%;transform:translateX(-50%);margin:0}}',
-    '@media(min-width:768px) and (max-width:1200px){#jtnav-mob-login{display:flex!important;align-items:center;font-family:\'Luminari\',serif!important;color:#c9a84c!important;font-size:0.62rem!important;letter-spacing:0.16em!important;text-transform:uppercase!important;padding:0 14px!important;white-space:nowrap!important;line-height:52px!important;margin-left:auto!important;text-decoration:none!important}}',
-    '@media(min-width:768px) and (max-width:1200px){#jtnav-mob-auth{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;width:100%;gap:8px}#jtnav-mob-auth .jtnav-mob-link{width:60%;max-width:220px;text-align:center}#jtnav-mob-auth .jtnav-mob-divider{width:100%}}'
+    /* Shrink tier 860–1200: keep links+auth+search, compact link sizing, drop socials+divider */
+    '@media(min-width:860px) and (max-width:1200px){#jtnav-divider,#jtnav-platforms{display:none!important}.jtnav-link{font-size:0.62rem!important;letter-spacing:0.06em!important;padding:0 5px!important}.jtnav-dot{padding:0 1px!important}}',
+    /* Menu tier 768–859: hamburger (same layout as old block, narrowed upper bound) */
+    '@media(min-width:768px) and (max-width:859px){#jtnav-links,#jtnav-divider,#jtnav-platforms,#jtnav-auth,#jsearch-btn{display:none!important}#jtnav-mobile-toggle{display:flex!important;position:static;margin-left:16px}#jtnav-logo{position:absolute;left:50%;transform:translateX(-50%);margin:0}}',
+    '@media(min-width:768px) and (max-width:859px){#jtnav-mob-login{display:flex!important;align-items:center;font-family:\'Luminari\',serif!important;color:#c9a84c!important;font-size:0.62rem!important;letter-spacing:0.16em!important;text-transform:uppercase!important;padding:0 14px!important;white-space:nowrap!important;line-height:52px!important;margin-left:auto!important;text-decoration:none!important}}',
+    '@media(min-width:768px) and (max-width:859px){#jtnav-mob-auth{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;width:100%;gap:8px}#jtnav-mob-auth .jtnav-mob-link{width:60%;max-width:220px;text-align:center}#jtnav-mob-auth .jtnav-mob-divider{width:100%}}'
   ].join('');
   document.head.appendChild(style);
 
