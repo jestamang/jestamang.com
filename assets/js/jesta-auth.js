@@ -26,7 +26,8 @@
     /* Fix 1: mobile close button inside .jsearch-hint — hidden on desktop */
     '#jsearch-mob-close-btn{display:none!important}',
     '@media(max-width:768px){#jsearch-mob-close-btn{display:flex!important;align-items:center;justify-content:center;background:none;border:none;color:rgba(201,168,76,0.8);font-family:\'Luminari\',Georgia,serif;font-size:1rem;cursor:pointer;min-width:44px;min-height:44px;flex-shrink:0;padding:0;line-height:1}}',
-    '@media(max-width:768px){.jsearch-hint{display:flex!important;align-items:center;text-align:left;gap:0}}'
+    '@media(max-width:768px){.jsearch-hint{display:flex!important;align-items:center;text-align:left;gap:0}}',
+    'input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;display:none}'
   ].join('');
   document.head.appendChild(style);
 
