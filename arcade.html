@@ -139,7 +139,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .lb-name-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lb-score{color:#c9a84c;letter-spacing:0.1em;text-align:right}
 .lb-date{color:rgba(201,168,76,0.32);font-size:0.58rem;text-align:right}
-.lb-empty{text-align:center;color:rgba(201,168,76,0.35);font-size:0.72rem;letter-spacing:0.2em;padding:24px 0}
+.lb-empty{text-align:center;color:rgba(201,168,76,0.7);font-size:0.72rem;letter-spacing:0.2em;padding:24px 0}
 .lb-loading{text-align:center;color:rgba(201,168,76,0.35);font-size:0.65rem;letter-spacing:0.22em;padding:24px 0;animation:lbpulse 1.4s ease-in-out infinite}
 @keyframes lbpulse{0%,100%{opacity:0.4}50%{opacity:1}}
 
@@ -332,7 +332,7 @@ window.openLB=function(game,title,lowerBetter){
     if(_pb&&_pb.score!==undefined){
       pbEl.innerHTML='<div class="lb-row" style="justify-content:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.18);"><span style="color:rgba(201,168,76,0.55);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;margin-right:10px;">Your Best</span><span style="color:#c9a84c;">'+JestaLeaderboard.SCROLL_PB_MARKER+' '+JestaLeaderboard.formatScrollScore(_pb.score,game==='void'?'time':'points')+'</span></div>';
     } else {
-      pbEl.innerHTML='<div style="text-align:center;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.05em;">No personal best yet \u2014 play to set one</div>';
+      pbEl.innerHTML='<div style="text-align:center;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.55);font-style:italic;font-size:0.62rem;letter-spacing:0.05em;">No personal best yet \u2014 play to set one</div>';
     }
   }
   db.collection('leaderboards').where('game','==',game).orderBy('score','desc').limit(10).get()
