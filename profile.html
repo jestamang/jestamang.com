@@ -3451,8 +3451,35 @@ document.addEventListener('DOMContentLoaded', function(){
     var heroEl = document.querySelector('.profile-hero');
     _revealHero(heroEl);
     setField('v-username', data.username);
-    setField('v-dob', data.dateOfBirth);
-    setField('v-tob', data.timeOfBirth);
+    // DOB display only: "2000-03-19" -> "March 19, 2000". String-split (no new Date) to avoid
+    // the UTC-midnight-shifts-back-a-day bug on date-only ISO strings. Mirrors NC.calculate L2530.
+    (function(){
+      var d = data.dateOfBirth, el = document.getElementById('v-dob');
+      if(el){
+        var f = d;
+        if(d && /^\d{4}-\d{2}-\d{2}$/.test(d)){
+          var mn = ['January','February','March','April','May','June','July',
+                    'August','September','October','November','December'];
+          var p = d.split('-');
+          f = mn[+p[1]-1] + ' ' + (+p[2]) + ', ' + p[0];
+        }
+        el.textContent = f || '—';
+        el.classList.toggle('empty', !f);
+      }
+    })();
+    // TOB display only: "08:23" -> "8:23 AM". 12%||12 handles noon/midnight correctly.
+    (function(){
+      var t = data.timeOfBirth, el = document.getElementById('v-tob');
+      if(el){
+        var f = t;
+        if(t && /^\d{1,2}:\d{2}$/.test(t)){
+          var p = t.split(':'), h = +p[0], m = +p[1];
+          f = (h%12||12) + ':' + (m<10?'0':'') + m + (h>=12?' PM':' AM');
+        }
+        el.textContent = f || '—';
+        el.classList.toggle('empty', !f);
+      }
+    })();
     setField('v-pob', data.placeOfBirth);
   }
 
