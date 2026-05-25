@@ -338,18 +338,19 @@ body {
   display: flex;
   flex-direction: column;
   background: rgba(10, 10, 10, 0.55);
-  border: 1px solid rgba(201, 168, 76, 0.35);
+  border: 1px solid rgba(201, 168, 76, 0.55);
   border-radius: 8px;
   padding: 0;
   overflow: hidden;
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(201, 168, 76, 0.06);
 }
 .merch-card-content {
   flex: 1;
   padding: 18px 20px 20px;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(rgba(10, 10, 10, 0.45), rgba(0, 0, 0, 0.7));
 }
 
 .product-card:hover {
