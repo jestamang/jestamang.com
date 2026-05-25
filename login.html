@@ -272,12 +272,12 @@ body::before{
   text-align:center;
   margin-top:22px;
   font-family:'Luminari',serif;
-  font-size:0.72rem;
+  font-size:0.78rem;
   letter-spacing:0.06em;
-  color:rgba(255,255,255,0.4);
+  color:rgba(255,255,255,0.65);
 }
 .toggle-mode a{
-  color:rgba(201,168,76,0.75);
+  color:#c9a84c;
   text-decoration:none;
   cursor:pointer;
   transition:color 0.2s ease;
@@ -538,7 +538,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     </form>
 
     <div class="toggle-mode" id="toggle-mode-wrap">
-      First time? <a id="toggle-link" href="#">Declare Yourself</a>
+      New here? <a id="toggle-link" href="#">Declare Yourself</a>
     </div>
 
     <div id="auth-error"></div>
@@ -650,7 +650,7 @@ document.addEventListener('DOMContentLoaded', function(){
       pwInput.setAttribute('autocomplete','new-password');
     } else {
       submitBtn.textContent = 'Initiate';
-      toggleWrap.innerHTML  = 'First time? <a id="toggle-link" href="#">Declare Yourself</a>';
+      toggleWrap.innerHTML  = 'New here? <a id="toggle-link" href="#">Declare Yourself</a>';
       nameLabel.style.display  = 'none';
       nameInput.style.display  = 'none';
       rememberWrap.style.display = 'flex';
