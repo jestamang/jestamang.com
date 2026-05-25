@@ -656,14 +656,6 @@ window.openSocial = function(platform) {
   if (!config) return;
   var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   if (!isMobile) { window.open(config.web, '_blank', 'noopener,noreferrer'); return; }
-  var startTime = Date.now();
-  var fallbackTimer = setTimeout(function() {
-    if (Date.now() - startTime < 2500 && document.visibilityState !== 'hidden') {
-      window.location.href = config.web;
-    }
-  }, 1200);
-  document.addEventListener('visibilitychange', function onVis() {
-    if (document.hidden) { clearTimeout(fallbackTimer); document.removeEventListener('visibilitychange', onVis); }
-  });
+  window.open(config.web, '_blank', 'noopener,noreferrer');
   window.location.href = config.app;
 };
