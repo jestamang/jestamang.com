@@ -782,6 +782,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   "seller": { "@type": "Organization", "name": "Jestamang LLC" }
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>emailjs.init('xJfBxMIcVCTgYvQr9');</script>
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -1260,12 +1262,19 @@ var _inquiryForm=document.getElementById('inquiry-form');if(_inquiryForm)_inquir
 
   savePromise
   .then(function () {
-    return Promise.resolve();
+    return emailjs.send('jestamang', 'template_5l4a1lk', {
+      from_name:  name,
+      from_email: email,
+      subject:    'Artifact Inquiry: ' + (item || 'General'),
+      message:    (item ? ('[Artifact: ' + item + ']\n\n') : '') + message,
+      to_email:   'thejestamang@gmail.com'
+    });
   })
   .then(function () {
     msgBox.textContent = 'YOUR TRANSMISSION HAS BEEN RECEIVED. We will respond when the time is right.';
     msgBox.className = 'modal-msg success';
     document.getElementById('inquiry-form').reset();
+    inqItem.value = item;
     setTimeout(closeModal, 3000);
   })
   .catch(function () {
