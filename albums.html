@@ -519,6 +519,27 @@ Promise.all([
 }).catch(function(){});
 })();
 </script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.album-card').forEach(function(card){
+    var bc=card.dataset.albumBc||'';
+    var m=bc.match(/\/album\/([^/?#]+)/);
+    var slug=m&&m[1];
+    if(slug&&slug!=='-')card.id='album-'+slug;
+  });
+  function handleAlbumsHash(){
+    var h=window.location.hash;
+    if(!h||h.indexOf('#album-')!==0)return;
+    var id=h.slice(1);
+    var card=document.getElementById(id);
+    if(!card)return;
+    card.scrollIntoView({behavior:'smooth',block:'start'});
+    setTimeout(function(){if(window._activeCard!==card)toggleDrawer(card);},350);
+  }
+  handleAlbumsHash();
+  window.addEventListener('hashchange',handleAlbumsHash);
+});
+</script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
