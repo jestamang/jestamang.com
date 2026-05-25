@@ -89,6 +89,16 @@ textarea.tx-input{resize:vertical;min-height:88px;line-height:1.65}
   .tx-btn{min-height:54px;letter-spacing:0.38em}
   .tx-title{letter-spacing:0.1em;text-indent:0.1em;font-size:clamp(1rem,5vw,1.4rem)}
 }
+/* ── DESKTOP NO-SCROLL FIT ── */
+@media(min-width:769px){
+  .tx-page{min-height:calc(100vh - 102px);padding:40px 24px 28px}
+  .tx-panel{padding:24px 56px 28px}
+  .tx-rule{margin:14px auto 12px}
+  .tx-field{margin-bottom:14px}
+  .tx-label{margin-bottom:6px}
+  textarea.tx-input{height:100px;min-height:100px}
+  .tx-btn{padding:13px 0;margin-top:8px}
+}
 /* ── MAILERLITE OVERRIDES ── */
 .ml-embedded{width:100%}
 .ml-form-embedContainer,.ml-form-embedWrapper,.ml-form-embedBody,
