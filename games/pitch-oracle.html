@@ -25,9 +25,10 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Luminari',serif;-webkit-user-select:none;user-select:none}
+:root{--game-header-h:60px}
 
 /* ── Screens ── */
-.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;text-align:center;padding:24px;transition:opacity 0.3s}
+.scr{position:fixed;top:var(--game-header-h);left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;text-align:center;padding:24px;transition:opacity 0.3s}
 .scr.off{display:none}
 
 /* ── Typography ── */
@@ -43,7 +44,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Lu
 .btn-learn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.6);background:rgba(201,168,76,0.07)}
 
 /* ── Game screen ── */
-#gs{justify-content:space-between;padding:clamp(56px,10vw,72px) 20px clamp(16px,4vw,28px)}
+#gs{justify-content:space-between;padding:clamp(12px,3vw,20px) 20px clamp(16px,4vw,28px)}
 #po-hud{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:600px;margin-bottom:6px}
 #po-round{font-size:clamp(0.6rem,1.8vw,0.72rem);letter-spacing:0.5em;color:rgba(201,168,76,0.45);text-transform:uppercase;font-family:'Luminari',serif}
 #po-score{font-size:clamp(0.6rem,1.8vw,0.72rem);letter-spacing:0.35em;color:#c9a84c;text-transform:uppercase;font-family:'Luminari',serif;transition:color 0.3s}
@@ -96,7 +97,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Lu
 #os-narrator{font-size:clamp(0.63rem,1.8vw,0.75rem);letter-spacing:0.3em;color:rgba(255,255,255,0.22);text-transform:uppercase;margin-bottom:38px;line-height:2;font-family:'Luminari',serif}
 
 /* ── Learning Mode ── */
-#learn-scr{justify-content:flex-start;padding-top:80px;padding-bottom:40px;overflow-y:auto}
+#learn-scr{justify-content:flex-start;padding-top:16px;padding-bottom:40px;overflow-y:auto}
 #learn-note-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;max-width:480px;margin:24px auto}
 .learn-btn{font-family:'Luminari',serif;font-size:clamp(1rem,3.5vw,1.3rem);letter-spacing:0.08em;color:rgba(201,168,76,0.75);background:rgba(4,2,10,0.9);border:1px solid rgba(201,168,76,0.28);cursor:pointer;transition:all 0.3s;min-height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-transform:uppercase}
 .learn-btn:hover,.learn-btn:active{background:rgba(201,168,76,0.12);border-color:#c9a84c;color:#c9a84c;box-shadow:0 0 24px rgba(201,168,76,0.25)}
@@ -105,8 +106,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Lu
 #learn-hud{font-size:0.58rem;letter-spacing:0.4em;color:rgba(201,168,76,0.35);text-transform:uppercase;font-family:'Luminari',serif;margin-bottom:8px}
 
 /* ── Back link ── */
-#back{position:fixed;top:12px;left:14px;z-index:30;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.3s;min-height:44px;display:flex;align-items:center;min-width:220px;text-align:center}
+#back{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.35em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.3s;min-height:44px;display:inline-flex;align-items:center}
 #back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
+#game-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 10px;border-bottom:1px solid rgba(201,168,76,0.12);position:relative;min-height:var(--game-header-h)}
+#game-title{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Luminari',serif;font-size:clamp(1rem,3.5vw,1.5rem);letter-spacing:0.45em;text-transform:uppercase;white-space:nowrap;color:rgba(201,168,76,0.85);pointer-events:none}
+#game-title .gt-line{display:inline}
+#game-title .gt-line+.gt-line::before{content:" "}
 
 /* ── Gold rule ── */
 .gold-rule{width:100px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.4),transparent);margin:16px auto}
@@ -127,6 +132,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Lu
 
 @media(max-width:768px){
   .game-tab{padding:10px 8px;font-size:0.68rem}
+  #game-title{white-space:normal;font-size:0.85rem;letter-spacing:0.12em;line-height:1.3;text-align:center}
+  #game-title .gt-line{display:block}
+  #game-title .gt-line+.gt-line::before{content:none}
+  #game-title .title-symbol{display:none}
 }
 @media(max-width:520px){
   #note-grid-area{max-width:98vw}
@@ -140,11 +149,17 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Lu
 @media(max-width:360px){
   .note-btn{min-width:38px;min-height:50px;font-size:0.75rem}
 }
+@media(max-width:420px){
+  #back{padding:7px 8px;letter-spacing:0.15em}
+}
 .skip-link{position:fixed;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}</style>
 <style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
 <style id="lb-styles">
-#lb-btn-hud{position:fixed;top:12px;right:14px;z-index:500;background:rgba(0,0,0,0.65);border:1px solid rgba(201,168,76,0.42);color:rgba(201,168,76,0.85);font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;padding:7px 14px;cursor:pointer;transition:background 0.3s,border-color 0.3s;display:none;min-height:44px;white-space:nowrap;align-items:center;min-width:220px;text-align:center}
+#lb-btn-hud{background:rgba(0,0,0,0.65);border:1px solid rgba(201,168,76,0.42);color:rgba(201,168,76,0.85);font-family:'Luminari',serif;font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;padding:6px 10px;cursor:pointer;transition:background 0.3s,border-color 0.3s;min-height:44px;white-space:nowrap;display:inline-flex;align-items:center}
 #lb-btn-hud:hover{background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.7);color:#c9a84c}
+@media(max-width:420px){
+  #lb-btn-hud{padding:6px 4px;letter-spacing:0}
+}
 #lb-btn-over{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:11px 28px;cursor:pointer;transition:background 0.3s,border-color 0.3s;min-height:44px;display:none;margin-top:10px}
 #lb-btn-over:hover{background:rgba(201,168,76,0.1);border-color:#c9a84c}
 #lb-name-modal{display:none;position:fixed;inset:0;z-index:4000;background:rgba(4,2,10,0.96);align-items:center;justify-content:center}
@@ -300,8 +315,11 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 <body>
 <a href="#ss" class="skip-link">Skip to main content</a>
 
-<a href="/arcade.html" id="back" data-native-nav>← Games</a>
-<button id="lb-btn-hud">✦ Cosmic Scrolls</button>
+<div id="game-header">
+  <a href="/arcade.html" id="back" data-native-nav>← Games</a>
+  <div id="game-title"><span class="gt-line">Pitch</span><span class="gt-line">Oracle</span><span class="title-symbol">✦</span></div>
+  <button id="lb-btn-hud">✦ Cosmic Scrolls</button>
+</div>
 
 <!-- ══════════════════════════════════
      START SCREEN
