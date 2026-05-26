@@ -35,7 +35,6 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cov
 .game-title{font-size:clamp(1.8rem,5vw,3rem);letter-spacing:0.45em;text-indent:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.6),0 0 80px rgba(201,168,76,0.2);margin-bottom:6px}
 @media(max-width:480px){.game-title{font-size:clamp(1.5rem,4.5vw,1.8rem);letter-spacing:0.25em;text-indent:0.25em;white-space:nowrap}}
 .game-sub{font-size:0.75rem;letter-spacing:0.4em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:32px}
-.gold-rule{width:100px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.6),transparent);margin:0 auto 28px}
 .stats{display:flex;justify-content:center;gap:48px;margin-bottom:32px}
 .stat{text-align:center}
 .stat-val{font-size:1.5rem;color:#c9a84c;letter-spacing:0.05em}
@@ -174,7 +173,6 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
   /* Layout compression — desktop only */
   .game-wrap{padding:16px 20px 40px}
   .game-sub{margin-bottom:14px}
-  .gold-rule{margin:0 auto 14px}
   .diff-btns{margin-bottom:14px}
   .stats{margin-bottom:16px}
   .stat-val{font-size:1.1rem}
@@ -197,7 +195,6 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 </div>
 
 <div class="game-wrap">
-  <div class="gold-rule"></div>
   <div class="diff-btns">
     <button class="diff-btn active" data-diff="easy">Easy · 6 pairs</button>
     <button class="diff-btn" data-diff="hard">Hard · 10 pairs</button>
@@ -547,7 +544,7 @@ window.submitScore=function(game,score,lowerBetter,cb,extra){
 <script>window.addEventListener('pagehide',function(){clearInterval(ticker);clearTimeout(hintTimer);});</script><script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 
 
-<!-- mobile-audit-fixes --><style>@media(max-width:768px){.game-wrap{padding:12px 12px 40px;overflow-x:hidden}.card-grid,.memory-grid{grid-template-columns:repeat(4,1fr)!important;gap:6px!important}.mem-card{min-height:56px}.game-stats,.status-bar{font-size:0.75rem;flex-wrap:wrap;gap:6px}.game-btn,.gbtn{min-height:44px;width:100%;font-size:0.8rem}}</style>
+<!-- mobile-audit-fixes --><style>@media(max-width:768px){.game-wrap{padding:12px 12px 16px;overflow-x:hidden}.card-grid,.memory-grid{grid-template-columns:repeat(4,1fr)!important;gap:6px!important}.mem-card{min-height:56px}.game-stats,.status-bar{font-size:0.75rem;flex-wrap:wrap;gap:6px}.game-btn,.gbtn{min-height:44px;width:100%;font-size:0.8rem}.diff-btns{margin-bottom:12px}.stats{margin-bottom:16px}.controls{margin-top:8px}}</style>
 
 <style>@media(max-width:768px){body{min-height:100vh!important;overflow-x:hidden!important}}</style>
 <style>@media(max-width:768px){body{background-attachment:scroll!important}}</style>
