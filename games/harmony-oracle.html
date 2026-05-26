@@ -47,7 +47,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Lu
 #back{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.35em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.3s;min-height:44px;display:inline-flex;align-items:center}
 #back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
 #game-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 10px;border-bottom:1px solid rgba(201,168,76,0.12);position:relative;min-height:var(--game-header-h)}
-#game-title{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Luminari',serif;font-size:clamp(1rem,3.5vw,1.5rem);letter-spacing:0.45em;text-transform:uppercase;white-space:nowrap;color:rgba(201,168,76,0.85);pointer-events:none}
+#game-title{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Luminari',serif;font-size:clamp(1rem,3.5vw,1.5rem);letter-spacing:0.45em;text-transform:uppercase;white-space:nowrap;color:rgba(201,168,76,0.85);pointer-events:none;max-width:calc(100vw - 240px);overflow:hidden;text-overflow:ellipsis}
 
 /* ── Gold rule ── */
 .gold-rule{width:100px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.4),transparent);margin:16px auto}
@@ -151,6 +151,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Lu
 @media(max-width:400px){
   #ho-answers.grid-4{grid-template-columns:1fr 1fr}
   .ho-ans-btn{font-size:0.68rem;min-height:44px}
+}
+@media(max-width:420px){
+  #game-title{letter-spacing:0.06em}
+}
+@media(max-width:340px){
+  #game-title{font-size:clamp(0.8rem,3.5vw,1.5rem);letter-spacing:0.04em}
 }
 .skip-link{position:fixed;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}</style>
 <style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
