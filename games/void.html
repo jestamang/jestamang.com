@@ -40,7 +40,7 @@ canvas{display:block;position:fixed;inset:0;touch-action:none}
 .score-lbl{font-size:clamp(0.62rem,1.8vw,0.78rem);letter-spacing:0.5em;color:rgba(255,255,255,0.28);text-transform:uppercase;margin-bottom:10px}
 .best-lbl{font-size:clamp(0.6rem,1.6vw,0.75rem);letter-spacing:0.35em;color:rgba(255,255,255,0.2);text-transform:uppercase;margin-bottom:44px}
 .ctrl-hint{font-size:0.66rem;letter-spacing:0.14em;color:rgba(255,255,255,0.16);text-transform:uppercase;margin-top:24px;line-height:2.2}
-#back{position:fixed;top:12px;left:14px;z-index:30;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.2s}
+#back{position:fixed;top:12px;left:14px;z-index:30;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.2s;min-width:220px;text-align:center}
 #back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}.skip-link{position:fixed;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}</style>
 <style>html{background:#000}body{opacity:0;animation:jPageIn 0.3s ease forwards}@keyframes jPageIn{from{opacity:0}to{opacity:1}}</style>
 <link rel="preload" as="font" type="font/ttf" href="../assets/fonts/Luminari.ttf" crossorigin>
@@ -51,7 +51,7 @@ canvas{display:block;position:fixed;inset:0;touch-action:none}
 <meta name="apple-mobile-web-app-title" content="Jestamang">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style id="lb-styles">
-#lb-btn-hud{position:fixed;top:12px;right:14px;z-index:500;background:rgba(0,0,0,0.65);border:1px solid rgba(201,168,76,0.42);color:rgba(201,168,76,0.85);font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;padding:7px 12px;cursor:pointer;transition:background 0.2s,border-color 0.2s;display:none;min-height:36px;white-space:nowrap}
+#lb-btn-hud{position:fixed;top:12px;right:14px;z-index:500;background:rgba(0,0,0,0.65);border:1px solid rgba(201,168,76,0.42);color:rgba(201,168,76,0.85);font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;padding:7px 14px;cursor:pointer;transition:background 0.2s,border-color 0.2s;display:none;min-height:44px;white-space:nowrap;min-width:220px;text-align:center}
 #lb-btn-hud:hover{background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.7);color:#c9a84c}
 #lb-btn-over{font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:#c9a84c;background:none;border:1px solid rgba(201,168,76,0.5);padding:11px 28px;cursor:pointer;transition:background 0.2s,border-color 0.2s;min-height:44px;display:none;margin-top:10px}
 #lb-btn-over:hover{background:rgba(201,168,76,0.1);border-color:#c9a84c}
