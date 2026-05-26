@@ -1277,8 +1277,10 @@ var _inquiryForm=document.getElementById('inquiry-form');if(_inquiryForm)_inquir
     inqItem.value = item;
     setTimeout(closeModal, 3000);
   })
-  .catch(function () {
-    msgBox.textContent = 'THE TRANSMISSION FAILED. Try again or contact directly.';
+  .catch(function (error) {
+    console.error('EmailJS/merch inquiry error:', error);
+    var detail = (error && error.text) ? error.text : (error && error.message ? error.message : 'unknown error');
+    msgBox.textContent = 'THE TRANSMISSION FAILED — ' + detail;
     msgBox.className = 'modal-msg error';
     submitBtn.disabled = false;
   });
