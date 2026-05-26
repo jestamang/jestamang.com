@@ -218,7 +218,7 @@ if(pbRow){
   if(_pb&&_pb.score>0){
     pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.15);"><span style="color:rgba(201,168,76,0.55);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;display:block;margin-bottom:4px;">Your Personal Best</span><span style="color:#c9a84c;font-size:0.9rem;">\u2605 '+fmtS(_pb.score)+'</span></td>';
   } else {
-    pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.06em;">BE THE FIRST TO MARK YOUR SCORE</td>';
+    pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.06em;">No personal best yet — play to set one</td>';
   }
 }
 tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr>';
@@ -416,7 +416,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
   <div class="score-lbl">out of 1000+</div>
   <div id="os-narrator"></div>
   <button class="btn" id="restartBtn">Hear Again</button>
-  <button id="lb-btn-over">✦ The Cosmic Scrolls</button>
+  <button id="lb-btn-over">✦ Cosmic Scrolls</button>
 </div>
 
 <!-- ══════════════════════════════════
