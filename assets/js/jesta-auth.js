@@ -76,7 +76,7 @@
     if (mobWrap) {
       mobWrap.innerHTML =
         '<div class="jtnav-mob-divider"></div>' +
-        '<a class="jtnav-mob-link" href="profile.html">My Dossier</a>' +
+        '<a class="jtnav-mob-link" href="profile.html">Profile</a>' +
         '<a class="jtnav-mob-link" href="members.html">Members</a>' +
         '<a class="jtnav-mob-link" href="#" id="jtnav-mob-so">Depart for Now</a>';
       var so = document.getElementById('jtnav-mob-so');
