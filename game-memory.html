@@ -26,7 +26,12 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{min-height:100%}
 body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh}
-.game-wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:48px 20px 80px;text-align:center}
+:root{--game-header-h:60px}
+#game-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 10px;border-bottom:1px solid rgba(201,168,76,0.12);position:relative;min-height:var(--game-header-h)}
+#game-title{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Luminari',serif;font-size:clamp(1rem,3.5vw,1.5rem);letter-spacing:0.45em;text-transform:uppercase;white-space:nowrap;color:rgba(201,168,76,0.85);pointer-events:none}
+#game-title .gt-line{display:inline}
+#game-title .gt-line+.gt-line::before{content:" "}
+.game-wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:clamp(12px,3vw,20px) 20px 80px;text-align:center}
 .game-title{font-size:clamp(1.8rem,5vw,3rem);letter-spacing:0.45em;text-indent:0.45em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.6),0 0 80px rgba(201,168,76,0.2);margin-bottom:6px}
 @media(max-width:480px){.game-title{font-size:clamp(1.5rem,4.5vw,1.8rem);letter-spacing:0.25em;text-indent:0.25em;white-space:nowrap}}
 .game-sub{font-size:0.75rem;letter-spacing:0.4em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:32px}
@@ -134,10 +139,12 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 }
 
 .skip-link{position:fixed;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}
-#back{position:fixed;top:12px;left:14px;z-index:30;font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.3s;min-height:44px;display:flex;align-items:center;min-width:220px;text-align:center}
+#back{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.35em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.3s;min-height:44px;display:inline-flex;align-items:center}
 #back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
-#lb-btn-hud{position:fixed;top:12px;right:14px;z-index:500;background:rgba(0,0,0,0.65);border:1px solid rgba(201,168,76,0.42);color:rgba(201,168,76,0.85);font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;padding:7px 14px;cursor:pointer;transition:background 0.3s,border-color 0.3s;min-height:44px;white-space:nowrap;display:flex;align-items:center;min-width:220px;text-align:center}
-#lb-btn-hud:hover{background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.7);color:#c9a84c}</style>
+#lb-btn-hud{background:rgba(0,0,0,0.65);border:1px solid rgba(201,168,76,0.42);color:rgba(201,168,76,0.85);font-family:'Luminari',serif;font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;padding:6px 10px;cursor:pointer;transition:background 0.3s,border-color 0.3s;min-height:44px;white-space:nowrap;display:inline-flex;align-items:center}
+#lb-btn-hud:hover{background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.7);color:#c9a84c}
+@media(max-width:768px){#game-title{display:none}}
+@media(max-width:420px){#back{padding:7px 8px;letter-spacing:0.15em}#lb-btn-hud{padding:6px 4px;letter-spacing:0}}</style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/ttf" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="dns-prefetch" href="https://apis.google.com">
@@ -160,7 +167,7 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
   .game-sub{color:rgba(255,255,255,0.50)}
   .stat-label{color:rgba(255,255,255,0.52)}
   /* Layout compression — desktop only */
-  .game-wrap{padding:40px 20px 40px}
+  .game-wrap{padding:16px 20px 40px}
   .game-sub{margin-bottom:14px}
   .gold-rule{margin:0 auto 14px}
   .diff-btns{margin-bottom:14px}
@@ -178,8 +185,11 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
 <a href="#game-wrap" class="skip-link">Skip to main content</a>
 
 
-<a href="/arcade.html" id="back" data-native-nav>← Games</a>
-<button id="lb-btn-hud" onclick="openLB('memory-vault-'+DIFF,'Memory Vault — '+(DIFF==='hard'?'Hard':'Easy'),true)">✦ Cosmic Scrolls</button>
+<div id="game-header">
+  <a href="/arcade.html" id="back" data-native-nav>← Games</a>
+  <div id="game-title"><span class="gt-line">Memory</span><span class="gt-line">Vault</span><span class="title-symbol">✦</span></div>
+  <button id="lb-btn-hud" onclick="openLB('memory-vault-'+DIFF,'Memory Vault — '+(DIFF==='hard'?'Hard':'Easy'),true)">✦ Cosmic Scrolls</button>
+</div>
 
 <div class="game-wrap">
   <h1 class="game-title">Memory Vault</h1>
@@ -534,7 +544,7 @@ window.submitScore=function(game,score,lowerBetter,cb,extra){
 <script>window.addEventListener('pagehide',function(){clearInterval(ticker);clearTimeout(hintTimer);});</script><script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 
 
-<!-- mobile-audit-fixes --><style>@media(max-width:768px){.game-wrap{padding:60px 12px 40px;overflow-x:hidden}.card-grid,.memory-grid{grid-template-columns:repeat(4,1fr)!important;gap:6px!important}.mem-card{min-height:56px}.game-stats,.status-bar{font-size:0.75rem;flex-wrap:wrap;gap:6px}.game-btn,.gbtn{min-height:44px;width:100%;font-size:0.8rem}}</style>
+<!-- mobile-audit-fixes --><style>@media(max-width:768px){.game-wrap{padding:12px 12px 40px;overflow-x:hidden}.card-grid,.memory-grid{grid-template-columns:repeat(4,1fr)!important;gap:6px!important}.mem-card{min-height:56px}.game-stats,.status-bar{font-size:0.75rem;flex-wrap:wrap;gap:6px}.game-btn,.gbtn{min-height:44px;width:100%;font-size:0.8rem}}</style>
 
 <style>@media(max-width:768px){body{min-height:100vh!important;overflow-x:hidden!important}}</style>
 <style>@media(max-width:768px){body{background-attachment:scroll!important}}</style>
