@@ -1214,8 +1214,13 @@ function closeModal() {
 
 cancelBtn.addEventListener('click', closeModal);
 
+var _mouseDownOnBackdrop = false;
+modal.addEventListener('mousedown', function (e) {
+  _mouseDownOnBackdrop = (e.target === modal);
+});
 modal.addEventListener('click', function (e) {
-  if (e.target === modal) closeModal();
+  if (e.target === modal && _mouseDownOnBackdrop) closeModal();
+  _mouseDownOnBackdrop = false;
 });
 
 document.addEventListener('keydown', function (e) {
