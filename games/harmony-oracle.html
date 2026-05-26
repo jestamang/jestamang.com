@@ -1207,7 +1207,7 @@ function showGame(){
     } else {
       t.classList.add('locked');
       var labels = {2:'II<span class="tab-dash"> — </span> Tonality',3:'III<span class="tab-dash"> — </span> Progressions',4:'IV<span class="tab-dash"> — </span> Analysis'};
-      t.innerHTML = '<span class="tab-lock">🔒</span><span class="tab-label">'+(labels[lvl]||('Level '+lvl))+'</span>';
+      t.innerHTML = '<span class="tab-label">'+(labels[lvl]||('Level '+lvl))+'</span>';
     }
   });
   updateProgress();
