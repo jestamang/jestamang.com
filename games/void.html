@@ -185,10 +185,10 @@ var nm=document.getElementById('lb-name-modal'),ni=document.getElementById('lb-n
 var lm=document.getElementById('lb-modal'),lc=document.getElementById('lb-modal-close');
 var hb=document.getElementById('lb-btn-hud'),ob=document.getElementById('lb-btn-over');
 var sb=document.getElementById('startBtn'),rb=document.getElementById('restartBtn');
-function doSubmit(){var n=ni?san(ni.value):'';if(!n){if(ni)ni.focus();return;}if(nm)nm.classList.remove('lb-open');saveScore(n,_score);openLB(_score);}
+function doSubmit(){var n=ni?san(ni.value):'';if(!n){if(ni)ni.focus();return;}if(nm)nm.classList.remove('lb-open');saveScore(n,_score);}
 if(ns)ns.addEventListener('click',doSubmit);
 if(ni)ni.addEventListener('keydown',function(e){if(e.key==='Enter')doSubmit();});
-if(nsk)nsk.addEventListener('click',function(){if(nm)nm.classList.remove('lb-open');openLB(0);});
+if(nsk)nsk.addEventListener('click',function(){if(nm)nm.classList.remove('lb-open');});
 if(lc)lc.addEventListener('click',function(){if(lm)lm.classList.remove('lb-open');});
 if(lm)lm.addEventListener('click',function(e){if(e.target===lm)lm.classList.remove('lb-open');});
 if(hb)hb.addEventListener('click',function(){openLB(0);});
@@ -235,7 +235,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
   <div class="score-lbl">Void Score</div>
   <div class="best-lbl" id="bestLbl"></div>
   <button class="btn" id="restartBtn">Descend Again</button>
-<button id="lb-btn-over">Cosmic Scrolls</button>
+<button id="lb-btn-over">Scrolls</button>
 </div>
 
 <script>
