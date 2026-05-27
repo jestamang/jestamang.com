@@ -68,7 +68,7 @@
 
   // ── Render logged-in nav with a display name ─────────────────
   function renderAuthNav(wrap, mobWrap, displayName) {
-    var shortName = displayName.length > 14 ? displayName.slice(0, 12) + '\u2026' : displayName;
+    var shortName = displayName.length > 20 ? displayName.slice(0, 18) + '\u2026' : displayName;
     wrap.innerHTML =
       '<div id="jtnav-auth-sep"></div>' +
       '<a class="jtnav-auth-link" href="profile.html" title="Your Dossier">' + esc(shortName) + '</a>' +
