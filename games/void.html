@@ -137,9 +137,10 @@ if(pbRow){
 }
 tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr>';
 m.classList.add('lb-open');
-window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(10).get()
+window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(50).get()
 .then(function(snap){
 var rows=[];snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp,photoURL:d.photoURL||'',uid:d.uid||''});});
+var seen={},deduped=[];for(var _i=0;_i<rows.length;_i++){var _k=rows[_i].uid||rows[_i].name;if(!_k){deduped.push(rows[_i]);continue;}if(!seen[_k]){seen[_k]=true;deduped.push(rows[_i]);}}rows=deduped.slice(0,10);
 var isTop=cur>0&&(rows.length===0||cur>rows[0].score);
 if(isTop&&bn)bn.style.display='block';
 tb.innerHTML='';

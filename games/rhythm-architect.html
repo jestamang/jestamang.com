@@ -384,9 +384,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Consulting the stars...</td></tr>';
     m.classList.add('lb-open');
     if(!window.jestaDB){var _jt=0,_jiv=setInterval(function(){if(window.jestaDB){clearInterval(_jiv);openLB(cur);}else if(++_jt>80){clearInterval(_jiv);tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Signal lost</td></tr>';}},100);return;}
-    window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(10).get()
+    window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(50).get()
     .then(function(snap){
       var rows=[];snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp,photoURL:d.photoURL||'',uid:d.uid||''});});
+      var seen={},deduped=[];for(var _i=0;_i<rows.length;_i++){var _k=rows[_i].uid||rows[_i].name;if(!_k){deduped.push(rows[_i]);continue;}if(!seen[_k]){seen[_k]=true;deduped.push(rows[_i]);}}rows=deduped.slice(0,10);
       var isTop=cur>0&&(rows.length===0||cur>rows[0].score);
       if(isTop&&bn)bn.style.display='block';
       tb.innerHTML='';

@@ -706,10 +706,11 @@ function openLB(curScore){
   tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Consulting the stars...</td></tr>';
   m.classList.add('lb-open');
   document.getElementById('lb-game-display').textContent=gameDisp();
-  db.collection('leaderboards').where('game','==',gameId()).orderBy('score','desc').limit(20).get()
+  db.collection('leaderboards').where('game','==',gameId()).orderBy('score','desc').limit(50).get()
   .then(function(snap){
     var rows=[];
     snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp,photoURL:d.photoURL||'',uid:d.uid||''});});
+    var seen={},deduped=[];for(var _i=0;_i<rows.length;_i++){var _k=rows[_i].uid||rows[_i].name;if(!_k){deduped.push(rows[_i]);continue;}if(!seen[_k]){seen[_k]=true;deduped.push(rows[_i]);}}rows=deduped.slice(0,20);
     var isTop=curScore>0&&(rows.length<20||curScore>rows[rows.length-1].score);
     if(isTop&&bn)bn.style.display='block';
     tb.innerHTML='';
