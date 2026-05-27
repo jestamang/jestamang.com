@@ -3,6 +3,11 @@
 .claude/
 .agents/
 
+# Node tooling — search-index-gen lives outside this repo, never install deps here
+node_modules/
+package.json
+package-lock.json
+
 # macOS metadata
 .DS_Store
 **/.DS_Store
