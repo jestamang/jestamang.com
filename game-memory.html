@@ -45,7 +45,7 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cov
 .diff-btn{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.55);background:none;border:1px solid rgba(201,168,76,0.3);padding:7px 18px;cursor:pointer;transition:all 0.2s;min-height:44px}
 .diff-btn.active{color:#c9a84c;border-color:#c9a84c;background:rgba(201,168,76,0.08)}
 .diff-btn:hover{border-color:rgba(201,168,76,0.6);color:#c9a84c}
-.mem-card{aspect-ratio:3/4;cursor:pointer;perspective:900px;position:relative}
+.mem-card{aspect-ratio:3/4;cursor:pointer;perspective:900px;position:relative;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent}
 .mem-card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1)}
 .mem-card.flipped .mem-card-inner,.mem-card.matched .mem-card-inner{transform:rotateY(180deg)}
 .mem-front,.mem-back{position:absolute;inset:0;backface-visibility:hidden;border:1px solid rgba(201,168,76,0.18);overflow:hidden}
@@ -65,6 +65,10 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cov
 .mem-card.mismatch-shake .mem-card-inner{animation:mismatchShake 0.35s ease-out forwards}
 /* Gold glow on matched cards (permanent) */
 .mem-card.matched{filter:drop-shadow(0 0 8px rgba(201,168,76,0.55))}
+/* Lock-state pulse — signals board is locked after mismatch */
+@keyframes memLockPulse{0%{box-shadow:0 0 0 0 rgba(201,168,76,0.55)}50%{box-shadow:0 0 0 6px rgba(201,168,76,0.18)}100%{box-shadow:0 0 0 0 rgba(201,168,76,0)}}
+.mem-card.lock-pulse{animation:memLockPulse 0.7s ease-out infinite}
+.card-grid.is-locked{cursor:wait}
 /* Flawless bonus text */
 #flawless-banner{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:800;font-family:'Luminari',serif;font-size:clamp(1.4rem,4vw,2.6rem);letter-spacing:0.35em;color:#c9a84c;text-transform:uppercase;text-align:center;text-shadow:0 0 40px rgba(201,168,76,0.9),0 0 80px rgba(201,168,76,0.4);pointer-events:none;animation:flawlessIn 0.5s ease-out forwards}
 @keyframes flawlessIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.7)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
@@ -402,10 +406,13 @@ function flip(card){
     },200);
   } else {
     mismatches++;var a=first,b=second;first=null;second=null;
+    a.classList.add('lock-pulse');b.classList.add('lock-pulse');
+    var _lg=document.getElementById('grid');if(_lg)_lg.classList.add('is-locked');
     setTimeout(function(){
       a.classList.add('mismatch-shake');b.classList.add('mismatch-shake');playMismatchSound();
       setTimeout(function(){
-        a.classList.remove('mismatch-shake','flipped');b.classList.remove('mismatch-shake','flipped');
+        a.classList.remove('mismatch-shake','flipped','lock-pulse');b.classList.remove('mismatch-shake','flipped','lock-pulse');
+        var _lg2=document.getElementById('grid');if(_lg2)_lg2.classList.remove('is-locked');
         locked=false;
       },450);
     },800);
