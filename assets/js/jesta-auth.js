@@ -15,8 +15,8 @@
     '.jtnav-auth-star{font-size:0.8rem;color:rgba(201,168,76,0.55);text-decoration:none;padding:0 6px;line-height:52px;transition:color 0.2s}',
     '.jtnav-auth-star:hover{color:#c9a84c}',
     '.hp-footer a:link{color:#c9a84c!important;text-decoration:none!important}',
-    '@media(max-width:768px){footer.hp-footer{flex-direction:row!important;flex-wrap:wrap!important;justify-content:center!important;align-items:center!important;align-content:flex-start!important;row-gap:6px!important;white-space:normal!important;padding:8px 16px 12px!important}}',
-    '@media(max-width:768px){footer.hp-footer a{flex-basis:100%!important;text-align:center!important;line-height:1.2!important;padding:6px 0!important}}',
+    '@media(max-width:768px){footer.hp-footer{flex-direction:row!important;flex-wrap:wrap!important;justify-content:center!important;align-items:center!important;align-content:flex-start!important;row-gap:6px!important;white-space:normal!important;padding:8px 16px 12px!important;line-height:1.2!important}}',
+    '@media(max-width:768px){footer.hp-footer a{flex-basis:100%!important;text-align:center!important;line-height:1.2!important;padding:0!important;margin:0!important;height:auto!important;min-height:0!important;display:inline-block!important;box-sizing:border-box!important}}',
     '@media(max-width:768px){footer.hp-footer .hp-footer-mark{display:none!important}}',
     /* On mobile: hide the desktop auth div, show only the right mob-login link */
     '@media(max-width:767px){#jtnav-auth{display:none!important}}',
