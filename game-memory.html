@@ -425,8 +425,10 @@ function win(){
   var bestEl=document.getElementById('win-best-txt');if(bestEl)bestEl.textContent=bestTxt;
   if(mismatches===0){
     showFlawless();playLevelCompleteSound();submitScore('memory-vault-'+DIFF,moves,true,null,{flawless:true});
+    try{var _pbk='lbBest_memory-vault-'+DIFF;var _prev=JSON.parse(localStorage.getItem(_pbk)||'null');if(!_prev||moves<_prev.score){localStorage.setItem(_pbk,JSON.stringify({score:moves}));}}catch(e){}
   } else {
     playLevelCompleteSound();document.getElementById('win-overlay').classList.add('show');submitScore('memory-vault-'+DIFF,moves,true,null,{flawless:false});
+    try{var _pbk='lbBest_memory-vault-'+DIFF;var _prev=JSON.parse(localStorage.getItem(_pbk)||'null');if(!_prev||moves<_prev.score){localStorage.setItem(_pbk,JSON.stringify({score:moves}));}}catch(e){}
   }
 }
 

@@ -273,7 +273,7 @@ h1{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0
 /* ── GAME DATA ── */
 var GAMES = [
   {name:'The Daily Sigil', desc:'One draw. One reading. The cosmos speaks — if you are willing to listen.',tag:'DIVINATION',  glyph:'☀︎',     href:'game-oracle.html',              lb:null,               lowerBetter:false},
-  {name:'Memory Vault',    desc:'Flip the cards. Match the albums. Eight pairs stand between you and the vault.',tag:'MEMORY',    glyph:'꩜',      href:'game-memory.html',              lb:'memory-vault',     lowerBetter:true},
+  {name:'Memory Vault',    desc:'Flip the cards. Match the albums. Eight pairs stand between you and the vault.',tag:'MEMORY',    glyph:'꩜',      href:'game-memory.html',              lb:'memory-vault-easy',lowerBetter:true},
   {name:'Chord Conjurer',  desc:'Build chords from sacred intervals. Learn the architecture of harmony.',tag:'THEORY',          glyph:'<span class="glyph-clef">𝄞</span>',href:'games/chord-conjurer.html',lb:'chordConjurer',lowerBetter:false},
   {name:'Harmony Oracle',  desc:'Identify consonance, tonality, chord progressions, and full harmonic analysis. Four levels of harmonic depth.',tag:'THEORY', glyph:'<span class="glyph-natural">♮</span>', href:'games/harmony-oracle.html', lb:'harmonyOracle', lowerBetter:false},
   {name:'Rhythm Architect',desc:'Decode the pulse. Reconstruct the pattern. Master the beat.',     tag:'RHYTHM',      glyph:'♬',      href:'games/rhythm-architect.html',   lb:'rhythmArchitect',  lowerBetter:false},
@@ -335,7 +335,7 @@ window.openLB=function(game,title,lowerBetter){
       pbEl.innerHTML='<div style="text-align:center;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.55);font-style:italic;font-size:0.62rem;letter-spacing:0.05em;">No personal best yet \u2014 play to set one</div>';
     }
   }
-  db.collection('leaderboards').where('game','==',game).orderBy('score','desc').limit(50).get()
+  db.collection('leaderboards').where('game','==',game).orderBy('score',lowerBetter?'asc':'desc').limit(50).get()
     .then(function(snap){
       if(snap.empty){list.innerHTML='<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;}
       var docs=snap.docs.map(function(d){return d.data();});
