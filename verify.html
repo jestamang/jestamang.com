@@ -599,33 +599,12 @@ document.addEventListener('DOMContentLoaded', function(){
 <div id="jsearch-results"><div class="jsearch-hint">ENTER A NAME &nbsp;·&nbsp; PAGE &nbsp;·&nbsp; ALBUM &nbsp;·&nbsp; ENTITY</div></div>
 </div>
 </div>
+<script src="assets/js/jesta-search-index.js"></script>
 <script>(function(){
-var IDX=[
-{n:'Home',u:'/index.html',c:'Page',i:'&#8962;',t:'homepage start jestamang main'},
-{n:'Entities',u:'/entities.html',c:'Page',i:'&#10022;',t:'characters cartoons children cosmos'},
-{n:'Albums',u:'/albums.html',c:'Page',i:'&#10696;',t:'music releases discography records'},
-{n:'Lyrics',u:'/lyrics.html',c:'Page',i:'&#9789;',t:'words songs text poetry'},
-{n:'Merch',u:'/merch.html',c:'Page',i:'&#9673;',t:'shop buy store clothing'},
-{n:'Photos',u:'/photos.html',c:'Page',i:'&#9678;',t:'images gallery visual photography'},
-{n:'Videos',u:'/videos.html',c:'Page',i:'&#9655;',t:'film visual youtube watch'},
-{n:'Shows',u:'/shows.html',c:'Page',i:'&#10022;',t:'events live tour concerts appearances'},
-{n:'Blog',u:'/blog.html',c:'Page',i:'&#9671;',t:'posts writing press news'},
-{n:'Comix',u:'/comix.html',c:'Page',i:'&#10696;',t:'comics art illustration graphic'},
-{n:'Games',u:'/arcade.html',c:'Page',i:'&#9673;',t:'play interactive arcade'},
-{n:'Email',u:'/email.html',c:'Page',i:'&#9993;',t:'contact subscribe mailing list'},
-{n:'Members',u:'/members.html',c:'Page',i:'&#10022;',t:'inner circle forum guestbook community'},
-{n:'Profile',u:'/profile.html',c:'Page',i:'&#9673;',t:'account user settings natal chart'},
-{n:'Login',u:'/login.html',c:'Page',i:'&#10022;',t:'sign in invitation access'},
-{n:'Arcade',u:'/arcade.html',c:'Page',i:'&#9673;',t:'games play interactive arcade'},
-{n:'Privacy Policy',u:'/privacy.html',c:'Page',i:'&#9673;',t:'privacy policy data'},
-{n:'Accessibility',u:'/accessibility.html',c:'Page',i:'&#9673;',t:'accessibility ada compliance'},
-{n:'Terms of Service',u:'/terms.html',c:'Page',i:'&#9673;',t:'terms service legal'},
-{n:'Dossier',u:'/dossier.html',c:'Page',i:'&#9673;',t:'bio biography press kit dossier'}
-];
 window.jSearchOpen=function(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.add('jsearch-open');var btn=document.getElementById('jsearch-btn');if(btn)btn.classList.add('jsearch-active');var inp=document.getElementById('jsearch-input');if(inp){inp.value='';inp.focus();jSearchRender('');}}};
 window.jSearchClose=function(){var o=document.getElementById('jsearch-overlay');if(o){o.classList.remove('jsearch-open');var btn=document.getElementById('jsearch-btn');if(btn)btn.classList.remove('jsearch-active');}};
 function jHL(text,q){if(!q)return text.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});var safe=text.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);tokens.forEach(function(tok){var re=new RegExp('('+tok.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');safe=safe.replace(re,'<mark>$1</mark>');});return safe;}
-function jSearchRender(q){var box=document.getElementById('jsearch-results');if(!box)return;if(!q.trim()){box.innerHTML='<div class="jsearch-hint">ENTER A NAME \u00b7 PAGE \u00b7 ALBUM \u00b7 TRACK \u00b7 GAME</div>';return;}var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);var scored=[];IDX.forEach(function(e){var nl=e.n.toLowerCase();var tl=(e.t||'').toLowerCase();var score=0;tokens.forEach(function(tok){if(nl===tok)score+=100;else if(nl.startsWith(tok))score+=50;else if(nl.indexOf(tok)!==-1)score+=30;if(tl.indexOf(tok)!==-1)score+=10;});if(score>0)scored.push({e:e,s:score});});scored.sort(function(a,b){return b.s-a.s;});scored=scored.slice(0,10);if(!scored.length){box.innerHTML='<div class="jsearch-empty">NO TRANSMISSIONS FOUND</div>';return;}var html='';scored.forEach(function(r){var e=r.e;html+='<a class="jsearch-item" href="'+e.u+'" onclick="jSearchClose()"><span class="jsearch-item-icon">'+e.i+'</span><span class="jsearch-item-name">'+jHL(e.n,q)+'</span><span class="jsearch-item-cat">'+e.c+'</span></a>';});box.innerHTML=html;}
+function jSearchRender(q){var box=document.getElementById('jsearch-results');if(!box)return;if(!q.trim()){box.innerHTML='<div class="jsearch-hint">ENTER A NAME · PAGE · ALBUM · TRACK · GAME</div>';return;}var tokens=q.trim().toLowerCase().split(/\s+/).filter(Boolean);var scored=[];IDX.forEach(function(e){var nl=e.n.toLowerCase();var tl=(e.t||'').toLowerCase();var score=0;tokens.forEach(function(tok){if(nl===tok)score+=100;else if(nl.startsWith(tok))score+=50;else if(nl.indexOf(tok)!==-1)score+=30;if(tl.indexOf(tok)!==-1)score+=10;});if(score>0)scored.push({e:e,s:score});});scored.sort(function(a,b){return b.s-a.s;});scored=scored.slice(0,10);if(!scored.length){box.innerHTML='<div class="jsearch-empty">NO TRANSMISSIONS FOUND</div>';return;}var html='';scored.forEach(function(r){var e=r.e;html+='<a class="jsearch-item" href="'+e.u+'" onclick="jSearchClose()"><span class="jsearch-item-icon">'+e.i+'</span><span class="jsearch-item-name">'+jHL(e.n,q)+'</span><span class="jsearch-item-cat">'+e.c+'</span></a>';});box.innerHTML=html;}
 document.addEventListener('DOMContentLoaded',function(){var inp=document.getElementById('jsearch-input');var closeBtn=document.getElementById('jsearch-close');if(inp)inp.addEventListener('input',function(){jSearchRender(this.value);});if(closeBtn)closeBtn.addEventListener('click',jSearchClose);document.addEventListener('click',function(e){var o=document.getElementById('jsearch-overlay');if(!o||!o.classList.contains('jsearch-open'))return;var btn=document.getElementById('jsearch-btn');var fbtn=document.querySelector('.jsearch-float-btn');if(o.contains(e.target))return;if(btn&&btn.contains(e.target))return;if(fbtn&&fbtn.contains(e.target))return;jSearchClose();});document.addEventListener('keydown',function(e){if(e.key==='Escape')jSearchClose();if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();jSearchOpen();}});});
 })();</script>
 
