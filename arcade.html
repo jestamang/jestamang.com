@@ -335,10 +335,11 @@ window.openLB=function(game,title,lowerBetter){
       pbEl.innerHTML='<div style="text-align:center;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.55);font-style:italic;font-size:0.62rem;letter-spacing:0.05em;">No personal best yet \u2014 play to set one</div>';
     }
   }
-  db.collection('leaderboards').where('game','==',game).orderBy('score','desc').limit(10).get()
+  db.collection('leaderboards').where('game','==',game).orderBy('score','desc').limit(50).get()
     .then(function(snap){
       if(snap.empty){list.innerHTML='<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;}
       var docs=snap.docs.map(function(d){return d.data();});
+      var seen={},deduped=[];for(var _i=0;_i<docs.length;_i++){var _k=docs[_i].uid||docs[_i].name;if(!_k){deduped.push(docs[_i]);continue;}if(!seen[_k]){seen[_k]=true;deduped.push(docs[_i]);}}docs=deduped.slice(0,10);
       var html='<div class="lb-row lb-head-row"><span class="lb-rank">Rank</span><span class="lb-name">Name</span><span class="lb-score">Score</span><span class="lb-date">Date</span></div>';
       docs.forEach(function(d,i){
         var rankDisp=i===0?'<span style="color:#c9a84c;font-size:1rem">'+JestaLeaderboard.SCROLL_RANK1_MARKER+'</span>':(i+1);
