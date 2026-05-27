@@ -1129,7 +1129,7 @@ document.addEventListener('DOMContentLoaded', function() {
         '<div class="ltn-note-name">' + note + '</div>' +
         '<div class="ltn-freq">' + freq.toFixed(1) + ' Hz</div>' +
         '<div class="ltn-desc">' + (info.desc || '') + '</div>' +
-        '<button class="ltn-hear-btn">&#9654; Hear</button>';
+        '<button class="ltn-hear-btn">&#9654;&#xFE0E; Hear</button>';
       var hearBtn = card.querySelector('.ltn-hear-btn');
       hearBtn.addEventListener('click', function() {
         getAC();
