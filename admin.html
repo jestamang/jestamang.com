@@ -2719,6 +2719,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var statusEl  = document.getElementById('aa-status');
     var checks    = document.getElementById('aa-checks');
 
+    // Fix 1: normalize catalog casing to match albums.html section names
+    var CATALOG_NORM = {'QUARTER DAYS':'Quarter Days','2K2123':'2K2123','2K2323':'2K2323','NONS':'NONS'};
+
     function updateTemplate() {
       var a = artistEl.value.trim() || '[ARTIST]';
       var t = titleEl.value.trim()  || '[ALBUM TITLE]';
@@ -2738,7 +2741,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     btn.addEventListener('click', function () {
       var a  = artistEl.value.trim();
       var t  = titleEl.value.trim();
-      var c  = document.getElementById('aa-catalog').value;
+      var rawCat = document.getElementById('aa-catalog').value;
+      var c  = CATALOG_NORM[rawCat] || rawCat;
       var yr = document.getElementById('aa-year').value;
       var g  = document.getElementById('aa-genre').value.trim();
       var cv = document.getElementById('aa-cover').value.trim();
@@ -2763,28 +2767,41 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
       var ts = firebase.firestore.FieldValue.serverTimestamp();
 
-      db.collection('releases').add({
-        catalog: c, artist: a, albumTitle: t,
-        year: yr ? parseInt(yr) : null,
-        genre: g, coverUrl: cv,
-        tracks: [{ title: t, spotify: sp, youtube: yt, bandcamp: bc, appleMusic: ap }],
-        published: true, timestamp: ts
+      // Fix 2: duplicate-entry check before first add()
+      db.collection('releases')
+        .where('artist','==',a)
+        .where('albumTitle','==',t)
+        .limit(1).get()
+      .then(function(dupSnap) {
+        if (!dupSnap.empty) {
+          throw new Error('An album by this artist with this title already exists in releases. Use the Albums admin section to edit it instead.');
+        }
+        // Step 1: releases  — Fix 3: per-step error label
+        return db.collection('releases').add({
+          catalog: c, artist: a, albumTitle: t,
+          year: yr ? parseInt(yr) : null,
+          genre: g, coverUrl: cv,
+          tracks: [{ title: t, spotify: sp, youtube: yt, bandcamp: bc, appleMusic: ap }],
+          published: true, timestamp: ts
+        }).catch(function(e){ throw new Error('STEP_RELEASES: ' + e.message); });
       }).then(function () {
         setCheck('aa-check-release', true);
+        // Step 2: blogPosts
         return db.collection('blogPosts').add({
           title: a + ' \u2014 ' + t + ' OUT NOW',
           content: tx, excerpt: tx.slice(0, 150),
           category: 'NEW MUSIC', authorRole: 'admin',
           published: true, timestamp: ts
-        });
+        }).catch(function(e){ throw new Error('STEP_BLOG: ' + e.message); });
       }).then(function () {
         setCheck('aa-check-blog', true);
+        // Step 3: notifications (gated by checkbox)
         if (!doNotify) { setCheck('aa-check-notif', true); return Promise.resolve(); }
         return db.collection('notifications').add({
           title: 'NEW RELEASE',
           body: a + ' \u2014 ' + t + ' available now',
           link: 'albums.html', timestamp: ts, seen: []
-        });
+        }).catch(function(e){ throw new Error('STEP_NOTIF: ' + e.message); });
       }).then(function () {
         setCheck('aa-check-notif', true);
         statusEl.textContent = 'RELEASE ANNOUNCED \u2726';
@@ -2795,7 +2812,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         });
         updateTemplate();
       }).catch(function (e) {
-        statusEl.textContent = 'Error: ' + e.message;
+        var m = e.message.match(/^STEP_(\w+): (.+)$/);
+        if (m) {
+          statusEl.textContent = 'Failed at ' + m[1] + ' step: ' + m[2] + '. Previous steps may have committed \u2014 check Firestore before retrying.';
+        } else {
+          statusEl.textContent = 'Error: ' + e.message;
+        }
         statusEl.className = 'status-msg status-err';
         btn.disabled = false;
       });
