@@ -976,10 +976,18 @@ function renderMerchCards(docs) {
     var priceStr = d.price !== undefined ? 'Offering: $' + d.price : '';
     var card = document.createElement('div');
     card.className = 'product-card';
+    var _imgHtml = (d.name === 'Quarter Days Cassette Bundle')
+      ? '<div class="bundle-collage">' +
+          '<img src="assets/merch/zodiac-cassette.png" alt="Zodiac" loading="lazy" width="710" height="458">' +
+          '<img src="assets/merch/new-aeon-cassette.png" alt="New Aeon" loading="lazy" width="703" height="443">' +
+          '<img src="assets/merch/niga-denots-cassette.png" alt="Niga Denots" loading="lazy" width="817" height="506">' +
+          '<img src="assets/merch/jestress-melody-cassette.png" alt="Jestress Melody" loading="lazy" width="700" height="446">' +
+        '</div>'
+      : '<div class="product-image-wrap">' +
+          '<img src="' + _mEsc(d.imageUrl || '') + '" alt="' + _mEsc(d.name || '') + '" loading="lazy" width="400" height="400">' +
+        '</div>';
     card.innerHTML =
-      '<div class="product-image-wrap">' +
-        '<img src="' + _mEsc(d.imageUrl || '') + '" alt="' + _mEsc(d.name || '') + '" loading="lazy" width="400" height="400">' +
-      '</div>' +
+      _imgHtml +
       '<div class="merch-card-content">' +
         '<div class="product-name">' + _mEsc(d.name || '') + '</div>' +
         (d.subtitle ? '<div class="product-subtitle">' + _mEsc(d.subtitle) + '</div>' : '') +
@@ -1020,146 +1028,22 @@ function initReadMore() {
   });
 }
 
-// FALLBACK: pre-Firestore products — Update products via admin.html
 var _mFallback = [
-  {
-    title: 'Quarter Days Cassette Bundle',
-    subtitle: 'The Complete 2025 Cycle · Four Seasons on Tape',
-    image: 'assets/merch/Bundle.jpg',
-    desc: 'The complete Quarter Days 2025 cycle on tape. Four seasons, four cassettes — Zodiac, New Aeon, Niga Denots, and Jestress Melody.',
-    tagline: 'Four cassettes · Four seasons · Hand-labored · J-Card included',
-    price: 'Offering: $85',
-    gumroadUrl: 'https://jestamang.gumroad.com/l/quarter-days-bundle'
-  },
-  {
-    title: 'Zodiac Cassette',
-    subtitle: 'Quarter Days · Spring Equinox 2025',
-    image: 'assets/merch/zodiac-cassette.png',
-    desc: 'The Spring Equinox 2025 transmission. 12 tracks, one for each sign of the zodiac, channeled through Children.',
-    tagline: '12 tracks · 25 copies · Hand-labored · J-Card included',
-    price: 'Offering: $25',
-    gumroadUrl: 'https://jestamang.gumroad.com/l/zodiac-cassette'
-  },
-  {
-    title: 'New Aeon Cassette',
-    subtitle: 'Quarter Days · Summer Solstice 2025',
-    image: 'assets/merch/new-aeon-cassette.png',
-    desc: 'The Summer Solstice 2025 transmission from Kek-Buh. 11 tracks tracing a passage from awoken orb to the dawn of a new aeon.',
-    tagline: '11 tracks · 25 copies · Hand-labored · J-Card included',
-    price: 'Offering: $25',
-    gumroadUrl: 'https://jestamang.gumroad.com/l/new-aeon-cassette'
-  },
-  {
-    title: 'Niga Denots Cassette',
-    subtitle: 'Quarter Days · Fall Equinox 2025',
-    image: 'assets/merch/niga-denots-cassette.png',
-    desc: 'The Fall Equinox 2025 transmission from The Ace of Chase. 9 tracks of psychedelic Americana threaded through dream-logic.',
-    tagline: '9 tracks · 25 copies · Hand-labored · J-Card included',
-    price: 'Offering: $25',
-    gumroadUrl: 'https://jestamang.gumroad.com/l/niga-denots-cassette'
-  },
-  {
-    title: 'Jestress Melody Cassette',
-    subtitle: 'Quarter Days · Winter Solstice 2025',
-    image: 'assets/merch/jestress-melody-cassette.png',
-    desc: 'The Winter Solstice 2025 transmission from Cricket Om. 14 tracks spanning awkward birds, wired minds, plagues, quests, and the river bed beneath everything.',
-    tagline: '14 tracks · 25 copies · Hand-labored · J-Card included',
-    price: 'Offering: $25',
-    gumroadUrl: 'https://jestamang.gumroad.com/l/jestress-melody-cassette'
-  },
-  {
-    title: 'Jestamang T-Shirt',
-    subtitle: 'Wear the Mythology',
-    image: 'assets/merch/t shirt.png',
-    desc: 'The Jestamang image on your body. For those who want to carry the mythology into the world wherever they go.',
-    tagline: 'Quality print · Available in multiple sizes · Ships within 7 days',
-    price: 'Offering: $30',
-    gumroadUrl: 'https://jestamang.gumroad.com/l/t-shirt'
-  },
-  {
-    title: 'Jestamang Comix',
-    subtitle: 'The Original Publication',
-    image: 'assets/merch/comix.png',
-    desc: 'The Jestamang story in sequential art. Sixteen pages of original illustration, printed and bound by hand.',
-    tagline: '16 pages · Original artwork · Hand assembled',
-    price: 'Offering: $30',
-    gumroadUrl: 'https://jestamang.gumroad.com/l/comix'
-  },
-  {
-    title: 'Polyphonies',
-    subtitle: 'The Jestamang Text',
-    image: 'assets/merch/polyphonies.jpeg',
-    desc: 'The written document of the Jestamang mythology. Polyphonies is the text that exists alongside the music — a companion to the catalog, a record of the cosmology, a book that rewards those who read it slowly.',
-    tagline: 'Sacred text · Limited print run · Companion to the catalog',
-    price: 'Offering: $30',
-    gumroadUrl: 'https://jestamang.gumroad.com/l/polyphonies'
-  },
-  {
-    title: 'The Jestamang Puzzle',
-    subtitle: 'Original Artwork',
-    image: 'assets/merch/puzzle.png',
-    desc: 'An original Jestamang image rendered as a puzzle. The act of assembly is the point — the mythology reveals itself one piece at a time.',
-    tagline: 'Original artwork · High quality print · Ships assembled in box',
-    price: 'Offering: $40',
-    gumroadUrl: 'https://jestamang.gumroad.com/l/puzzle'
-  },
-  {
-    title: 'The Jestamang Card Deck',
-    subtitle: '52 Unique Cards',
-    image: 'assets/merch/cards.png',
-    desc: 'Fifty-two original illustrations drawn from the Jestamang universe. Each card is its own artifact — an entity, a symbol, a moment from the mythology rendered in ink.',
-    tagline: '52 unique illustrations · Standard deck size · Limited availability',
-    price: 'Offering: $40',
-    gumroadUrl: 'https://jestamang.gumroad.com/l/cards'
-  }
+  { name:'Quarter Days Cassette Bundle', description:'The complete Quarter Days 2025 cycle on tape. Four seasons, four cassettes — Zodiac, New Aeon, Niga Denots, and Jestress Melody.',                                                                                                                                                                                                                                                                   subtitle:'The Complete 2025 Cycle · Four Seasons on Tape',        tagline:'Four cassettes · Four seasons · Hand-labored · J-Card included',  price:85,  gumroadUrl:'https://jestamang.gumroad.com/l/quarter-days-bundle',      imageUrl:'assets/merch/zodiac-cassette.png',           active:true },
+  { name:'Zodiac Cassette',              description:'The Spring Equinox 2025 transmission. 12 tracks, one for each sign of the zodiac, channeled through Children. Psychedelic, ceremonial, and mapped to the wheel of the year. Hand-labored cassette. 25 copies available. Plays in any standard deck. Includes original cover art and a 5 panel J-Card.',                                                                                            subtitle:'Quarter Days · Spring Equinox 2025',                     tagline:'12 tracks · 25 copies · Hand-labored · J-Card included',        price:25,  gumroadUrl:'https://jestamang.gumroad.com/l/zodiac-cassette',            imageUrl:'assets/merch/zodiac-cassette.png',           active:true },
+  { name:'New Aeon Cassette',            description:'The Summer Solstice 2025 transmission from Kek-Buh. Ritual, prophecy, descent, and rebirth. 11 tracks tracing a passage from awoken orb to the dawn of a new aeon. Released on the longest day of the year. Hand-labored cassette. 25 copies available. Plays in any standard deck. Includes original cover art and a 5 panel J-Card.',                                                           subtitle:'Quarter Days · Summer Solstice 2025',                    tagline:'11 tracks · 25 copies · Hand-labored · J-Card included',        price:25,  gumroadUrl:'https://jestamang.gumroad.com/l/new-aeon-cassette',          imageUrl:'assets/merch/new-aeon-cassette.png',         active:true },
+  { name:'Niga Denots Cassette',         description:'The Fall Equinox 2025 transmission from The Ace of Chase. 9 tracks of psychedelic Americana threaded through dream-logic. Witch pits, war on hills, cyborgs, aliens. The autumn turn of the Jestamang calendar. Hand-labored cassette. 25 copies available. Plays in any standard deck. Includes original cover art and a 5 panel J-Card.',                                                       subtitle:'Quarter Days · Fall Equinox 2025',                       tagline:'9 tracks · 25 copies · Hand-labored · J-Card included',         price:25,  gumroadUrl:'https://jestamang.gumroad.com/l/niga-denots-cassette',       imageUrl:'assets/merch/niga-denots-cassette.png',      active:true },
+  { name:'Jestress Melody Cassette',     description:'The Winter Solstice 2025 transmission from Cricket Om. 14 tracks spanning awkward birds, wired minds, plagues, quests, and the river bed beneath everything. The longest night of the year, pressed onto tape. Hand-labored cassette. 25 copies available. Plays in any standard deck. Includes original cover art and a 5 panel J-Card.',                                                       subtitle:'Quarter Days · Winter Solstice 2025',                    tagline:'14 tracks · 25 copies · Hand-labored · J-Card included',        price:25,  gumroadUrl:'https://jestamang.gumroad.com/l/jestress-melody-cassette',   imageUrl:'assets/merch/jestress-melody-cassette.png', active:true },
+  { name:'Jestamang T-Shirt',            description:'The Jestamang image on your body. Printed on a quality shirt. For those who want to carry the mythology into the world wherever they go.',                                                                                                                                                                                                                                                         subtitle:'Wear the Mythology',                                         tagline:'Quality print · Available in multiple sizes · Ships within 7 days',  price:30,  gumroadUrl:'https://jestamang.gumroad.com/l/t-shirt',                    imageUrl:'assets/merch/t shirt.png',                  active:true },
+  { name:'Jestamang Comix',              description:'The Jestamang story in sequential art. Sixteen pages of original illustration telling the mythology in a form that predates the digital world. Printed and bound by hand. This is where the story lives when it is not music.',                                                                                                                                                                    subtitle:'The Original Publication',                                   tagline:'16 pages · Original artwork · Hand assembled',                        price:30,  gumroadUrl:'https://jestamang.gumroad.com/l/comix',                      imageUrl:'assets/merch/comix.png',                    active:true },
+  { name:'Polyphonies',                  description:'The written document of the Jestamang mythology. Polyphonies is the text that exists alongside the music — a companion to the catalog, a record of the cosmology, a book that rewards those who read it slowly.',                                                                                                                                                                             subtitle:'The Jestamang Text',                                         tagline:'Sacred text · Limited print run · Companion to the catalog',          price:30,  gumroadUrl:'https://jestamang.gumroad.com/l/polyphonies',                imageUrl:'assets/merch/polyphonies.jpeg',             active:true },
+  { name:'The Jestamang Puzzle',         description:'An original Jestamang image rendered as a puzzle. The act of assembly is the point — the mythology reveals itself one piece at a time. Take your time with this one.',                                                                                                                                                                                                                        subtitle:'Original Artwork',                                           tagline:'Original artwork · High quality print · Ships assembled in box',      price:40,  gumroadUrl:'https://jestamang.gumroad.com/l/puzzle',                     imageUrl:'assets/merch/puzzle.png',                   active:true },
+  { name:'The Jestamang Card Deck',      description:'Fifty-two original illustrations drawn from the Jestamang universe. Each card is its own artifact — an entity, a symbol, a moment from the mythology rendered in ink. No two cards are the same. No reprints are planned. This deck will not exist forever.',                                                                                                                                  subtitle:'52 Unique Cards',                                            tagline:'52 unique illustrations · Standard deck size · Limited availability',  price:40,  gumroadUrl:'https://jestamang.gumroad.com/l/cards',                      imageUrl:'assets/merch/cards.png',                    active:true }
 ];
-
-function showFallback() {
-  _mGrid.innerHTML = '';
-  _mFallback.forEach(function(p) {
-    var card = document.createElement('div');
-    card.className = 'product-card';
-    var imageHtml;
-    if (p.title === 'Quarter Days Cassette Bundle') {
-      imageHtml =
-        '<div class="bundle-collage">' +
-          '<img src="assets/merch/zodiac-cassette.png" alt="Zodiac" loading="lazy" width="710" height="458">' +
-          '<img src="assets/merch/new-aeon-cassette.png" alt="New Aeon" loading="lazy" width="703" height="443">' +
-          '<img src="assets/merch/niga-denots-cassette.png" alt="Niga Denots" loading="lazy" width="817" height="506">' +
-          '<img src="assets/merch/jestress-melody-cassette.png" alt="Jestress Melody" loading="lazy" width="700" height="446">' +
-        '</div>';
-    } else {
-      imageHtml =
-        '<div class="product-image-wrap">' +
-          '<img src="' + p.image + '" alt="' + p.title + '" loading="lazy" width="400" height="400">' +
-        '</div>';
-    }
-    card.innerHTML =
-      imageHtml +
-      '<div class="merch-card-content">' +
-        '<div class="product-name">' + p.title + '</div>' +
-        '<div class="product-subtitle">' + p.subtitle + '</div>' +
-        '<div class="product-price">' + p.price + '</div>' +
-        '<div class="product-desc">' + p.desc + '</div>' +
-        '<div class="product-tagline">' + p.tagline + '</div>' +
-        '<div class="btn-container">' +
-          '<a class="acquire-btn" href="' + p.gumroadUrl + '" target="_blank" rel="noopener noreferrer">Acquire This Artifact</a>' +
-          '<button class="ask-link" data-product="' + p.title + '">Ask a Question</button>' +
-        '</div>' +
-      '</div>';
-    var _askLink = card.querySelector('.ask-link');
-    if (_askLink) _askLink.addEventListener('click', function() {
-      openModal(this.getAttribute('data-product'));
-    });
-    _mGrid.appendChild(card);
-  });
-}
-
 // Render fallback immediately — no loading state
-showFallback();
-requestAnimationFrame(initReadMore);
+renderMerchCards(_mFallback.map(function(p){return{id:null,data:p};}));
 
-// Silently swap with Firestore data if it differs from fallback
+// Silently swap with Firestore data when available
 var _jt = 0, _jiv = setInterval(function() {
   if (window.jestaDB) {
     clearInterval(_jiv);
@@ -1171,18 +1055,11 @@ var _jt = 0, _jiv = setInterval(function() {
           var d = doc.data();
           if (d.active !== false) docs.push({ id: doc.id, data: d });
         });
-        if (docs.length === 0) { return; }
-        // If Firestore matches fallback (same count + same names in order), do nothing
-        var matches = docs.length === _mFallback.length && docs.every(function(doc, i) {
-          return (doc.data.name || '') === (_mFallback[i].title || '');
-        });
-        if (matches) { return; }
-        renderMerchCards(docs);
+        if (docs.length > 0) { renderMerchCards(docs); }
       })
-      .catch(function() { /* fallback already shown */ });
+      .catch(function() {});
   } else if (++_jt > 80) {
     clearInterval(_jiv);
-    // fallback already shown, nothing to do
   }
 }, 100);
 </script>
