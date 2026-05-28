@@ -151,7 +151,7 @@ var cls=i===0?'lb-r1':i<3?'lb-r23':'';
 if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
 tr.className=cls;
 var cr=i===0?'<span style="margin-right:5px">✦</span>':'';
-tr.innerHTML='<td>'+(i+1)+'</td><td>'+JestaLeaderboard.scrollAvatar(r)+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
+tr.innerHTML='<td>'+(i+1)+'</td><td>'+JestaLeaderboard.scrollAvatar(r)+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?JestaLeaderboard.formatScrollDate(r.ts):'—')+'</td>';
 tb.appendChild(tr);
 });
 JestaLeaderboard.lbFetchMissingAvatars(tb);
@@ -196,7 +196,7 @@ if(hb)hb.addEventListener('click',function(){openLB(0);});
 if(ob)ob.addEventListener('click',function(){openLB(_score);});
 if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_score=0;_docId=null;});
 });
-})('void','THE VOID',false);</script>
+})('void','THE VOID',true);</script>
 <!-- Cloudflare Web Analytics -->
 <!-- End Cloudflare Web Analytics -->
 <style>

@@ -260,7 +260,7 @@ var cls=i===0?'lb-r1':i<3?'lb-r23':'';
 if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
 tr.className=cls;
 var cr=i===0?'<span style="margin-right:5px">\u2726</span>':'';
-tr.innerHTML='<td>'+(i+1)+'</td><td>'+JestaLeaderboard.scrollAvatar(r)+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?fmtD(r.ts):'—')+'</td>';
+tr.innerHTML='<td>'+(i+1)+'</td><td>'+JestaLeaderboard.scrollAvatar(r)+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?JestaLeaderboard.formatScrollDate(r.ts):'—')+'</td>';
 tb.appendChild(tr);
 });
 JestaLeaderboard.lbFetchMissingAvatars(tb);
