@@ -197,7 +197,7 @@
   }
 
   function getBadgeStyle(type) {
-    var base = 'position:absolute;bottom:4px;top:auto;left:50%;transform:translateX(-50%);border-radius:10px;'
+    var base = 'position:absolute;bottom:4px;top:auto;left:42%;transform:translateX(-50%);border-radius:10px;'
       + 'font-family:Georgia,serif;font-size:9px;letter-spacing:1px;'
       + 'padding:2px 5px;z-index:999;line-height:1;pointer-events:none;';
     if (type === 'dot') return base
