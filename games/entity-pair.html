@@ -135,14 +135,14 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
 #lb-table{width:100%;border-collapse:collapse}
 #lb-table th{font-family:'Luminari',serif;font-size:0.52rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.35);padding:0 6px 10px;text-align:left;border-bottom:1px solid rgba(201,168,76,0.14)}
 #lb-table th:nth-child(3),#lb-table td:nth-child(3),#lb-table th:nth-child(4),#lb-table td:nth-child(4){text-align:right}
-#lb-table td{font-family:'Luminari',serif;font-size:0.78rem;letter-spacing:0.04em;color:rgba(240,230,210,0.65);padding:9px 6px;border-bottom:1px solid rgba(201,168,76,0.06)}
-.lb-r1 td{color:rgba(240,230,210,0.9)}
-.lb-r23 td{color:rgba(240,230,210,0.75)}
-.lb-cur td{color:#c9a84c}
+#lb-table td{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.05em;color:rgba(255,255,255,0.75);padding:10px 8px;border-bottom:1px solid rgba(201,168,76,0.07)}
+#lb-table td:nth-child(1){color:rgba(201,168,76,0.55);text-align:center}
+#lb-table td:nth-child(3){color:#c9a84c;letter-spacing:0.1em}
+#lb-table td:nth-child(4){color:rgba(201,168,76,0.32);font-size:0.58rem}
 .lb-loading-row td{text-align:center;color:rgba(201,168,76,0.35);font-size:0.58rem;letter-spacing:0.25em;padding:28px 0;animation:lbpulse 1.4s ease-in-out infinite}
 .lb-av{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.35);background:#111;vertical-align:middle;flex-shrink:0}
 .lb-av-init{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#c9a84c;color:#000;font-size:12px;font-family:serif;font-weight:bold;flex-shrink:0;vertical-align:middle}
-#lb-pb-row td{padding:8px 0}
+#lb-pb-row td{padding:10px 0 8px}
 
 /* ── Name Modal ── */
 #lb-name-modal{display:none;position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,0.97);align-items:center;justify-content:center;padding:16px}
@@ -698,9 +698,9 @@ function openLB(curScore){
   var pbRow=document.getElementById('lb-pb-row');
   if(pbRow){
     if(pb&&pb.score>0){
-      pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:8px 0 6px;border-bottom:1px solid rgba(201,168,76,0.12)"><span style="color:rgba(201,168,76,0.5);font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;display:block;margin-bottom:3px">Your Best</span><span style="color:#c9a84c;font-size:0.85rem">\u2605 '+fmtScore(pb.score)+'</span></td>';
+      pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.15)"><span style="color:rgba(201,168,76,0.55);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;display:block;margin-bottom:4px">Your Personal Best</span><span style="color:#c9a84c;font-size:0.9rem">\u2605 '+fmtScore(pb.score)+'</span></td>';
     } else {
-      pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:8px 0 6px;border-bottom:1px solid rgba(201,168,76,0.07);color:rgba(201,168,76,0.28);font-size:0.58rem;letter-spacing:0.06em;font-style:italic">No personal best yet</td>';
+      pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-size:0.62rem;letter-spacing:0.06em;font-style:italic">No personal best yet — play to set one</td>';
     }
   }
   tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Consulting the stars...</td></tr>';
@@ -720,8 +720,7 @@ function openLB(curScore){
       var cls=i===0?'lb-r1':i<3?'lb-r23':'';
       if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
       tr.className=cls;
-      var cr=i===0?'<span style="margin-right:4px">'+JestaLeaderboard.SCROLL_RANK1_MARKER+'</span>':'';
-      tr.innerHTML='<td>'+(i+1)+'</td><td style="display:flex;align-items:center;gap:6px">'+JestaLeaderboard.scrollAvatar(r)+cr+esc(r.name||'?')+'</td><td>'+JestaLeaderboard.formatScrollScore(r.score,'points')+'</td><td>'+JestaLeaderboard.formatScrollDate(r.ts)+'</td>';
+      tr.innerHTML='<td>'+(i===0?'<span style="color:#c9a84c;font-size:1rem">✦</span>':(i+1))+'</td><td style="display:flex;align-items:center;gap:6px">'+JestaLeaderboard.scrollAvatar(r)+esc(r.name||'?')+'</td><td>'+JestaLeaderboard.formatScrollScore(r.score,'points')+'</td><td>'+JestaLeaderboard.formatScrollDate(r.ts)+'</td>';
       tb.appendChild(tr);
     });
     JestaLeaderboard.lbFetchMissingAvatars(tb);

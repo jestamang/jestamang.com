@@ -103,10 +103,10 @@ canvas{display:block;position:fixed;top:var(--game-header-h);left:0;right:0;bott
 #lb-table{width:100%;border-collapse:collapse}
 #lb-table th{font-family:'Luminari',serif;font-size:0.57rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(201,168,76,0.38);padding:0 8px 12px;text-align:left;border-bottom:1px solid rgba(201,168,76,0.15)}
 #lb-table th:nth-child(3),#lb-table th:nth-child(4),#lb-table td:nth-child(3),#lb-table td:nth-child(4){text-align:right}
-#lb-table td{font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.05em;color:rgba(240,230,210,0.7);padding:10px 8px;border-bottom:1px solid rgba(201,168,76,0.07)}
-.lb-r1 td{color:#c9a84c}
-.lb-r23 td{color:rgba(201,168,76,0.78)}
-.lb-cur td{background:rgba(201,168,76,0.07);color:#c9a84c}
+#lb-table td{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.05em;color:rgba(255,255,255,0.75);padding:10px 8px;border-bottom:1px solid rgba(201,168,76,0.07)}
+#lb-table td:nth-child(1){color:rgba(201,168,76,0.55);text-align:center}
+#lb-table td:nth-child(3){color:#c9a84c;letter-spacing:0.1em}
+#lb-table td:nth-child(4){color:rgba(201,168,76,0.32);font-size:0.58rem}
 .lb-loading-row td{text-align:center;padding:28px;font-family:'Luminari',serif;font-style:italic;color:rgba(201,168,76,0.32);letter-spacing:0.15em}
 .lb-av{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,0.4);background:#111;vertical-align:middle;margin-right:7px}.lb-av-init{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#c9a84c;color:#000;font-size:13px;font-family:serif;font-weight:bold;vertical-align:middle;margin-right:7px;flex-shrink:0}
 @media(max-width:480px){#lb-name-card{padding:32px 22px}#lb-modal-inner{padding:28px 18px;max-height:92vh}}
@@ -158,8 +158,7 @@ var tr=document.createElement('tr');
 var cls=i===0?'lb-r1':i<3?'lb-r23':'';
 if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
 tr.className=cls;
-var cr=i===0?'<span style="margin-right:5px">✦</span>':'';
-tr.innerHTML='<td>'+(i+1)+'</td><td>'+JestaLeaderboard.scrollAvatar(r)+cr+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?JestaLeaderboard.formatScrollDate(r.ts):'—')+'</td>';
+tr.innerHTML='<td>'+(i===0?'<span style="color:#c9a84c;font-size:1rem">✦</span>':(i+1))+'</td><td>'+JestaLeaderboard.scrollAvatar(r)+esc(r.name||'?')+'</td><td>'+fmtS(r.score)+'</td><td>'+(r.ts?JestaLeaderboard.formatScrollDate(r.ts):'—')+'</td>';
 tb.appendChild(tr);
 });
 JestaLeaderboard.lbFetchMissingAvatars(tb);
