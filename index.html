@@ -47,7 +47,7 @@
   /* Mobile nav grid — uniform 4-column layout, fills remaining viewport */
   #hp-hero{display:flex!important;flex-direction:column!important;}
   .mob-nav{display:flex!important;flex-direction:column!important;flex:1 1 auto;position:relative;bottom:auto;z-index:30;padding:0;}
-  .mob-nav-grid{display:grid!important;grid-template-columns:repeat(4,1fr);align-content:space-evenly;gap:8px 8px;padding:16px 16px 48px;width:100%;flex:1 1 auto;}
+  .mob-nav-grid{display:grid!important;grid-template-columns:repeat(4,1fr);align-content:start;gap:8px 8px;padding:16px 16px 48px;width:100%;flex:1 1 auto;}
   .mob-nav-item{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-decoration:none;gap:6px;}
   .mob-nav-icon{width:56px;height:56px;object-fit:contain;display:block;}
   .mob-nav-label{font-family:'Luminari',Georgia,serif;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,230,210,0.85);text-align:center;white-space:nowrap;}
@@ -1024,7 +1024,7 @@ document.addEventListener('DOMContentLoaded',eotdInit);
 <!-- mobile-audit-fixes --><style>@media(max-width:768px){body{overflow-x:hidden}.entity-of-day,.eotd-wrap{display:block!important}.hp-events-section,.events-section{display:block!important}input,textarea,select{font-size:16px!important}.hp-cta{min-height:44px;display:block;text-align:center}}@media(hover:none){.nav-item:hover{transform:none!important}.hp-strip img:hover{transform:none!important}.hp-entity-item:hover .hp-entity-img{transform:none!important}.hp-album-card:hover img{transform:none!important}.hp-comix-strip img:hover{transform:none!important}.hp-merch-item:hover img{transform:none!important}}</style>
 
 <style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;gap:0!important;background:rgba(0,0,0,0.7)!important;padding:16px 24px 20px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(201,168,76,0.8);text-shadow:0 1px 4px rgba(0,0,0,0.8);position:relative;z-index:10;}.hp-footer a{color:#c9a84c!important;text-decoration:none;white-space:nowrap!important;}.hp-footer a:hover{color:#c9a84c!important;}.hp-footer a:visited{color:#c9a84c!important;}.hp-footer-mark{margin:0 10px;color:rgba(201,168,76,0.4);white-space:nowrap!important;}@media(max-width:768px){.hp-footer{padding:8px 12px 20px!important;font-size:0.7rem!important;flex-direction:row!important;flex-wrap:nowrap!important;}}</style>
-<style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:translate3d(0,0,0)!important;will-change:transform}body{min-height:100vh!important;overflow-x:hidden!important}}
+<style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:translate3d(0,0,0)!important;will-change:transform}body{min-height:100vh!important;min-height:100svh!important;overflow-x:hidden!important}}
 /* Reserve section heights before content/images load to prevent scroll jitter on mobile */
 @media(max-width:768px){#hp-preview .hp-section{min-height:500px}.hp-section:has(.eotd-wrap){min-height:600px}}</style>
 <style>@media(max-width:768px){body{background-attachment:scroll!important}}</style>
