@@ -9,6 +9,8 @@
   var lbCurrentGame = 'void';
   var lbAllScores   = [];
   var lbFilter      = '';
+  var lbPage        = 0;
+  var LB_PER_PAGE   = 10;
 
   // v259: keys are the REAL game ids written by each game (verified against the
   // leaderboards collection). Games write camelCase / variant ids — kebab keys were empty.
@@ -32,13 +34,17 @@
         this.classList.add('active');
         lbCurrentGame = this.getAttribute('data-lbtab');
         lbFilter = document.getElementById('lb-search').value.toLowerCase();
+        lbPage = 0; // reset to first page on tab switch
         loadLbScores();
       });
     });
     var _lbSearch=document.getElementById('lb-search');if(_lbSearch)_lbSearch.addEventListener('input', function(){
       lbFilter = this.value.toLowerCase();
+      lbPage = 0; // reset to first page when filter changes
       renderLbTable();
     });
+    var _lbPrev=document.getElementById('lb-prev');if(_lbPrev)_lbPrev.addEventListener('click', function(){ if(lbPage>0){lbPage--;renderLbTable();} });
+    var _lbNext=document.getElementById('lb-next');if(_lbNext)_lbNext.addEventListener('click', function(){ lbPage++; renderLbTable(); });
     var _lbSelectAll=document.getElementById('lb-select-all');if(_lbSelectAll)_lbSelectAll.addEventListener('change', function(){
       document.querySelectorAll('.lb-row-check').forEach(function(cb){cb.checked=this.checked;},this);
     });
@@ -90,16 +96,27 @@
           || (s.d.username||'').toLowerCase().includes(lbFilter);
     });
     var tbody = document.getElementById('lb-table-body');
-    if(!filtered.length){tbody.innerHTML='<tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">No scores found.</td></tr>';return;}
+    var pager = document.getElementById('lb-pager');
+    if(!filtered.length){
+      tbody.innerHTML='<tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">No scores found.</td></tr>';
+      if(pager) pager.style.display='none';
+      return;
+    }
+    // Paginate the FILTERED set; clamp page in case it shrank (delete / filter)
+    var totalPages = Math.ceil(filtered.length / LB_PER_PAGE);
+    if(lbPage > totalPages-1) lbPage = totalPages-1;
+    if(lbPage < 0) lbPage = 0;
+    var slice = filtered.slice(lbPage*LB_PER_PAGE, lbPage*LB_PER_PAGE + LB_PER_PAGE);
     var html='';
-    filtered.forEach(function(s,i){
+    slice.forEach(function(s,i){
       var d=s.d;
+      var rank=lbPage*LB_PER_PAGE + i + 1; // global rank across pages
       var name=esc(d.name||d.displayName||d.username||'Unknown');
       var score=esc(String(d.score||0));
       var date=fmtDate(d.timestamp||d.date);
       html+='<tr id="lb-row-'+s.id+'">'
         +'<td><input type="checkbox" class="lb-row-check" value="'+s.id+'" style="accent-color:#c9a84c;width:13px;height:13px;"></td>'
-        +'<td style="color:#c9a84c;">'+(i+1)+'</td>'
+        +'<td style="color:#c9a84c;">'+rank+'</td>'
         +'<td>'+name+'</td>'
         +'<td>'+score+'</td>'
         +'<td style="font-size:0.65rem;">'+date+'</td>'
@@ -107,6 +124,23 @@
         +'</tr>';
     });
     tbody.innerHTML=html;
+    // reset the header select-all checkbox to unchecked on each (re)render
+    var thCheck=document.getElementById('lb-th-check'); if(thCheck) thCheck.checked=false;
+    var selAll=document.getElementById('lb-select-all'); if(selAll) selAll.checked=false;
+    if(pager){
+      if(totalPages<=1){
+        pager.style.display='none';
+      } else {
+        pager.style.display='flex';
+        document.getElementById('lb-page-indicator').textContent='Page '+(lbPage+1)+' / '+totalPages;
+        var prev=document.getElementById('lb-prev');
+        var next=document.getElementById('lb-next');
+        prev.disabled=(lbPage===0);
+        next.disabled=(lbPage>=totalPages-1);
+        prev.style.opacity=prev.disabled?'0.3':'1';
+        next.style.opacity=next.disabled?'0.3':'1';
+      }
+    }
   }
 
   function renderLbStats() {
@@ -140,8 +174,8 @@
     if(rowEl){ rowEl.style.opacity='0.4'; rowEl.style.pointerEvents='none'; }
     window.jestaDB.collection('leaderboards').doc(id).delete()
       .then(function(){
-        if(rowEl) rowEl.remove();
         lbAllScores=lbAllScores.filter(function(s){return s.id!==id;});
+        renderLbTable();  // re-render current page (clamps if it emptied)
         renderLbStats();
         if(statusEl){ statusEl.textContent='Score deleted \u2726'; statusEl.className='status-msg status-ok'; }
       })
