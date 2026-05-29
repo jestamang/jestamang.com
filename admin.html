@@ -932,12 +932,26 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="status-msg" id="sh-status"></div>
 
       <div style="margin-top:32px;">
-        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">All Conjurings</div>
+        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Upcoming</div>
         <div class="shows-table-wrap">
           <table class="shows-table">
             <thead><tr><th>Venue</th><th>Date</th><th>City</th><th>Price</th><th>Notify</th><th></th></tr></thead>
-            <tbody id="sh-list"><tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">Loading...</td></tr></tbody>
+            <tbody id="sh-list-upcoming"><tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">Loading...</td></tr></tbody>
           </table>
+        </div>
+      </div>
+      <div style="margin-top:32px;">
+        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Past Shows</div>
+        <div class="shows-table-wrap">
+          <table class="shows-table">
+            <thead><tr><th>Venue</th><th>Date</th><th>City</th><th>Price</th><th>Notify</th><th></th></tr></thead>
+            <tbody id="sh-list-past"><tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+        <div id="sh-past-pager" style="display:none;align-items:center;justify-content:center;gap:18px;margin-top:16px;font-family:'Luminari',serif;">
+          <button id="sh-past-prev" class="btn-ghost btn-sm" aria-label="Previous page" style="min-width:44px;">←</button>
+          <span id="sh-past-indicator" style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,168,76,0.55);"></span>
+          <button id="sh-past-next" class="btn-ghost btn-sm" aria-label="Next page" style="min-width:44px;">→</button>
         </div>
       </div>
     </div>
@@ -2622,6 +2636,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   /* ══════════════ SECTION 7: SHOWS ══════════════ */
   var _shEditId = null;   // null = ADD mode, id = EDIT mode (v271)
   var _shDocs   = {};     // cache of list docs for edit-load
+  var _shPastAll = [];    // v277: all past docs (for 5/page pagination)
+  var shPastPage = 1;
+  var SH_PAST_PER_PAGE = 5;
 
   function shClearForm() {
     _shEditId = null;
@@ -2720,29 +2737,72 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       });
     });
 
-    // Live list
-    db.collection('shows').orderBy('date','asc').onSnapshot(function(snap){
-      var tbody = document.getElementById('sh-list');
-      _shDocs = {};
-      if(snap.empty){tbody.innerHTML='<tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">No shows added yet.</td></tr>';return;}
+    // v277: shared row builder (identical markup for both sections)
+    function buildShowRow(id, d, isUpcoming){
+      var hidden=d.active===false;
+      var vid=esc(d.venue); var ci=esc(d.city||''); var dt=esc(d.date||'');
+      return '<tr id="sh-row-'+id+'"'+(hidden?' style="opacity:0.45;"':'')+' >'
+        +'<td>'+esc(d.venue)+'</td>'
+        +'<td>'+esc(d.date)+'</td>'
+        +'<td>'+esc(d.city||'—')+'</td>'
+        +'<td>'+esc(d.price||'—')+'</td>'
+        +'<td>'+(hidden?'':'<button class="btn-ghost btn-sm" onclick="notifyShow(\''+vid+'\',\''+ci+'\',\''+dt+'\')">Notify</button>')+'</td>'
+        +'<td>'+(hidden
+          ?'<button class="btn-ghost btn-sm" onclick="restoreShow(\''+id+'\')">Restore</button>'
+          :'<button class="btn-ghost btn-sm" onclick="editShow(\''+id+'\')">Edit</button> '
+            +'<button class="btn-ghost btn-sm" onclick="toggleUpcoming(\''+id+'\','+(isUpcoming?'true':'false')+')">'+(isUpcoming?'Mark Past':'Mark Upcoming')+'</button> '
+            +'<button class="btn-danger btn-sm" onclick="hideShow(\''+id+'\',\''+vid+'\',\''+dt+'\')">Remove</button>')+'</td>'
+        +'</tr>';
+    }
+
+    // v277: render the current page of the Past group + drive its pager
+    window._renderShPastPage = function renderShPastPage(){
+      var tbody=document.getElementById('sh-list-past');
+      var pager=document.getElementById('sh-past-pager');
+      if(!tbody) return;
+      if(!_shPastAll.length){ tbody.innerHTML='<tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">No past shows.</td></tr>'; if(pager)pager.style.display='none'; return; }
+      var totalPages=Math.ceil(_shPastAll.length/SH_PAST_PER_PAGE);
+      if(shPastPage>totalPages) shPastPage=totalPages;
+      if(shPastPage<1) shPastPage=1;
+      var start=(shPastPage-1)*SH_PAST_PER_PAGE;
+      var slice=_shPastAll.slice(start, start+SH_PAST_PER_PAGE);
       var html='';
+      slice.forEach(function(it){ html+=buildShowRow(it.id, it.d, false); });
+      tbody.innerHTML=html;
+      if(pager){
+        if(totalPages<=1){ pager.style.display='none'; }
+        else {
+          pager.style.display='flex';
+          document.getElementById('sh-past-indicator').textContent='Page '+shPastPage+' / '+totalPages;
+          var prev=document.getElementById('sh-past-prev'); var next=document.getElementById('sh-past-next');
+          prev.disabled=(shPastPage===1); next.disabled=(shPastPage>=totalPages);
+          prev.style.opacity=prev.disabled?'0.3':'1'; next.style.opacity=next.disabled?'0.3':'1';
+        }
+      }
+    };
+    var _shPastPrev=document.getElementById('sh-past-prev');if(_shPastPrev)_shPastPrev.addEventListener('click', function(){ if(shPastPage>1){shPastPage--;window._renderShPastPage();} });
+    var _shPastNext=document.getElementById('sh-past-next');if(_shPastNext)_shPastNext.addEventListener('click', function(){ var tp=Math.ceil(_shPastAll.length/SH_PAST_PER_PAGE); if(shPastPage<tp){shPastPage++;window._renderShPastPage();} });
+
+    // Live list — partition into Upcoming / Past via the hybrid tri-state rule
+    db.collection('shows').orderBy('date','asc').onSnapshot(function(snap){
+      var upEl = document.getElementById('sh-list-upcoming');
+      _shDocs = {};
+      var todayStr = new Date().toISOString().slice(0,10);
+      var upcoming=[], past=[];
       snap.forEach(function(doc){
         var d=doc.data();
         _shDocs[doc.id]=d;
-        var hidden=d.active===false;
-        var vid=esc(d.venue); var ci=esc(d.city||''); var dt=esc(d.date||'');
-        html+='<tr id="sh-row-'+doc.id+'"'+(hidden?' style="opacity:0.45;"':'')+' >'
-          +'<td>'+esc(d.venue)+'</td>'
-          +'<td>'+esc(d.date)+'</td>'
-          +'<td>'+esc(d.city||'—')+'</td>'
-          +'<td>'+esc(d.price||'—')+'</td>'
-          +'<td>'+(hidden?'':'<button class="btn-ghost btn-sm" onclick="notifyShow(\''+vid+'\',\''+ci+'\',\''+dt+'\')">Notify</button>')+'</td>'
-          +'<td>'+(hidden
-            ?'<button class="btn-ghost btn-sm" onclick="restoreShow(\''+doc.id+'\')">Restore</button>'
-            :'<button class="btn-ghost btn-sm" onclick="editShow(\''+doc.id+'\')">Edit</button> <button class="btn-danger btn-sm" onclick="hideShow(\''+doc.id+'\',\''+vid+'\',\''+dt+'\')">Remove</button>')+'</td>'
-          +'</tr>';
+        var isUpcoming = (d.upcoming === true) || (d.upcoming !== false && d.date && d.date >= todayStr);
+        (isUpcoming?upcoming:past).push({id:doc.id, d:d});
       });
-      tbody.innerHTML=html;
+      upcoming.sort(function(a,b){ return (a.d.date||'') < (b.d.date||'') ? -1 : 1; }); // soonest first
+      past.sort(function(a,b){ return (a.d.date||'') > (b.d.date||'') ? -1 : 1; });     // newest first
+      upEl.innerHTML = upcoming.length
+        ? upcoming.map(function(it){ return buildShowRow(it.id, it.d, true); }).join('')
+        : '<tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">No upcoming shows.</td></tr>';
+      _shPastAll = past;
+      shPastPage = 1;
+      window._renderShPastPage();
     },function(e){ console.error('shows error:', e.message); });
   }
 
@@ -2772,6 +2832,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       active: true,
       hiddenAt: firebase.firestore.FieldValue.delete()
     }).catch(function(){});
+  };
+
+  // v277: explicit upcoming override — sets the flag opposite the current computed state
+  window.toggleUpcoming = function(id, isCurrentlyUpcoming){
+    db.collection('shows').doc(id).update({ upcoming: !isCurrentlyUpcoming }).catch(function(e){ alert('Error: '+e.message); });
   };
 
   /* ══════════════ SECTION 8: PRESS MANAGER ══════════════ */
