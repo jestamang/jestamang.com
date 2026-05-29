@@ -2634,7 +2634,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     document.getElementById('am-draft-btn').disabled=true;
     statusEl.textContent='';
     db.collection('releases').add({
-      catalog:catalog, artist:artist, albumTitle:album,
+      catalog:catalog, artist:artist, albumTitle:album, album:album,
       year:year?parseInt(year):null, genre:genre, coverUrl:cover,
       tracks:tracks,
       timestamp:firebase.firestore.FieldValue.serverTimestamp(),
