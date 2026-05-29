@@ -2499,6 +2499,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           +(isRead?'<span class="badge badge-dim">Responded</span>':'<span class="badge badge-red">Unread</span>')
           +(isRead?'':'<button class="btn-success btn-sm" onclick="markRead(\''+doc.id+'\')">Mark Read</button>')
           +(d.email?'<button class="btn-ghost btn-sm" style="border-color:rgba(201,168,76,0.4);color:#c9a84c;font-family:\'Luminari\',serif;letter-spacing:0.15em;" onclick="openReply(\''+doc.id+'\',\''+esc(d.email||'')+'\',\''+defaultMsg.replace(/'/g,"\\'").replace(/\n/g,'\\n')+'\')">REPLY \u2746</button>':'')
+          +'<button class="btn-danger btn-sm" onclick="deleteInquiry(\''+doc.id+'\')">Delete</button>'
           +'</div>'
           +'</div>'
           +(d.email?'<div style="font-size:0.72rem;margin-bottom:6px;color:rgba(201,168,76,0.55);">'+esc(d.email)+'</div>':'')
@@ -2539,6 +2540,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   window.markRead = function(id){
     db.collection('inquiries').doc(id).update({read:true}).then(loadInquiries).catch(function(){});
+  };
+
+  window.deleteInquiry = function(id){
+    if(!confirm('Delete this inquiry permanently?')) return;
+    db.collection('inquiries').doc(id).delete().then(loadInquiries).catch(function(e){ alert('Error: '+e.message); });
   };
 
   window.openReply = function(id, email, defaultMsg) {
