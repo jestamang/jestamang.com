@@ -10,13 +10,19 @@
   var lbAllScores   = [];
   var lbFilter      = '';
 
+  // v259: keys are the REAL game ids written by each game (verified against the
+  // leaderboards collection). Games write camelCase / variant ids — kebab keys were empty.
   var LB_GAMES = {
-    'void':             'The Void',
-    'cosmic-conductor': 'Cosmic Conductor',
-    'pitch-oracle':     'Pitch Oracle',
-    'rhythm-architect': 'Rhythm Architect',
-    'chord-conjurer':   'Chord Conjurer',
-    'memory':           'Memory Vault'
+    'void':                     'The Void',
+    'cosmicConductor':          'Cosmic Conductor',
+    'pitchOracle':              'Pitch Oracle',
+    'rhythmArchitect':          'Rhythm Architect',
+    'chordConjurer':            'Chord Conjurer',
+    'harmonyOracle':            'Harmony Oracle',
+    'memory-vault':             'Memory Vault',
+    'memory-vault-easy':        'Memory Vault (Easy)',
+    'entity-pair-visions':      'Entity Pair: Visions',
+    'entity-pair-revelations':  'Entity Pair: Revelations'
   };
 
   function initLeaderboards() {
@@ -45,7 +51,8 @@
       if(!confirm('Delete '+checked.length+' selected score(s)?')) return;
       var batch = window.jestaDB.batch();
       checked.forEach(function(cb){
-        batch.delete(window.jestaDB.collection('leaderboards').doc(lbCurrentGame).collection('scores').doc(cb.value));
+        // v259: scores live as flat leaderboards docs (not a subcollection); delete by doc id
+        batch.delete(window.jestaDB.collection('leaderboards').doc(cb.value));
       });
       batch.commit().then(function(){
         document.getElementById('lb-status').textContent='Deleted '+checked.length+' score(s) \u2726';
@@ -63,21 +70,14 @@
     var tbody = document.getElementById('lb-table-body');
     tbody.innerHTML='<tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">Loading...</td></tr>';
     document.getElementById('lb-stats').innerHTML='';
-    // Try nested scores sub-collection first
-    window.jestaDB.collection('leaderboards').doc(lbCurrentGame).collection('scores')
-      .orderBy('score','desc').limit(100).get()
+    // v259: scores are flat leaderboards docs keyed by the `game` field (the old
+    // leaderboards/{key}/scores subcollection was never written). Query flat directly.
+    lbAllScores=[];
+    window.jestaDB.collection('leaderboards').where('game','==',lbCurrentGame).orderBy('score','desc').limit(100).get()
       .then(function(snap){
-        lbAllScores=[];
         snap.forEach(function(doc){ lbAllScores.push({id:doc.id,d:doc.data()}); });
-        if(!lbAllScores.length){
-          // Fallback: flat collection keyed by game
-          return window.jestaDB.collection('leaderboards').where('game','==',lbCurrentGame).orderBy('score','desc').limit(100).get()
-            .then(function(s2){ s2.forEach(function(doc){ lbAllScores.push({id:doc.id,d:doc.data()}); }); });
-        }
-      }).catch(function(){
-        return window.jestaDB.collection('leaderboards').where('game','==',lbCurrentGame).orderBy('score','desc').limit(100).get()
-          .catch(function(){});
-      }).finally(function(){
+      }).catch(function(){})
+      .finally(function(){
         renderLbTable();
         renderLbStats();
       });
@@ -138,7 +138,7 @@
     var statusEl = document.getElementById('lb-status');
     var rowEl = document.getElementById('lb-row-'+id);
     if(rowEl){ rowEl.style.opacity='0.4'; rowEl.style.pointerEvents='none'; }
-    window.jestaDB.collection('leaderboards').doc(lbCurrentGame).collection('scores').doc(id).delete()
+    window.jestaDB.collection('leaderboards').doc(id).delete()
       .then(function(){
         if(rowEl) rowEl.remove();
         lbAllScores=lbAllScores.filter(function(s){return s.id!==id;});
@@ -189,7 +189,7 @@
 
     function renderMostPlayed() {
       var el = document.getElementById('ga-most-played');
-      var counts = LB_KEYS.map(function (k) { return { name: LB_GAMES[k], count: (allData[k]||[]).length }; });
+      var counts = LB_KEYS.map(function (k) { return { name: (LB_GAMES[k]||k), count: (allData[k]||[]).length }; });
       counts.sort(function (a,b) { return b.count - a.count; });
       var max = counts.length && counts[0].count > 0 ? counts[0].count : 1;
       el.innerHTML = counts.map(function (g) {
@@ -239,7 +239,7 @@
       var el = document.getElementById('ga-recent');
       var all = [];
       LB_KEYS.forEach(function (k) {
-        (allData[k]||[]).forEach(function (s) { all.push({ gameName: LB_GAMES[k], d: s.d }); });
+        (allData[k]||[]).forEach(function (s) { all.push({ gameName: (LB_GAMES[k]||k), d: s.d }); });
       });
       all.sort(function (a,b) {
         var ta = a.d.timestamp || a.d.date; var tb = b.d.timestamp || b.d.date;
@@ -276,7 +276,7 @@
             var ts     = (allData[k]||[]).map(function(s){return s.d.timestamp||s.d.date;}).filter(Boolean)
                           .sort(function(a,b){return((b&&b.seconds)||0)-((a&&a.seconds)||0);})[0];
             return '<tr style="border-bottom:1px solid rgba(201,168,76,0.06);">'
-              + '<td style="padding:6px 8px;color:#c9a84c;">' + esc(LB_GAMES[k]) + '</td>'
+              + '<td style="padding:6px 8px;color:#c9a84c;">' + esc(LB_GAMES[k]||k) + '</td>'
               + '<td style="padding:6px 8px;">' + count + '</td>'
               + '<td style="padding:6px 8px;">' + high + '</td>'
               + '<td style="padding:6px 8px;">' + avg + '</td>'
