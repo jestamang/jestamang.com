@@ -1027,8 +1027,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <input class="field-input" id="treat-order" type="number" value="10" min="0" max="999">
 
         <div style="display:flex;gap:10px;margin-top:16px;">
-          <button class="btn-ghost" id="treat-save-btn" onclick="treatSave()" style="flex:1;">SAVE TREAT ✦</button>
-          <button class="btn-ghost" id="treat-cancel-btn" onclick="treatCancelEdit()" aria-label="Cancel edit" style="display:none;padding:8px 16px;">✕</button>
+          <button class="btn-ghost" id="treat-save-btn" style="flex:1;">SAVE TREAT ✦</button>
+          <button class="btn-ghost" id="treat-cancel-btn" aria-label="Cancel edit" style="display:none;padding:8px 16px;">✕</button>
         </div>
         <div id="treat-form-msg" style="font-size:0.62rem;letter-spacing:0.15em;color:rgba(201,168,76,0.4);margin-top:10px;min-height:1em;"></div>
       </div>
@@ -2028,6 +2028,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   function initTreats() {
     if (treatUnsub) return;
+    var _saveBtn   = document.getElementById('treat-save-btn');
+    var _cancelBtn = document.getElementById('treat-cancel-btn');
+    if (_saveBtn)   _saveBtn.addEventListener('click', treatSave);
+    if (_cancelBtn) _cancelBtn.addEventListener('click', treatCancelEdit);
     treatUnsub = db.collection('treats').orderBy('order', 'asc').onSnapshot(function (snap) {
       renderTreatList(snap);
     }, function () {
@@ -2071,7 +2075,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     snap.forEach(function (doc) { window._treatCache[doc.id] = doc.data(); });
   }
 
-  function treatEdit(id) {
+  window.treatEdit = function treatEdit(id) {
     db.collection('treats').doc(id).get().then(function (doc) {
       if (!doc.exists) return;
       var d = doc.data();
@@ -2156,7 +2160,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       .catch(function (e) { msg.textContent = 'Error: ' + esc(e.message); });
   }
 
-  function treatHide(id, title) {
+  window.treatHide = function treatHide(id, title) {
     var name = title || 'this treat';
     if (!confirm('Hide "' + name + '" from the Inner Circle? You can restore it later from the admin panel.')) return;
     db.collection('treats').doc(id).update({
@@ -2165,7 +2169,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     }).catch(function (e) { alert('Error: ' + e.message); });
   }
 
-  function treatRestore(id) {
+  window.treatRestore = function treatRestore(id) {
     db.collection('treats').doc(id).update({
       active: true,
       hiddenAt: firebase.firestore.FieldValue.delete()
