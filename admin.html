@@ -914,16 +914,25 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
 
+      <label class="field-label" for="sh-lineup">Lineup</label>
+      <input class="field-input" id="sh-lineup" type="text" placeholder="Sataria, Jestamang, Simon Says Nothing, Whatever" maxlength="160">
+      <div style="font-size:0.6rem;color:rgba(201,168,76,0.3);letter-spacing:0.06em;margin:2px 0 12px;">Optional. The supporting acts / bill.</div>
+
+      <label class="field-label" for="sh-tagline">Tagline</label>
+      <textarea class="field-input field-textarea" id="sh-tagline" placeholder="Watch the seasons. The calendar knows." maxlength="200" style="min-height:60px;"></textarea>
+      <div style="font-size:0.6rem;color:rgba(201,168,76,0.3);letter-spacing:0.06em;margin:2px 0 4px;">Optional. Use \n for a line break.</div>
+
       <label class="radio-label" style="margin-top:16px;gap:10px;">
         <input type="checkbox" id="sh-autonotify" style="accent-color:#c9a84c;width:15px;height:15px;" aria-label="Auto-notify on show publish">
         <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.85);">Auto-notify all members when this show is added</span>
       </label>
 
       <button class="btn-gold btn-gold-full" id="sh-add-btn">Add Conjuring</button>
+      <button class="btn-ghost btn-gold-full" id="sh-cancel-btn" style="display:none;margin-top:8px;">Cancel Edit</button>
       <div class="status-msg" id="sh-status"></div>
 
       <div style="margin-top:32px;">
-        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Upcoming Conjurings</div>
+        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">All Conjurings</div>
         <div class="shows-table-wrap">
           <table class="shows-table">
             <thead><tr><th>Venue</th><th>Date</th><th>City</th><th>Price</th><th>Notify</th><th></th></tr></thead>
@@ -2611,9 +2620,42 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   };
 
   /* ══════════════ SECTION 7: SHOWS ══════════════ */
+  var _shEditId = null;   // null = ADD mode, id = EDIT mode (v271)
+  var _shDocs   = {};     // cache of list docs for edit-load
+
+  function shClearForm() {
+    _shEditId = null;
+    ['sh-venue','sh-city','sh-time','sh-tickets','sh-price','sh-lineup','sh-tagline'].forEach(function(id){document.getElementById(id).value='';});
+    document.getElementById('sh-date').value = new Date().toISOString().slice(0,10);
+    document.getElementById('sh-autonotify').checked = false;
+    document.getElementById('sh-add-btn').textContent = 'Add Conjuring';
+    var c = document.getElementById('sh-cancel-btn'); if(c) c.style.display='none';
+  }
+
+  window.editShow = function(id){
+    var d = _shDocs[id]; if(!d) return;
+    document.getElementById('sh-venue').value    = d.venue     || '';
+    document.getElementById('sh-date').value      = d.date      || '';
+    document.getElementById('sh-city').value      = d.city      || '';
+    document.getElementById('sh-time').value      = d.time      || '';
+    document.getElementById('sh-tickets').value   = d.ticketUrl || '';
+    document.getElementById('sh-price').value     = d.price     || '';
+    document.getElementById('sh-lineup').value    = d.lineup    || '';
+    document.getElementById('sh-tagline').value   = d.tagline   || '';
+    _shEditId = id;
+    document.getElementById('sh-add-btn').textContent = 'Update Conjuring';
+    var c = document.getElementById('sh-cancel-btn'); if(c) c.style.display='';
+    document.getElementById('sh-venue').scrollIntoView({block:'center'});
+  };
+
   function initShows() {
     var today = new Date().toISOString().slice(0,10);
     document.getElementById('sh-date').value = today;
+
+    var _shCancel=document.getElementById('sh-cancel-btn');if(_shCancel)_shCancel.addEventListener('click', function(){
+      shClearForm();
+      var s=document.getElementById('sh-status'); s.textContent=''; s.className='status-msg';
+    });
 
     var _shAddBtn=document.getElementById('sh-add-btn');if(_shAddBtn)_shAddBtn.addEventListener('click', function(){
       var venue      = (document.getElementById('sh-venue').value   ||'').trim();
@@ -2622,6 +2664,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var time       = (document.getElementById('sh-time').value    ||'').trim();
       var tickets    = (document.getElementById('sh-tickets').value ||'').trim();
       var price      = (document.getElementById('sh-price').value   ||'').trim();
+      var lineup     = (document.getElementById('sh-lineup').value  ||'').trim();
+      var tagline    = (document.getElementById('sh-tagline').value ||'').trim();
       var autoNotify = document.getElementById('sh-autonotify').checked;
       var statusEl   = document.getElementById('sh-status');
       if(!venue)  {statusEl.textContent='Venue required';statusEl.className='status-msg status-err';return;}
@@ -2630,11 +2674,29 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       if(tickets && !/^https?:\/\//i.test(tickets)){statusEl.textContent='Ticket URL must start with http:// or https://';statusEl.className='status-msg status-err';return;}
       this.disabled=true; statusEl.textContent='';
       var self=this;
-      db.collection('shows').add({
+      var fields = {
         venue:venue, date:date, city:city, time:time,
-        ticketUrl:tickets, price:price,
-        timestamp:firebase.firestore.FieldValue.serverTimestamp()
-      }).then(function(){
+        ticketUrl:tickets, price:price, lineup:lineup, tagline:tagline
+      };
+
+      // EDIT: update only editable keys; preserve timestamp + active; never notify on edit
+      if(_shEditId){
+        db.collection('shows').doc(_shEditId).update(fields).then(function(){
+          statusEl.textContent='CONJURING UPDATED ✦';
+          statusEl.className='status-msg status-ok';
+          shClearForm();
+          self.disabled=false;
+        }).catch(function(e){
+          statusEl.textContent='Error: '+e.message;
+          statusEl.className='status-msg status-err';
+          self.disabled=false;
+        });
+        return;
+      }
+
+      // ADD: new doc gets timestamp + optional notify fan-out
+      fields.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+      db.collection('shows').add(fields).then(function(){
         var chain = Promise.resolve();
         if(autoNotify){
           chain = db.collection('notifications').add({
@@ -2649,8 +2711,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       }).then(function(){
         statusEl.textContent = autoNotify ? 'CONJURING ADDED + MEMBERS NOTIFIED \u2726' : 'CONJURING ADDED \u2726';
         statusEl.className='status-msg status-ok';
-        ['sh-venue','sh-city','sh-time','sh-tickets','sh-price'].forEach(function(id){document.getElementById(id).value='';});
-        document.getElementById('sh-date').value=new Date().toISOString().slice(0,10);
+        shClearForm();
         self.disabled=false;
       }).catch(function(e){
         statusEl.textContent='Error: '+e.message;
@@ -2662,10 +2723,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     // Live list
     db.collection('shows').orderBy('date','asc').onSnapshot(function(snap){
       var tbody = document.getElementById('sh-list');
+      _shDocs = {};
       if(snap.empty){tbody.innerHTML='<tr><td colspan="6" style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:14px 0;">No shows added yet.</td></tr>';return;}
       var html='';
       snap.forEach(function(doc){
         var d=doc.data();
+        _shDocs[doc.id]=d;
         var hidden=d.active===false;
         var vid=esc(d.venue); var ci=esc(d.city||''); var dt=esc(d.date||'');
         html+='<tr id="sh-row-'+doc.id+'"'+(hidden?' style="opacity:0.45;"':'')+' >'
@@ -2676,7 +2739,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           +'<td>'+(hidden?'':'<button class="btn-ghost btn-sm" onclick="notifyShow(\''+vid+'\',\''+ci+'\',\''+dt+'\')">Notify</button>')+'</td>'
           +'<td>'+(hidden
             ?'<button class="btn-ghost btn-sm" onclick="restoreShow(\''+doc.id+'\')">Restore</button>'
-            :'<button class="btn-danger btn-sm" onclick="hideShow(\''+doc.id+'\',\''+vid+'\',\''+dt+'\')">Remove</button>')+'</td>'
+            :'<button class="btn-ghost btn-sm" onclick="editShow(\''+doc.id+'\')">Edit</button> <button class="btn-danger btn-sm" onclick="hideShow(\''+doc.id+'\',\''+vid+'\',\''+dt+'\')">Remove</button>')+'</td>'
           +'</tr>';
       });
       tbody.innerHTML=html;
