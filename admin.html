@@ -599,6 +599,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div>
           <label class="field-label" for="bp-date">Date</label>
           <input class="field-input" id="bp-date" type="date">
+          <label class="radio-label" style="display:flex;align-items:center;gap:8px;margin-top:6px;cursor:pointer;">
+            <input type="checkbox" id="bp-date-unknown" style="accent-color:#c9a84c;" onchange="document.getElementById('bp-date').disabled=this.checked;">
+            <span style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(201,168,76,0.55);">UNKNOWN</span>
+          </label>
         </div>
         <div>
           <label class="field-label" for="bp-category">Category Tag</label>
@@ -1902,8 +1906,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   window._bpPostData = {};
 
   function saveBlogPost(publish) {
-    var title    = (document.getElementById('bp-title').value    || '').trim();
-    var dateVal  = (document.getElementById('bp-date').value     || '').trim();
+    var title       = (document.getElementById('bp-title').value    || '').trim();
+    var dateUnknown = document.getElementById('bp-date-unknown').checked;
+    var dateVal     = dateUnknown ? '' : (document.getElementById('bp-date').value || '').trim();
     var category = (document.getElementById('bp-category').value || '').trim();
     var subtitle = (document.getElementById('bp-subtitle').value || '').trim();
     var content  = (document.getElementById('bp-content').value  || '').trim();
@@ -1917,7 +1922,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var payload = {
       title:         title,
       date:          dateVal,
-      dateFormatted: dateVal ? ritualDate(dateVal) : '',
+      dateUnknown:   dateUnknown,
+      dateFormatted: dateUnknown ? 'UNKNOWN' : (dateVal ? ritualDate(dateVal) : ''),
       category:      category,
       subtitle:      subtitle,
       content:       content,
@@ -1937,7 +1943,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       document.getElementById('bp-subtitle').value = '';
       document.getElementById('bp-content').value  = '';
       document.getElementById('bp-excerpt').value  = '';
-      document.getElementById('bp-date').value     = new Date().toISOString().slice(0,10);
+      document.getElementById('bp-date-unknown').checked = false;
+      document.getElementById('bp-date').disabled         = false;
+      document.getElementById('bp-date').value            = new Date().toISOString().slice(0,10);
       document.getElementById('bp-publish-btn').disabled = false;
       document.getElementById('bp-draft-btn').disabled   = false;
       if (window._bpEditId) { window.cancelEditPost(); }
@@ -1964,7 +1972,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var preview = raw.length > 80 ? raw.slice(0,80) + '…' : raw;
         html += '<div class="post-row" id="row-'+eid+'">'
           + '<div class="post-row-title">' + esc(d.title) + ' ' + pub + '</div>'
-          + '<div class="post-row-meta">' + esc(d.dateFormatted || d.date || '—') + (d.category ? ' &nbsp;·&nbsp; ' + esc(d.category) : '') + '</div>'
+          + '<div class="post-row-meta">' + esc(d.dateUnknown ? 'UNKNOWN' : (d.dateFormatted || d.date || '—')) + (d.category ? ' &nbsp;·&nbsp; ' + esc(d.category) : '') + '</div>'
           + (preview ? '<div style="font-size:0.7rem;color:rgba(240,230,211,0.5);margin-top:4px;font-style:italic;">' + esc(preview) + '</div>' : '')
           + '<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">'
           + '<button class="btn-ghost btn-sm" onclick="editPost(\'' + doc.id + '\')">Edit</button>'
@@ -1996,7 +2004,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     if (!d) return;
     window._bpEditId = id;
     document.getElementById('bp-title').value    = d.title    || '';
-    document.getElementById('bp-date').value     = d.date     || '';
+    var unk = d.dateUnknown || false;
+    document.getElementById('bp-date-unknown').checked = unk;
+    document.getElementById('bp-date').disabled         = unk;
+    document.getElementById('bp-date').value            = unk ? '' : (d.date || '');
     document.getElementById('bp-category').value = d.category || '';
     document.getElementById('bp-subtitle').value = d.subtitle || '';
     document.getElementById('bp-content').value  = d.content  || '';
@@ -2027,7 +2038,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     if (cancelBtn) cancelBtn.remove();
     // Clear all form fields so the composer returns to a clean empty state
     document.getElementById('bp-title').value    = '';
-    document.getElementById('bp-date').value     = new Date().toISOString().slice(0,10);
+    document.getElementById('bp-date-unknown').checked = false;
+    document.getElementById('bp-date').disabled         = false;
+    document.getElementById('bp-date').value            = new Date().toISOString().slice(0,10);
     document.getElementById('bp-category').value = '';
     document.getElementById('bp-subtitle').value = '';
     document.getElementById('bp-content').value  = '';
