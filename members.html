@@ -707,6 +707,12 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <div class="gold-rule-sm"></div>
 
   <audio id="treat-audio" preload="none" style="position:fixed;top:-9999px;left:-9999px;"></audio>
+  <div id="treat-photo-lb" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;">
+    <button id="tpl-prev" style="position:absolute;left:16px;font-size:2.5rem;background:none;border:none;color:#c9a84c;cursor:pointer;line-height:1;font-family:sans-serif;">&#8249;</button>
+    <img id="treat-photo-img" alt="" style="max-width:90vw;max-height:85vh;border-radius:4px;display:block;">
+    <button id="tpl-next" style="position:absolute;right:16px;font-size:2.5rem;background:none;border:none;color:#c9a84c;cursor:pointer;line-height:1;font-family:sans-serif;">&#8250;</button>
+    <button id="tpl-close" style="position:absolute;top:16px;right:20px;font-size:1.6rem;background:none;border:none;color:#c9a84c;cursor:pointer;line-height:1;font-family:sans-serif;">&#10005;</button>
+  </div>
   <div id="treat-vid-lb" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;">
     <div id="treat-vid-player" style="width:90vw;max-width:880px;aspect-ratio:16/9;"></div>
     <button id="treat-vid-close" style="position:absolute;top:16px;right:20px;font-size:1.6rem;background:none;border:none;color:#c9a84c;cursor:pointer;line-height:1;font-family:sans-serif;">✕</button>
@@ -920,6 +926,7 @@ document.addEventListener('DOMContentLoaded', function(){
         var grid = document.getElementById('treats-grid');
         if(!grid) return;
         var blurMap = {1:'catalog-blur-1',2:'catalog-blur-2',3:'catalog-blur-3'};
+        var _treatPhotos = {}, _tpN = 0;
         var html = '';
         snap.forEach(function(doc){
           var d = doc.data();
@@ -939,6 +946,10 @@ document.addEventListener('DOMContentLoaded', function(){
             + '</div>';
           if (d.type === 'audio' && d.url) {
             html += '<div class="catalog-card treat-card treat-audio-card" data-url="'+esc(d.url)+'" role="button" tabindex="0" aria-label="Play '+esc(d.title||'audio')+'">'
+              + artInner + '</div>';
+          } else if (d.type === 'photo' && d.photos && d.photos.length) {
+            var key = _tpN++; _treatPhotos[key] = d.photos;
+            html += '<div class="catalog-card treat-card treat-photo-card" data-pset="'+key+'" role="button" tabindex="0" aria-label="View gallery '+esc(d.title||'')+'">'
               + artInner + '</div>';
           } else if (d.type === 'video' && d.url) {
             var vid = ytId(d.url);
@@ -967,6 +978,18 @@ document.addEventListener('DOMContentLoaded', function(){
           return /^[\w-]{11}$/.test(u) ? u : '';
         }
 
+        // Photo lightbox
+        var tplSet = [], tplIdx = 0;
+        var tplLb  = document.getElementById('treat-photo-lb');
+        var tplImg = document.getElementById('treat-photo-img');
+        function tplShow() { if (tplSet.length) { tplImg.src = tplSet[tplIdx]; } }
+        function openPhotos(arr, i) { tplSet = arr || []; tplIdx = i || 0; if (!tplSet.length) return; tplShow(); tplLb.style.display = 'flex'; }
+        function tplClose() { tplLb.style.display = 'none'; tplImg.src = ''; tplSet = []; }
+        document.getElementById('tpl-prev').addEventListener('click', function(e){ e.stopPropagation(); tplIdx = (tplIdx - 1 + tplSet.length) % tplSet.length; tplShow(); });
+        document.getElementById('tpl-next').addEventListener('click', function(e){ e.stopPropagation(); tplIdx = (tplIdx + 1) % tplSet.length; tplShow(); });
+        document.getElementById('tpl-close').addEventListener('click', tplClose);
+        tplLb.addEventListener('click', function(e){ if (e.target === tplLb) tplClose(); });
+
         // Video lightbox
         var vidLb = document.getElementById('treat-vid-lb');
         var _vidPlayer = null;
@@ -990,6 +1013,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
         // Unified grid click handler (audio + video)
         grid.addEventListener('click', function(e) {
+          // Photo card
+          var pc = e.target.closest ? e.target.closest('.treat-photo-card') : null;
+          if (pc) { e.preventDefault(); openPhotos(_treatPhotos[pc.getAttribute('data-pset')] || [], 0); return; }
           // Video card
           var vc = e.target.closest ? e.target.closest('.treat-video-card') : null;
           if (vc) { e.preventDefault(); openVideo(vc.getAttribute('data-ytid')); return; }
