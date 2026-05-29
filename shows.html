@@ -88,6 +88,12 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .show-date,.show-city{text-align:center}
 /* v271: breathing room above the upcoming city so it doesn't crowd the lineup (.show-city is upcoming-only) */
 .show-city{margin-top:16px}
+/* v273: past-shows pager (10/page) */
+#shows-past-pager{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:24px}
+.shows-pager-btn{font-family:'Luminari',serif;font-size:1rem;color:rgba(201,168,76,0.8);background:transparent;border:1px solid rgba(201,168,76,0.4);border-radius:2px;width:42px;height:42px;cursor:pointer;transition:color 0.2s,border-color 0.2s,background 0.2s}
+.shows-pager-btn:hover:not(:disabled){color:#c9a84c;border-color:#c9a84c;background:rgba(201,168,76,0.08)}
+.shows-pager-btn:disabled{opacity:0.3;cursor:default}
+.shows-pager-label{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.7)}
 
 .skip-link{position:fixed;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}</style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/ttf" crossorigin>
@@ -274,6 +280,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <section id="shows-past-section" class="past-section" style="display:none;">
   <h2 class="section-heading">Past Shows</h2>
   <ul id="shows-past-list" class="past-list"></ul>
+  <div id="shows-past-pager" style="display:none;"></div>
 </section>
 
 <!-- Fallback past list: displayed only if Firestore fails -->
@@ -477,16 +484,22 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     }, 300);
   }
 
-  function renderPast(past) {
-    var section = document.getElementById('shows-past-section');
+  // v273: past-shows pagination (10/page, prev/next)
+  var _pastAll = [];
+  var pastPage = 1;
+  var PAST_PER_PAGE = 10;
+
+  function renderPastPage() {
     var list = document.getElementById('shows-past-list');
-    if (!past.length) {
-      // Fallback already showing — do nothing
-      return;
-    }
-    past.sort(function (a, b) { return a.date > b.date ? -1 : 1; });
+    var pager = document.getElementById('shows-past-pager');
+    if (!list) return;
+    var totalPages = Math.max(1, Math.ceil(_pastAll.length / PAST_PER_PAGE));
+    if (pastPage > totalPages) pastPage = totalPages;   // clamp on every render
+    if (pastPage < 1) pastPage = 1;
+    var start = (pastPage - 1) * PAST_PER_PAGE;
+    var slice = _pastAll.slice(start, start + PAST_PER_PAGE);
     var html = '';
-    past.forEach(function (show) {
+    slice.forEach(function (show) {
       var d = new Date(show.date + 'T12:00:00');
       var shortDate = d.toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) +
                       ', \u2019' + String(d.getFullYear()).slice(2);
@@ -496,13 +509,36 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         '<span class="past-city">' + esc(show.city || '') + '</span>' +
         '</li>';
     });
-    // Fade out past fallback, swap in Firestore past, fade in
+    list.innerHTML = html;
+    if (!pager) return;
+    if (totalPages <= 1) { pager.innerHTML = ''; pager.style.display = 'none'; return; }
+    pager.style.display = '';
+    pager.innerHTML =
+      '<button type="button" class="shows-pager-btn" id="shows-past-prev"' + (pastPage <= 1 ? ' disabled' : '') + ' aria-label="Previous page">\u2190</button>' +
+      '<span class="shows-pager-label">Page ' + pastPage + ' / ' + totalPages + '</span>' +
+      '<button type="button" class="shows-pager-btn" id="shows-past-next"' + (pastPage >= totalPages ? ' disabled' : '') + ' aria-label="Next page">\u2192</button>';
+    var prev = document.getElementById('shows-past-prev');
+    var next = document.getElementById('shows-past-next');
+    if (prev) prev.addEventListener('click', function () { if (pastPage > 1) { pastPage--; renderPastPage(); } });
+    if (next) next.addEventListener('click', function () { if (pastPage < totalPages) { pastPage++; renderPastPage(); } });
+  }
+
+  function renderPast(past) {
+    var section = document.getElementById('shows-past-section');
+    if (!past.length) {
+      // Fallback already showing — do nothing
+      return;
+    }
+    past.sort(function (a, b) { return a.date > b.date ? -1 : 1; });
+    _pastAll = past;
+    pastPage = 1;
+    // Fade out past fallback, swap in Firestore past (current page), fade in
     var pastFallback = document.getElementById('shows-past-fallback');
     pastFallback.style.transition = 'opacity 0.3s ease';
     pastFallback.style.opacity = '0';
     setTimeout(function() {
       pastFallback.style.display = 'none';
-      list.innerHTML = html;
+      renderPastPage();
       section.style.display = '';
       section.style.opacity = '0';
       section.style.transition = 'opacity 0.3s ease';
