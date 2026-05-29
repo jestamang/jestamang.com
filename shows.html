@@ -94,6 +94,10 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .shows-pager-btn:hover:not(:disabled){color:#c9a84c;border-color:#c9a84c;background:rgba(201,168,76,0.08)}
 .shows-pager-btn:disabled{opacity:0.3;cursor:default}
 .shows-pager-label{font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.7)}
+/* v276: center venue / doors-price / GET TICKETS on the upcoming card (scoped to #shows-upcoming; past .past-* unaffected) */
+#shows-upcoming .show-venue{text-align:center}
+#shows-upcoming .show-detail{text-align:center}
+#shows-upcoming .show-ticket-wrap{text-align:center}
 
 .skip-link{position:fixed;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}</style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.ttf" type="font/ttf" crossorigin>
@@ -376,6 +380,13 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     return MONTHS[mo] + ' \u00b7 ' + ROMAN_DAYS[dy] + ' \u00b7 ' + (ROMAN_YEARS[yr] || String(yr));
   }
 
+  // v276: plain "Mon D, 'YY" formatter (noon-anchored to avoid UTC day-shift) — shared by past + upcoming
+  function fmtShortDate(dateStr) {
+    var d = new Date(dateStr + 'T12:00:00');
+    return d.toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) +
+           ', \u2019' + String(d.getFullYear()).slice(2);
+  }
+
   function esc(s) {
     return String(s || '').replace(/[&<>"']/g, function (c) {
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
@@ -429,7 +440,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     }
     var html = '';
     upcoming.forEach(function (show, i) {
-      var ritualDate = show.date ? toRitual(show.date) : 'DATE TBA';
+      var ritualDate = show.date ? fmtShortDate(show.date) : 'DATE TBA';
       var timeDetail = '';
       if (show.time) {
         timeDetail = fmtTime(show.time) + (show.price ? ' \u00b7 ' + esc(show.price) : '');
@@ -495,9 +506,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     var slice = _pastAll.slice(start, start + PAST_PER_PAGE);
     var html = '';
     slice.forEach(function (show) {
-      var d = new Date(show.date + 'T12:00:00');
-      var shortDate = d.toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) +
-                      ', \u2019' + String(d.getFullYear()).slice(2);
+      var shortDate = fmtShortDate(show.date);
       html += '<li class="past-entry">' +
         '<span class="past-date">' + esc(shortDate) + '</span>' +
         '<span class="past-venue">' + esc(show.venue || '') + '</span>' +
