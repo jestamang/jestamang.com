@@ -466,7 +466,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div style="font-size:0.58rem;letter-spacing:0.28em;color:rgba(201,168,76,0.7);padding:12px 10px 2px;text-transform:uppercase;font-family:'Luminari',serif;">Content</div>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-13')">Announcement</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-4')">Blog Publisher</button>
+  <!-- v263: Catalog Manager removed — duplicated Announcement's New-Releases write (overlay now fed by Announcement). Album Manager (Albums) unaffected.
   <button class="adm-sidenav-link" onclick="admNavTo('sec-10')">Catalog</button>
+  -->
   <button class="adm-sidenav-link" onclick="admNavTo('sec-26')">Albums</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-27')">Entities</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-29')">Lyrics</button>
@@ -500,7 +502,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-17')">Maintenance</button>
 </nav>
 <div id="adm-mobtabs" role="navigation" aria-label="Section tabs">
-  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-10')">Catalog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-29')">Lyrics</button><button class="adm-mobtab" onclick="admNavTo('sec-30')">Captions</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-28')">TxtStyle</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
+  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-29')">Lyrics</button><button class="adm-mobtab" onclick="admNavTo('sec-30')">Captions</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-28')">TxtStyle</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
 </div>
 
   <div class="adm-header">
@@ -638,6 +640,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
     <div class="adm-ornament">✦</div>
+    <!-- v263: Catalog Manager removed — duplicated Announcement's New-Releases write; overlay now fed by Announcement. Album Manager unaffected.
     <div class="adm-section" id="sec-10">
       <div class="adm-section-title">✦ Catalog Manager</div>
       <div class="adm-section-underline"></div>
@@ -698,6 +701,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
     </div>
+    -->
     <div class="adm-ornament">✦</div>
     <div class="adm-section" id="sec-26">
       <div class="adm-section-title">✦ Album Manager</div>
@@ -1669,7 +1673,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initInquiries();
     initShows();
     initPressManager();
-    initAlbumManager();
+    /* v263: Catalog Manager removed (duplicated Announcement's New-Releases write). Init disabled; functions kept inert below for reference.
+    initAlbumManager(); */
     if (window.initLeaderboards)    window.initLeaderboards();
     initAlbumAnnouncer();
     initVideoManager();
@@ -4120,7 +4125,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       obs.observe(el, { childList: true, characterData: true, subtree: true });
     });
   }
-  var SEC_IDS = ['sec-13','sec-4','sec-10','sec-26','sec-27','sec-29','sec-30','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-11','sec-22','sec-25','sec-28','sec-1','sec-20','sec-17'];
+  var SEC_IDS = ['sec-13','sec-4','sec-26','sec-27','sec-29','sec-30','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-11','sec-22','sec-25','sec-28','sec-1','sec-20','sec-17'];
   function initScrollSpy() {
     var secs = SEC_IDS.map(function(id){ return document.getElementById(id); }).filter(Boolean);
     var links = document.querySelectorAll('.adm-sidenav-link,.adm-mobtab');
