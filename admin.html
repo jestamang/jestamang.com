@@ -1068,6 +1068,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
       <div class="tab-pane" id="mod-chat">
         <div class="entry-list" id="mod-chat-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
+        <div class="load-more-wrap"><button class="btn-ghost" id="chat-load-more" style="display:none;">Load older transmissions</button></div>
       </div>
       <div class="tab-pane" id="mod-guestbook">
         <div class="entry-list" id="mod-gb-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
@@ -2293,6 +2294,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   /* ══════════════ SECTION 5: MODERATION ══════════════ */
   var lastCommentDoc = null;
   var lastGuestbookDoc = null;
+  var lastChatDoc = null;
 
   function initModeration() {
     loadComments();
@@ -2304,6 +2306,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     });
     var _gbLoadMore=document.getElementById('gb-load-more');if(_gbLoadMore)_gbLoadMore.addEventListener('click', function(){
       loadGuestbook(true);
+    });
+    var _chatLoadMore=document.getElementById('chat-load-more');if(_chatLoadMore)_chatLoadMore.addEventListener('click', function(){
+      loadChat(true);
     });
   }
 
@@ -2362,26 +2367,35 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     }).catch(function(e){ el.innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>'; });
   }
 
-  function loadChat() {
+  function loadChat(append) {
     var el = document.getElementById('mod-chat-list');
-    db.collection('innerCircleChat').orderBy('timestamp','desc').limit(50)
-      .onSnapshot(function(snap){
-        if (snap.empty) { el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No messages.</div>'; return; }
-        var html = '';
-        snap.forEach(function(doc){
-          var d=doc.data(); var eid='chat-'+doc.id;
-          html += '<div class="entry-row" id="row-' + eid + '">'
-            + '<div class="entry-body">'
-            + '<div class="entry-name">' + esc(d.displayName||d.username||'Unknown') + '</div>'
-            + '<div class="entry-meta">' + fmtTime(d.timestamp) + '</div>'
-            + '<div class="entry-text">' + esc(d.text||d.message||'') + '</div>'
-            + '<div class="entry-actions">'
-            + '<button class="btn-danger btn-sm" onclick="askDelete(\'' + eid + '\')">Delete</button>'
-            + makeDeleteRow('innerCircleChat', doc.id, eid)
-            + '</div></div></div>';
-        });
-        el.innerHTML = html;
-      }, function(e){ el.innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>'; });
+    var lmb = document.getElementById('chat-load-more');
+    var query = db.collection('innerCircleChat').orderBy('timestamp','desc').limit(50);
+    if (append && lastChatDoc) {
+      query = query.startAfter(lastChatDoc);
+    } else {
+      lastChatDoc = null;
+    }
+    query.get().then(function(snap){
+      if (snap.empty && !append) { el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No messages.</div>'; if(lmb) lmb.style.display='none'; return; }
+      if (snap.empty) { if(lmb) lmb.style.display='none'; return; }
+      lastChatDoc = snap.docs[snap.docs.length - 1];
+      var html = '';
+      snap.forEach(function(doc){
+        var d=doc.data(); var eid='chat-'+doc.id;
+        html += '<div class="entry-row" id="row-' + eid + '">'
+          + '<div class="entry-body">'
+          + '<div class="entry-name">' + esc(d.displayName||d.username||'Unknown') + '</div>'
+          + '<div class="entry-meta">' + fmtTime(d.timestamp) + '</div>'
+          + '<div class="entry-text">' + esc(d.text||d.message||'') + '</div>'
+          + '<div class="entry-actions">'
+          + '<button class="btn-danger btn-sm" onclick="askDelete(\'' + eid + '\')">Delete</button>'
+          + makeDeleteRow('innerCircleChat', doc.id, eid)
+          + '</div></div></div>';
+      });
+      if (append) { el.innerHTML += html; } else { el.innerHTML = html; }
+      if(lmb) lmb.style.display = snap.docs.length < 50 ? 'none' : 'inline-block';
+    }).catch(function(e){ el.innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>'; });
   }
 
   function loadGuestbook(append) {
