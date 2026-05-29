@@ -971,7 +971,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.85);">Featured — show as one of the top 3 articles</span>
       </label>
 
-      <button class="btn-gold btn-gold-full" id="pm-add-btn">Add Article</button>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-gold btn-gold-full" id="pm-add-btn">Add Article</button>
+        <button class="btn-ghost" id="pm-cancel-btn" style="display:none;padding:8px 16px;" aria-label="Cancel edit">✕</button>
+      </div>
       <div class="status-msg" id="pm-status"></div>
 
       <div style="margin-top:32px;">
@@ -2701,6 +2704,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   };
 
   /* ══════════════ SECTION 8: PRESS MANAGER ══════════════ */
+  var _pmEditId = null;
+  var _pmDocs   = {};
+
+  function pmClearForm() {
+    _pmEditId = null;
+    ['pm-title','pm-pub','pm-author','pm-excerpt','pm-url'].forEach(function(id){document.getElementById(id).value='';});
+    document.getElementById('pm-featured').checked=false;
+    document.getElementById('pm-date').value=new Date().toISOString().slice(0,10);
+    document.getElementById('pm-add-btn').textContent='Add Article';
+    var cb=document.getElementById('pm-cancel-btn'); if(cb) cb.style.display='none';
+  }
+
   function initPressManager() {
     var today = new Date().toISOString().slice(0,10);
     document.getElementById('pm-date').value = today;
@@ -2718,21 +2733,25 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       if(!pub)  {statusEl.textContent='Publication required';statusEl.className='status-msg status-err';return;}
       this.disabled=true; statusEl.textContent='';
       var self=this;
-      db.collection('pressArticles').get().then(function(snap){
-        var order = snap.size + 1;
-        return db.collection('pressArticles').add({
-          title:title, publication:pub, author:author,
-          date:date, dateFormatted:date?ritualDate(date):'',
-          excerpt:excerpt, url:url, featured:featured,
-          order:order,
-          timestamp:firebase.firestore.FieldValue.serverTimestamp()
+      var fields = {
+        title:title, publication:pub, author:author,
+        date:date, dateFormatted:date?ritualDate(date):'',
+        excerpt:excerpt, url:url, featured:featured
+      };
+      var op;
+      if (_pmEditId) {
+        op = db.collection('pressArticles').doc(_pmEditId).update(fields); // preserves order + timestamp
+      } else {
+        op = db.collection('pressArticles').get().then(function(snap){
+          fields.order = snap.size + 1;
+          fields.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+          return db.collection('pressArticles').add(fields);
         });
-      }).then(function(){
-        statusEl.textContent='ARTICLE ADDED \u2726';
+      }
+      op.then(function(){
+        statusEl.textContent = _pmEditId ? 'ARTICLE UPDATED \u2726' : 'ARTICLE ADDED \u2726';
         statusEl.className='status-msg status-ok';
-        ['pm-title','pm-pub','pm-author','pm-excerpt','pm-url'].forEach(function(id){document.getElementById(id).value='';});
-        document.getElementById('pm-featured').checked=false;
-        document.getElementById('pm-date').value=new Date().toISOString().slice(0,10);
+        pmClearForm();
         self.disabled=false;
       }).catch(function(e){
         statusEl.textContent='Error: '+e.message;
@@ -2741,12 +2760,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       });
     });
 
+    var _pmCancelBtn=document.getElementById('pm-cancel-btn');if(_pmCancelBtn)_pmCancelBtn.addEventListener('click', pmClearForm);
+
     db.collection('pressArticles').onSnapshot(function(snap){
       var el=document.getElementById('pm-list');
       if(snap.empty){el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No press articles yet.</div>';return;}
       // sort client-side by order asc (avoids Firestore index requirement)
       var docs=[];
-      snap.forEach(function(doc){ docs.push({id:doc.id, data:doc.data()}); });
+      _pmDocs={}; snap.forEach(function(doc){ docs.push({id:doc.id, data:doc.data()}); _pmDocs[doc.id]=doc.data(); });
       docs.sort(function(a,b){ return (a.data.order||0)-(b.data.order||0); });
       var html='';
       docs.forEach(function(item){
@@ -2762,6 +2783,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           +(d.url?'<a href="'+esc(d.url)+'" target="_blank" rel="noopener" style="font-size:0.6rem;color:rgba(201,168,76,0.4);letter-spacing:0.1em;">View Article ↗</a>':'')
           +'</div>'
           +'<div class="entry-actions">'
+          +'<button class="btn-ghost btn-sm" onclick="editPress(\''+doc_id+'\')">Edit</button>'
           +'<button class="btn-ghost btn-sm" onclick="toggleFeatured(\''+doc_id+'\','+d.featured+')">'+(d.featured?'Unfeature':'Feature')+'</button>'
           +'<button class="btn-danger btn-sm" onclick="pressDelete(\''+doc_id+'\',\''+esc(d.title)+'\')">Delete</button>'
           +'</div></div></div>';
@@ -2772,6 +2794,22 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       document.getElementById('pm-list').innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>';
     });
   }
+
+  window.editPress = function(id){
+    var d = _pmDocs[id];
+    if(!d) return;
+    _pmEditId = id;
+    document.getElementById('pm-title').value    = d.title       || '';
+    document.getElementById('pm-pub').value       = d.publication || '';
+    document.getElementById('pm-author').value    = d.author      || '';
+    document.getElementById('pm-date').value      = d.date        || '';
+    document.getElementById('pm-url').value       = d.url         || '';
+    document.getElementById('pm-excerpt').value   = d.excerpt     || '';
+    document.getElementById('pm-featured').checked = !!d.featured;
+    document.getElementById('pm-add-btn').textContent = 'Update Article';
+    var cb=document.getElementById('pm-cancel-btn'); if(cb) cb.style.display='';
+    var sec=document.getElementById('sec-8'); if(sec) sec.scrollIntoView({behavior:'smooth',block:'start'});
+  };
 
   window.toggleFeatured = function(id, current){
     db.collection('pressArticles').doc(id).update({featured:!current}).catch(function(){});
