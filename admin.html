@@ -1082,6 +1082,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="adm-section-title" id="inq-section-title">✦ Artifact Inquiries</div>
       <div class="adm-section-underline"></div>
       <div id="inq-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
+      <div id="inq-pager" style="display:none;align-items:center;justify-content:center;gap:18px;margin-top:16px;font-family:'Luminari',serif;">
+        <button id="inq-prev" class="btn-ghost btn-sm" aria-label="Previous page" style="min-width:44px;">←</button>
+        <span id="inq-page-indicator" style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,168,76,0.55);"></span>
+        <button id="inq-next" class="btn-ghost btn-sm" aria-label="Next page" style="min-width:44px;">→</button>
+      </div>
     </div>
     <div class="adm-ornament">✦</div>
     <div class="adm-section" id="sec-21">
@@ -2439,17 +2444,48 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   }
 
   /* ══════════════ SECTION 6: INQUIRIES ══════════════ */
+  var _inquiriesAll  = [];
+  var _inquiriesPage = 0;
+  var INQ_PER_PAGE   = 5;
+
   function initInquiries() {
+    var _inqPrev=document.getElementById('inq-prev');if(_inqPrev)_inqPrev.addEventListener('click', function(){ if(_inquiriesPage>0){_inquiriesPage--;renderInquiriesPage();} });
+    var _inqNext=document.getElementById('inq-next');if(_inqNext)_inqNext.addEventListener('click', function(){ var tp=Math.ceil(_inquiriesAll.length/INQ_PER_PAGE); if(_inquiriesPage<tp-1){_inquiriesPage++;renderInquiriesPage();} });
+    loadInquiries();
+  }
+
+  function loadInquiries() {
+    var el = document.getElementById('inq-list');
+    db.collection('inquiries').orderBy('timestamp','desc').get().then(function(snap){
+      _inquiriesAll = [];
+      snap.forEach(function(doc){ _inquiriesAll.push({ id: doc.id, data: doc.data() }); });
+      var totalPages = Math.max(1, Math.ceil(_inquiriesAll.length / INQ_PER_PAGE));
+      if (_inquiriesPage > totalPages - 1) _inquiriesPage = totalPages - 1;
+      if (_inquiriesPage < 0) _inquiriesPage = 0;
+      renderInquiriesPage();
+    }).catch(function(e){ el.innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>'; });
+  }
+
+  function renderInquiriesPage() {
     var el = document.getElementById('inq-list');
     var titleEl = document.getElementById('inq-section-title');
-    db.collection('inquiries').orderBy('timestamp','desc').onSnapshot(function(snap){
-      if(snap.empty){el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No inquiries yet.</div>';return;}
-      var unread=0;
-      var html='';
-      snap.forEach(function(doc){
-        var d=doc.data();
+    var pager = document.getElementById('inq-pager');
+    // unread count across ALL inquiries (not just this page)
+    var unread = 0;
+    _inquiriesAll.forEach(function(it){ if(!it.data.read) unread++; });
+    titleEl.textContent='\u2726 Artifact Inquiries'+(unread?' ('+unread+' unread)':'');
+    if(!_inquiriesAll.length){
+      el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No inquiries yet.</div>';
+      if(pager) pager.style.display='none';
+      return;
+    }
+    var totalPages=Math.ceil(_inquiriesAll.length / INQ_PER_PAGE);
+    var slice=_inquiriesAll.slice(_inquiriesPage*INQ_PER_PAGE, _inquiriesPage*INQ_PER_PAGE + INQ_PER_PAGE);
+    var html='';
+    slice.forEach(function(item){
+        var doc={id:item.id};
+        var d=item.data;
         var isRead=!!d.read;
-        if(!isRead) unread++;
         var cardClass='inq-card'+(isRead?' read':' unread');
         var product=esc(d.product||'your inquiry');
         var defaultMsg='Thank you for reaching out about '+product+'. We have received your inquiry and will follow up with you shortly.\n\n\u2014 Jestamang';
@@ -2483,14 +2519,26 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           +'<div class="status-msg" id="reply-status-'+doc.id+'" style="margin-top:8px;"></div>'
           +'</div>'
           +'</div>';
-      });
-      el.innerHTML=html;
-      titleEl.textContent='\u2726 Artifact Inquiries'+(unread?' ('+unread+' unread)':'');
-    },function(e){el.innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>';});
+    });
+    el.innerHTML=html;
+    if(pager){
+      if(totalPages<=1){
+        pager.style.display='none';
+      } else {
+        pager.style.display='flex';
+        document.getElementById('inq-page-indicator').textContent='Page '+(_inquiriesPage+1)+' / '+totalPages;
+        var prev=document.getElementById('inq-prev');
+        var next=document.getElementById('inq-next');
+        prev.disabled=(_inquiriesPage===0);
+        next.disabled=(_inquiriesPage>=totalPages-1);
+        prev.style.opacity=prev.disabled?'0.3':'1';
+        next.style.opacity=next.disabled?'0.3':'1';
+      }
+    }
   }
 
   window.markRead = function(id){
-    db.collection('inquiries').doc(id).update({read:true}).catch(function(){});
+    db.collection('inquiries').doc(id).update({read:true}).then(loadInquiries).catch(function(){});
   };
 
   window.openReply = function(id, email, defaultMsg) {
@@ -2532,7 +2580,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       db.collection('inquiries').doc(id).update({
         read: true,
         repliedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).catch(function(){});
+      }).then(loadInquiries).catch(function(){});
       setTimeout(function () {
         var panel = document.getElementById('reply-panel-'+id);
         if (panel) panel.style.display = 'none';
