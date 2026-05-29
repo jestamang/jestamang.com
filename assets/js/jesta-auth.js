@@ -632,7 +632,7 @@
               if (cap.page !== 'all' && cap.page !== currentPage) return;
               try {
                 var el = document.querySelector(cap.selector);
-                if (el) el.textContent = cap.text;
+                if (el) el.innerHTML = esc(cap.text).replace(/\\n/g,'<br>').replace(/\n/g,'<br>');
               } catch (e) { /* invalid selector — skip */ }
             });
           })

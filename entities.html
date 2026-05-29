@@ -220,7 +220,7 @@ function parseBgRgb(s){var m=s.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
       +'<h2 class="dossier-name">'+esc(d.name)+'</h2>'
       +'<div class="dossier-body">'
         +'<div class="dossier-top">'
-          +'<div class="dossier-desc-block"><div class="dossier-seal">✦</div><p class="dossier-desc">'+esc(d.bio||'')+'</p></div>'
+          +'<div class="dossier-desc-block"><div class="dossier-seal">✦</div><p class="dossier-desc">'+esc(d.bio||'').replace(/\\n/g,'<br>').replace(/\n/g,'<br>')+'</p></div>'
           +'<div class="dossier-chart-block"><img src="'+esc(d.chartImage||'')+'" alt="Natal chart \u2014 '+esc(d.name)+'" class="dossier-chart-img" loading="lazy" width="500" height="477"><div class="dossier-chart-caption">Natal Chart</div></div>'
         +'</div>'
         +(planets?'<div class="dossier-rule dossier-rule--planets"><span>✦ Planetary Positions ✦</span></div><div class="dossier-planets">'+planets+'</div>':'')
