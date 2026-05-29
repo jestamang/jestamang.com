@@ -252,7 +252,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
 <style>
 .inner-circle-divider{display:flex;align-items:center;justify-content:center;gap:16px;color:#c9a84c;font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;margin:64px 0 2px}.inner-circle-divider::before,.inner-circle-divider::after{content:'';flex:1;max-width:160px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.35))}.inner-circle-divider::after{background:linear-gradient(to left,transparent,rgba(201,168,76,0.35))}
-#inner-overflow{overflow:hidden;max-height:0;transition:max-height .6s ease;}
+#inner-expand-btn{margin-bottom:2rem;}#inner-overflow{overflow:hidden;max-height:0;transition:max-height .6s ease;margin-top:0;}
 .post-compact{cursor:pointer;padding:22px 30px 20px!important;}
 .post-compact .post-body,.post-compact .post-closing,.post-compact .post-comments,.post-compact .post-rule{display:none!important;}
 .post-compact:hover{border-color:rgba(201,168,76,0.5);box-shadow:0 0 20px rgba(0,0,0,0.5),0 0 12px rgba(201,168,76,0.04);transform:translateY(-1px);}
@@ -677,7 +677,7 @@ function pressSectionToggle(){
 
   // Edit 2: render-time Roman-month date formatter
   function renderRitualDate(dateStr) {
-    if (!dateStr) return '';
+    if (!dateStr) return 'UNKNOWN';
     var d = new Date(dateStr + 'T12:00:00');
     var rm = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
     var v=[1000,900,500,400,100,90,50,40,10,9,5,4,1];
@@ -697,13 +697,8 @@ function pressSectionToggle(){
     var date = renderRitualDate(d.date) || d.dateFormatted || d.date || '';
     var subtitleHtml = '';
     if (d.subtitle) {
-      var lines = d.subtitle.replace(/\n/g, '\n').split('\n');
-      if (lines.length === 1) {
-        subtitleHtml = '<p style="font-size:0.65rem;letter-spacing:0.28em;color:rgba(201,168,76,0.85);margin-bottom:20px;text-transform:uppercase;text-align:center;">' + escHtml(lines[0]) + '</p>';
-      } else {
-        subtitleHtml = '<p style="font-size:0.72rem;letter-spacing:0.22em;color:rgba(201,168,76,0.55);margin-bottom:6px;text-transform:uppercase;text-align:center;">' + escHtml(lines[0]) + '</p>'
-          + '<p style="font-size:0.65rem;letter-spacing:0.28em;color:rgba(201,168,76,0.85);margin-bottom:20px;text-transform:uppercase;text-align:center;">' + lines.slice(1).map(function(l){ return escHtml(l); }).join('<br>') + '</p>';
-      }
+      var subHtml = escHtml(d.subtitle).replace(/\\n/g, '<br>').replace(/\n/g, '<br>');
+      subtitleHtml = '<p style="font-size:0.65rem;letter-spacing:0.28em;color:rgba(201,168,76,0.85);margin-bottom:20px;text-transform:uppercase;text-align:center;">' + subHtml + '</p>';
     }
     return (d.category ? '<span class="post-tag">' + escHtml(d.category) + '</span>' : '')
       + (date ? '<p class="post-date">' + escHtml(date) + '</p>' : '')
@@ -803,7 +798,7 @@ function pressSectionToggle(){
             var d = item.data;
             var date = renderRitualDate(d.date) || d.dateFormatted || d.date || '';
             var excerpt = (d.excerpt || d.content || '').replace(/\n/g, ' ').slice(0, 120) + (((d.excerpt || d.content || '').length > 120) ? '…' : '');
-            var subtitleCompact = d.subtitle ? '<p style="font-size:0.62rem;letter-spacing:0.22em;color:rgba(201,168,76,0.55);text-transform:uppercase;margin-top:4px;text-align:center;">' + escHtml(d.subtitle.replace(/\n/g, ' · ')) + '</p>' : '';
+            var subtitleCompact = d.subtitle ? '<p style="font-size:0.62rem;letter-spacing:0.22em;color:rgba(201,168,76,0.55);text-transform:uppercase;margin-top:4px;text-align:center;">' + escHtml(d.subtitle).replace(/\\n/g, ' · ').replace(/\n/g, ' · ') + '</p>' : '';
             var compactArticle = document.createElement('article');
             compactArticle.className = 'post ' + _CYCLE_CLASSES[idx % 3] + ' post-compact';
             compactArticle.style.background = _bgC[idx % 3];
