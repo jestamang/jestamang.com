@@ -2025,6 +2025,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     document.getElementById('bp-draft-btn').textContent   = 'Save Draft';
     var cancelBtn = document.getElementById('bp-cancel-edit');
     if (cancelBtn) cancelBtn.remove();
+    // Clear all form fields so the composer returns to a clean empty state
+    document.getElementById('bp-title').value    = '';
+    document.getElementById('bp-date').value     = new Date().toISOString().slice(0,10);
+    document.getElementById('bp-category').value = '';
+    document.getElementById('bp-subtitle').value = '';
+    document.getElementById('bp-content').value  = '';
+    document.getElementById('bp-excerpt').value  = '';
     var statusEl = document.getElementById('bp-status');
     statusEl.textContent = '';
     statusEl.className = 'status-msg';
