@@ -215,6 +215,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .post-compact:hover{border-color:rgba(201,168,76,0.5);box-shadow:0 0 20px rgba(0,0,0,0.5),0 0 12px rgba(201,168,76,0.04);transform:translateY(-1px);}
 .post-compact-excerpt{font-family:sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.35);font-style:italic;margin-top:8px;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.5;}
 .post-compact-read{font-size:0.65rem;letter-spacing:0.28em;color:rgba(201,168,76,0.4);text-transform:uppercase;margin-top:10px;}
+.post-collapse-btn{display:block;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(201,168,76,0.75);border:1px solid rgba(201,168,76,0.35);padding:12px 32px;background:rgba(0,0,0,0.4);cursor:pointer;margin:32px auto 0;transition:color 0.2s,border-color 0.2s,background 0.2s}
+.post-collapse-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.7);background:rgba(201,168,76,0.08)}
 .press-divider{display:flex;align-items:center;justify-content:center;gap:16px;color:rgba(201,168,76,0.45);font-size:0.8rem;letter-spacing:0.1em;margin:72px 0 48px}
 .press-divider::before,.press-divider::after{content:'';flex:1;max-width:180px;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.4))}
 .press-divider::after{background:linear-gradient(to left,transparent,rgba(201,168,76,0.4))}
@@ -690,19 +692,40 @@ function pressSectionToggle(){
         + '<div class="comments-list" id="comments-' + postId + '"><p class="comments-loading">Loading transmissions...</p></div>'
         + '<div class="comment-form-wrap" id="cform-' + postId + '" style="display:none"><textarea class="comment-textarea" placeholder="Add your transmission..." maxlength="1000" aria-label="Add your comment"></textarea><button class="comment-submit gbtn-comment">SEND</button></div>'
         + '<div class="comment-auth-prompt" id="cprompt-' + postId + '" style="display:none"><a href="login.html" class="comment-join-link">JOIN THE INNER CIRCLE TO LEAVE A TRANSMISSION</a></div>'
-      + '</div>';
+      + '</div>'
+      + '<button type="button" class="post-collapse-btn">COLLAPSE ↑</button>';
   }
 
   // Edit 7: expand compact card to full inline
   function expandCompact(article, docId) {
+    // Guard: only expand a still-compact card. Prevents a click inside the expanded
+    // post (e.g. the comment form) from re-running expand — which would overwrite the
+    // stashed compact HTML and double-init comments.
+    if (!article.classList.contains('post-compact')) return;
     var d = _postCache[docId];
     if (!d) return;
     var postId = 'admin-' + docId;
+    article._compactHTML = article.innerHTML; // stash so collapse can restore it
     article.classList.remove('post-compact');
     article.innerHTML = buildFullPostHtml(d, postId);
     initComments(postId, _currentUser);
+    var collapseBtn = article.querySelector('.post-collapse-btn');
+    if (collapseBtn) collapseBtn.addEventListener('click', function(e) {
+      e.stopPropagation(); // don't bubble to the article's expand click
+      collapseExpanded(article, docId);
+    });
     var ov = document.getElementById('inner-overflow');
     if (ov) ov.style.maxHeight = 'none';
+  }
+
+  // Collapse an expanded post back to its compact card (own post only)
+  function collapseExpanded(article, docId) {
+    if (article._compactHTML == null) return;
+    article.innerHTML = article._compactHTML;
+    article.classList.add('post-compact');
+    // The article's own click listener persists across innerHTML swaps,
+    // so the restored compact card re-expands on click with no re-wiring.
+    article.scrollIntoView({ block: 'start' });
   }
 
   // Edit 6: global toggle (inside IIFE via window.*)
