@@ -1107,9 +1107,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="adm-ornament">✦</div>
     <div class="adm-section" id="sec-18">
-      <div class="adm-section-title">✦ Send a Campaign</div>
+      <div class="adm-section-title">✦ Draft a Transmission</div>
       <div class="adm-section-underline"></div>
-      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Transmit to the entire Jestagang.</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Compose here, then send from MailerLite.</div>
 
       <label class="field-label" for="ec-subject">Subject Line</label>
       <input class="field-input" id="ec-subject" type="text" placeholder="NEW TRANSMISSION FROM THE COSMOS" maxlength="200">
@@ -1126,8 +1126,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <option value="jestagang">Jestagang group</option>
       </select>
 
-      <button class="btn-gold btn-gold-full" id="ec-send-btn">SEND CAMPAIGN ✦</button>
+      <button class="btn-gold btn-gold-full" id="ec-send-btn">SAVE DRAFT ✦</button>
       <div class="status-msg" id="ec-status"></div>
+      <div style="margin-top:10px;font-size:0.62rem;letter-spacing:0.12em;"><a href="https://dashboard.mailerlite.com/" target="_blank" rel="noopener" style="color:#c9a84c;text-decoration:none;">&rarr; Open MailerLite to send</a></div>
 
       <div style="margin-top:32px;">
         <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Recent Campaigns</div>
@@ -1560,8 +1561,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   'use strict';
 
   var ADMIN_EMAIL = 'thejestamang@gmail.com';
-  var MAILERLITE_API_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiYWMwMDg3OTA0ZTcyNjEzNTQwOTBhOGI5OTc4ZGVlZGFjZTQwNzU5NTg4NDdmZmIyYjEzOTY2MTgxYWQ2YzA4YzcxMzQ2ZGIzZTQwMDdlOTUiLCJpYXQiOjE3NzU3NjY0OTUuNjMzMjExLCJuYmYiOjE3NzU3NjY0OTUuNjMzMjE1LCJleHAiOjQ5MzE0NDAwOTUuNjI3NjQ2LCJzdWIiOiIyMjY1MjU1Iiwic2NvcGVzIjpbXX0.VSMJusBlar1u_MLcSV-6YmQ5Vlp3SehtQrFlCRZgKJ-cRtLpxhEUJLsT-QRzAjw8CCLGoxWRX8ac53lTR4NVpUt7IeoK2TXur1KJR330TFLdkyli0x_ngeXnOeAHpeVsNuT5GYiZBd5Eq1ZnkTVNhWlbf_qV8W_p0YuFzjmT0Mv1BbAv4ZunZSRL0IeG6V3bgJTzUHhQC5qkMXpgwU13pW7K6tpo9q_yRxaTZPDh6uqTsirURxn7zbHw9D7ZKSsBkEebMGrTehtVPS1qsTuBWLUOI4gF3jXHvZHYf9D2L0bqExk3k7SYFx98-fH8RGQpWLgcLpjSF5OA8UBLZ9BLXcvVatwKXFytB0owqgmDw3Nq8gaAQr8cG07egtW5PFr4u9vP4-Z7pHjY6oU8gsEFwKwWVmAB-WXxk9VbXemKJkOGCvDT_0DqYjYpViwETxxsFbziL3S7N2TiZhuc1wF_l2uFz5kUBuNsmZWi_tcbaDa5rjYqByVPvONaxDn6gIv-jKu7rwx3nvvwmqkvw5lAYEqPzpWK91TgIHWpzCLcq54b1SfjOOMaLcZe8l8sWGTayfuqXkm3RaoSZW0ybLgAOUm2FHljJHlKIh2-ZJJhh954Zg9fhr6PGN3iVtITYpF6X0DfFNMuxIargK-eO-uC03JKg3LIHAoSdckh0VOfb1A';
-  var MAILERLITE_GROUP_ID = '183877737080947826';
   var db;
 
   /* ══════════════ HELPERS ══════════════ */
@@ -1674,13 +1673,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     countCol('guestbook',     'stat-guestbook');
     countCol('inquiries',     'stat-inquiries');
 
-    // MailerLite subscriber count
-    fetch('https://connect.mailerlite.com/api/subscribers?filter[status]=active&limit=1', {
-      headers: { 'Authorization': 'Bearer ' + MAILERLITE_API_KEY, 'Content-Type': 'application/json' }
-    }).then(function (r) { return r.json(); }).then(function (json) {
-      var total = json && json.meta && json.meta.total !== undefined ? json.meta.total : '\u2014';
-      setNum('stat-subscribers', total);
-    }).catch(function () { setNum('stat-subscribers', '\u2014'); });
+    setNum('stat-subscribers', '\u2014'); // subscriber count via MailerLite dashboard
   }
 
   /* ══════════════ SECTION 2: NOTIFICATIONS ══════════════ */
@@ -3141,16 +3134,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var statusEl = document.getElementById('ec-status');
     var histEl   = document.getElementById('ec-history');
 
-    // Load recent campaigns
+    // Load recent drafts (ordered by savedAt)
     function loadCampaignHistory() {
-      db.collection('emailCampaigns').orderBy('sentAt','desc').limit(5).get().then(function (snap) {
-        if (snap.empty) { histEl.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No campaigns sent yet.</div>'; return; }
+      db.collection('emailCampaigns').orderBy('savedAt','desc').limit(5).get().then(function (snap) {
+        if (snap.empty) { histEl.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No drafts yet.</div>'; return; }
         var html = '';
         snap.forEach(function (doc) {
           var d = doc.data();
           html += '<div style="padding:10px 0;border-bottom:1px solid rgba(201,168,76,0.06);font-size:0.72rem;">'
-            + '<span style="color:#c9a84c;">' + esc(d.subject) + '</span><br>'
-            + '<span style="color:rgba(240,230,210,0.4);font-size:0.62rem;">' + fmtTime(d.sentAt) + ' &nbsp;\u00b7&nbsp; to: ' + esc(d.sendTo || 'all') + '</span></div>';
+            + '<span style="color:#c9a84c;">' + esc(d.subject) + '</span>'
+            + ' <span style="color:rgba(201,168,76,0.35);font-size:0.58rem;letter-spacing:0.1em;">DRAFT</span><br>'
+            + '<span style="color:rgba(240,230,210,0.4);font-size:0.62rem;">' + fmtTime(d.savedAt) + ' · to: ' + esc(d.sendTo || 'all') + '</span></div>';
         });
         histEl.innerHTML = html;
       }).catch(function () { histEl.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Could not load history.</div>'; });
@@ -3167,64 +3161,30 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       if (!body)    { statusEl.textContent='Body required';    statusEl.className='status-msg status-err'; return; }
 
       sendBtn.disabled = true;
-      statusEl.textContent = 'Transmitting...';
+      statusEl.textContent = 'Saving draft...';
       statusEl.className = 'status-msg';
 
-      // Wrap plain text in minimal HTML for MailerLite
-      var htmlBody = '<html><body style="font-family:Georgia,serif;color:#1a1a1a;max-width:600px;margin:0 auto;padding:40px 20px;">'
-        + '<p style="white-space:pre-wrap;">' + body.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}) + '</p>'
-        + '<!-- footer-single-line-mobile --><style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>'
-        + '</body></html>';
-
-      var payload = {
-        name: subject + ' — ' + new Date().toISOString().slice(0,10),
-        type: 'regular',
-        emails: [{
-          subject: subject,
-          from: ADMIN_EMAIL,
-          from_name: 'Jestamang',
-          preview_text: preview || '',
-          content: htmlBody
-        }]
-      };
-
-      fetch('https://connect.mailerlite.com/api/campaigns', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + MAILERLITE_API_KEY,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      }).then(function (r) { return r.json().then(function(j){return{ok:r.ok,j:j};}); })
-        .then(function (res) {
-          if (!res.ok) {
-            var msg = (res.j && res.j.message) ? res.j.message : 'MailerLite error (check API key and account)';
-            statusEl.textContent = 'Error: ' + msg;
-            statusEl.className = 'status-msg status-err';
-            sendBtn.disabled = false;
-            return;
-          }
-          // Save to Firestore
-          return db.collection('emailCampaigns').add({
-            subject: subject, preview: preview, body: body,
-            sendTo: group || 'all',
-            mailerliteCampaignId: (res.j && res.j.data && res.j.data.id) ? String(res.j.data.id) : '',
-            sentAt: firebase.firestore.FieldValue.serverTimestamp(),
-            sentBy: ADMIN_EMAIL
-          }).then(function () {
-            statusEl.textContent = 'CAMPAIGN TRANSMITTED \u2726';
-            statusEl.className = 'status-msg status-ok';
-            document.getElementById('ec-subject').value = '';
-            document.getElementById('ec-preview').value = '';
-            document.getElementById('ec-body').value    = '';
-            sendBtn.disabled = false;
-            loadCampaignHistory();
-          });
-        }).catch(function (e) {
-          statusEl.textContent = 'Error: ' + e.message;
-          statusEl.className = 'status-msg status-err';
-          sendBtn.disabled = false;
-        });
+      db.collection('emailCampaigns').add({
+        subject: subject,
+        preview: preview,
+        body: body,
+        sendTo: group || 'all',
+        status: 'draft',
+        savedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        savedBy: ADMIN_EMAIL
+      }).then(function () {
+        statusEl.textContent = 'TRANSMISSION DRAFTED ✦ — open MailerLite to send';
+        statusEl.className = 'status-msg status-ok';
+        document.getElementById('ec-subject').value = '';
+        document.getElementById('ec-preview').value = '';
+        document.getElementById('ec-body').value    = '';
+        sendBtn.disabled = false;
+        loadCampaignHistory();
+      }).catch(function (e) {
+        statusEl.textContent = 'Error: ' + e.message;
+        statusEl.className = 'status-msg status-err';
+        sendBtn.disabled = false;
+      });
     });
   }
 
