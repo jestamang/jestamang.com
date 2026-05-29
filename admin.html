@@ -987,8 +987,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <label class="field-label" for="treat-meta">Meta / Description</label>
         <input class="field-input" id="treat-meta" type="text" placeholder="Full archive · All groups" maxlength="80">
 
+        <label class="field-label" for="treat-type">Type</label>
+        <select class="field-input field-select" id="treat-type">
+          <option value="link">Link (navigates away)</option>
+          <option value="audio">Audio (R2 .mp3 URL)</option>
+          <option value="video">Video (YouTube — coming soon)</option>
+          <option value="photo">Photo gallery (coming soon)</option>
+        </select>
+        <div style="font-size:0.58rem;letter-spacing:0.12em;color:rgba(201,168,76,0.3);margin:-10px 0 12px;">For Audio, paste the full R2 .mp3 URL into the URL field below.</div>
+
         <label class="field-label" for="treat-url">URL / Link</label>
-        <input class="field-input" id="treat-url" type="text" placeholder="photos.html or https://..." maxlength="200">
+        <input class="field-input" id="treat-url" type="text" placeholder="photos.html or https://..." maxlength="500">
 
         <label class="field-label" for="treat-icon">Icon</label>
         <select class="field-input field-select" id="treat-icon">
@@ -2068,6 +2077,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       document.getElementById('treat-overlay').value = (d.overlayTitle || '').replace('<br>', '\n');
       document.getElementById('treat-meta').value = d.meta || '';
       document.getElementById('treat-url').value = d.url || '';
+      document.getElementById('treat-type').value = d.type || 'link';
       document.getElementById('treat-icon').value = d.icon || '◎';
       document.getElementById('treat-blur').value = String(d.blur || '1');
       document.getElementById('treat-order').value = d.order || 0;
@@ -2084,6 +2094,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     document.getElementById('treat-overlay').value = '';
     document.getElementById('treat-meta').value = '';
     document.getElementById('treat-url').value = '';
+    document.getElementById('treat-type').value = 'link';
     document.getElementById('treat-icon').value = '◎';
     document.getElementById('treat-blur').value = '1';
     document.getElementById('treat-order').value = '10';
@@ -2099,6 +2110,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var overlay = document.getElementById('treat-overlay').value.trim();
     var meta    = document.getElementById('treat-meta').value.trim();
     var url     = document.getElementById('treat-url').value.trim();
+    var type    = (document.getElementById('treat-type').value || 'link');
     var icon    = document.getElementById('treat-icon').value;
     var blur    = parseInt(document.getElementById('treat-blur').value, 10) || 1;
     var order   = parseInt(document.getElementById('treat-order').value, 10) || 10;
@@ -2113,6 +2125,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       overlayTitle: overlay.replace(/\n/g, '<br>'),
       meta: meta,
       url: url,
+      type: type,
       icon: icon,
       blur: blur,
       order: order,
