@@ -478,6 +478,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     setTimeout(function() {
       fallbackEl.style.display = 'none';
       container.innerHTML = html;
+      // v274: cards are injected after initCardObservers() ran, so the observer never
+      // sees them — mark them visible directly (flips .show-card opacity:0 → 1).
+      container.querySelectorAll('.show-card').forEach(function (c) { c.classList.add('visible'); });
       container.style.opacity = '0';
       container.style.transition = 'opacity 0.3s ease';
       setTimeout(function() { container.style.opacity = '1'; }, 10);
