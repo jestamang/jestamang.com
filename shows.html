@@ -441,14 +441,23 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       } else if (show.price && show.price.toLowerCase().indexOf('free') !== -1) {
         ticketHtml = '<div class="show-ticket-wrap"><span class="show-free-entry">Free Entry</span></div>';
       }
+      // v271: lineup subtitle (under venue) + tagline (show-detail slot) — match the Madhouse card layout
+      var lineupHtml = show.lineup
+        ? '<p style="font-family:\'Luminari\',serif;font-style:italic;font-size:0.72rem;color:rgba(201,168,76,0.7);text-align:center;letter-spacing:0.06em;margin:4px 0 6px;">' + esc(show.lineup) + '</p>'
+        : '';
+      var taglineHtml = show.tagline
+        ? '<p class="show-detail" style="text-align:center">' + esc(show.tagline).replace(/\\n/g, '<br>').replace(/\n/g, '<br>') + '</p>'
+        : '';
       html +=
         '<article class="show-card">' +
         '<span class="show-numeral">' + (ROMAN_DAYS[i + 1] || String(i + 1)) + '</span>' +
         '<span class="show-status">Upcoming</span>' +
         '<p class="show-date">' + esc(ritualDate) + '</p>' +
         '<h3 class="show-venue">' + esc(show.venue || '') + '</h3>' +
+        lineupHtml +
         '<p class="show-city">' + esc(show.city || '') + '</p>' +
         '<div class="show-rule"></div>' +
+        taglineHtml +
         (timeDetail ? '<p class="show-detail">' + timeDetail + '</p>' : '') +
         ticketHtml +
         '</article>';
