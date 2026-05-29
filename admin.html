@@ -992,12 +992,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <option value="link">Link (navigates away)</option>
           <option value="audio">Audio (R2 .mp3 URL)</option>
           <option value="video">Video (YouTube)</option>
-          <option value="photo">Photo gallery (coming soon)</option>
+          <option value="photo">Photo gallery</option>
         </select>
-        <div style="font-size:0.58rem;letter-spacing:0.12em;color:rgba(201,168,76,0.3);margin:-10px 0 12px;">For Audio, paste the full R2 .mp3 URL. For Video, paste a YouTube URL or 11-char ID.</div>
+        <div style="font-size:0.58rem;letter-spacing:0.12em;color:rgba(201,168,76,0.3);margin:-10px 0 12px;">For Audio, paste the full R2 .mp3 URL. For Video, paste a YouTube URL or 11-char ID. For Photo, leave URL blank and use the field below.</div>
 
-        <label class="field-label" for="treat-url">URL / Link</label>
+        <label class="field-label" for="treat-url">URL / Link <span style="color:rgba(201,168,76,0.3);font-size:0.58rem;">(not needed for Photo type)</span></label>
         <input class="field-input" id="treat-url" type="text" placeholder="photos.html or https://..." maxlength="500">
+
+        <label class="field-label" for="treat-photos" style="margin-top:14px;">Photo URLs / Paths <span style="color:rgba(201,168,76,0.3);font-size:0.58rem;">(one per line — photo type only)</span></label>
+        <textarea class="field-input field-textarea" id="treat-photos" rows="5" maxlength="5000" placeholder="One image URL or path per line&#10;e.g. assets/photos/exclusive/bts1.jpg&#10;or a full https:// URL"></textarea>
 
         <label class="field-label" for="treat-icon">Icon</label>
         <select class="field-input field-select" id="treat-icon">
@@ -2078,6 +2081,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       document.getElementById('treat-meta').value = d.meta || '';
       document.getElementById('treat-url').value = d.url || '';
       document.getElementById('treat-type').value = d.type || 'link';
+      document.getElementById('treat-photos').value = (d.photos || []).join('\n');
       document.getElementById('treat-icon').value = d.icon || '◎';
       document.getElementById('treat-blur').value = String(d.blur || '1');
       document.getElementById('treat-order').value = d.order || 0;
@@ -2095,6 +2099,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     document.getElementById('treat-meta').value = '';
     document.getElementById('treat-url').value = '';
     document.getElementById('treat-type').value = 'link';
+    document.getElementById('treat-photos').value = '';
     document.getElementById('treat-icon').value = '◎';
     document.getElementById('treat-blur').value = '1';
     document.getElementById('treat-order').value = '10';
@@ -2116,9 +2121,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var order   = parseInt(document.getElementById('treat-order').value, 10) || 10;
     var msg     = document.getElementById('treat-form-msg');
 
+    var photos = type === 'photo'
+      ? (document.getElementById('treat-photos').value || '').split('\n').map(function(s){return s.trim();}).filter(function(s){return s;})
+      : [];
+
     if (!title) { msg.textContent = 'Title is required.'; return; }
-    if (!url)   { msg.textContent = 'URL is required.'; return; }
-    if (!/^https?:\/\//i.test(url)) { msg.textContent = 'URL must start with http:// or https://'; return; }
+    if (type !== 'photo') {
+      if (!url) { msg.textContent = 'URL is required.'; return; }
+      if (!/^https?:\/\//i.test(url)) { msg.textContent = 'URL must start with http:// or https://'; return; }
+    }
+    if (type === 'photo' && photos.length === 0) { msg.textContent = 'At least one photo URL/path is required.'; return; }
 
     var data = {
       title: title,
@@ -2126,6 +2138,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       meta: meta,
       url: url,
       type: type,
+      photos: photos,
       icon: icon,
       blur: blur,
       order: order,
