@@ -696,9 +696,7 @@ function pressSectionToggle(){
     var date = renderRitualDate(d.date) || d.dateFormatted || d.date || '';
     var subtitleHtml = '';
     if (d.subtitle) {
-      var lines = d.subtitle.replace(/\n/g, '
-').split('
-');
+      var lines = d.subtitle.replace(/\n/g, '\n').split('\n');
       if (lines.length === 1) {
         subtitleHtml = '<p style="font-size:0.65rem;letter-spacing:0.28em;color:rgba(201,168,76,0.85);margin-bottom:20px;text-transform:uppercase;text-align:center;">' + escHtml(lines[0]) + '</p>';
       } else {
@@ -806,8 +804,7 @@ function pressSectionToggle(){
             var idx = i + 1;
             var d = item.data;
             var date = renderRitualDate(d.date) || d.dateFormatted || d.date || '';
-            var excerpt = (d.excerpt || d.content || '').replace(/
-/g, ' ').slice(0, 120) + (((d.excerpt || d.content || '').length > 120) ? '…' : '');
+            var excerpt = (d.excerpt || d.content || '').replace(/\n/g, ' ').slice(0, 120) + (((d.excerpt || d.content || '').length > 120) ? '…' : '');
             var subtitleCompact = d.subtitle ? '<p style="font-size:0.62rem;letter-spacing:0.22em;color:rgba(201,168,76,0.55);text-transform:uppercase;margin-top:4px;text-align:center;">' + escHtml(d.subtitle.replace(/\n/g, ' · ')) + '</p>' : '';
             var compactArticle = document.createElement('article');
             compactArticle.className = 'post ' + _CYCLE_CLASSES[idx % 3] + ' post-compact';
