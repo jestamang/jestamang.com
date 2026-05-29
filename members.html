@@ -707,6 +707,10 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <div class="gold-rule-sm"></div>
 
   <audio id="treat-audio" preload="none" style="position:fixed;top:-9999px;left:-9999px;"></audio>
+  <div id="treat-vid-lb" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;">
+    <div id="treat-vid-player" style="width:90vw;max-width:880px;aspect-ratio:16/9;"></div>
+    <button id="treat-vid-close" style="position:absolute;top:16px;right:20px;font-size:1.6rem;background:none;border:none;color:#c9a84c;cursor:pointer;line-height:1;font-family:sans-serif;">✕</button>
+  </div>
   <div class="catalog-grid treats-grid" id="treats-grid">
 
     <a class="catalog-card treat-card" href="photos.html">
@@ -847,6 +851,14 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+var _ytReady = false, _ytPending = null;
+function onYouTubeIframeAPIReady() {
+  _ytReady = true;
+  if (_ytPending) { var id = _ytPending; _ytPending = null; openVideo(id); }
+}
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
@@ -928,6 +940,12 @@ document.addEventListener('DOMContentLoaded', function(){
           if (d.type === 'audio' && d.url) {
             html += '<div class="catalog-card treat-card treat-audio-card" data-url="'+esc(d.url)+'" role="button" tabindex="0" aria-label="Play '+esc(d.title||'audio')+'">'
               + artInner + '</div>';
+          } else if (d.type === 'video' && d.url) {
+            var vid = ytId(d.url);
+            if (vid) {
+              html += '<div class="catalog-card treat-card treat-video-card" data-ytid="'+esc(vid)+'" role="button" tabindex="0" aria-label="Watch '+esc(d.title||'video')+'">'
+                + artInner + '</div>';
+            }
           } else {
             html += '<a class="catalog-card treat-card" href="'+esc(d.url||'#')+'">'
               + artInner + '</a>';
@@ -935,14 +953,47 @@ document.addEventListener('DOMContentLoaded', function(){
         });
         grid.innerHTML = html;
 
-        // Audio playback wiring
+        // Shared helpers
         var exAudio = document.getElementById('treat-audio');
         var nowCard = null;
         function setGlyph(card, g) {
           var s = card.querySelector('.treat-glyph');
           if (s) { s.textContent = g; }
         }
+        function ytId(u) {
+          if (!u) return '';
+          var m = String(u).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([\w-]{11})/);
+          if (m) return m[1];
+          return /^[\w-]{11}$/.test(u) ? u : '';
+        }
+
+        // Video lightbox
+        var vidLb = document.getElementById('treat-vid-lb');
+        var _vidPlayer = null;
+        function openVideo(id) {
+          if (!id) return;
+          if (!_ytReady) { _ytPending = id; vidLb.style.display = 'flex'; return; }
+          vidLb.style.display = 'flex';
+          if (_vidPlayer && _vidPlayer.destroy) { _vidPlayer.destroy(); _vidPlayer = null; }
+          document.getElementById('treat-vid-player').innerHTML = '';
+          _vidPlayer = new YT.Player('treat-vid-player', {
+            host: 'https://www.youtube-nocookie.com', videoId: id,
+            playerVars: { autoplay: 1, rel: 0, modestbranding: 1, origin: 'https://jestamang.com' }
+          });
+        }
+        function closeVideo() {
+          vidLb.style.display = 'none';
+          if (_vidPlayer && _vidPlayer.destroy) { _vidPlayer.destroy(); _vidPlayer = null; }
+        }
+        document.getElementById('treat-vid-close').addEventListener('click', closeVideo);
+        vidLb.addEventListener('click', function(e) { if (e.target === vidLb) closeVideo(); });
+
+        // Unified grid click handler (audio + video)
         grid.addEventListener('click', function(e) {
+          // Video card
+          var vc = e.target.closest ? e.target.closest('.treat-video-card') : null;
+          if (vc) { e.preventDefault(); openVideo(vc.getAttribute('data-ytid')); return; }
+          // Audio card
           var card = e.target.closest ? e.target.closest('.treat-audio-card') : null;
           if (!card) { return; }
           e.preventDefault();
@@ -955,7 +1006,7 @@ document.addEventListener('DOMContentLoaded', function(){
           exAudio.load();
           var p = exAudio.play();
           nowCard = card;
-          setGlyph(card, '⏸'); // ⏸
+          setGlyph(card, '⏸');
           if (p && p.then) {
             p.catch(function() { setGlyph(card, card.getAttribute('data-orig-glyph') || '◎'); nowCard = null; });
           }
