@@ -971,7 +971,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
       <label class="radio-label" style="margin-top:16px;gap:10px;">
         <input type="checkbox" id="pm-featured" style="accent-color:#c9a84c;width:15px;height:15px;" aria-label="Mark as featured">
-        <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.85);">Featured — show as one of the top 3 articles</span>
+        <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.85);">Pin to top — featured articles show above the See-All fold</span>
       </label>
 
       <div style="display:flex;gap:10px;">
@@ -2809,12 +2809,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           +(excerptPreview?'<div class="entry-text" style="margin-top:4px;">'+esc(excerptPreview)+'</div>':'')
           +'<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;">'
           +(d.published===false?'<span class="badge badge-dim">Unpublished</span>':'<span class="badge badge-green">Published</span>')
-          +(d.featured?'<span class="badge badge-gold">Featured</span>':'')
+          +(d.featured?'<span class="badge badge-gold">Pinned</span>':'')
           +(d.url?'<a href="'+esc(d.url)+'" target="_blank" rel="noopener" style="font-size:0.6rem;color:rgba(201,168,76,0.4);letter-spacing:0.1em;">View Article ↗</a>':'')
           +'</div>'
           +'<div class="entry-actions">'
           +'<button class="btn-ghost btn-sm" onclick="editPress(\''+doc_id+'\')">Edit</button>'
-          +'<button class="btn-ghost btn-sm" onclick="toggleFeatured(\''+doc_id+'\','+d.featured+')">'+(d.featured?'Unfeature':'Feature')+'</button>'
+          +'<button class="btn-ghost btn-sm" onclick="toggleFeatured(\''+doc_id+'\','+d.featured+')">'+(d.featured?'Unpin':'Pin')+'</button>'
           +'<button class="btn-ghost btn-sm" onclick="publishPress(\''+doc_id+'\','+(d.published!==false)+')">'+(d.published===false?'Publish':'Unpublish')+'</button>'
           +'<button class="btn-danger btn-sm" onclick="pressDelete(\''+doc_id+'\',\''+esc(d.title)+'\')">Delete</button>'
           +'</div></div></div>';
