@@ -289,7 +289,7 @@ data-genre="Christmas"
 data-tracks="[&quot;Xmas 23&quot;, &quot;Coke&quot;, &quot;Get Up and Bar the Door (Jestalib)&quot;]"
 data-yt-urls='["https://www.youtube.com/watch?v=Rd6Gd_6aufQ&list=OLAK5uy_mP7ZhhevW3oZUublvvizXmj1ZuddJP25c", "https://www.youtube.com/watch?v=EHjzwQX4T7o&list=OLAK5uy_mP7ZhhevW3oZUublvvizXmj1ZuddJP25c&index=2", "https://www.youtube.com/watch?v=XWhDRLRBJLE&list=OLAK5uy_mP7ZhhevW3oZUublvvizXmj1ZuddJP25c&index=3"]' data-sp-urls='["https://open.spotify.com/track/55kEQf5PlB5ptY5sT0bIfE", "https://open.spotify.com/track/15EzQMkvSBqkbM5Us7LPpa", "https://open.spotify.com/track/5f7TZ7AzNAY5wWc0h32yJ3"]' data-am-urls='["https://music.apple.com/us/album/xmas-23/1722960744?i=1722960745", "https://music.apple.com/us/album/coke/1722960744?i=1722960746", "https://music.apple.com/us/album/get-up-and-bar-the-door-jestalib/1722960744?i=1722960747"]' data-bc-urls='["https://jestamang.bandcamp.com/track/xmas-23", "https://jestamang.bandcamp.com/track/coke", "https://jestamang.bandcamp.com/track/get-up-and-bar-the-door-jestalib"]' data-album-bc="https://jestamang.bandcamp.com/album/xmas-23" data-album-yt="https://www.youtube.com/watch?v=O1x282cEeqA" data-album-sp="https://open.spotify.com/album/4Y5lvAyNuUfjlN99yooWxP" data-album-am="https://music.apple.com/us/album/xmas-23-hodge-single/1722960744"> <img src="assets/albums/2K2323/hodge/2k2323dec.jpg" alt="Hodge" class="album-art" onclick="toggleDrawer(this.parentElement)" loading="lazy" width="300" height="300"> <div class="album-title-label">Xmas 23</div> <div class="album-artist">Hodge</div> <div class="album-season" style="background-color:#BC292F; color:#ffffff; padding:2px 8px; border-radius:3px;">December 23, 2023</div> </div> <div class="album-card"
 data-artist="Jestamang"
-data-album="Revolution Epilogue: 2K2123 &amp; 2K2323"
+data-album="Revolution Epilogue: 2K2321–2K2323"
 data-search-tags="revolution epilogue 2k"
 data-year="Epilogue"
 data-genre="Psychedelia"
@@ -840,7 +840,9 @@ document.addEventListener('DOMContentLoaded',function(){
     var grid = secEl.querySelector('.album-grid');
     if (!grid || albums.length === 0) return;
     var hasTrackUrls = albums.some(function(a) {
-      return (a.tracks || []).some(function(t) { return typeof t === 'object'; });
+      return (a.tracks || []).some(function(t) {
+        return t && typeof t === 'object' && (t.youtube || t.spotify || t.appleMusic || t.bandcamp);
+      });
     });
     if (!hasTrackUrls) return;
     if (window._activeDrawer && grid.contains(window._activeDrawer)) {
