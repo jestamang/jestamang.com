@@ -971,7 +971,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="adm-section" id="sec-24">
       <div class="adm-section-title">✦ Treats</div>
       <div class="adm-section-underline"></div>
-      <div style="font-size:0.62rem;letter-spacing:0.18em;color:rgba(201,168,76,0.35);margin-bottom:20px;">Manage member-exclusive link cards shown on the Members page.</div>
+      <div style="font-size:0.62rem;letter-spacing:0.18em;color:rgba(201,168,76,0.35);margin-bottom:20px;">Manage member-exclusive audio, video, and photo treats shown on the Members page.</div>
 
       <!-- Add / Edit form -->
       <div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.15);padding:20px;margin-bottom:24px;">
@@ -2040,14 +2040,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     });
   }
 
+  var _maxTreatOrder = 0;
+
   function renderTreatList(snap) {
     var el = document.getElementById('treat-list');
     if (!el) return;
     if (snap.empty) {
+      _maxTreatOrder = 0;
       el.innerHTML = '<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;padding:8px 0;">No treats yet.</div>';
       return;
     }
+    var maxOrd = 0;
     var html = '';
+    snap.forEach(function (doc) {
+      var ord = doc.data().order || 0;
+      if (ord > maxOrd) maxOrd = ord;
+    });
+    _maxTreatOrder = maxOrd;
     snap.forEach(function (doc) {
       var d = doc.data();
       var hidden = d.active === false;
@@ -2061,7 +2070,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         + (hidden
           ? '<button class="btn-ghost" onclick="treatRestore(\'' + doc.id + '\')" style="padding:5px 12px;font-size:0.58rem;letter-spacing:0.2em;">RESTORE</button>'
           : '<button class="btn-ghost" onclick="treatEdit(\'' + doc.id + '\')" style="padding:5px 12px;font-size:0.58rem;letter-spacing:0.2em;">EDIT</button>'
-            + '<button class="btn-ghost" onclick="treatHide(\'' + doc.id + '\',\'' + esc(d.title || '') + '\')" style="padding:5px 12px;font-size:0.58rem;letter-spacing:0.2em;border-color:rgba(251,56,56,0.4);color:rgba(251,56,56,0.7);">DEL</button>')
+            + '<button class="btn-ghost" onclick="treatHide(\'' + doc.id + '\',\'' + esc(d.title || '') + '\')" style="padding:5px 12px;font-size:0.58rem;letter-spacing:0.2em;border-color:rgba(251,56,56,0.25);color:rgba(251,56,56,0.6);">HIDE</button>')
+        + '<button class="btn-ghost" onclick="treatDelete(\'' + doc.id + '\',\'' + esc(d.title || '') + '\')" style="padding:5px 12px;font-size:0.58rem;letter-spacing:0.2em;border-color:rgba(251,56,56,0.5);color:rgba(251,56,56,0.85);">DELETE</button>'
         + '</div>'
         + '</div>';
     });
@@ -2106,7 +2116,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     document.getElementById('treat-photos').value = '';
     document.getElementById('treat-icon').value = '◎';
     document.getElementById('treat-blur').value = '1';
-    document.getElementById('treat-order').value = '10';
+    document.getElementById('treat-order').value = String(_maxTreatOrder + 1);
     document.getElementById('treat-form-label').textContent = 'Add Treat';
     document.getElementById('treat-cancel-btn').style.display = 'none';
     document.getElementById('treat-save-btn').textContent = 'SAVE TREAT ✦';
@@ -2174,7 +2184,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       active: true,
       hiddenAt: firebase.firestore.FieldValue.delete()
     }).catch(function (e) { alert('Error: ' + e.message); });
-  }
+  };
+
+  window.treatDelete = function treatDelete(id, title) {
+    var name = title || 'this treat';
+    if (!confirm('Permanently delete "' + name + '"? This cannot be undone.')) return;
+    db.collection('treats').doc(id).delete().catch(function (e) { alert('Error: ' + e.message); });
+  };
 
   /* ══════════════ SECTION 5: MODERATION ══════════════ */
   var lastCommentDoc = null;
