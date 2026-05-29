@@ -244,9 +244,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 </style>
 
 <!-- ✦ PRESS SECTION ✦ -->
-<div class="press-divider">✦</div>
+<div class="press-divider" id="press-divider">✦</div>
 
-<div class="press-section-header">
+<div class="press-section-header" id="press-section-header">
   <p class="press-section-title">From the Outer World</p>
   <p class="press-section-sub">The universe has been noticed.</p>
 </div>
@@ -257,8 +257,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <!-- Featured articles (always visible) — filled by JS -->
 <div id="press-featured"></div>
 
-<!-- Fallback: shown only if Firestore returns empty or fails -->
-<div id="press-fallback">
+<!-- Fallback retired v267 — "From the Outer World" is now 100% Firestore-driven via the Press Manager. Markup kept (commented) for reversibility. -->
+<!-- <div id="press-fallback">
 
   <article class="post post--press" style="background:rgba(74,124,89,0.2)">
     <span class="post-numeral">✦</span><span class="post-tag">Press</span>
@@ -295,7 +295,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     </article>
   </div>
 
-</div>
+</div> -->
 
 <!-- Expand button — hidden until JS confirms overflow articles exist -->
 <button class="press-expand-btn" id="press-expand-btn" aria-expanded="false" style="display:none;" onclick="pressSectionToggle()">See All Transmissions from the Outer World ↓</button>
@@ -486,18 +486,26 @@ function pressSectionToggle(){
     var featuredEl = document.getElementById('press-featured');
     var overflowEl = document.getElementById('press-overflow');
     var expandBtn  = document.getElementById('press-expand-btn');
-    var fallbackEl = document.getElementById('press-fallback');
+    var fallbackEl = document.getElementById('press-fallback'); // retired v267 — null now (markup commented)
 
+    // No Firestore press → hide the whole "From the Outer World" section cleanly
+    // (v267: do NOT load the old Press.txt / hardcoded fallback)
     if (!allArticles.length) {
-      loadPressFromTxt();
+      var divEl = document.getElementById('press-divider');
+      var hdrEl = document.getElementById('press-section-header');
+      if (divEl) divEl.style.display = 'none';
+      if (hdrEl) hdrEl.style.display = 'none';
+      if (expandBtn) expandBtn.style.display = 'none';
       return;
     }
 
-    // Fade out fallback, swap in Firestore content, fade in
-    fallbackEl.style.transition = 'opacity 0.3s ease';
-    fallbackEl.style.opacity = '0';
+    // Swap in Firestore content, fade in (fallbackEl is retired/null — guard every use)
+    if (fallbackEl) {
+      fallbackEl.style.transition = 'opacity 0.3s ease';
+      fallbackEl.style.opacity = '0';
+    }
     setTimeout(function() {
-      fallbackEl.style.display = 'none';
+      if (fallbackEl) fallbackEl.style.display = 'none';
       featuredEl.innerHTML = buildFeaturedHtml(featured);
       featuredEl.style.opacity = '0';
       featuredEl.style.transition = 'opacity 0.3s ease';
@@ -522,8 +530,10 @@ function pressSectionToggle(){
         });
         renderPress(articles);
       })
-      .catch(function () {
-        loadPressFromTxt();
+      .catch(function (err) {
+        // v267: do NOT fall back to Press.txt — keep the section hidden on error
+        console.warn('Press load failed:', err);
+        renderPress([]);
       });
   }
 
@@ -533,7 +543,9 @@ function pressSectionToggle(){
       loadPress();
     } else if (++_jt > 80) {
       clearInterval(_jiv);
-      loadPressFromTxt();
+      // v267: jestaDB never arrived — hide the section instead of loading Press.txt
+      console.warn('Press: Firestore unavailable.');
+      renderPress([]);
     }
   }, 100);
 
