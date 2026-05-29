@@ -606,6 +606,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
 
+      <label class="field-label" for="bp-subtitle">Subtitle / Byline <span style="color:rgba(201,168,76,0.3);font-size:0.58rem;">(optional — use \n for a line break, e.g. New Æon Summer Solstice Parade\nPorphigen)</span></label>
+      <input class="field-input" id="bp-subtitle" type="text" placeholder="Author name, subtitle, or byline..." maxlength="200">
+
       <label class="field-label" for="bp-content">Content</label>
       <textarea class="field-input field-textarea" id="bp-content" placeholder="Write the transmission..." style="min-height:160px;" maxlength="100000"></textarea>
 
@@ -1594,10 +1597,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var s=['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
     var r=''; for(var i=0;i<v.length;i++){while(n>=v[i]){r+=s[i];n-=v[i];}} return r;
   }
-  var MONTHS=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+  var ROMAN_MONTHS=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
   function ritualDate(dateStr) {
     var d = new Date(dateStr + 'T12:00:00');
-    return MONTHS[d.getMonth()] + ' \u00B7 ' + toRoman(d.getDate()) + ' \u00B7 ' + toRoman(d.getFullYear());
+    return ROMAN_MONTHS[d.getMonth()] + ' \u00B7 ' + toRoman(d.getDate()) + ' \u00B7 ' + toRoman(d.getFullYear());
   }
   function setNum(id, val) {
     var el = document.getElementById(id);
@@ -1902,6 +1905,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var title    = (document.getElementById('bp-title').value    || '').trim();
     var dateVal  = (document.getElementById('bp-date').value     || '').trim();
     var category = (document.getElementById('bp-category').value || '').trim();
+    var subtitle = (document.getElementById('bp-subtitle').value || '').trim();
     var content  = (document.getElementById('bp-content').value  || '').trim();
     var excerpt  = (document.getElementById('bp-excerpt').value  || '').trim() || content.slice(0,150);
     var statusEl = document.getElementById('bp-status');
@@ -1915,6 +1919,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       date:          dateVal,
       dateFormatted: dateVal ? ritualDate(dateVal) : '',
       category:      category,
+      subtitle:      subtitle,
       content:       content,
       excerpt:       excerpt,
       timestamp:     firebase.firestore.FieldValue.serverTimestamp(),
@@ -1929,6 +1934,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       statusEl.className   = 'status-msg status-ok';
       document.getElementById('bp-title').value    = '';
       document.getElementById('bp-category').value = '';
+      document.getElementById('bp-subtitle').value = '';
       document.getElementById('bp-content').value  = '';
       document.getElementById('bp-excerpt').value  = '';
       document.getElementById('bp-date').value     = new Date().toISOString().slice(0,10);
@@ -1992,6 +1998,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     document.getElementById('bp-title').value    = d.title    || '';
     document.getElementById('bp-date').value     = d.date     || '';
     document.getElementById('bp-category').value = d.category || '';
+    document.getElementById('bp-subtitle').value = d.subtitle || '';
     document.getElementById('bp-content').value  = d.content  || '';
     document.getElementById('bp-excerpt').value  = d.excerpt  || '';
     var heading = document.querySelector('#sec-4 .adm-section-title');

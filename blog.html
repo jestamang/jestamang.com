@@ -666,6 +666,19 @@ function pressSectionToggle(){
     });
   }
 
+  // Edit 2: render-time Roman-month date formatter (no stored dateFormatted dependency)
+  function renderRitualDate(dateStr) {
+    if (!dateStr) return '';
+    var d = new Date(dateStr + 'T12:00:00');
+    var rm = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+    var v=[1000,900,500,400,100,90,50,40,10,9,5,4,1];
+    var s=['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
+    function toR(n){var r='';for(var i=0;i<v.length;i++){while(n>=v[i]){r+=s[i];n-=v[i];}}return r;}
+    return rm[d.getMonth()] + ' · ' + toR(d.getDate()) + ' · ' + toR(d.getFullYear());
+  }
+
+  var _CYCLE_CLASSES=['post--testimony','post--chronicle','post--press'];
+
   function loadAdminPosts(user){
     var container=document.getElementById('admin-posts');
     if(!container||!window.jestaDB) return;
@@ -674,24 +687,40 @@ function pressSectionToggle(){
       .where('authorRole','==','admin')
       .onSnapshot(function(snap){
         container.innerHTML='';
+        // Edit 3: sort by post date (YYYY-MM-DD string) desc, not publish timestamp
         var sorted=snap.docs.slice().sort(function(a,b){
-          var ta=a.data().timestamp, tb=b.data().timestamp;
-          if(!ta) return 1; if(!tb) return -1;
-          return tb.seconds-ta.seconds;
+          var da=a.data().date||'', db_=b.data().date||'';
+          if(da>db_) return -1; if(da<db_) return 1; return 0;
         });
         var idx=0;
         sorted.forEach(function(doc){
           var d=doc.data();
           if(!d.published) return;
           var postId='admin-'+doc.id;
-          var date=d.dateFormatted||d.date||'';
+          // Edit 2: render-time Roman month date
+          var date=renderRitualDate(d.date)||d.dateFormatted||d.date||'';
+          // Edit 1: subtitle/byline — mirror hardcoded post markup
+          var subtitleHtml='';
+          if(d.subtitle){
+            var lines=d.subtitle.replace(/\n/g,'
+').split('
+');
+            if(lines.length===1){
+              subtitleHtml='<p style="font-size:0.65rem;letter-spacing:0.28em;color:rgba(201,168,76,0.85);margin-bottom:20px;text-transform:uppercase;text-align:center;">'+escHtml(lines[0])+'</p>';
+            } else {
+              subtitleHtml='<p style="font-size:0.72rem;letter-spacing:0.22em;color:rgba(201,168,76,0.55);margin-bottom:6px;text-transform:uppercase;text-align:center;">'+escHtml(lines[0])+'</p>'
+                +'<p style="font-size:0.65rem;letter-spacing:0.28em;color:rgba(201,168,76,0.85);margin-bottom:20px;text-transform:uppercase;text-align:center;">'+lines.slice(1).map(function(l){return escHtml(l);}).join('<br>')+'</p>';
+            }
+          }
           var article=document.createElement('article');
-          article.className='post visible';
+          // Edit 4: cycle outline classes (post--testimony=green, post--chronicle=purple, post--press=red)
+          article.className='post '+_CYCLE_CLASSES[idx%3]+' visible';
           article.style.background=_bgC[idx%3];
           article.innerHTML=
             (d.category?'<span class="post-tag">'+escHtml(d.category)+'</span>':'')+
             (date?'<p class="post-date">'+escHtml(date)+'</p>':'')+
             '<h2 class="post-title">'+escHtml(d.title||'')+'</h2>'+
+            subtitleHtml+
             '<div class="post-rule"></div>'+
             '<div class="post-body"><p>'+escHtml(d.content||d.excerpt||'').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')+'</p></div>'+
             '<p class="post-closing">&middot; &#x2726; &middot;</p>'+
