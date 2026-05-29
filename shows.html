@@ -650,7 +650,11 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
           var d = doc.data();
           if (d.active === false) return;
           d.id = doc.id;
-          if (d.date && d.date >= todayStr) {
+          // v277: hybrid tri-state — upcoming:true forces upcoming, false forces past,
+          // absent falls back to date behavior.
+          var isUpcoming = (d.upcoming === true) ||
+                           (d.upcoming !== false && d.date && d.date >= todayStr);
+          if (isUpcoming) {
             upcoming.push(d);
           } else {
             past.push(d);
