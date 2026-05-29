@@ -781,8 +781,8 @@ function pressSectionToggle(){
           return;
         }
 
-        // HERO: newest post — full render
-        var hero = posts[0];
+        // HERO: featured post if any, else newest by date
+        var hero = posts.filter(function(p){ return p.data.featured === true; })[0] || posts[0];
         var heroPostId = 'admin-' + hero.id;
         var heroArticle = document.createElement('article');
         heroArticle.className = 'post ' + _CYCLE_CLASSES[0] + ' visible';
@@ -791,9 +791,10 @@ function pressSectionToggle(){
         container.appendChild(heroArticle);
         initComments(heroPostId, _currentUser);
 
-        // COMPACT: older posts
+        // COMPACT: all posts except the hero, in date-desc order
+        var compacts = posts.filter(function(p){ return p !== hero; });
         if (overflow) {
-          posts.slice(1).forEach(function(item, i){
+          compacts.forEach(function(item, i){
             var idx = i + 1;
             var d = item.data;
             var date = renderRitualDate(d.date) || d.dateFormatted || d.date || '';
@@ -816,7 +817,7 @@ function pressSectionToggle(){
         }
 
         // Show See-all only if there are compact posts
-        if (expandBtn) expandBtn.style.display = posts.length > 1 ? 'block' : 'none';
+        if (expandBtn) expandBtn.style.display = compacts.length > 0 ? 'block' : 'none';
 
       }, function(err){
         console.error('Admin posts:', err);
