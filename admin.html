@@ -1932,6 +1932,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       published:     publish,
       authorRole:    'admin'
     };
+    // New posts default featured:false; edits leave it untouched (update() only writes provided fields)
+    if (!window._bpEditId) payload.featured = false;
     var op = window._bpEditId
       ? db.collection('blogPosts').doc(window._bpEditId).update(payload)
       : db.collection('blogPosts').add(payload);
@@ -1976,6 +1978,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           + (preview ? '<div style="font-size:0.7rem;color:rgba(240,230,211,0.5);margin-top:4px;font-style:italic;">' + esc(preview) + '</div>' : '')
           + '<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">'
           + '<button class="btn-ghost btn-sm" onclick="editPost(\'' + doc.id + '\')">Edit</button>'
+          + (d.featured
+            ? '<button class="btn-gold btn-sm" onclick="featurePost(\'' + doc.id + '\',true)" style="font-size:0.6rem;letter-spacing:0.15em;">★ FEATURED</button>'
+            : '<button class="btn-ghost btn-sm" onclick="featurePost(\'' + doc.id + '\',false)" style="font-size:0.6rem;letter-spacing:0.15em;">☆ Feature</button>')
           + (!d.published ? '<button class="btn-gold btn-sm" onclick="publishPost(\'' + doc.id + '\')">Publish</button>' : '')
           + (d.published ? '<button class="btn-danger btn-sm" onclick="unpublishPost(\'' + doc.id + '\')">Unpublish</button>' : '')
           + '<button class="btn-danger btn-sm" onclick="askDelete(\'' + eid + '\')">Delete</button>'
@@ -1997,6 +2002,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       published: true,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(loadRecentPosts).catch(function(){});
+  };
+
+  window.featurePost = function (id, isCurrentlyFeatured) {
+    if (isCurrentlyFeatured) {
+      db.collection('blogPosts').doc(id).update({ featured: false }).then(loadRecentPosts).catch(function(e){ alert('Error: '+e.message); });
+    } else {
+      // Clear any existing featured post, then set this one
+      db.collection('blogPosts').where('featured','==',true).get().then(function(snap) {
+        var batch = db.batch();
+        snap.forEach(function(doc) { if (doc.id !== id) batch.update(doc.ref, { featured: false }); });
+        batch.update(db.collection('blogPosts').doc(id), { featured: true });
+        return batch.commit();
+      }).then(loadRecentPosts).catch(function(e){ alert('Error: '+e.message); });
+    }
   };
 
   window.editPost = function (id) {
