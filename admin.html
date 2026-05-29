@@ -941,6 +941,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <label class="field-label" for="pm-title">Article Title</label>
       <input class="field-input" id="pm-title" type="text" placeholder="Jestamang Defies Genre on New Release" maxlength="160">
 
+      <label class="field-label" for="pm-caption">Caption / Subtitle <span style="color:rgba(201,168,76,0.3);font-size:0.58rem;">(optional — use \n for a line break)</span></label>
+      <input class="field-input" id="pm-caption" type="text" placeholder="A short subtitle or context line..." maxlength="200">
+
       <div class="form-grid">
         <div>
           <label class="field-label" for="pm-pub">Publication</label>
@@ -2709,7 +2712,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   function pmClearForm() {
     _pmEditId = null;
-    ['pm-title','pm-pub','pm-author','pm-excerpt','pm-url'].forEach(function(id){document.getElementById(id).value='';});
+    ['pm-title','pm-caption','pm-pub','pm-author','pm-excerpt','pm-url'].forEach(function(id){document.getElementById(id).value='';});
     document.getElementById('pm-featured').checked=false;
     document.getElementById('pm-date').value=new Date().toISOString().slice(0,10);
     document.getElementById('pm-add-btn').textContent='Add Article';
@@ -2726,6 +2729,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var author   = (document.getElementById('pm-author').value  ||'').trim();
       var date     = (document.getElementById('pm-date').value    ||'').trim();
       var excerpt  = (document.getElementById('pm-excerpt').value ||'').trim();
+      var caption  = (document.getElementById('pm-caption').value ||'').trim();
       var url      = (document.getElementById('pm-url').value     ||'').trim();
       var featured = document.getElementById('pm-featured').checked;
       var statusEl = document.getElementById('pm-status');
@@ -2734,7 +2738,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       this.disabled=true; statusEl.textContent='';
       var self=this;
       var fields = {
-        title:title, publication:pub, author:author,
+        title:title, publication:pub, author:author, caption:caption,
         date:date, dateFormatted:date?ritualDate(date):'',
         excerpt:excerpt, url:url, featured:featured
       };
@@ -2745,6 +2749,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         op = db.collection('pressArticles').get().then(function(snap){
           fields.order = snap.size + 1;
           fields.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+          fields.published = true; // new articles publish by default
           return db.collection('pressArticles').add(fields);
         });
       }
@@ -2779,12 +2784,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           +'<div class="entry-meta">'+esc(d.publication)+(d.author?' · '+esc(d.author):'')+(d.date?' · '+esc(d.date):'')+'</div>'
           +(excerptPreview?'<div class="entry-text" style="margin-top:4px;">'+esc(excerptPreview)+'</div>':'')
           +'<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;">'
+          +(d.published===false?'<span class="badge badge-dim">Unpublished</span>':'<span class="badge badge-green">Published</span>')
           +(d.featured?'<span class="badge badge-gold">Featured</span>':'')
           +(d.url?'<a href="'+esc(d.url)+'" target="_blank" rel="noopener" style="font-size:0.6rem;color:rgba(201,168,76,0.4);letter-spacing:0.1em;">View Article ↗</a>':'')
           +'</div>'
           +'<div class="entry-actions">'
           +'<button class="btn-ghost btn-sm" onclick="editPress(\''+doc_id+'\')">Edit</button>'
           +'<button class="btn-ghost btn-sm" onclick="toggleFeatured(\''+doc_id+'\','+d.featured+')">'+(d.featured?'Unfeature':'Feature')+'</button>'
+          +'<button class="btn-ghost btn-sm" onclick="publishPress(\''+doc_id+'\','+(d.published!==false)+')">'+(d.published===false?'Publish':'Unpublish')+'</button>'
           +'<button class="btn-danger btn-sm" onclick="pressDelete(\''+doc_id+'\',\''+esc(d.title)+'\')">Delete</button>'
           +'</div></div></div>';
       });
@@ -2800,6 +2807,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     if(!d) return;
     _pmEditId = id;
     document.getElementById('pm-title').value    = d.title       || '';
+    document.getElementById('pm-caption').value   = d.caption     || '';
     document.getElementById('pm-pub').value       = d.publication || '';
     document.getElementById('pm-author').value    = d.author      || '';
     document.getElementById('pm-date').value      = d.date        || '';
@@ -2813,6 +2821,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   window.toggleFeatured = function(id, current){
     db.collection('pressArticles').doc(id).update({featured:!current}).catch(function(){});
+  };
+
+  window.publishPress = function(id, currentlyPublished){
+    db.collection('pressArticles').doc(id).update({published:!currentlyPublished}).catch(function(e){ alert('Error: '+e.message); });
   };
 
   window.pressDelete = function(id, title){
