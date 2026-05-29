@@ -357,6 +357,8 @@ function pressSectionToggle(){
       + '<p class="press-pub">' + esc(article.publication || '') + '</p>'
       + '<p class="post-date">' + esc(article.dateFormatted || article.date || '') + '</p>'
       + '<h2 class="press-headline" style="text-align:center">' + esc(article.title || '') + '</h2>'
+      + (article.caption ? '<p class="press-pub" style="text-transform:none;letter-spacing:0.04em;font-style:italic;color:rgba(240,230,210,0.6);margin-bottom:10px;">' + esc(article.caption).replace(/\\n/g,'<br>').replace(/\n/g,'<br>') + '</p>' : '')
+      + (article.author ? '<p class="press-pub" style="color:rgba(201,168,76,0.7);">by ' + esc(article.author) + '</p>' : '')
       + '<div class="post-rule"></div>'
       + (article.excerpt ? '<p class="press-excerpt" style="text-align:center">' + esc(article.excerpt) + '</p>' : '')
       + (article.url ? '<a href="' + esc(article.url) + '" class="press-read-btn" target="_blank" rel="noopener noreferrer">Read the Full Feature</a>' : '')
@@ -463,6 +465,8 @@ function pressSectionToggle(){
   }
 
   function renderPress(allArticles) {
+    // Hide unpublished (missing/true published => shown), before the featured/rest split
+    allArticles = allArticles.filter(function (a) { return a.published !== false; });
     var featured = [], rest = [];
     allArticles.forEach(function (a) {
       if (a.featured) featured.push(a);
