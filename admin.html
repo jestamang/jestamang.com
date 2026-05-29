@@ -1510,7 +1510,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div class="stat-card"><div class="stat-glyph">◈</div><div class="stat-num" id="stat-chat"><span class="spinner"></span></div><div class="stat-label">Chat Messages</div></div>
         <div class="stat-card"><div class="stat-glyph">✍</div><div class="stat-num" id="stat-guestbook"><span class="spinner"></span></div><div class="stat-label">Guestbook Entries</div></div>
         <div class="stat-card"><div class="stat-glyph">◉</div><div class="stat-num" id="stat-inquiries"><span class="spinner"></span></div><div class="stat-label">Merch Inquiries</div></div>
-        <div class="stat-card"><div class="stat-glyph">✦</div><div class="stat-num" id="stat-subscribers"><span class="spinner"></span></div><div class="stat-label">Email Subscribers</div></div>
+        <div class="stat-card"><div class="stat-glyph">✦</div><div class="stat-num" id="stat-subscribers"><span class="spinner"></span></div><div class="stat-label">Email Subscribers<br><a href="https://dashboard.mailerlite.com/" target="_blank" rel="noopener" style="color:rgba(201,168,76,0.55);font-size:0.82em;letter-spacing:0.1em;text-decoration:none;">in MailerLite ↗</a></div></div>
       </div>
     </div>
     <div class="adm-ornament">✦</div>
@@ -1702,20 +1702,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     db.collection('users').where('createdAt','>',weekTs).get()
       .then(function(s){ setNum('stat-new', s.size); }).catch(function(){ setNum('stat-new','—'); });
 
-    // Leaderboard scores: aggregate across all leaderboard sub-collections
-    db.collection('leaderboards').get().then(function(snap){
-      var total = 0, pending = snap.size;
-      if (!pending) { setNum('stat-scores','0'); return; }
-      snap.forEach(function(doc){
-        doc.ref.collection('scores').get().then(function(s){
-          total += s.size; pending--;
-          if (!pending) setNum('stat-scores', total);
-        }).catch(function(){ pending--; if(!pending) setNum('stat-scores', total); });
-      });
-    }).catch(function(){
-      // Fallback: just count leaderboards docs
-      db.collection('leaderboards').get().then(function(s){ setNum('stat-scores', s.size); }).catch(function(){ setNum('stat-scores','—'); });
-    });
+    // v262: scores are flat leaderboards docs (one per score) — the doc count IS the
+    // score count. (The old per-doc 'scores' subcollection never existed → always 0.)
+    db.collection('leaderboards').get()
+      .then(function(snap){ setNum('stat-scores', snap.size); })
+      .catch(function(){ setNum('stat-scores','—'); });
 
     countCol('comments',      'stat-comments');
     countCol('innerCircleChat','stat-chat');
