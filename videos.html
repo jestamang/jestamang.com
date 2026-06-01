@@ -199,9 +199,12 @@ var _jt=0,_jiv=setInterval(function(){
         var docs=[];
         snap.forEach(function(doc){docs.push({id:doc.id,data:doc.data()});});
         docs.sort(function(a,b){
-          var ta=a.data.timestamp,tb=b.data.timestamp;
-          if(!ta)return 1;if(!tb)return -1;
-          return tb.seconds-ta.seconds;
+          var oa=(a.data.order!=null?a.data.order:9e15);
+          var ob=(b.data.order!=null?b.data.order:9e15);
+          if(oa!==ob)return oa-ob;                 // order ASC (missing → last)
+          var ta=a.data.timestamp?a.data.timestamp.seconds:0;
+          var tb=b.data.timestamp?b.data.timestamp.seconds:0;
+          return tb-ta;                            // timestamp DESC tiebreak
         });
         var items=docs.map(function(d){return{id:d.data.youtubeId,title:d.data.title};});
         var fbIds=FALLBACK_VIDEOS.map(function(v){return v.id;}).join(',');
