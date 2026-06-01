@@ -4010,6 +4010,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var pmGroups = [];
     var pmPhotoPage = {};          // v289: per-photo-list page, keyed by group _id
     var PM_PHOTO_PER_PAGE = 10;
+    function updateGroupCount(id, n){ var c = document.getElementById('pm-count-' + id); if (c) c.textContent = n + ' photos'; } // v290
 
     function pmLoad() {
       document.getElementById('pm-group-list').innerHTML = '<div style="font-size:0.7rem;color:rgba(201,168,76,0.3);letter-spacing:0.12em;padding:8px 0;">Loading groups…</div>';
@@ -4053,6 +4054,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var ct = document.createElement('span');
         ct.style.cssText = 'font-size:0.62rem;color:rgba(201,168,76,0.35);letter-spacing:0.1em;flex-shrink:0;';
         ct.textContent = (g.photos ? g.photos.length : 0) + ' photos';
+        ct.id = 'pm-count-' + g._id;
 
         var vis = document.createElement('button');
         vis.className = g.visible !== false ? 'btn-ghost btn-sm' : 'btn-danger btn-sm';
@@ -4245,6 +4247,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       bulkStatus.style.cssText = 'font-size:0.6rem;';
       var photoListEl = document.createElement('div');
       photoListEl.style.cssText = 'margin-top:16px;';
+      photoListEl.id = 'pm-photolist-' + g._id;
 
       bulkBtn.onclick = function() {
         var lines = bulkTA.value.split('\n').map(function(l){ return l.trim(); }).filter(Boolean);
@@ -4363,8 +4366,53 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           pmBuildPhotoList(g, container, gi, panel);
         };
 
+        // v290: move this photo to another category (atomic 2-doc batch; no-notify)
+        var moveSel = null;
+        if (pmGroups.length > 1) {
+          moveSel = document.createElement('select');
+          moveSel.className = 'field-input';
+          moveSel.style.cssText = 'font-size:0.55rem;padding:3px 4px;flex-shrink:0;max-width:130px;';
+          var ph0 = document.createElement('option');
+          ph0.value = ''; ph0.textContent = 'Move to…'; ph0.disabled = true; ph0.selected = true;
+          moveSel.appendChild(ph0);
+          pmGroups.forEach(function(tg){
+            if (tg._id === g._id) return;
+            var o = document.createElement('option');
+            o.value = tg._id; o.textContent = tg.label;
+            moveSel.appendChild(o);
+          });
+          moveSel.addEventListener('change', function(){
+            var tid = moveSel.value; if (!tid) return;
+            var target = null;
+            for (var k = 0; k < pmGroups.length; k++) { if (pmGroups[k]._id === tid) { target = pmGroups[k]; break; } }
+            if (!target) { moveSel.value = ''; return; }
+            moveSel.disabled = true;
+            var srcPhotos = g.photos.slice();                 // copy — mutate in-memory only on success
+            var moved = srcPhotos.splice(pi, 1)[0];           // pi = GLOBAL index
+            srcPhotos.forEach(function(p, i){ p.order = i; }); // re-sequence 0-based (matches pmMovePhoto)
+            var tgtPhotos = (target.photos || []).slice();
+            moved.order = tgtPhotos.length;                    // append to end (0-based)
+            tgtPhotos.push(moved);
+            var batch = db.batch();
+            batch.update(db.collection('photos').doc(g._id),      { photos: srcPhotos });
+            batch.update(db.collection('photos').doc(target._id), { photos: tgtPhotos });
+            batch.commit().then(function(){
+              g.photos = srcPhotos; target.photos = tgtPhotos; // commit in-memory only after success
+              updateGroupCount(g._id, srcPhotos.length);
+              updateGroupCount(target._id, tgtPhotos.length);
+              pmBuildPhotoList(g, container, gi, panel);       // rebuild source (v289 clamps page if emptied)
+              var tpanel = document.getElementById('pm-panel-' + target._id);
+              var tlist  = document.getElementById('pm-photolist-' + target._id);
+              if (tpanel && tpanel.style.display !== 'none' && tlist) {
+                pmBuildPhotoList(target, tlist, pmGroups.indexOf(target), tpanel); // rebuild target if open
+              }
+            }).catch(function(e){ moveSel.disabled = false; moveSel.value = ''; alert('Move failed: ' + e.message); });
+          });
+        }
+
         row.appendChild(thumb); row.appendChild(info); row.appendChild(visTgl);
         row.appendChild(saveCapBtn); row.appendChild(upBtn2); row.appendChild(downBtn2); row.appendChild(delBtn);
+        if (moveSel) row.appendChild(moveSel);
         container.appendChild(row);
       });
 
