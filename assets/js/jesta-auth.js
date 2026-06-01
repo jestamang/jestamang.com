@@ -160,6 +160,11 @@
     return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  // Reject blank/whitespace-only or digits-and-spaces-only auth displayNames (e.g. "141 711")
+  // so they fall through the caller's || chain instead of being saved as a username.
+  function usableName(n){ n=(n||'').trim(); if(!n) return ''; if(/^[0-9 ]+$/.test(n)) return ''; return n; }
+  window.jestaUsableName = usableName;
+
   // ── Nav badges ────────────────────────────────────────────────
   var _badgeUnsub = null;
 

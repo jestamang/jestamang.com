@@ -641,7 +641,7 @@ function pressSectionToggle(){
         commentStatusEl.textContent='';
         window.jestaDB.collection('comments').add({
           userId: user.uid,
-          username: user.displayName||user.email.split('@')[0],
+          username: (window.jestaUsableName ? jestaUsableName(user.displayName) : user.displayName)||user.email.split('@')[0],
           photoURL: user.photoURL||null,
           postId: postId,
           text: txt,
