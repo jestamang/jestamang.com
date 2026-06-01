@@ -3288,6 +3288,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   }
 
   /* ══════════════ SECTION 14: VIDEO MANAGER ══════════════ */
+  var _vmSorted = [];        // {id,data} in display order (v283 reorder)
+  var _vmReordering = false; // in-flight reorder guard
+
   function initVideoManager() {
     function extractYtId(url) {
       var m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s?#]+)/);
@@ -3317,7 +3320,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       this.disabled = true;
       db.collection('videos').add({
         title: title, youtubeId: id, youtubeUrl: url,
-        published: true, order: 0, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        published: true, order: (_vmSorted.length ? _vmSorted.length + 1 : 1), timestamp: firebase.firestore.FieldValue.serverTimestamp()
       }).then(function () {
         document.getElementById('vm-status').textContent = 'VIDEO ADDED \u2726';
         document.getElementById('vm-status').className = 'status-msg status-ok';
@@ -3332,25 +3335,54 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       });
     });
 
-    db.collection('videos').orderBy('timestamp','desc').onSnapshot(function (snap) {
+    db.collection('videos').onSnapshot(function (snap) {
       var el = document.getElementById('vm-list');
-      if (snap.empty) { el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No videos yet.</div>'; return; }
+      if (snap.empty) { el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No videos yet.</div>'; _vmSorted=[]; return; }
+      _vmSorted = [];
+      snap.forEach(function (doc) { _vmSorted.push({ id: doc.id, data: doc.data() }); });
+      _vmSorted.sort(function(a,b){
+        var oa=(a.data.order!=null?a.data.order:9e15), ob=(b.data.order!=null?b.data.order:9e15);
+        if(oa!==ob) return oa-ob;                 // order ASC
+        var ta=a.data.timestamp?a.data.timestamp.seconds:0, tb=b.data.timestamp?b.data.timestamp.seconds:0;
+        return tb-ta;                             // timestamp DESC tiebreak
+      });
       var html = '';
-      snap.forEach(function (doc) {
-        var d = doc.data(); var eid = 'vm-' + doc.id;
+      _vmSorted.forEach(function (item, i) {
+        var doc_id = item.id; var d = item.data; var eid = 'vm-' + doc_id;
+        var upDis = (i===0) ? ' disabled style="opacity:0.3;"' : '';
+        var dnDis = (i===_vmSorted.length-1) ? ' disabled style="opacity:0.3;"' : '';
         html += '<div class="entry-row" id="row-' + eid + '" style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,0.06);">'
           + '<img src="https://img.youtube.com/vi/' + esc(d.youtubeId) + '/default.jpg" alt="Video thumbnail" width="120" height="90" style="width:80px;flex-shrink:0;border-radius:2px;border:1px solid rgba(201,168,76,0.15);" loading="lazy">'
           + '<div class="entry-body" style="flex:1;">'
           + '<div class="entry-name">' + esc(d.title) + '</div>'
           + '<div class="entry-meta">' + esc(d.youtubeId) + ' &nbsp;\u00b7&nbsp; ' + fmtDate(d.timestamp) + '</div>'
           + '<div class="entry-actions">'
+          + '<button class="btn-ghost btn-sm" aria-label="Move up" onclick="moveVideo(\'' + doc_id + '\',-1)"' + upDis + '>\u2191</button>'
+          + '<button class="btn-ghost btn-sm" aria-label="Move down" onclick="moveVideo(\'' + doc_id + '\',1)"' + dnDis + '>\u2193</button>'
           + '<button class="btn-danger btn-sm" onclick="askDelete(\'' + eid + '\')">Remove</button>'
-          + makeDeleteRow('videos', doc.id, eid)
+          + makeDeleteRow('videos', doc_id, eid)
           + '</div></div></div>';
       });
       el.innerHTML = html;
+      _vmReordering = false;
     }, function(e){ console.error('videos error:', e.message); });
   }
+
+  // v283: swap a video with its neighbor by re-sequencing ALL docs to order 1..N (dupe-proof, no-notify)
+  window.moveVideo = function(docId, dir){
+    if(_vmReordering) return;
+    var idx=-1, k;
+    for(k=0;k<_vmSorted.length;k++){ if(_vmSorted[k].id===docId){ idx=k; break; } }
+    if(idx<0) return;
+    var target=idx+dir;
+    if(target<0 || target>=_vmSorted.length) return;
+    _vmReordering=true;
+    var arr=_vmSorted.slice();
+    var tmp=arr[idx]; arr[idx]=arr[target]; arr[target]=tmp;
+    var batch=db.batch();
+    arr.forEach(function(item,i){ batch.update(db.collection('videos').doc(item.id), { order: i+1 }); });
+    batch.commit().catch(function(e){ _vmReordering=false; alert('Reorder failed: '+e.message); });
+  };
 
   /* ══════════════ SECTION 15: MERCH MANAGER ══════════════ */
   var MERCH_DEFAULTS = [
