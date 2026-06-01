@@ -948,7 +948,7 @@ document.addEventListener('DOMContentLoaded', function(){
     function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
     /* Personalized greeting */
-    var fallback = user.displayName || user.email.split('@')[0];
+    var fallback = (window.jestaUsableName ? jestaUsableName(user.displayName) : user.displayName) || user.email.split('@')[0];
     db.collection('users').doc(user.uid).get()
       .then(function(doc){
         if(doc.exists){
