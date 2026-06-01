@@ -1106,7 +1106,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="tab-bar">
         <button class="tab-btn active" data-tab="mod-comments">Comments</button>
         <button class="tab-btn" data-tab="mod-chat">Chat</button>
+        <!-- v287: Guestbook tab hidden — orphaned collection (nothing writes to it; superseded by inner-circle chat). Reversible.
         <button class="tab-btn" data-tab="mod-guestbook">Guestbook</button>
+        -->
       </div>
       <div class="tab-pane active" id="mod-comments">
         <div class="entry-list" id="mod-comments-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
@@ -1116,10 +1118,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div class="entry-list" id="mod-chat-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
         <div class="load-more-wrap"><button class="btn-ghost" id="chat-load-more" style="display:none;">Load older transmissions</button></div>
       </div>
+<!-- v287: Guestbook panel hidden — orphaned collection. Reversible.
       <div class="tab-pane" id="mod-guestbook">
         <div class="entry-list" id="mod-gb-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
         <div class="load-more-wrap"><button class="btn-ghost" id="gb-load-more" style="display:none;">Load More</button></div>
       </div>
+-->
     </div>
     <div class="adm-ornament">✦</div>
     <div class="adm-section" id="sec-6">
@@ -2355,7 +2359,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   function initModeration() {
     loadComments();
     loadChat();
-    loadGuestbook();
+    /* v287: Guestbook tab hidden — orphaned collection. loadGuestbook() left defined but uncalled. */
 
     var _commentsLoadMore=document.getElementById('comments-load-more');if(_commentsLoadMore)_commentsLoadMore.addEventListener('click', function(){
       loadComments(true);
@@ -2426,7 +2430,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   function loadChat(append) {
     var el = document.getElementById('mod-chat-list');
     var lmb = document.getElementById('chat-load-more');
-    var query = db.collection('innerCircleChat').orderBy('timestamp','desc').limit(50);
+    var query = db.collection('innerCircleChat').orderBy('ts','desc').limit(50); // v287: docs use 'ts', not 'timestamp'
     if (append && lastChatDoc) {
       query = query.startAfter(lastChatDoc);
     } else {
@@ -2441,8 +2445,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var d=doc.data(); var eid='chat-'+doc.id;
         html += '<div class="entry-row" id="row-' + eid + '">'
           + '<div class="entry-body">'
-          + '<div class="entry-name">' + esc(d.displayName||d.username||'Unknown') + '</div>'
-          + '<div class="entry-meta">' + fmtTime(d.timestamp) + '</div>'
+          + '<div class="entry-name">' + esc(d.name||d.username||'Unknown') + '</div>'
+          + '<div class="entry-meta">' + fmtTime(d.ts) + '</div>'
           + '<div class="entry-text">' + esc(d.text||d.message||'') + '</div>'
           + '<div class="entry-actions">'
           + '<button class="btn-danger btn-sm" onclick="askDelete(\'' + eid + '\')">Delete</button>'
@@ -3986,6 +3990,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         if(pane) pane.classList.add('active');
         // Reset moderation pagination cursors on tab switch
         if(target==='mod-comments'){lastCommentDoc=null;loadComments();}
+        if(target==='mod-chat'){lastChatDoc=null;loadChat();}
         if(target==='mod-guestbook'){lastGuestbookDoc=null;loadGuestbook();}
       });
     });
