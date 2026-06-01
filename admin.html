@@ -3480,6 +3480,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   var merchPage = 1;            // v293: 1-per-page pagination
   var MERCH_PER_PAGE = 1;
   var _merchSorted = [];        // order-asc product docs
+  var _merchMoving = false;     // v294 reorder in-flight guard
 
   function initMerchManager() {
     var container = document.getElementById('merch-cards');
@@ -3488,6 +3489,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var card = document.createElement('div');
       var safeId = docId || ('new-' + Date.now());
       card.id = 'merch-card-' + safeId;
+      var _mi = -1; if (docId) { for (var _mk = 0; _mk < _merchSorted.length; _mk++) { if (_merchSorted[_mk].id === docId) { _mi = _mk; break; } } }
+      var _mvDisL = (_mi <= 0);
+      var _mvDisR = (_mi < 0 || _mi >= _merchSorted.length - 1);
       card.style.cssText = 'background:rgba(5,3,1,0.6);border:1px solid rgba(201,168,76,0.12);padding:20px;margin-bottom:16px;border-radius:2px;' + (data.active === false ? 'opacity:0.45;' : '');
       card.innerHTML =
         '<div style="font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.35);margin-bottom:14px;">' + esc(data.name || 'New Product') + '</div>'
@@ -3501,11 +3505,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         + '<label class="field-label">Gumroad URL</label><input class="field-input" data-field="gumroadUrl" value="' + esc(data.gumroadUrl||'') + '" maxlength="500">'
         + '<label class="field-label">Image URL</label><input class="field-input" data-field="imageUrl" value="' + esc(data.imageUrl||'') + '" maxlength="500">'
         + '<label class="radio-label" style="display:flex;align-items:center;gap:8px;margin:12px 0;cursor:pointer;"><input type="checkbox" data-field="active"' + (data.active ? ' checked' : '') + ' style="accent-color:#c9a84c;"><span>Active (visible on site)</span></label>'
-        + '<div style="display:flex;gap:10px;margin-top:12px;">'
+        + '<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">'
         + '<button class="btn-gold" onclick="window._saveMerchCard(\'' + safeId + '\',\'' + (docId||'') + '\',this)" style="padding:8px 20px;font-size:0.65rem;letter-spacing:0.2em;">SAVE CHANGES \u2726</button>'
+        + (docId ? ('<button class="btn-ghost" style="font-size:0.55rem;padding:4px 10px;' + (_mvDisL?'opacity:0.3;':'') + '"' + (_mvDisL?' disabled':'') + ' onclick="window._merchMove(\'' + docId + '\',-1)">Move \u2190</button>'
+                  + '<button class="btn-ghost" style="font-size:0.55rem;padding:4px 10px;' + (_mvDisR?'opacity:0.3;':'') + '"' + (_mvDisR?' disabled':'') + ' onclick="window._merchMove(\'' + docId + '\',1)">Move \u2192</button>') : '')
         + (docId ? (data.active === false
           ? '<button class="btn-ghost btn-sm" onclick="window._restoreMerchCard(\'' + docId + '\',this.closest(\'[id^=merch-card-]\'))">Restore</button>'
           : '<button class="btn-danger btn-sm" onclick="window._removeMerchCard(\'' + docId + '\',this.closest(\'[id^=merch-card-]\'))">Remove</button>') : '')
+        + (docId ? '<button class="btn-danger btn-sm" onclick="window._merchDelete(\'' + docId + '\')">Delete</button>' : '')
         + '</div>'
         + '<div class="merch-card-status status-msg" style="margin-top:8px;"></div>';
       container.appendChild(card);
@@ -3675,6 +3682,35 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         if (statusEl) { statusEl.textContent = 'Restored — visible on live site'; statusEl.className = 'merch-card-status status-msg status-ok'; }
       }
     }).catch(function (e) { alert('Error: ' + e.message); });
+  };
+
+  // v294: reorder by swapping order with the neighbor (atomic 2-doc batch; follows the product)
+  window._merchMove = function (docId, dir) {
+    if (_merchMoving) return;
+    var i = -1; for (var k = 0; k < _merchSorted.length; k++) { if (_merchSorted[k].id === docId) { i = k; break; } }
+    if (i < 0) return;
+    var target = i + dir;
+    if (target < 0 || target >= _merchSorted.length) return;
+    _merchMoving = true;
+    var a = _merchSorted[i], b = _merchSorted[target];
+    var ao = (a.data.order != null ? a.data.order : i);
+    var bo = (b.data.order != null ? b.data.order : target);
+    var batch = db.batch();
+    batch.update(db.collection('merch').doc(a.id), { order: bo });
+    batch.update(db.collection('merch').doc(b.id), { order: ao });
+    batch.commit().then(function () {
+      merchPage = target + 1;                 // follow the moved product to its new page
+      _merchMoving = false;
+      if (window._merchReload) window._merchReload();
+    }).catch(function (e) { _merchMoving = false; alert('Reorder failed: ' + e.message); });
+  };
+
+  // v294: permanent delete (beside the soft-hide Remove) — confirm, hard delete, reload
+  window._merchDelete = function (docId) {
+    if (!confirm('Permanently delete this product? This cannot be undone.')) return;
+    db.collection('merch').doc(docId).delete().then(function () {
+      if (window._merchReload) window._merchReload();
+    }).catch(function (e) { alert('Delete failed: ' + e.message); });
   };
 
   /* ══════════════ SECTION 17: MAINTENANCE MODE ══════════════ */
