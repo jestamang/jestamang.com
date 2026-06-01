@@ -3457,6 +3457,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   };
 
   /* ══════════════ SECTION 15: MERCH MANAGER ══════════════ */
+  /* v292: MERCH_DEFAULTS retired — Firestore canonical (seeded). Reversible backup:
   var MERCH_DEFAULTS = [
     { name:'Quarter Days Cassette Bundle', description:'The complete Quarter Days 2025 cycle on tape. Four seasons, four cassettes — Zodiac, New Aeon, Niga Denots, and Jestress Melody.',                                                                                                                                                                                                                                                                   subtitle:'The Complete 2025 Cycle · Four Seasons on Tape',        tagline:'Four cassettes · Four seasons · Hand-labored · J-Card included',  price:85,  gumroadUrl:'https://jestamang.gumroad.com/l/quarter-days-bundle',      imageUrl:'assets/merch/zodiac-cassette.png',           active:true },
     { name:'Zodiac Cassette',              description:'The Spring Equinox 2025 transmission. 12 tracks, one for each sign of the zodiac, channeled through Children. Psychedelic, ceremonial, and mapped to the wheel of the year. Hand-labored cassette. 25 copies available. Plays in any standard deck. Includes original cover art and a 5 panel J-Card.',                                                                                            subtitle:'Quarter Days · Spring Equinox 2025',                     tagline:'12 tracks · 25 copies · Hand-labored · J-Card included',        price:25,  gumroadUrl:'https://jestamang.gumroad.com/l/zodiac-cassette',            imageUrl:'assets/merch/zodiac-cassette.png',           active:true },
@@ -3469,6 +3470,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     { name:'The Jestamang Puzzle',         description:'An original Jestamang image rendered as a puzzle. The act of assembly is the point — the mythology reveals itself one piece at a time. Take your time with this one.',                                                                                                                                                                                                                        subtitle:'Original Artwork',                                           tagline:'Original artwork · High quality print · Ships assembled in box',      price:40,  gumroadUrl:'https://jestamang.gumroad.com/l/puzzle',                     imageUrl:'assets/merch/puzzle.png',                   active:true },
     { name:'The Jestamang Card Deck',      description:'Fifty-two original illustrations drawn from the Jestamang universe. Each card is its own artifact — an entity, a symbol, a moment from the mythology rendered in ink. No two cards are the same. No reprints are planned. This deck will not exist forever.',                                                                                                                                  subtitle:'52 Unique Cards',                                            tagline:'52 unique illustrations · Standard deck size · Limited availability',  price:40,  gumroadUrl:'https://jestamang.gumroad.com/l/cards',                      imageUrl:'assets/merch/cards.png',                    active:true }
   ];
+  */
 
   function initMerchManager() {
     var container = document.getElementById('merch-cards');
@@ -3519,16 +3521,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       }
     }
 
-    db.collection('merch').orderBy('updatedAt','asc').get().then(function (snap) {
+    db.collection('merch').get().then(function (snap) {
       container.innerHTML = '';
-      if (snap.empty) {
-        MERCH_DEFAULTS.forEach(function (d) { renderMerchCard(null, d); });
+      var mdocs = [];
+      snap.forEach(function (doc) { mdocs.push({ id: doc.id, data: doc.data() }); });
+      mdocs.sort(function(a,b){ var oa=(a.data.order!=null?a.data.order:9e15), ob=(b.data.order!=null?b.data.order:9e15); return oa-ob; }); // order asc
+      if (!mdocs.length) {
+        container.innerHTML = '<div style="color:rgba(201,168,76,0.3);font-size:0.72rem;letter-spacing:0.12em;padding:8px 0;">No products yet \u2014 add one below.</div>';
       } else {
-        snap.forEach(function (doc) { renderMerchCard(doc.id, doc.data()); });
+        mdocs.forEach(function (it) { renderMerchCard(it.id, it.data); });
       }
-    }).catch(function () {
-      container.innerHTML = '';
-      MERCH_DEFAULTS.forEach(function (d) { renderMerchCard(null, d); });
+    }).catch(function (e) {
+      container.innerHTML = '<div class="status-err" style="font-size:0.7rem;">Could not load products: ' + esc(e.message) + '</div>';
     });
 
     var _merchAddBtn=document.getElementById('merch-add-btn');if(_merchAddBtn)_merchAddBtn.addEventListener('click', function () {
