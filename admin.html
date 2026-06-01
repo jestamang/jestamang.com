@@ -4008,6 +4008,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   /* ══════════════ SECTION 23: PHOTO ARCHIVE MANAGER ══════════════ */
   function initPhotos() {
     var pmGroups = [];
+    var pmPhotoPage = {};          // v289: per-photo-list page, keyed by group _id
+    var PM_PHOTO_PER_PAGE = 10;
 
     function pmLoad() {
       document.getElementById('pm-group-list').innerHTML = '<div style="font-size:0.7rem;color:rgba(201,168,76,0.3);letter-spacing:0.12em;padding:8px 0;">Loading groups…</div>';
@@ -4282,7 +4284,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       listTitle.textContent = photos.length + ' Photos';
       container.appendChild(listTitle);
 
-      photos.forEach(function(ph, pi) {
+      // v289: paginate 10/page, keyed per group; handlers still use the GLOBAL index pi
+      var pg = pmPhotoPage[g._id] || 1;
+      var totalP = Math.max(1, Math.ceil(photos.length / PM_PHOTO_PER_PAGE));
+      if (pg > totalP) pg = totalP; if (pg < 1) pg = 1; pmPhotoPage[g._id] = pg;
+      var start = (pg - 1) * PM_PHOTO_PER_PAGE;
+      var pageItems = photos.slice(start, start + PM_PHOTO_PER_PAGE);
+
+      pageItems.forEach(function(ph, j) {
+        var pi = start + j;
         var row = document.createElement('div');
         row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(201,168,76,0.06);flex-wrap:wrap;';
 
@@ -4357,6 +4367,25 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         row.appendChild(saveCapBtn); row.appendChild(upBtn2); row.appendChild(downBtn2); row.appendChild(delBtn);
         container.appendChild(row);
       });
+
+      // v289: per-group pager (closures over g/container/gi/panel — safe with multiple open groups)
+      if (totalP > 1) {
+        var pager = document.createElement('div');
+        pager.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px;font-family:\'Luminari\',serif;';
+        var prevB = document.createElement('button');
+        prevB.className = 'btn-ghost btn-sm'; prevB.textContent = '←'; prevB.style.minWidth = '40px';
+        prevB.disabled = pg === 1; prevB.style.opacity = pg === 1 ? '0.3' : '1';
+        prevB.onclick = function(){ if (pmPhotoPage[g._id] > 1) { pmPhotoPage[g._id]--; pmBuildPhotoList(g, container, gi, panel); } };
+        var ind = document.createElement('span');
+        ind.style.cssText = 'font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,168,76,0.55);';
+        ind.textContent = 'Page ' + pg + ' / ' + totalP;
+        var nextB = document.createElement('button');
+        nextB.className = 'btn-ghost btn-sm'; nextB.textContent = '→'; nextB.style.minWidth = '40px';
+        nextB.disabled = pg === totalP; nextB.style.opacity = pg === totalP ? '0.3' : '1';
+        nextB.onclick = function(){ if (pmPhotoPage[g._id] < totalP) { pmPhotoPage[g._id]++; pmBuildPhotoList(g, container, gi, panel); } };
+        pager.appendChild(prevB); pager.appendChild(ind); pager.appendChild(nextB);
+        container.appendChild(pager);
+      }
     }
 
     function pmMovePhoto(g, pi, dir, container, gi, panel) {
