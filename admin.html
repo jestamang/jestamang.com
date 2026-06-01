@@ -3484,7 +3484,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         + '<div><label class="field-label">Product Name</label><input class="field-input" data-field="name" value="' + esc(data.name||'') + '" maxlength="100"></div>'
         + '<div><label class="field-label">Price ($)</label><input class="field-input" type="number" data-field="price" value="' + (data.price||'') + '" min="0" max="9999"></div>'
         + '</div>'
+        + '<label class="field-label">Subtitle</label><input class="field-input" data-field="subtitle" value="' + esc(data.subtitle||'') + '" maxlength="120">'
         + '<label class="field-label">Description</label><textarea class="field-input field-textarea" data-field="description" rows="2" maxlength="300">' + esc(data.description||'') + '</textarea>'
+        + '<label class="field-label">Tagline</label><input class="field-input" data-field="tagline" value="' + esc(data.tagline||'') + '" maxlength="200">'
         + '<label class="field-label">Gumroad URL</label><input class="field-input" data-field="gumroadUrl" value="' + esc(data.gumroadUrl||'') + '" maxlength="500">'
         + '<label class="field-label">Image URL</label><input class="field-input" data-field="imageUrl" value="' + esc(data.imageUrl||'') + '" maxlength="500">'
         + '<label class="radio-label" style="display:flex;align-items:center;gap:8px;margin:12px 0;cursor:pointer;"><input type="checkbox" data-field="active"' + (data.active ? ' checked' : '') + ' style="accent-color:#c9a84c;"><span>Active (visible on site)</span></label>'
@@ -3544,11 +3546,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     };
     var data = {
       name: get('name') || '', description: get('description') || '',
+      subtitle: get('subtitle') || '', tagline: get('tagline') || '',
       price: parseFloat(get('price')) || 0,
       gumroadUrl: get('gumroadUrl') || '', imageUrl: get('imageUrl') || '',
       active: get('active'),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
+    // v291: new product → append after the seeded 0..9 catalog; existing docs keep their order (merge:true)
+    if (!docId || !docId.length) { data.order = Date.now(); }
     if (!data.name) { statusEl.textContent='Name required'; statusEl.className='merch-card-status status-msg status-err'; return; }
     if (!data.imageUrl) { statusEl.textContent='Image URL required'; statusEl.className='merch-card-status status-msg status-err'; return; }
     if (!data.gumroadUrl) { statusEl.textContent='Gumroad URL required'; statusEl.className='merch-card-status status-msg status-err'; return; }
