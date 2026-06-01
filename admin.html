@@ -3317,7 +3317,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       this.disabled = true;
       db.collection('videos').add({
         title: title, youtubeId: id, youtubeUrl: url,
-        published: true, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        published: true, order: 0, timestamp: firebase.firestore.FieldValue.serverTimestamp()
       }).then(function () {
         document.getElementById('vm-status').textContent = 'VIDEO ADDED \u2726';
         document.getElementById('vm-status').className = 'status-msg status-ok';
