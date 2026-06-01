@@ -150,7 +150,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <a href="index.html" class="home-btn">← Home</a> <div class="content" id="main-content"> <div class="page-header"> <h1>Videos</h1> <p>Moving images from the Jestamang universe</p> </div> <div class="video-grid" id="videoGrid"></div> </div>
 <script>
 // FALLBACK: pre-Firestore videos — New videos add via admin.html
+/* v282: FALLBACK_VIDEOS retired — Firestore is canonical. Kept commented for reversibility.
 var FALLBACK_VIDEOS=[{title:'Jestamang Live at Prison Break',id:'31DacId6G1E'},{title:'Jestamang Live at 529',id:'Ty0YL3Twaak'},{title:'Meet Aliens Today',id:'Y-FqtXAQjk8'},{title:'The Circus Speaks (I)',id:'mGBYMgb4-VU'},{title:'The Circus Speaks (II)',id:'LcOpNRK_3-Q'},{title:'The Circus Speaks (III)',id:'yQugxfPBo68'},{title:'The Circus Speaks (IV)',id:'xNhFnwtR9ww'},{title:'The Circus Speaks (V)',id:'bxE-B8783H0'},{title:'A Short Film About Murder',id:'6E5RwAPYRwE'},{title:'Xmas 23',id:'Rd6Gd_6aufQ'},{title:'Zoo',id:'yFK3HfDBtJ8'},{title:'1 & 2 & 1',id:'u5lvabHpj-E'},{title:'Jesta Joint',id:'FFaJSmvSTVI'},{title:'Bloodhouse',id:'K6VuiospEL4'},{title:"Don't ID Jesus",id:'pfq7quk0X68'},{title:'Underworld',id:'FxI4OktsWoI'},{title:'Covers the Greats',id:'CpqSfxoDac8'},{title:'A Girl Once Told Me',id:'p31-N6OsQLI'},{title:'Who In Here Wants To Get Hypnotized?',id:'AOrjSnkqeTI'},{title:'Red Shaydez',id:'Abhh7bmFzFM'},{title:'ATTENCHUN!',id:'F25D2ZOVgsE'},{title:'Donovan',id:'5ypwaWPuVls'},{title:'Daemon',id:'Bi0J0ymQQ98'},{title:'Davie',id:'LjLHwPrN0Hg'},{title:'Ode to the Pig',id:'pK6lQ2QU1kI'},{title:"Magician's Trick (Flashback)",id:'H0EoIEza8hA'},{title:'Cell Life',id:'8Q817bJ6qvk'},{title:'Caterpillar Rider',id:'EmEQVPSw-pU'},{title:'Sahr Ngaujah & the Genre Transcendence Movement',id:'XunvkvSRcsQ'},{title:'The Perfect Trip',id:'vU-fmBbFODM'},{title:'∞',id:'OUgXzy58J_4'}];
+*/
 
 var _vGrid=document.getElementById('videoGrid');
 
@@ -184,9 +186,8 @@ function renderVideos(items){
   });
 }
 
-function _vShowFallback(){renderVideos(FALLBACK_VIDEOS);}
-// Render fallback immediately — no loading state
-_vShowFallback();
+// v282: no hardcoded fallback render — Firestore is canonical; graceful empty/error instead of a stale list.
+function _vEmptyState(msg){ _vGrid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:rgba(201,168,76,0.4);font-size:0.8rem;letter-spacing:0.15em;padding:48px 0;">'+msg+'</div>'; }
 
 var _jt=0,_jiv=setInterval(function(){
   if(window.jestaDB){
@@ -195,7 +196,7 @@ var _jt=0,_jiv=setInterval(function(){
       .where('published','==',true)
       .get()
       .then(function(snap){
-        if(snap.empty){return;}
+        if(snap.empty){_vEmptyState('No videos yet.');return;}
         var docs=[];
         snap.forEach(function(doc){docs.push({id:doc.id,data:doc.data()});});
         docs.sort(function(a,b){
@@ -207,15 +208,12 @@ var _jt=0,_jiv=setInterval(function(){
           return tb-ta;                            // timestamp DESC tiebreak
         });
         var items=docs.map(function(d){return{id:d.data.youtubeId,title:d.data.title};});
-        var fbIds=FALLBACK_VIDEOS.map(function(v){return v.id;}).join(',');
-        var fsIds=items.map(function(v){return v.id;}).join(',');
-        if(fbIds===fsIds){return;}
         _vGrid.style.transition='opacity 0.3s ease';
         _vGrid.style.opacity='0';
         setTimeout(function(){renderVideos(items);_vGrid.style.opacity='1';},300);
       })
-      .catch(function(){/* fallback already shown */});
-  }else if(++_jt>80){clearInterval(_jiv);/* fallback already shown */}
+      .catch(function(){_vEmptyState('Could not load videos.');});
+  }else if(++_jt>80){clearInterval(_jiv);_vEmptyState('Could not load videos.');}
 },100);
 </script>
 <div id="lightbox" class="lightbox" onclick="if(event.target===this)closeLightbox()"> <div class="lightbox-inner"> <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close">&#x2715;</button> <div class="lightbox-frame" id="lb-frame"> <div id="lb-player"></div> </div> <div class="lb-error" id="lb-error"> <p>This video can't be played here</p> <a id="lb-yt-link" href="#" target="_blank" rel="noopener noreferrer">Watch on YouTube</a> </div> <div class="lightbox-title" id="lb-title"></div> </div> </div>
