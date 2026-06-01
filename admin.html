@@ -852,6 +852,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div style="margin-top:32px;">
         <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Existing Videos</div>
         <div id="vm-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
+        <div id="vm-pager" style="display:none;align-items:center;justify-content:center;gap:18px;margin-top:16px;font-family:'Luminari',serif;">
+          <button id="vm-prev" class="btn-ghost btn-sm" aria-label="Previous page" style="min-width:44px;">←</button>
+          <span id="vm-page-indicator" style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,168,76,0.55);"></span>
+          <button id="vm-next" class="btn-ghost btn-sm" aria-label="Next page" style="min-width:44px;">→</button>
+        </div>
       </div>
     </div>
     <div class="adm-ornament">✦</div>
@@ -3292,6 +3297,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   var _vmSorted = [];        // {id,data} in display order (v283 reorder)
   var _vmReordering = false; // in-flight reorder guard
   var _vmEditId = null;      // null = ADD mode, id = EDIT mode (v284)
+  var vmPage = 1;            // v285 pagination
+  var VM_PER_PAGE = 5;
 
   function initVideoManager() {
     function extractYtId(url) {
@@ -3343,6 +3350,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       });
     });
 
+    var _vmPrev=document.getElementById('vm-prev');if(_vmPrev)_vmPrev.addEventListener('click', function(){ if(vmPage>1){ vmPage--; renderVideoPage(); } });
+    var _vmNext=document.getElementById('vm-next');if(_vmNext)_vmNext.addEventListener('click', function(){ var tp=Math.max(1,Math.ceil(_vmSorted.length/VM_PER_PAGE)); if(vmPage<tp){ vmPage++; renderVideoPage(); } });
+
     db.collection('videos').onSnapshot(function (snap) {
       var el = document.getElementById('vm-list');
       if (snap.empty) { el.innerHTML='<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No videos yet.</div>'; _vmSorted=[]; return; }
@@ -3354,28 +3364,52 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var ta=a.data.timestamp?a.data.timestamp.seconds:0, tb=b.data.timestamp?b.data.timestamp.seconds:0;
         return tb-ta;                             // timestamp DESC tiebreak
       });
-      var html = '';
-      _vmSorted.forEach(function (item, i) {
-        var doc_id = item.id; var d = item.data; var eid = 'vm-' + doc_id;
-        var upDis = (i===0) ? ' disabled style="opacity:0.3;"' : '';
-        var dnDis = (i===_vmSorted.length-1) ? ' disabled style="opacity:0.3;"' : '';
-        html += '<div class="entry-row" id="row-' + eid + '" style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,0.06);">'
-          + '<img src="https://img.youtube.com/vi/' + esc(d.youtubeId) + '/default.jpg" alt="Video thumbnail" width="120" height="90" style="width:80px;flex-shrink:0;border-radius:2px;border:1px solid rgba(201,168,76,0.15);" loading="lazy">'
-          + '<div class="entry-body" style="flex:1;">'
-          + '<div class="entry-name">' + esc(d.title) + '</div>'
-          + '<div class="entry-meta">' + esc(d.youtubeId) + ' &nbsp;\u00b7&nbsp; ' + fmtDate(d.timestamp) + (d.published===false ? ' <span class="badge" style="color:#FB3838;border:1px solid rgba(251,56,56,0.4);padding:1px 6px;border-radius:4px;font-size:0.6rem;">UNPUBLISHED</span>' : '') + '</div>'
-          + '<div class="entry-actions">'
-          + '<button class="btn-ghost btn-sm" aria-label="Move up" onclick="moveVideo(\'' + doc_id + '\',-1)"' + upDis + '>\u2191</button>'
-          + '<button class="btn-ghost btn-sm" aria-label="Move down" onclick="moveVideo(\'' + doc_id + '\',1)"' + dnDis + '>\u2193</button>'
-          + '<button class="btn-ghost btn-sm" onclick="editVideo(\'' + doc_id + '\')">Edit</button>'
-          + '<button class="btn-ghost btn-sm" onclick="publishVideo(\'' + doc_id + '\',' + (d.published!==false) + ')">' + (d.published!==false ? 'Unpublish' : 'Publish') + '</button>'
-          + '<button class="btn-danger btn-sm" onclick="askDelete(\'' + eid + '\')">Remove</button>'
-          + makeDeleteRow('videos', doc_id, eid)
-          + '</div></div></div>';
-      });
-      el.innerHTML = html;
-      _vmReordering = false;
+      renderVideoPage();
     }, function(e){ console.error('videos error:', e.message); });
+  }
+
+  // v285: render the current page (5/page); ↑/↓ disable keyed to GLOBAL index in _vmSorted
+  function renderVideoPage(){
+    var el = document.getElementById('vm-list');
+    var total = _vmSorted.length;
+    var totalPages = Math.max(1, Math.ceil(total / VM_PER_PAGE));
+    if (vmPage > totalPages) vmPage = totalPages;
+    if (vmPage < 1) vmPage = 1;
+    var start = (vmPage - 1) * VM_PER_PAGE;
+    var slice = _vmSorted.slice(start, start + VM_PER_PAGE);
+    var html = '';
+    slice.forEach(function (item, j) {
+      var gi = start + j;
+      var doc_id = item.id; var d = item.data; var eid = 'vm-' + doc_id;
+      var upDis = (gi===0) ? ' disabled style="opacity:0.3;"' : '';
+      var dnDis = (gi===total-1) ? ' disabled style="opacity:0.3;"' : '';
+      html += '<div class="entry-row" id="row-' + eid + '" style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,0.06);">'
+        + '<img src="https://img.youtube.com/vi/' + esc(d.youtubeId) + '/default.jpg" alt="Video thumbnail" width="120" height="90" style="width:80px;flex-shrink:0;border-radius:2px;border:1px solid rgba(201,168,76,0.15);" loading="lazy">'
+        + '<div class="entry-body" style="flex:1;">'
+        + '<div class="entry-name">' + esc(d.title) + '</div>'
+        + '<div class="entry-meta">' + esc(d.youtubeId) + ' &nbsp;\u00b7&nbsp; ' + fmtDate(d.timestamp) + (d.published===false ? ' <span class="badge" style="color:#FB3838;border:1px solid rgba(251,56,56,0.4);padding:1px 6px;border-radius:4px;font-size:0.6rem;">UNPUBLISHED</span>' : '') + '</div>'
+        + '<div class="entry-actions">'
+        + '<button class="btn-ghost btn-sm" aria-label="Move up" onclick="moveVideo(\'' + doc_id + '\',-1)"' + upDis + '>\u2191</button>'
+        + '<button class="btn-ghost btn-sm" aria-label="Move down" onclick="moveVideo(\'' + doc_id + '\',1)"' + dnDis + '>\u2193</button>'
+        + '<button class="btn-ghost btn-sm" onclick="editVideo(\'' + doc_id + '\')">Edit</button>'
+        + '<button class="btn-ghost btn-sm" onclick="publishVideo(\'' + doc_id + '\',' + (d.published!==false) + ')">' + (d.published!==false ? 'Unpublish' : 'Publish') + '</button>'
+        + '<button class="btn-danger btn-sm" onclick="askDelete(\'' + eid + '\')">Remove</button>'
+        + makeDeleteRow('videos', doc_id, eid)
+        + '</div></div></div>';
+    });
+    el.innerHTML = html;
+    var pager = document.getElementById('vm-pager');
+    var ind   = document.getElementById('vm-page-indicator');
+    var prev  = document.getElementById('vm-prev');
+    var next  = document.getElementById('vm-next');
+    if (totalPages <= 1) { if(pager) pager.style.display = 'none'; }
+    else {
+      pager.style.display = 'flex';
+      ind.textContent = 'Page ' + vmPage + ' / ' + totalPages;
+      prev.disabled = (vmPage === 1); prev.style.opacity = (vmPage === 1) ? 0.3 : 1;
+      next.disabled = (vmPage >= totalPages); next.style.opacity = (vmPage >= totalPages) ? 0.3 : 1;
+    }
+    _vmReordering = false;
   }
 
   // v283: swap a video with its neighbor by re-sequencing ALL docs to order 1..N (dupe-proof, no-notify)
