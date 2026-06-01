@@ -846,6 +846,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
 
       <button class="btn-gold btn-gold-full" id="vm-add-btn">ADD VIDEO ✦</button>
+      <button id="vm-cancel-btn" class="btn-ghost btn-gold-full" style="display:none;margin-top:8px;" onclick="vmClearForm()">Cancel Edit</button>
       <div class="status-msg" id="vm-status"></div>
 
       <div style="margin-top:32px;">
@@ -3290,6 +3291,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   /* ══════════════ SECTION 14: VIDEO MANAGER ══════════════ */
   var _vmSorted = [];        // {id,data} in display order (v283 reorder)
   var _vmReordering = false; // in-flight reorder guard
+  var _vmEditId = null;      // null = ADD mode, id = EDIT mode (v284)
 
   function initVideoManager() {
     function extractYtId(url) {
@@ -3318,20 +3320,26 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       if (!title) { statusEl.textContent='Title required'; statusEl.className='status-msg status-err'; return; }
       if (!id)    { statusEl.textContent='Invalid YouTube URL'; statusEl.className='status-msg status-err'; return; }
       this.disabled = true;
-      db.collection('videos').add({
-        title: title, youtubeId: id, youtubeUrl: url,
-        published: true, order: (_vmSorted.length ? _vmSorted.length + 1 : 1), timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(function () {
-        document.getElementById('vm-status').textContent = 'VIDEO ADDED \u2726';
+      var self = this;
+      var op;
+      if (_vmEditId) {
+        op = db.collection('videos').doc(_vmEditId).update({ title: title, youtubeId: id, youtubeUrl: url }); // order/published/timestamp preserved
+      } else {
+        op = db.collection('videos').add({
+          title: title, youtubeId: id, youtubeUrl: url,
+          published: true, order: (_vmSorted.length ? _vmSorted.length + 1 : 1), timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+      op.then(function () {
+        document.getElementById('vm-status').textContent = _vmEditId ? 'Updated \u2713' : 'VIDEO ADDED \u2726';
         document.getElementById('vm-status').className = 'status-msg status-ok';
-        document.getElementById('vm-title').value = '';
-        urlInput.value = '';
+        vmClearForm();
         document.getElementById('vm-preview').style.display = 'none';
-        document.getElementById('vm-add-btn').disabled = false;
+        self.disabled = false;
       }).catch(function (e) {
         document.getElementById('vm-status').textContent = 'Error: ' + e.message;
         document.getElementById('vm-status').className = 'status-msg status-err';
-        document.getElementById('vm-add-btn').disabled = false;
+        self.disabled = false;
       });
     });
 
@@ -3355,10 +3363,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           + '<img src="https://img.youtube.com/vi/' + esc(d.youtubeId) + '/default.jpg" alt="Video thumbnail" width="120" height="90" style="width:80px;flex-shrink:0;border-radius:2px;border:1px solid rgba(201,168,76,0.15);" loading="lazy">'
           + '<div class="entry-body" style="flex:1;">'
           + '<div class="entry-name">' + esc(d.title) + '</div>'
-          + '<div class="entry-meta">' + esc(d.youtubeId) + ' &nbsp;\u00b7&nbsp; ' + fmtDate(d.timestamp) + '</div>'
+          + '<div class="entry-meta">' + esc(d.youtubeId) + ' &nbsp;\u00b7&nbsp; ' + fmtDate(d.timestamp) + (d.published===false ? ' <span class="badge" style="color:#FB3838;border:1px solid rgba(251,56,56,0.4);padding:1px 6px;border-radius:4px;font-size:0.6rem;">UNPUBLISHED</span>' : '') + '</div>'
           + '<div class="entry-actions">'
           + '<button class="btn-ghost btn-sm" aria-label="Move up" onclick="moveVideo(\'' + doc_id + '\',-1)"' + upDis + '>\u2191</button>'
           + '<button class="btn-ghost btn-sm" aria-label="Move down" onclick="moveVideo(\'' + doc_id + '\',1)"' + dnDis + '>\u2193</button>'
+          + '<button class="btn-ghost btn-sm" onclick="editVideo(\'' + doc_id + '\')">Edit</button>'
+          + '<button class="btn-ghost btn-sm" onclick="publishVideo(\'' + doc_id + '\',' + (d.published!==false) + ')">' + (d.published!==false ? 'Unpublish' : 'Publish') + '</button>'
           + '<button class="btn-danger btn-sm" onclick="askDelete(\'' + eid + '\')">Remove</button>'
           + makeDeleteRow('videos', doc_id, eid)
           + '</div></div></div>';
@@ -3382,6 +3392,30 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var batch=db.batch();
     arr.forEach(function(item,i){ batch.update(db.collection('videos').doc(item.id), { order: i+1 }); });
     batch.commit().catch(function(e){ _vmReordering=false; alert('Reorder failed: '+e.message); });
+  };
+
+  // v284: edit-into-form + publish toggle (Press pattern; no notifications)
+  function _vmFind(id){ for(var k=0;k<_vmSorted.length;k++){ if(_vmSorted[k].id===id) return _vmSorted[k].data; } return null; }
+  function vmClearForm(){
+    _vmEditId = null;
+    document.getElementById('vm-title').value = '';
+    document.getElementById('vm-url').value = '';
+    var pv=document.getElementById('vm-preview'); if(pv) pv.style.display='none';
+    document.getElementById('vm-add-btn').textContent = 'ADD VIDEO \u2726';
+    var cb=document.getElementById('vm-cancel-btn'); if(cb) cb.style.display='none';
+  }
+  window.vmClearForm = vmClearForm;
+  window.editVideo = function(id){
+    var d=_vmFind(id); if(!d) return;
+    _vmEditId = id;
+    document.getElementById('vm-title').value = d.title || '';
+    document.getElementById('vm-url').value = d.youtubeUrl || ('https://www.youtube.com/watch?v=' + (d.youtubeId||''));
+    document.getElementById('vm-add-btn').textContent = 'Update Video';
+    var cb=document.getElementById('vm-cancel-btn'); if(cb) cb.style.display='';
+    var sec=document.getElementById('sec-14'); if(sec) sec.scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  window.publishVideo = function(id, currentlyPublished){
+    db.collection('videos').doc(id).update({ published: !currentlyPublished }).catch(function(e){ alert('Error: ' + e.message); });
   };
 
   /* ══════════════ SECTION 15: MERCH MANAGER ══════════════ */
