@@ -2538,13 +2538,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var d=item.data;
         var isRead=!!d.read;
         var cardClass='inq-card'+(isRead?' read':' unread');
-        var product=esc(d.product||'your inquiry');
+        var product=esc((d.product||d.item)||'your inquiry');
         var defaultMsg='Thank you for reaching out about '+product+'. We have received your inquiry and will follow up with you shortly.\n\n\u2014 Jestamang';
         html+='<div class="'+cardClass+'" id="inq-'+doc.id+'">'
           +'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">'
           +'<div>'
           +'<div style="font-size:0.8rem;color:#c9a84c;letter-spacing:0.08em;">'+esc(d.name||'Unknown')+'</div>'
-          +'<div style="font-size:0.62rem;color:rgba(201,168,76,0.4);margin-top:2px;">'+fmtDate(d.timestamp)+(d.product?' &nbsp;·&nbsp; '+esc(d.product):'')+'</div>'
+          +'<div style="font-size:0.62rem;color:rgba(201,168,76,0.4);margin-top:2px;">'+fmtDate(d.timestamp)+((d.product||d.item)?' &nbsp;·&nbsp; '+esc(d.product||d.item):'')+'</div>'
           +'</div>'
           +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">'
           +(isRead?'<span class="badge badge-dim">Responded</span>':'<span class="badge badge-red">Unread</span>')
