@@ -865,6 +865,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="adm-section-underline"></div>
       <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:24px;">Update products without touching code.</div>
       <div id="merch-cards"></div>
+      <div id="merch-pager" style="display:none;align-items:center;justify-content:center;gap:18px;margin-top:16px;font-family:'Luminari',serif;">
+        <button id="merch-prev" class="btn-ghost btn-sm" aria-label="Previous product" style="min-width:44px;">←</button>
+        <span id="merch-page-indicator" style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,168,76,0.55);"></span>
+        <button id="merch-next" class="btn-ghost btn-sm" aria-label="Next product" style="min-width:44px;">→</button>
+      </div>
       <button class="btn-ghost" id="merch-add-btn" style="margin-top:16px;width:100%;padding:14px;letter-spacing:0.25em;">+ ADD NEW PRODUCT</button>
     </div>
     <div class="adm-ornament">✦</div>
@@ -3472,6 +3477,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   ];
   */
 
+  var merchPage = 1;            // v293: 1-per-page pagination
+  var MERCH_PER_PAGE = 1;
+  var _merchSorted = [];        // order-asc product docs
+
   function initMerchManager() {
     var container = document.getElementById('merch-cards');
 
@@ -3521,21 +3530,52 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       }
     }
 
-    db.collection('merch').get().then(function (snap) {
+    // v293: 1-per-page — render only _merchSorted[merchPage-1] + drive the pager
+    function renderMerchPage() {
       container.innerHTML = '';
-      var mdocs = [];
-      snap.forEach(function (doc) { mdocs.push({ id: doc.id, data: doc.data() }); });
-      mdocs.sort(function(a,b){ var oa=(a.data.order!=null?a.data.order:9e15), ob=(b.data.order!=null?b.data.order:9e15); return oa-ob; }); // order asc
-      if (!mdocs.length) {
+      var total = _merchSorted.length;
+      var pager = document.getElementById('merch-pager');
+      if (!total) {
         container.innerHTML = '<div style="color:rgba(201,168,76,0.3);font-size:0.72rem;letter-spacing:0.12em;padding:8px 0;">No products yet \u2014 add one below.</div>';
-      } else {
-        mdocs.forEach(function (it) { renderMerchCard(it.id, it.data); });
+        if (pager) pager.style.display = 'none';
+        return;
       }
-    }).catch(function (e) {
-      container.innerHTML = '<div class="status-err" style="font-size:0.7rem;">Could not load products: ' + esc(e.message) + '</div>';
-    });
+      if (merchPage > total) merchPage = total;
+      if (merchPage < 1) merchPage = 1;
+      var it = _merchSorted[merchPage - 1];
+      renderMerchCard(it.id, it.data);
+      if (pager) {
+        if (total <= 1) { pager.style.display = 'none'; }
+        else {
+          pager.style.display = 'flex';
+          document.getElementById('merch-page-indicator').textContent = 'Product ' + merchPage + ' of ' + total;
+          var prev = document.getElementById('merch-prev'); var next = document.getElementById('merch-next');
+          prev.disabled = (merchPage === 1); prev.style.opacity = (merchPage === 1) ? '0.3' : '1';
+          next.disabled = (merchPage >= total); next.style.opacity = (merchPage >= total) ? '0.3' : '1';
+        }
+      }
+    }
+
+    function merchLoad() {
+      db.collection('merch').get().then(function (snap) {
+        _merchSorted = [];
+        snap.forEach(function (doc) { _merchSorted.push({ id: doc.id, data: doc.data() }); });
+        _merchSorted.sort(function(a,b){ var oa=(a.data.order!=null?a.data.order:9e15), ob=(b.data.order!=null?b.data.order:9e15); return oa-ob; }); // order asc
+        renderMerchPage();
+      }).catch(function (e) {
+        container.innerHTML = '<div class="status-err" style="font-size:0.7rem;">Could not load products: ' + esc(e.message) + '</div>';
+        var pager = document.getElementById('merch-pager'); if (pager) pager.style.display = 'none';
+      });
+    }
+    window._merchReload = merchLoad;
+    merchLoad();
+
+    var _merchPrev = document.getElementById('merch-prev'); if (_merchPrev) _merchPrev.addEventListener('click', function(){ if (merchPage > 1) { merchPage--; renderMerchPage(); } });
+    var _merchNext = document.getElementById('merch-next'); if (_merchNext) _merchNext.addEventListener('click', function(){ if (merchPage < _merchSorted.length) { merchPage++; renderMerchPage(); } });
 
     var _merchAddBtn=document.getElementById('merch-add-btn');if(_merchAddBtn)_merchAddBtn.addEventListener('click', function () {
+      container.innerHTML = '';                                    // v293: transient add view (one blank card)
+      var pager = document.getElementById('merch-pager'); if (pager) pager.style.display = 'none';
       renderMerchCard(null, { name:'New Product', description:'', price:0, gumroadUrl:'', imageUrl:'', active:true });
     });
   }
@@ -3579,6 +3619,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           btnWrap.appendChild(rb);
         }
         btn.setAttribute('onclick', 'window._saveMerchCard(\'' + ref.id + '\',\'' + ref.id + '\',this)');
+        merchPage = 9e15;                          // v293: jump to the new product (appended last)
+        if (window._merchReload) window._merchReload();
       }
       setTimeout(function () { if(statusEl.textContent.indexOf('UPDATED')!==-1){statusEl.textContent='';} }, 3000);
     }).catch(function (e) {
