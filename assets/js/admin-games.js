@@ -363,6 +363,11 @@
 
     function renderCards() {
       container.innerHTML = '';
+      var wraps = [];
+      var pager = document.createElement('div');
+      pager.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px;';
+      pager.innerHTML = '<button class="btn-ghost btn-sm" id="sc-prev" style="letter-spacing:0.2em;">\u2039 PREV</button><div id="sc-page-ind" style="font-family:\'Luminari\',serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.55);"></div><button class="btn-ghost btn-sm" id="sc-next" style="letter-spacing:0.2em;">NEXT \u203a</button>';
+      container.appendChild(pager);
       _sigilCards.forEach(function(card, i) {
         var wrap = document.createElement('div');
         wrap.id = 'sc-card-' + i;
@@ -395,7 +400,22 @@
           + '</div>'
           + '</div>';
         container.appendChild(wrap);
+        wraps.push(wrap);
       });
+
+      // --- pagination: one card per page ---
+      var _scPage = 0;
+      function scShowPage(n){
+        if(n<0)n=0; if(n>wraps.length-1)n=wraps.length-1;
+        _scPage=n;
+        wraps.forEach(function(w,wi){ w.style.display=(wi===n)?'':'none'; });
+        var ind=document.getElementById('sc-page-ind'); if(ind)ind.textContent='Card '+(n+1)+' of '+wraps.length;
+        var pv=document.getElementById('sc-prev'),nx=document.getElementById('sc-next');
+        if(pv)pv.disabled=(n===0); if(nx)nx.disabled=(n===wraps.length-1);
+      }
+      var _scPrev=document.getElementById('sc-prev'); if(_scPrev)_scPrev.addEventListener('click',function(){scShowPage(_scPage-1);});
+      var _scNext=document.getElementById('sc-next'); if(_scNext)_scNext.addEventListener('click',function(){scShowPage(_scPage+1);});
+      scShowPage(0);
 
       // Wire live preview updates
       container.querySelectorAll('.sc-arcana,.sc-name,.sc-glyph,.sc-reading').forEach(function(inp) {
