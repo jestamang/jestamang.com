@@ -340,19 +340,195 @@ function almAttachCompressWidgets(container) {
   });
 }
 
+/* ── Album Sections manager (Step 3) ── */
+var _almSections = []; /* cached section docs; Step 4 will also read this for the album form */
+
+function _asmFind(slug){
+  for (var i=0;i<_almSections.length;i++){ if((_almSections[i].slug||_almSections[i]._id)===slug) return _almSections[i]; }
+  return null;
+}
+
+function asmLoad(){
+  if (!window.jestaDB) return;
+  var c = document.getElementById('alm-sections-inner');
+  if (c) c.innerHTML = '<div style="color:rgba(201,168,76,0.4);font-size:0.7rem;letter-spacing:0.2em;">Loading sections...</div>';
+  window.jestaDB.collection('albumSections').orderBy('order').get()
+    .then(function(snap){
+      _almSections = [];
+      snap.forEach(function(doc){ var d = doc.data(); d._id = doc.id; _almSections.push(d); });
+      asmRenderList();
+    })
+    .catch(function(e){ if (c) c.innerHTML = '<div style="color:rgba(251,56,56,0.7);font-size:0.7rem;">Failed to load sections: '+(e.message||e)+'</div>'; });
+}
+
+function asmRenderList(){
+  var c = document.getElementById('alm-sections-inner');
+  if (!c) return;
+  _almSections.sort(function(a,b){ return (a.order||0)-(b.order||0); });
+  if (!_almSections.length){
+    c.innerHTML = '<div style="color:rgba(201,168,76,0.4);font-size:0.7rem;letter-spacing:0.15em;">No sections yet. Add one below ↓</div>';
+    return;
+  }
+  var html = '';
+  _almSections.forEach(function(s, i){ html += asmRowHtml(s, i); });
+  c.innerHTML = html;
+  c.querySelectorAll('.alm-visible-toggle input[data-slug]').forEach(function(chk){
+    chk.addEventListener('change', function(){
+      var slug = chk.getAttribute('data-slug');
+      if (!slug || !window.jestaDB) return;
+      window.jestaDB.collection('albumSections').doc(slug).update({visible: chk.checked}).catch(function(){});
+      var s = _asmFind(slug); if (s) s.visible = chk.checked;
+    });
+  });
+}
+
+function asmRowHtml(s, i){
+  var slug = s.slug || s._id;
+  var vis = s.visible !== false;
+  return '<div class="alm-row" id="asm-row-'+almEsc(slug)+'">'
+    + '<div class="alm-row-header">'
+    + '<div class="alm-row-info"><div class="alm-row-title">'+almEsc(s.name||'(unnamed)')+' <span style="opacity:0.45;font-size:0.7rem;">/'+almEsc(slug)+'</span></div>'
+    + '<div class="alm-row-meta">'+almEsc(s.caption||'')+(s.gridClass?' &middot; grid: '+almEsc(s.gridClass):'')+'</div></div>'
+    + '<div class="alm-row-actions">'
+    + '<label class="alm-visible-toggle"><input type="checkbox" data-slug="'+almEsc(slug)+'"'+(vis?' checked':'')+'>Visible</label>'
+    + '<button class="btn-ghost btn-sm" onclick="asmToggleEdit(\''+almEsc(slug)+'\')">Edit</button>'
+    + '<button class="btn-ghost btn-sm" onclick="asmMoveOrder(\''+almEsc(slug)+'\',\'up\')"'+(i===0?' disabled':'')+'>&uarr;</button>'
+    + '<button class="btn-ghost btn-sm" onclick="asmMoveOrder(\''+almEsc(slug)+'\',\'dn\')"'+(i===_almSections.length-1?' disabled':'')+'>&darr;</button>'
+    + '<button class="btn-danger btn-sm" onclick="asmConfirmDelete(\''+almEsc(slug)+'\')">Delete</button>'
+    + '</div></div>'
+    + '<div class="alm-confirm-row" id="asm-confirm-'+almEsc(slug)+'">'
+    + '<span class="alm-confirm-q">Delete section "'+almEsc(s.name||'')+'"?</span>'
+    + '<button class="btn-danger btn-sm" onclick="asmDoDelete(\''+almEsc(slug)+'\')">Yes, Delete</button>'
+    + '<button class="btn-ghost btn-sm" onclick="asmCancelDelete(\''+almEsc(slug)+'\')">Cancel</button>'
+    + '</div>'
+    + '<div class="alm-edit-panel" id="asm-edit-'+almEsc(slug)+'">'
+    + '<div class="alm-form-grid">'
+    + '<div><label class="field-label" style="margin-top:0">Name</label><input class="field-input" id="asme-'+almEsc(slug)+'-name" value="'+almEsc(s.name||'')+'"></div>'
+    + '<div><label class="field-label" style="margin-top:0">Grid class</label><input class="field-input" id="asme-'+almEsc(slug)+'-grid" value="'+almEsc(s.gridClass||'')+'" placeholder="(blank = default)"></div>'
+    + '<div style="grid-column:1/-1"><label class="field-label">Caption</label><input class="field-input" id="asme-'+almEsc(slug)+'-caption" value="'+almEsc(s.caption||'')+'"></div>'
+    + '</div>'
+    + '<div class="btn-row" style="margin-top:12px;">'
+    + '<button class="btn-gold" onclick="asmSaveEdit(\''+almEsc(slug)+'\')">Save</button>'
+    + '<button class="btn-ghost" onclick="asmToggleEdit(\''+almEsc(slug)+'\')">Cancel</button>'
+    + '</div>'
+    + '<p class="status-msg" id="asm-edit-status-'+almEsc(slug)+'"></p>'
+    + '</div>'
+    + '</div>';
+}
+
+window.asmToggleEdit = function(slug){ var p=document.getElementById('asm-edit-'+slug); if(p) p.classList.toggle('open'); };
+window.asmConfirmDelete = function(slug){ var r=document.getElementById('asm-confirm-'+slug); if(r) r.classList.add('visible'); };
+window.asmCancelDelete = function(slug){ var r=document.getElementById('asm-confirm-'+slug); if(r) r.classList.remove('visible'); };
+
+window.asmSaveEdit = function(slug){
+  if (!window.jestaDB) return;
+  function v(id){ var el=document.getElementById('asme-'+slug+'-'+id); return el?el.value.trim():''; }
+  var name=v('name'), caption=v('caption'), grid=v('grid');
+  var statusEl=document.getElementById('asm-edit-status-'+slug);
+  if (!name){ if(statusEl){statusEl.textContent='Name is required.';statusEl.className='status-msg status-err';} return; }
+  window.jestaDB.collection('albumSections').doc(slug).set({name:name, caption:caption, gridClass:grid}, {merge:true})
+    .then(function(){
+      var s=_asmFind(slug); if(s){ s.name=name; s.caption=caption; s.gridClass=grid; }
+      asmRenderList();
+    })
+    .catch(function(e){ if(statusEl){statusEl.textContent='Save failed: '+(e.message||e);statusEl.className='status-msg status-err';} });
+};
+
+window.asmMoveOrder = function(slug, dir){
+  if (!window.jestaDB) return;
+  var arr=_almSections.slice().sort(function(a,b){ return (a.order||0)-(b.order||0); });
+  var idx=-1; for(var k=0;k<arr.length;k++){ if((arr[k].slug||arr[k]._id)===slug){ idx=k; break; } }
+  if (idx<0) return;
+  var swapIdx = dir==='up' ? idx-1 : idx+1;
+  if (swapIdx<0 || swapIdx>=arr.length) return;
+  var a=arr[idx], b=arr[swapIdx];
+  var aSlug=a.slug||a._id, bSlug=b.slug||b._id, aOrder=a.order||0, bOrder=b.order||0;
+  var batch=window.jestaDB.batch();
+  batch.update(window.jestaDB.collection('albumSections').doc(aSlug), {order:bOrder});
+  batch.update(window.jestaDB.collection('albumSections').doc(bSlug), {order:aOrder});
+  batch.commit().then(function(){ a.order=bOrder; b.order=aOrder; asmRenderList(); }).catch(function(){});
+};
+
+window.asmDoDelete = function(slug){
+  if (!window.jestaDB) return;
+  var statusBox=document.getElementById('asm-confirm-'+slug);
+  /* delete-if-empty: block if any album still points at this section (by sectionId OR legacy name) */
+  var sec=_asmFind(slug);
+  var name=sec?sec.name:null;
+  window.jestaDB.collection('releases').where('sectionId','==',slug).limit(1).get()
+    .then(function(snap){
+      if (!snap.empty) throw new Error('not-empty');
+      if (!name) return {empty:true};
+      return window.jestaDB.collection('releases').where('section','==',name).limit(1).get();
+    })
+    .then(function(snap2){
+      if (snap2 && snap2.empty === false) throw new Error('not-empty');
+      return window.jestaDB.collection('albumSections').doc(slug).delete();
+    })
+    .then(function(){
+      _almSections = _almSections.filter(function(s){ return (s.slug||s._id)!==slug; });
+      asmRenderList();
+    })
+    .catch(function(e){
+      if (statusBox){
+        var msg = (e && e.message==='not-empty') ? 'Section still has albums — reassign them first.' : ('Delete failed: '+((e&&e.message)||e));
+        statusBox.innerHTML = '<span class="alm-confirm-q" style="color:#FB3838;">'+msg+'</span>';
+      }
+    });
+};
+
+window.asmAddSection = function(){
+  if (!window.jestaDB) return;
+  function v(id){ var el=document.getElementById('asm-add-'+id); return el?el.value.trim():''; }
+  var name=v('name'), caption=v('caption'), grid=v('grid');
+  var statusEl=document.getElementById('asm-add-status');
+  function err(m){ if(statusEl){statusEl.textContent=m;statusEl.className='status-msg status-err';} }
+  if (!name) return err('Name is required.');
+  var slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  if (!slug) return err('Name must contain letters or numbers (for the slug).');
+  if (_asmFind(slug)) return err('A section with slug "'+slug+'" already exists.');
+  var maxOrder=-1; _almSections.forEach(function(s){ if((s.order||0)>maxOrder) maxOrder=s.order||0; });
+  var docRef = window.jestaDB.collection('albumSections').doc(slug);
+  docRef.get().then(function(snap){
+    if (snap.exists) return err('A section with slug "'+slug+'" already exists.');
+    return docRef.set({name:name, slug:slug, caption:caption, gridClass:grid, order:maxOrder+1, visible:true})
+      .then(function(){
+        if (statusEl){ statusEl.textContent='Added "'+name+'".'; statusEl.className='status-msg status-ok'; }
+        var na=document.getElementById('asm-add-name'); if(na) na.value='';
+        var ca=document.getElementById('asm-add-caption'); if(ca) ca.value='';
+        var ga=document.getElementById('asm-add-grid'); if(ga) ga.value='';
+        asmLoad();
+      });
+  }).catch(function(e){ err('Add failed: '+(e.message||e)); });
+};
+
 /* ── Tab switching ── */
 var _almTabList=document.getElementById('alm-tab-list');if(_almTabList)_almTabList.addEventListener('click', function(){
   document.getElementById('alm-tab-list').classList.add('active');
   document.getElementById('alm-tab-add').classList.remove('active');
+  var st=document.getElementById('alm-tab-sections'); if(st) st.classList.remove('active');
   document.getElementById('alm-pane-list').classList.add('active');
   document.getElementById('alm-pane-add').classList.remove('active');
+  var sp=document.getElementById('alm-pane-sections'); if(sp) sp.classList.remove('active');
 });
 var _almTabAdd=document.getElementById('alm-tab-add');if(_almTabAdd)_almTabAdd.addEventListener('click', function(){
   document.getElementById('alm-tab-add').classList.add('active');
   document.getElementById('alm-tab-list').classList.remove('active');
+  var st=document.getElementById('alm-tab-sections'); if(st) st.classList.remove('active');
   document.getElementById('alm-pane-add').classList.add('active');
   document.getElementById('alm-pane-list').classList.remove('active');
+  var sp=document.getElementById('alm-pane-sections'); if(sp) sp.classList.remove('active');
 });
+var _almTabSections=document.getElementById('alm-tab-sections');if(_almTabSections)_almTabSections.addEventListener('click', function(){
+  document.getElementById('alm-tab-sections').classList.add('active');
+  document.getElementById('alm-tab-list').classList.remove('active');
+  document.getElementById('alm-tab-add').classList.remove('active');
+  document.getElementById('alm-pane-sections').classList.add('active');
+  document.getElementById('alm-pane-list').classList.remove('active');
+  document.getElementById('alm-pane-add').classList.remove('active');
+  asmLoad();
+});
+var _asmAddBtn=document.getElementById('asm-add-btn');if(_asmAddBtn)_asmAddBtn.addEventListener('click', asmAddSection);
 
 var _almAddBtn=document.getElementById('alm-add-btn');if(_almAddBtn)_almAddBtn.addEventListener('click', function(){
   if (!window.jestaDB) { var s=document.getElementById('alm-add-status'); if(s){s.textContent='Firestore not ready.';s.className='status-msg status-err';} return; }
