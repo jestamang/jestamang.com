@@ -13350,6 +13350,7 @@ function wireBtn(el){
 }
 
 function _lyrArt(v){v=String(v||'');return /^(https?:\/\/|\/|assets\/)/.test(v)?v:('assets/albums/'+v);}
+function sortName(s){return String(s||'').toLowerCase().replace(/^the\s+/,'').trim();}
 function loadLyrics(){
   window.jestaDB.collection('lyrics').orderBy('order').get()
     .then(function(snap){
@@ -13371,6 +13372,8 @@ function loadLyrics(){
           if(!gmap[aSlug]){gmap[aSlug]={slug:aSlug,label:(ARTIST_NAMES[aSlug]||d.artist),albums:[]};groups.push(gmap[aSlug]);ARTIST_NAMES[aSlug]=gmap[aSlug].label;}
           gmap[aSlug].albums.push(d);
         });
+        groups.sort(function(a,b){return sortName(a.label).localeCompare(sortName(b.label));});
+        groups.forEach(function(g){g.albums.sort(function(x,y){return (x.order||0)-(y.order||0);});});
         groups.forEach(function(g){
           var btn=document.createElement('button');
           btn.className='art-btn';btn.setAttribute('data-aslug',g.slug);btn.textContent=g.label;
