@@ -31,14 +31,14 @@ html,body{min-height:100%}
 #game-title .gt-line+.gt-line::before{content:" "}
 body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cover;background-position:center;background-attachment:fixed;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:0 20px 20px}
 .oracle-wrap{position:relative;z-index:1;text-align:center;max-width:560px;width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.oracle-title{font-size:clamp(1.6rem,5vw,2.8rem);letter-spacing:0.55em;text-indent:0.55em;color:#c9a84c;text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.55);margin-bottom:6px;font-family:'Luminari',serif;transition:all 0.3s ease}
+.oracle-title{font-size:clamp(1.6rem,5vw,2.8rem);letter-spacing:0.55em;text-indent:0.55em;color:var(--gold,#c9a84c);text-transform:uppercase;text-shadow:0 0 40px rgba(201,168,76,0.55);margin-bottom:6px;font-family:'Luminari',serif;transition:all 0.3s ease}
 .oracle-sub{font-size:0.75rem;letter-spacing:0.45em;color:rgba(255,255,255,0.25);text-transform:uppercase;margin-bottom:16px;font-family:'Luminari',serif}
 .streak-display{font-size:0.78rem;letter-spacing:0.35em;color:rgba(201,168,76,0.6);text-transform:uppercase;margin-bottom:8px;min-height:1.2em;font-family:'Luminari',serif;transition:opacity 0.3s ease}
 .next-sigil{font-size:0.7rem;letter-spacing:0.3em;color:rgba(201,168,76,0.4);text-transform:uppercase;margin-bottom:16px;min-height:1.2em;font-family:'Luminari',serif;transition:opacity 0.3s ease}
 
 /* Card stage */
 .card-stage{width:260px;height:320px;margin:0 auto 16px;perspective:1200px;position:relative}
-.card-stage::after{content:"";position:absolute;inset:-2px;pointer-events:none;opacity:0;box-shadow:0 0 30px #c9a84c,0 0 60px rgba(201,168,76,0.4);transition:none;z-index:5;transform:translateZ(0)}
+.card-stage::after{content:"";position:absolute;inset:-2px;pointer-events:none;opacity:0;box-shadow:0 0 30px var(--gold,#c9a84c),0 0 60px rgba(201,168,76,0.4);transition:none;z-index:5;transform:translateZ(0)}
 .oracle-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.8s cubic-bezier(0.4,0,0.2,1);will-change:transform}
 .oracle-card.revealed{transform:rotateY(180deg)}
 .card-face,.card-back{
@@ -69,7 +69,7 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cov
 }
 .card-name{
   font-size:clamp(1rem,3vw,1.35rem);letter-spacing:0.1em;
-  color:#c9a84c;text-shadow:0 0 18px rgba(201,168,76,0.4);
+  color:var(--gold,#c9a84c);text-shadow:0 0 18px rgba(201,168,76,0.4);
   line-height:1.2;flex-shrink:0;font-family:'Luminari',serif
 }
 .card-glyph{font-size:1.6rem;color:rgba(201,168,76,0.5);flex-shrink:0;font-family:Georgia,'Times New Roman',serif}
@@ -93,14 +93,14 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cov
 .card-stage.flip-shimmer::after{animation:cardFlipShimmer 0.8s ease forwards}
 
 /* Particles */
-.oracle-particle{position:fixed;width:4px;height:4px;border-radius:50%;background:#c9a84c;pointer-events:none;z-index:9999}
+.oracle-particle{position:fixed;width:4px;height:4px;border-radius:50%;background:var(--gold,#c9a84c);pointer-events:none;z-index:9999}
 
 /* Buttons */
 .oracle-btns{display:flex;flex-direction:column;align-items:center;gap:12px}
 .draw-btn{
   font-family:'Luminari',serif;font-size:0.82rem;letter-spacing:0.4em;
-  text-transform:uppercase;color:#000;background:#c9a84c;
-  border:1px solid #c9a84c;padding:13px 52px;cursor:pointer;
+  text-transform:uppercase;color:#000;background:var(--gold,#c9a84c);
+  border:1px solid var(--gold,#c9a84c);padding:13px 52px;cursor:pointer;
   transition:background 0.3s,box-shadow 0.3s;min-height:44px
 }
 .draw-btn:hover{background:#e0bc5a;box-shadow:0 0 28px rgba(201,168,76,0.45)}
@@ -112,7 +112,7 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cov
   transition:color 0.3s,border-color 0.3s,background 0.3s;
   min-height:44px;display:none
 }
-.share-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.8);background:rgba(201,168,76,0.07)}
+.share-btn:hover{color:var(--gold,#c9a84c);border-color:rgba(201,168,76,0.8);background:rgba(201,168,76,0.07)}
 .share-btn.show{display:inline-flex;align-items:center;justify-content:center}
 .reset-btn{
   font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.3em;
@@ -120,7 +120,7 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cov
   border:1px solid rgba(201,168,76,0.25);padding:8px 24px;cursor:pointer;
   transition:color 0.3s,border-color 0.3s;visibility:hidden;min-height:44px
 }
-.reset-btn:hover{color:#c9a84c;border-color:rgba(201,168,76,0.6)}
+.reset-btn:hover{color:var(--gold,#c9a84c);border-color:rgba(201,168,76,0.6)}
 .reset-btn.show{visibility:visible}
 
 
@@ -144,9 +144,9 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cov
   .game-ui, .game-panel { padding: 12px 16px !important; font-size: 0.85rem !important; }
 }
 
-.skip-link{position:fixed;top:-100px;left:0;background:#c9a84c;color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid #c9a84c}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}
+.skip-link{position:fixed;top:-100px;left:0;background:var(--gold,#c9a84c);color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid var(--gold,#c9a84c)}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}
 #back{font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.35em;color:rgba(201,168,76,0.4);text-decoration:none;border:1px solid rgba(201,168,76,0.18);padding:7px 14px;background:rgba(0,0,0,0.6);transition:all 0.3s;min-height:44px;display:inline-flex;align-items:center}
-#back:hover{color:#c9a84c;border-color:rgba(201,168,76,0.5)}
+#back:hover{color:var(--gold,#c9a84c);border-color:rgba(201,168,76,0.5)}
 @media(max-width:768px){
   #game-title{white-space:normal;font-size:0.85rem;letter-spacing:0.12em;line-height:1.3;text-align:center}
   #game-title .gt-line{display:block}
@@ -170,25 +170,25 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cov
 
 <style id="jsearch-styles">
 #jsearch-btn{background:none;border:none;color:rgba(255,255,255,0.75);cursor:pointer;padding:0 10px;line-height:52px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:color 0.2s;min-width:40px;min-height:44px}
-#jsearch-btn:hover{color:#c9a84c}
+#jsearch-btn:hover{color:var(--gold,#c9a84c)}
 #jsearch-btn.jsearch-active{color:rgba(201,168,76,0.45)}
 #jsearch-btn svg{display:block;pointer-events:none}
-#jsearch-overlay{display:none;position:fixed;top:52px;left:0;right:0;bottom:auto;z-index:9998;background:rgba(0,0,0,0.95);border-bottom:1px solid #c9a84c;flex-direction:column;max-height:400px;overflow-y:auto}
+#jsearch-overlay{display:none;position:fixed;top:52px;left:0;right:0;bottom:auto;z-index:9998;background:rgba(0,0,0,0.95);border-bottom:1px solid var(--gold,#c9a84c);flex-direction:column;max-height:400px;overflow-y:auto}
 #jsearch-overlay.jsearch-open{display:flex}
 #jsearch-inner{width:100%;padding:16px 40px 14px;position:relative}
-#jsearch-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,0.65);color:#c9a84c;font-family:'Luminari',serif;font-size:18px;letter-spacing:0.18em;padding:10px 4px;outline:none;text-transform:uppercase;caret-color:#c9a84c;-webkit-appearance:none;border-radius:0}
+#jsearch-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,0.65);color:var(--gold,#c9a84c);font-family:'Luminari',serif;font-size:18px;letter-spacing:0.18em;padding:10px 4px;outline:none;text-transform:uppercase;caret-color:var(--gold,#c9a84c);-webkit-appearance:none;border-radius:0}
 #jsearch-input::placeholder{color:rgba(201,168,76,0.32);letter-spacing:0.12em}
 #jsearch-results{margin-top:14px}
 .jsearch-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid rgba(201,168,76,0.08);cursor:pointer;transition:background 0.15s;text-decoration:none;color:inherit}
 .jsearch-item:hover{background:rgba(201,168,76,0.07)}
 .jsearch-item-icon{font-size:0.85rem;flex-shrink:0;opacity:0.6;width:18px;text-align:center;font-family:'Luminari',serif}
 .jsearch-item-name{font-family:'Luminari',serif;font-size:0.88rem;letter-spacing:0.1em;color:rgba(240,230,210,0.9);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.jsearch-item-name mark{background:none;color:#c9a84c;font-style:normal}
+.jsearch-item-name mark{background:none;color:var(--gold,#c9a84c);font-style:normal}
 .jsearch-item-cat{font-family:'Luminari',serif;font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.5);flex-shrink:0;margin-left:8px}
 .jsearch-empty{text-align:center;font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.3);padding:40px 0}
 .jsearch-hint{text-align:center;font-family:'Luminari',serif;font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.6);padding:16px 0}
 .jsearch-float-btn{position:fixed;top:14px;right:14px;z-index:9000;background:rgba(0,0,0,0.55);border:1px solid rgba(201,168,76,0.35);color:rgba(201,168,76,0.75);cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s}
-.jsearch-float-btn:hover{border-color:rgba(201,168,76,0.75);color:#c9a84c}
+.jsearch-float-btn:hover{border-color:rgba(201,168,76,0.75);color:var(--gold,#c9a84c)}
 .jsearch-float-btn svg{pointer-events:none}
 @media(max-width:767px){#jsearch-overlay{top:52px}#jsearch-inner{padding:12px 16px 12px}#jsearch-input{font-size:16px}.jsearch-hint{letter-spacing:0.08em;font-size:0.6rem;padding:12px 0;white-space:nowrap}}
 </style>
@@ -511,7 +511,7 @@ function buildSigilPNG(onDone){
     ctx.fillText((card.arcana||'').toUpperCase(),CW/2,arcTextY);
     // Card name
     ctx.font='bold '+(17*SCALE)+'px Luminari,Georgia,serif';
-    ctx.fillStyle='#c9a84c';
+    ctx.fillStyle='var(--gold,#c9a84c)';
     ctx.fillText(card.name||'',CW/2,arcY2+36);
     // Glyph
     ctx.font=(16*SCALE)+'px Georgia,"Times New Roman",serif';
