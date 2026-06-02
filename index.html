@@ -1057,21 +1057,39 @@ document.addEventListener('DOMContentLoaded',eotdInit);
         byKey[HP_KEYS[i]] = { section: sec, divider: div };
       }
 
-      var anchor = preview.querySelector('.hp-footer'); /* keep footer last; reorder sections before it */
+      var anchor = preview.querySelector('.hp-footer'); /* keep footer last */
       var ordered = cfg.slice().sort(function(a,b){ return (a.order||0) - (b.order||0); });
+
+      /* 1) show/hide only — no DOM moves */
       ordered.forEach(function(item){
         var rec = byKey[item.key];
         if (!rec) return;
-        if (item.visible === false) {
-          rec.section.style.display = 'none';
-          if (rec.divider) rec.divider.style.display = 'none';
-        } else {
-          rec.section.style.display = '';
-          if (rec.divider) rec.divider.style.display = '';
-          if (rec.divider) preview.insertBefore(rec.divider, anchor);
-          preview.insertBefore(rec.section, anchor);
-        }
+        var hide = (item.visible === false);
+        rec.section.style.display = hide ? 'none' : '';
+        if (rec.divider) rec.divider.style.display = hide ? 'none' : '';
       });
+
+      /* 2) reorder ONLY if the visible order actually differs (avoid needless DOM churn) */
+      var desired = [];
+      ordered.forEach(function(item){ if (item.visible !== false && byKey[item.key]) desired.push(item.key); });
+      var current = [], domSecs = preview.querySelectorAll('.hp-section');
+      for (var ci = 0; ci < domSecs.length; ci++) {
+        if (domSecs[ci].style.display === 'none') continue;
+        for (var kk in byKey) { if (byKey[kk].section === domSecs[ci]) { current.push(kk); break; } }
+      }
+      var same = (desired.length === current.length);
+      if (same) { for (var di = 0; di < desired.length; di++) { if (desired[di] !== current[di]) { same = false; break; } } }
+      if (!same) {
+        var frag = document.createDocumentFragment();
+        ordered.forEach(function(item){
+          if (item.visible === false) return;
+          var rec = byKey[item.key];
+          if (!rec) return;
+          if (rec.divider) frag.appendChild(rec.divider);
+          frag.appendChild(rec.section);
+        });
+        preview.insertBefore(frag, anchor);
+      }
     }).catch(function(){ /* offline / error → hardcoded order stays */ });
   }
 })();
