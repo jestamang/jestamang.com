@@ -692,6 +692,15 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   </div>
   <div class="gold-rule-sm"></div>
 
+  <style>
+    #updates-list{max-width:720px;margin:0 auto;padding:0 16px;}
+    .mu-entry{border:1px solid rgba(var(--gold-rgb,201,168,76),0.28);border-radius:6px;background:rgba(0,0,0,0.35);padding:22px 24px;margin:0 0 22px;}
+    .mu-entry-title{font-family:'Luminari',serif;color:var(--gold,#c9a84c);font-size:clamp(1.15rem,3vw,1.5rem);letter-spacing:0.04em;margin:0 0 6px;line-height:1.25;}
+    .mu-entry-date{font-family:'Luminari',serif;color:rgba(var(--gold-rgb,201,168,76),0.7);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;margin:0 0 14px;}
+    .mu-entry-body{color:rgba(240,230,210,0.9);font-size:0.98rem;line-height:1.7;}
+  </style>
+  <div id="updates-list"></div>
+
   <div id="updates-empty-state">
     <div class="ues-glyph">&#10022; &nbsp; &#10022; &nbsp; &#10022;</div>
     <div class="ues-title">First Transmission Pending</div>
@@ -820,6 +829,34 @@ document.addEventListener('DOMContentLoaded', function(){
     var _pc=document.getElementById('page-content');if(_pc){_pc.style.opacity='1';}
 
     document.getElementById('page-content').style.display = 'block';
+
+    /* Load Member Updates from Firestore */
+    (function(){
+      function escU(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+      db.collection('membersUpdates').orderBy('timestamp','desc').get()
+        .then(function(snap){
+          var list = document.getElementById('updates-list');
+          if(!list) return;
+          var html = '';
+          snap.forEach(function(doc){
+            var d = doc.data();
+            if(d.published !== true) return;
+            var dateStr = d.dateFormatted || d.date || '';
+            var body = escU(d.content||'').replace(/\r\n|\r|\n/g,'<br>');
+            html += '<div class="mu-entry">'
+              + '<h3 class="mu-entry-title">'+escU(d.title||'Untitled')+'</h3>'
+              + (dateStr ? '<div class="mu-entry-date">'+escU(dateStr)+'</div>' : '')
+              + '<div class="mu-entry-body">'+body+'</div>'
+              + '</div>';
+          });
+          if(html){
+            list.innerHTML = html;
+            var empty = document.getElementById('updates-empty-state');
+            if(empty) empty.style.display = 'none';
+          }
+        })
+        .catch(function(e){ /* leave placeholder on error */ });
+    })();
 
     /* Load Treats from Firestore */
     db.collection('treats').orderBy('order','asc').get()
