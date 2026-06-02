@@ -353,13 +353,18 @@
     var container = document.getElementById('sc-cards');
     var allStatus = document.getElementById('sc-all-status');
 
-    // Load from Firestore if saved; otherwise use defaults
-    window.jestaDB.collection('sigilCards').doc('cards').get().then(function(doc) {
-      if (doc.exists && doc.data().cards && doc.data().cards.length) {
-        _sigilCards = doc.data().cards;
-      }
-      renderCards();
-    }).catch(function() { renderCards(); });
+    // Load from Firestore if saved; otherwise use defaults (guarded: wait for jestaDB)
+    var _scjt = 0, _scjiv = setInterval(function () {
+      if (window.jestaDB) {
+        clearInterval(_scjiv);
+        window.jestaDB.collection('sigilCards').doc('cards').get().then(function(doc) {
+          if (doc.exists && doc.data().cards && doc.data().cards.length) {
+            _sigilCards = doc.data().cards;
+          }
+          renderCards();
+        }).catch(function() { renderCards(); });
+      } else if (++_scjt > 80) { clearInterval(_scjiv); renderCards(); }
+    }, 100);
 
     function renderCards() {
       container.innerHTML = '';
