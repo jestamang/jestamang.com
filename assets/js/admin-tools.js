@@ -96,7 +96,8 @@
     var ALL_COLS  = ['users','blogPosts','shows','pressArticles','releases',
                      'leaderboards','notifications','inquiries','guestbook',
                      'navBadges','emailCampaigns','videos','merch','sigilCards',
-                     'siteConfig','comments','innerCircleChat','photos','lyrics','entities'];
+                     'siteConfig','comments','innerCircleChat','photos','lyrics','entities',
+                     'treats','membersUpdates'];
 
     allBtn.addEventListener('click', function () {
       allBtn.disabled = true;
