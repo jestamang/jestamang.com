@@ -865,26 +865,79 @@ document.addEventListener('DOMContentLoaded',function(){
     albums.forEach(function(a){ grid.appendChild(buildCatalogCard(a)); });
   }
 
+  /* Build a fresh band shell matching the hardcoded .series-section structure. */
+  function buildBand(sec) {
+    var section = document.createElement('section');
+    section.className = 'series-section';
+    section.id = sec.slug;
+    var header = document.createElement('div');
+    header.className = 'series-header';
+    var h2 = document.createElement('h2');
+    h2.className = 'series-title';
+    h2.textContent = sec.name || '';
+    var sub = document.createElement('p');
+    sub.className = 'series-subtitle';
+    sub.textContent = sec.caption || '';
+    header.appendChild(h2); header.appendChild(sub);
+    var grid = document.createElement('div');
+    grid.className = 'album-grid' + (sec.gridClass ? (' ' + sec.gridClass) : '');
+    section.appendChild(header); section.appendChild(grid);
+    return section;
+  }
+
   function loadCatalog() {
-    window.jestaDB.collection('releases').orderBy('order').get()
-      .then(function(snap){
-        if (snap.empty) return;
-        var grouped = {'Quarter Days':[], '2K2323':[], '2K2123':[], 'NONS':[]};
-        snap.forEach(function(doc){
-          var d = doc.data(); d._id = doc.id;
-          if (d.visible === false) return;
-          if (grouped[d.section] !== undefined) grouped[d.section].push(d);
-        });
-        SECTION_DEFS.forEach(function(sec){
-          var albums = grouped[sec.name];
-          if (!albums || albums.length === 0) return;
-          var secEl = document.getElementById(sec.id);
-          if (secEl) replaceGrid(secEl, albums);
-        });
-        /* rebuild wiped the DOMContentLoaded-assigned ids — re-assign + re-open any deep-link */
-        if (typeof assignAlbumIds === 'function') { assignAlbumIds(); handleAlbumsHash(); }
-      })
-      .catch(function(){ /* fallback: existing hardcoded HTML stays visible */ });
+    Promise.all([
+      window.jestaDB.collection('albumSections').orderBy('order').get(),
+      window.jestaDB.collection('releases').orderBy('order').get()
+    ]).then(function(res){
+      var secSnap = res[0], relSnap = res[1];
+      if (secSnap.empty || relSnap.empty) return; /* fallback: hardcoded bands stay */
+
+      /* group visible albums by sectionId; track whether any have real track URLs */
+      var bySection = {}, hasAnyTrackUrls = false;
+      relSnap.forEach(function(doc){
+        var d = doc.data(); d._id = doc.id;
+        if (d.visible === false) return;
+        if (!d.sectionId) return;
+        (bySection[d.sectionId] = bySection[d.sectionId] || []).push(d);
+        if (!hasAnyTrackUrls) {
+          hasAnyTrackUrls = (d.tracks || []).some(function(t){
+            return t && typeof t === 'object' && (
+              t.youtubeUrl||t.youtube || t.spotifyUrl||t.spotify ||
+              t.appleUrl||t.appleMusic || t.bandcampUrl||t.bandcamp);
+          });
+        }
+      });
+      if (!hasAnyTrackUrls) return; /* fallback: data looks unmigrated, keep hardcoded */
+
+      /* build visible, non-empty bands in order into a DETACHED fragment first */
+      var frag = document.createDocumentFragment(), built = 0;
+      secSnap.forEach(function(doc){
+        var s = doc.data();
+        if (s.visible === false) return;
+        var albums = bySection[s.slug] || [];
+        if (albums.length === 0) return; /* empty band not rendered (matches today) */
+        var bandEl = buildBand(s);
+        var grid = bandEl.querySelector('.album-grid');
+        albums.forEach(function(a){ grid.appendChild(buildCatalogCard(a)); });
+        frag.appendChild(bandEl);
+        built++;
+      });
+      if (built === 0) return; /* fallback: nothing built, keep hardcoded */
+
+      /* swap on success: insert new bands at the managed-band position, then remove the
+         old hardcoded .series-section bands. #new-releases-section + page header untouched. */
+      var managed = document.querySelectorAll('.series-section');
+      if (!managed.length) return;
+      var parent = managed[0].parentNode;       /* reference node IS a child of parent */
+      parent.insertBefore(frag, managed[0]);
+      for (var i = 0; i < managed.length; i++) {
+        if (managed[i].parentNode) managed[i].parentNode.removeChild(managed[i]);
+      }
+
+      /* rebuild wiped the DOMContentLoaded-assigned ids — re-assign + re-open any deep-link */
+      if (typeof assignAlbumIds === 'function') { assignAlbumIds(); handleAlbumsHash(); }
+    }).catch(function(){ /* fallback: existing hardcoded HTML stays visible */ });
   }
 
   var _jt = 0, _jiv = setInterval(function(){
