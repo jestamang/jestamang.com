@@ -624,8 +624,8 @@ function entBuildForm(d,pfx){
   +'<div style="margin-top:10px;"><label class="field-label">Chart Image Path (children)</label><input class="field-input" id="'+pfx+'-chartImage" value="'+entEsc(d.chartImage||'')+'" placeholder="assets/entities/children/charts/..."></div>'
   +'<div style="margin-top:12px;"><div class="field-label" style="margin-bottom:6px;letter-spacing:0.2em;">Natal Positions (children)</div>'
   +'<div class="ent-natal-grid">'
-  +['sun','moon','rising','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'].map(function(pl){
-    return '<div><label class="field-label" style="font-size:0.58rem;">'+pl.charAt(0).toUpperCase()+pl.slice(1)+'</label><input class="field-input" id="'+pfx+'-natal-'+pl+'" value="'+entEsc(n[pl]||'')+'" placeholder="Sign deg (House)" style="font-size:0.72rem;"></div>';
+  +[['Sun','sun'],['Moon','moon'],['Rising','rising'],['Mercury','mercury'],['Venus','venus'],['Mars','mars'],['Jupiter','jupiter'],['Saturn','saturn'],['Uranus','uranus'],['Neptune','neptune'],['Pluto','pluto'],['North Node','north-node'],['South Node','south-node'],['Lilith Moon','lilith-moon'],['Fortune','fortune']].map(function(p){
+    return '<div><label class="field-label" style="font-size:0.58rem;">'+p[0]+'</label><input class="field-input" id="'+pfx+'-natal-'+p[1]+'" value="'+entEsc(n[p[0]]||'')+'" placeholder="Sign deg (House)" style="font-size:0.72rem;"></div>';
   }).join('')
   +'</div></div>';
   return html;
@@ -634,8 +634,8 @@ function entBuildForm(d,pfx){
 function entReadForm(pfx){
   function v(id){var el=document.getElementById(pfx+'-'+id);return el?el.value.trim():'';}
   var natal={};
-  ['sun','moon','rising','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(function(pl){
-    var val=v('natal-'+pl);if(val)natal[pl]=val;
+  [['Sun','sun'],['Moon','moon'],['Rising','rising'],['Mercury','mercury'],['Venus','venus'],['Mars','mars'],['Jupiter','jupiter'],['Saturn','saturn'],['Uranus','uranus'],['Neptune','neptune'],['Pluto','pluto'],['North Node','north-node'],['South Node','south-node'],['Lilith Moon','lilith-moon'],['Fortune','fortune']].forEach(function(p){
+    var val=v('natal-'+p[1]);if(val)natal[p[0]]=val;
   });
   return {
     name:v('name'),type:v('type'),image:v('image'),bgColor:v('bgColor'),
