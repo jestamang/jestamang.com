@@ -1029,4 +1029,50 @@ document.addEventListener('DOMContentLoaded',eotdInit);
 @media(max-width:768px){#hp-preview .hp-section{min-height:500px}.hp-section:has(.eotd-wrap){min-height:600px}}</style>
 <style>@media(max-width:768px){body{background-attachment:scroll!important}}</style>
 <style>.hp-section,#hp-preview{content-visibility:auto;contain-intrinsic-size:0 600px}</style>
+<script>
+/* ── Index Manager applier: reorder + show/hide homepage sections (fallback-first) ── */
+(function(){
+  var HP_KEYS = ['listening-chamber','shows','entity-of-day','entities','albums','lyrics','comix','games','merch','blog','photos'];
+  var _hpjt = 0, _hpjiv = setInterval(function(){
+    if (window.jestaDB) { clearInterval(_hpjiv); applyIndexConfig(); }
+    else if (++_hpjt > 80) { clearInterval(_hpjiv); }
+  }, 100);
+
+  function applyIndexConfig(){
+    window.jestaDB.collection('siteConfig').doc('indexSections').get().then(function(doc){
+      if (!doc.exists) return;
+      var cfg = doc.data().sections;
+      if (!Array.isArray(cfg) || !cfg.length) return;
+
+      var preview = document.getElementById('hp-preview');
+      if (!preview) return;
+      var sections = preview.querySelectorAll('.hp-section');
+      if (sections.length !== HP_KEYS.length) return;
+
+      var byKey = {};
+      for (var i = 0; i < sections.length; i++) {
+        var sec = sections[i];
+        var div = sec.previousElementSibling;
+        if (!div || div.className.indexOf('hp-divider') === -1) div = null;
+        byKey[HP_KEYS[i]] = { section: sec, divider: div };
+      }
+
+      var ordered = cfg.slice().sort(function(a,b){ return (a.order||0) - (b.order||0); });
+      ordered.forEach(function(item){
+        var rec = byKey[item.key];
+        if (!rec) return;
+        if (item.visible === false) {
+          rec.section.style.display = 'none';
+          if (rec.divider) rec.divider.style.display = 'none';
+        } else {
+          rec.section.style.display = '';
+          if (rec.divider) rec.divider.style.display = '';
+          if (rec.divider) preview.appendChild(rec.divider);
+          preview.appendChild(rec.section);
+        }
+      });
+    }).catch(function(){ /* offline / error → hardcoded order stays */ });
+  }
+})();
+</script>
 </body> </html>
