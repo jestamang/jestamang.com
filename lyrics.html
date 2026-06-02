@@ -13282,8 +13282,8 @@ function updateBreadcrumb(){var bc=document.getElementById('breadcrumb');bc.inne
 if(state.album){bc.insertAdjacentHTML('beforeend','<span class="bc-seg"> › </span>');var alBtn=document.createElement('button');alBtn.className='bc-btn current';alBtn.textContent=ALBUM_NAMES[state.artist+'__'+state.album]||state.album;bc.appendChild(alBtn);}}
 function goLevel(level){if(level===0){state={level:0,artist:null,album:null};document.querySelectorAll('.art-btn').forEach(function(b) { return b.classList.remove('active'); });clearVisible();document.getElementById('landingMsg').style.display='';if(window.innerWidth<=768){mobShowSidebar();mobScrollTop();}}else if(level===1&&state.artist){state.level=1;state.album=null;clearVisible();document.getElementById('landingMsg').style.display='none';var ap=document.getElementById('ap-'+state.artist);if(ap){ap.classList.add('visible');if(window.innerWidth<=768){mobFadePanel(ap);mobHideSidebar();mobScrollTop();}}}
 updateBreadcrumb();}
-document.querySelectorAll('.art-btn').forEach(function(btn) {btn.addEventListener('click',function() {var aslug=btn.dataset.aslug;var artistName=ARTIST_NAMES[aslug]||aslug;document.querySelectorAll('.art-btn').forEach(function(b) { return b.classList.remove('active'); });btn.classList.add('active');state={level:1,artist:aslug,album:null};document.getElementById('landingMsg').style.display='none';clearVisible();var ap=document.getElementById('ap-'+aslug);if(ap){ap.classList.add('visible');if(window.innerWidth<=768){mobFadePanel(ap);mobHideSidebar();mobScrollTop();var existing=ap.querySelector('.mob-back-btn');if(existing)existing.remove();var backBtn=document.createElement('button');backBtn.className='mob-back-btn';backBtn.textContent='← '+artistName;backBtn.onclick=function() {state={level:0,artist:null,album:null};document.querySelectorAll('.art-btn').forEach(function(b) { return b.classList.remove('active'); });clearVisible();document.getElementById('landingMsg').style.display='';updateBreadcrumb();mobShowSidebar();mobScrollTop();};ap.insertBefore(backBtn,ap.firstChild);}else{document.getElementById('contentArea').scrollTop=0;}}updateBreadcrumb();});});document.querySelectorAll('.al-card').forEach(function(btn) {btn.addEventListener('click',function() {var aslug=btn.dataset.aslug;var alslug=btn.dataset.alslug;var albumName=ALBUM_NAMES[aslug+'__'+alslug]||alslug;state.level=2;state.album=alslug;clearVisible();var lp=document.getElementById('lp-'+aslug+'-'+alslug);if(lp){lp.classList.add('visible');if(window.innerWidth<=768){mobFadePanel(lp);mobScrollTop();var existing=lp.querySelector('.mob-back-btn');if(existing)existing.remove();var backBtn=document.createElement('button');backBtn.className='mob-back-btn';backBtn.textContent='← '+albumName;backBtn.onclick=function() {state.level=1;state.album=null;clearVisible();var ap=document.getElementById('ap-'+state.artist);if(ap){ap.classList.add('visible');if(window.innerWidth<=768){mobFadePanel(ap);mobScrollTop();var existingBack=ap.querySelector('.mob-back-btn');if(existingBack)existingBack.remove();var backBtn2=document.createElement('button');backBtn2.className='mob-back-btn';backBtn2.textContent='← '+(ARTIST_NAMES[aslug]||aslug);backBtn2.onclick=function() {state={level:0,artist:null,album:null};document.querySelectorAll('.art-btn').forEach(function(b) { return b.classList.remove('active'); });clearVisible();document.getElementById('landingMsg').style.display='';updateBreadcrumb();mobShowSidebar();mobScrollTop();};ap.insertBefore(backBtn2,ap.firstChild);}}updateBreadcrumb();};lp.insertBefore(backBtn,lp.firstChild);}else{document.getElementById('contentArea').scrollTop=0;}}updateBreadcrumb();});});document.querySelectorAll('.acc-hdr').forEach(function(btn) {btn.addEventListener('click',function() {var bodyId=btn.dataset.acc;var body=document.getElementById(bodyId);var isOpen=btn.classList.contains('open');var panel=btn.closest('.lyr-panel');if(panel){panel.querySelectorAll('.acc-hdr.open').forEach(function(h) {h.classList.remove('open');var b=document.getElementById(h.dataset.acc);if(b)b.classList.remove('open');}); }
-if(!isOpen){btn.classList.add('open');if(body)body.classList.add('open');}});});if(window.innerWidth<=768){var layout=document.querySelector('.layout');if(layout){var prompt=document.createElement('p');prompt.id='mob-prompt';prompt.textContent='Pick an entity from yonder';var title=document.createElement('h1');title.id='mob-lyr-heading';title.textContent='Lyrics';layout.parentNode.insertBefore(prompt,layout);layout.parentNode.insertBefore(title,prompt);}}
+function wireLyricsUI(){document.querySelectorAll('.art-btn').forEach(function(btn) {if(btn.dataset.lwired)return;btn.dataset.lwired='1';btn.addEventListener('click',function() {var aslug=btn.dataset.aslug;var artistName=ARTIST_NAMES[aslug]||aslug;document.querySelectorAll('.art-btn').forEach(function(b) { return b.classList.remove('active'); });btn.classList.add('active');state={level:1,artist:aslug,album:null};document.getElementById('landingMsg').style.display='none';clearVisible();var ap=document.getElementById('ap-'+aslug);if(ap){ap.classList.add('visible');if(window.innerWidth<=768){mobFadePanel(ap);mobHideSidebar();mobScrollTop();var existing=ap.querySelector('.mob-back-btn');if(existing)existing.remove();var backBtn=document.createElement('button');backBtn.className='mob-back-btn';backBtn.textContent='← '+artistName;backBtn.onclick=function() {state={level:0,artist:null,album:null};document.querySelectorAll('.art-btn').forEach(function(b) { return b.classList.remove('active'); });clearVisible();document.getElementById('landingMsg').style.display='';updateBreadcrumb();mobShowSidebar();mobScrollTop();};ap.insertBefore(backBtn,ap.firstChild);}else{document.getElementById('contentArea').scrollTop=0;}}updateBreadcrumb();});});document.querySelectorAll('.al-card').forEach(function(btn) {if(btn.dataset.lwired)return;btn.dataset.lwired='1';btn.addEventListener('click',function() {var aslug=btn.dataset.aslug;var alslug=btn.dataset.alslug;var albumName=ALBUM_NAMES[aslug+'__'+alslug]||alslug;state.level=2;state.album=alslug;clearVisible();var lp=document.getElementById('lp-'+aslug+'-'+alslug);if(lp){lp.classList.add('visible');if(window.innerWidth<=768){mobFadePanel(lp);mobScrollTop();var existing=lp.querySelector('.mob-back-btn');if(existing)existing.remove();var backBtn=document.createElement('button');backBtn.className='mob-back-btn';backBtn.textContent='← '+albumName;backBtn.onclick=function() {state.level=1;state.album=null;clearVisible();var ap=document.getElementById('ap-'+state.artist);if(ap){ap.classList.add('visible');if(window.innerWidth<=768){mobFadePanel(ap);mobScrollTop();var existingBack=ap.querySelector('.mob-back-btn');if(existingBack)existingBack.remove();var backBtn2=document.createElement('button');backBtn2.className='mob-back-btn';backBtn2.textContent='← '+(ARTIST_NAMES[aslug]||aslug);backBtn2.onclick=function() {state={level:0,artist:null,album:null};document.querySelectorAll('.art-btn').forEach(function(b) { return b.classList.remove('active'); });clearVisible();document.getElementById('landingMsg').style.display='';updateBreadcrumb();mobShowSidebar();mobScrollTop();};ap.insertBefore(backBtn2,ap.firstChild);}}updateBreadcrumb();};lp.insertBefore(backBtn,lp.firstChild);}else{document.getElementById('contentArea').scrollTop=0;}}updateBreadcrumb();});});document.querySelectorAll('.acc-hdr').forEach(function(btn) {if(btn.dataset.lwired)return;btn.dataset.lwired='1';btn.addEventListener('click',function() {var bodyId=btn.dataset.acc;var body=document.getElementById(bodyId);var isOpen=btn.classList.contains('open');var panel=btn.closest('.lyr-panel');if(panel){panel.querySelectorAll('.acc-hdr.open').forEach(function(h) {h.classList.remove('open');var b=document.getElementById(h.dataset.acc);if(b)b.classList.remove('open');}); }
+if(!isOpen){btn.classList.add('open');if(body)body.classList.add('open');}});});}wireLyricsUI();if(window.innerWidth<=768){var layout=document.querySelector('.layout');if(layout){var prompt=document.createElement('p');prompt.id='mob-prompt';prompt.textContent='Pick an entity from yonder';var title=document.createElement('h1');title.id='mob-lyr-heading';title.textContent='Lyrics';layout.parentNode.insertBefore(prompt,layout);layout.parentNode.insertBefore(title,prompt);}}
 localStorage.removeItem('lyricsSidebarCollapsed');
 (function(){var scroll=document.querySelector('.sidebar-scroll');var fade=document.getElementById('sidebarFade');if(!scroll||!fade)return;function checkFade(){if(scroll.scrollHeight-scroll.scrollTop<=scroll.clientHeight+8){fade.classList.add('hidden');}else{fade.classList.remove('hidden');}}scroll.addEventListener('scroll',checkFade,{passive:true});checkFade();})();
 function handleLyricsHash(){var h=window.location.hash;if(!h||h.indexOf('#lp-')!==0)return;var id=h.slice(1);var cards=document.querySelectorAll('.al-card');for(var i=0;i<cards.length;i++){var c=cards[i];if('lp-'+c.dataset.aslug+'-'+c.dataset.alslug===id){state.artist=c.dataset.aslug;c.click();var panel=document.getElementById(id);if(panel)panel.scrollIntoView({behavior:'smooth',block:'start'});return;}}}
@@ -13349,50 +13349,49 @@ function wireBtn(el){
   }
 }
 
+function _lyrArt(v){v=String(v||'');return /^(https?:\/\/|\/|assets\/)/.test(v)?v:('assets/albums/'+v);}
 function loadLyrics(){
   window.jestaDB.collection('lyrics').orderBy('order').get()
     .then(function(snap){
       var docs=[];
       snap.forEach(function(doc){var d=doc.data();d._id=doc.id;if(d.visible===false)return;docs.push(d);});
-      if(!docs.length)return;
+      if(!docs.length)return;                       /* v296: keep hardcoded DOM as offline fallback */
       var sbScroll=document.querySelector('.sidebar-scroll');
       var ca=document.getElementById('contentArea');
+      if(!sbScroll||!ca)return;
+      /* v296: Firestore is canonical — clear the hardcoded content + rebuild (replace, not append) */
+      sbScroll.querySelectorAll('.art-btn').forEach(function(b){b.remove();});
+      ca.querySelectorAll('.album-panel, .lyr-panel').forEach(function(pn){pn.remove();});
+      var fade=document.getElementById('sidebarFade');
+      var groups=[],gmap={};
       docs.forEach(function(d){
         if(!d.artist || !d.albumTitle)return;
-        var aSlug=artistSlug(d.artist),alSlug=toSlug(d.albumTitle);
-        if(!aSlug || !alSlug)return;
-        /* update lookup maps accessible from prior script scope */
-        if(!ARTIST_NAMES[aSlug])ARTIST_NAMES[aSlug]=d.artist;
-        if(!ALBUM_NAMES[aSlug+'__'+alSlug])ALBUM_NAMES[aSlug+'__'+alSlug]=d.albumTitle;
-        /* artist button */
-        if(!document.querySelector('.art-btn[data-aslug="'+aSlug+'"]')){
-          var btn=document.createElement('button');
-          btn.className='art-btn';btn.setAttribute('data-aslug',aSlug);btn.textContent=d.artist;
-          sbScroll.appendChild(btn);wireBtn(btn);
-        }
-        /* album panel */
-        var apDiv=document.getElementById('ap-'+aSlug);
-        if(!apDiv){apDiv=document.createElement('div');apDiv.className='album-panel';apDiv.id='ap-'+aSlug;ca.appendChild(apDiv);}
-        /* album card */
-        if(!apDiv.querySelector('[data-alslug="'+alSlug+'"]')){
-          var card=document.createElement('button');
-          card.className='al-card';card.setAttribute('data-aslug',aSlug);card.setAttribute('data-alslug',alSlug);
-          var artSrc=d.artwork?'assets/albums/'+esc(d.artwork):'';
-          card.innerHTML='<img src="'+artSrc+'" alt="'+esc(d.albumTitle)+'" class="al-cover" loading="lazy" width="300" height="300"><span class="al-label">'+esc(d.albumTitle)+'</span>';
-          apDiv.appendChild(card);wireBtn(card);
-        }
-        /* lyric panel */
-        var lpId='lp-'+aSlug+'-'+alSlug;
-        if(!document.getElementById(lpId)){
-          var lpDiv=document.createElement('div');
-          lpDiv.className='lyr-panel';lpDiv.id=lpId;
-          lpDiv.innerHTML=buildLyrHtml(aSlug,alSlug,d.songs,d.youtubeUrl);
-          ca.appendChild(lpDiv);
-          lpDiv.querySelectorAll('.lyr-dyn').forEach(wireBtn);
-        }
+        var aSlug=artistSlug(d.artist);
+        if(!gmap[aSlug]){gmap[aSlug]={slug:aSlug,label:(ARTIST_NAMES[aSlug]||d.artist),albums:[]};groups.push(gmap[aSlug]);ARTIST_NAMES[aSlug]=gmap[aSlug].label;}
+        gmap[aSlug].albums.push(d);
       });
+      groups.forEach(function(g){
+        var btn=document.createElement('button');
+        btn.className='art-btn';btn.setAttribute('data-aslug',g.slug);btn.textContent=g.label;
+        if(fade)sbScroll.insertBefore(btn,fade);else sbScroll.appendChild(btn);
+        var ap=document.createElement('div');ap.className='album-panel';ap.id='ap-'+g.slug;
+        g.albums.forEach(function(d){
+          var alSlug=toSlug(d.albumTitle);
+          ALBUM_NAMES[g.slug+'__'+alSlug]=d.albumTitle;
+          var card=document.createElement('button');
+          card.className='al-card';card.setAttribute('data-aslug',g.slug);card.setAttribute('data-alslug',alSlug);
+          card.innerHTML='<img src="'+esc(_lyrArt(d.artwork))+'" alt="'+esc(d.albumTitle)+'" class="al-cover" loading="lazy" width="300" height="300"><span class="al-label">'+esc(d.albumTitle)+'</span>';
+          ap.appendChild(card);
+          var lp=document.createElement('div');lp.className='lyr-panel';lp.id='lp-'+g.slug+'-'+alSlug;
+          lp.innerHTML=buildLyrHtml(g.slug,alSlug,d.songs,d.youtubeUrl);
+          ca.appendChild(lp);
+        });
+        ca.appendChild(ap);
+      });
+      wireLyricsUI();                               /* rich wiring (mobile back-buttons + breadcrumb) */
+      handleLyricsHash();                           /* re-open deep-linked album */
     })
-    .catch(function(){});
+    .catch(function(){});                           /* v296: keep hardcoded DOM as offline fallback */
 }
 
 var _jt=0,_jiv=setInterval(function(){
