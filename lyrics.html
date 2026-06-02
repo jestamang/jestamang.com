@@ -13315,40 +13315,6 @@ function buildLyrHtml(aSlug,alSlug,songs,albumYtUrl){
   return html;
 }
 
-function wireBtn(el){
-  if(el.dataset.wired)return; el.dataset.wired='1';
-  if(el.classList.contains('art-btn')){
-    el.addEventListener('click',function(){
-      var aslug=el.dataset.aslug;
-      document.querySelectorAll('.art-btn').forEach(function(b){b.classList.remove('active');});
-      el.classList.add('active');
-      state.level=1;state.artist=aslug;state.album=null;
-      document.getElementById('landingMsg').style.display='none';
-      clearVisible();
-      var ap=document.getElementById('ap-'+aslug);
-      if(ap){ap.classList.add('visible');if(window.innerWidth<=768){mobFadePanel(ap);mobHideSidebar();mobScrollTop();}else{document.getElementById('contentArea').scrollTop=0;}}
-      updateBreadcrumb();
-    });
-  } else if(el.classList.contains('al-card')){
-    el.addEventListener('click',function(){
-      var aslug=el.dataset.aslug,alslug=el.dataset.alslug;
-      state.level=2;state.album=alslug;
-      clearVisible();
-      var lp=document.getElementById('lp-'+aslug+'-'+alslug);
-      if(lp){lp.classList.add('visible');if(window.innerWidth<=768){mobFadePanel(lp);mobScrollTop();}else{document.getElementById('contentArea').scrollTop=0;}}
-      updateBreadcrumb();
-    });
-  } else if(el.classList.contains('lyr-dyn')){
-    el.addEventListener('click',function(){
-      var bodyId=el.dataset.acc,body=document.getElementById(bodyId);
-      var isOpen=el.classList.contains('open');
-      var panel=el.closest('.lyr-panel');
-      if(panel){panel.querySelectorAll('.acc-hdr.open').forEach(function(h){h.classList.remove('open');var b=document.getElementById(h.dataset.acc);if(b)b.classList.remove('open');});}
-      if(!isOpen){el.classList.add('open');if(body)body.classList.add('open');}
-    });
-  }
-}
-
 function _lyrArt(v){v=String(v||'');return /^(https?:\/\/|\/|assets\/)/.test(v)?v:('assets/albums/'+v);}
 function sortName(s){return String(s||'').toLowerCase().replace(/^the\s+/,'').trim();}
 function loadLyrics(){
