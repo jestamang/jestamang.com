@@ -42,16 +42,16 @@ body {
   position: fixed;
   top: 50%; left: 50%;
   border-radius: 50%;
-  border: 1px solid rgba(201,168,76,0.07);
+  border: 1px solid rgba(var(--gold-rgb,201,168,76),0.07);
   pointer-events: none;
   z-index: 1;
   transform: translate(-50%, -50%);
   animation: ring-pulse 6s ease-in-out infinite;
 }
 .void-ring:nth-child(1) { width: 140px; height: 140px; animation-delay: 0s; }
-.void-ring:nth-child(2) { width: 300px; height: 300px; animation-delay: 1.8s; border-color: rgba(201,168,76,0.05); }
-.void-ring:nth-child(3) { width: 500px; height: 500px; animation-delay: 3.2s; border-color: rgba(201,168,76,0.03); }
-.void-ring:nth-child(4) { width: 720px; height: 720px; animation-delay: 4.8s; border-color: rgba(201,168,76,0.015); }
+.void-ring:nth-child(2) { width: 300px; height: 300px; animation-delay: 1.8s; border-color: rgba(var(--gold-rgb,201,168,76),0.05); }
+.void-ring:nth-child(3) { width: 500px; height: 500px; animation-delay: 3.2s; border-color: rgba(var(--gold-rgb,201,168,76),0.03); }
+.void-ring:nth-child(4) { width: 720px; height: 720px; animation-delay: 4.8s; border-color: rgba(var(--gold-rgb,201,168,76),0.015); }
 @keyframes ring-pulse {
   0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.94); }
   25%  { opacity: 1; }
@@ -73,7 +73,7 @@ body {
 }
 .ornament {
   font-size: 1rem;
-  color: rgba(201,168,76,0.38);
+  color: rgba(var(--gold-rgb,201,168,76),0.38);
   letter-spacing: 0.7em;
   margin-bottom: 10px;
   display: block;
@@ -98,7 +98,7 @@ h1 {
   align-items: center;
   justify-content: center;
   gap: 14px;
-  color: rgba(201,168,76,0.38);
+  color: rgba(var(--gold-rgb,201,168,76),0.38);
   font-size: 0.85rem;
   letter-spacing: 0.3em;
   margin-bottom: 10px;
@@ -108,7 +108,7 @@ h1 {
   display: block;
   width: 50px;
   height: 1px;
-  background: rgba(201,168,76,0.28);
+  background: rgba(var(--gold-rgb,201,168,76),0.28);
 }
 .narrator {
   font-style: italic;
@@ -128,15 +128,15 @@ h1 {
   text-transform: uppercase;
   color: var(--gold,#c9a84c);
   background: none;
-  border: 1px solid rgba(201,168,76,0.45);
+  border: 1px solid rgba(var(--gold-rgb,201,168,76),0.45);
   padding: 12px 36px;
   cursor: pointer;
   transition: background 0.2s, box-shadow 0.2s, color 0.2s;
   min-height: 44px;
 }
 .try-again-btn:hover {
-  background: rgba(201,168,76,0.1);
-  box-shadow: 0 0 20px rgba(201,168,76,0.18);
+  background: rgba(var(--gold-rgb,201,168,76),0.1);
+  box-shadow: 0 0 20px rgba(var(--gold-rgb,201,168,76),0.18);
   color: #e0be6a;
 }
 #center-zone {
@@ -156,21 +156,21 @@ h1 {
   margin-top: 36px;
   width: 100%;
   max-width: 420px;
-  border: 1px solid rgba(201,168,76,0.18);
-  background: rgba(201,168,76,0.03);
+  border: 1px solid rgba(var(--gold-rgb,201,168,76),0.18);
+  background: rgba(var(--gold-rgb,201,168,76),0.03);
   padding: 24px 20px 20px;
 }
 .oc-header {
   font-size: 0.6rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: rgba(201,168,76,0.55);
+  color: rgba(var(--gold-rgb,201,168,76),0.55);
   margin-bottom: 16px;
 }
 .oc-divider {
   font-size: 0.6rem;
   letter-spacing: 0.22em;
-  color: rgba(201,168,76,0.3);
+  color: rgba(var(--gold-rgb,201,168,76),0.3);
   margin: 14px 0 12px;
 }
 .oc-chart-name {
@@ -189,7 +189,7 @@ h1 {
 .oc-saved-at {
   font-size: 0.58rem;
   letter-spacing: 0.08em;
-  color: rgba(201,168,76,0.25);
+  color: rgba(var(--gold-rgb,201,168,76),0.25);
 }
 .oc-list {
   list-style: none;
@@ -201,7 +201,7 @@ h1 {
   justify-content: space-between;
   align-items: center;
   padding: 6px 0;
-  border-bottom: 1px solid rgba(201,168,76,0.07);
+  border-bottom: 1px solid rgba(var(--gold-rgb,201,168,76),0.07);
   font-size: 0.72rem;
   color: rgba(255,255,255,0.55);
   letter-spacing: 0.04em;
@@ -209,14 +209,14 @@ h1 {
 .oc-list li:last-child { border-bottom: none; }
 .oc-chart-num {
   font-size: 0.62rem;
-  color: rgba(201,168,76,0.4);
+  color: rgba(var(--gold-rgb,201,168,76),0.4);
   letter-spacing: 0.1em;
   margin-right: 8px;
 }
 .oc-chart-name-tag {
   flex: 1;
   text-align: left;
-  color: rgba(201,168,76,0.7);
+  color: rgba(var(--gold-rgb,201,168,76),0.7);
 }
 .oc-note {
   font-style: italic;
@@ -238,7 +238,7 @@ h1 {
 
 <div id="hz">
   <span class="ornament">✦ &nbsp; ✦ &nbsp; ✦</span>
-  <a href="index.html" style="font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.45);text-decoration:none;">Jestamang</a>
+  <a href="index.html" style="font-family:'Luminari',serif;font-size:0.68rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(var(--gold-rgb,201,168,76),0.45);text-decoration:none;">Jestamang</a>
 </div>
 
 <div id="center-zone">
@@ -303,7 +303,7 @@ h1 {
           '</li>';
       }
       if (charts.length > 5) {
-        html += '<li style="justify-content:center;color:rgba(201,168,76,0.3);font-size:0.6rem;letter-spacing:0.1em;">+ ' + (charts.length - 5) + ' more</li>';
+        html += '<li style="justify-content:center;color:rgba(var(--gold-rgb,201,168,76),0.3);font-size:0.6rem;letter-spacing:0.1em;">+ ' + (charts.length - 5) + ' more</li>';
       }
       html += '</ul>';
       body.innerHTML = html;
@@ -318,6 +318,6 @@ h1 {
 </footer>
 <script>document.querySelectorAll('.jcyr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
 <!-- footer-single-line-mobile -->
-<style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;color:rgba(201,168,76,0.75)!important;font-family:'Luminari',serif;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important}.hp-footer a{color:rgba(201,168,76,0.75)!important;text-decoration:none!important}.hp-footer a:hover{color:var(--gold,#c9a84c)!important}.hp-footer a:visited{color:var(--gold,#c9a84c)!important;}.hp-footer-mark{margin:0 8px!important;color:rgba(201,168,76,0.6)!important}@media(max-width:768px){.hp-footer{flex-direction:row!important;flex-wrap:wrap!important;justify-content:center!important;align-items:center!important;row-gap:8px!important;white-space:normal!important;padding:16px 16px 20px!important}.hp-footer a{flex-basis:100%!important;text-align:center!important}.hp-footer-mark{display:none!important}}</style>
+<style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;color:rgba(var(--gold-rgb,201,168,76),0.75)!important;font-family:'Luminari',serif;padding:8px 12px!important;font-size:0.58rem!important;letter-spacing:0.01em!important}.hp-footer a{color:rgba(var(--gold-rgb,201,168,76),0.75)!important;text-decoration:none!important}.hp-footer a:hover{color:var(--gold,#c9a84c)!important}.hp-footer a:visited{color:var(--gold,#c9a84c)!important;}.hp-footer-mark{margin:0 8px!important;color:rgba(var(--gold-rgb,201,168,76),0.6)!important}@media(max-width:768px){.hp-footer{flex-direction:row!important;flex-wrap:wrap!important;justify-content:center!important;align-items:center!important;row-gap:8px!important;white-space:normal!important;padding:16px 16px 20px!important}.hp-footer a{flex-basis:100%!important;text-align:center!important}.hp-footer-mark{display:none!important}}</style>
 </body>
 </html>

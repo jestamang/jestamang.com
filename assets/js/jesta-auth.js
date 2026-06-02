@@ -494,9 +494,17 @@
       cardPadding: '32',
       headingSize: 'clamp(2.2rem,5.5vw,3.6rem)'
     };
+    function _hexToRgb(hex){
+      hex = String(hex || '').replace(/^#/, '');
+      if (hex.length === 3) hex = hex.replace(/(.)/g, '$1$1');
+      if (!/^[0-9a-fA-F]{6}$/.test(hex)) return '201,168,76';
+      var n = parseInt(hex, 16);
+      return ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255);
+    }
     function applyTheme(d) {
       var r = document.documentElement;
       r.style.setProperty('--gold',                d.goldColor         || TD.goldColor);
+      r.style.setProperty('--gold-rgb',            _hexToRgb(d.goldColor || TD.goldColor));
       r.style.setProperty('--bg-overlay-opacity',  d.bgOverlayOpacity  || TD.bgOverlayOpacity);
       r.style.setProperty('--font-size-base',      (d.fontSizeBase     || TD.fontSizeBase) + 'px');
       r.style.setProperty('--body-text-opacity',   d.bodyTextOpacity   || TD.bodyTextOpacity);
