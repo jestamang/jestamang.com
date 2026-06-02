@@ -1057,6 +1057,7 @@ document.addEventListener('DOMContentLoaded',eotdInit);
         byKey[HP_KEYS[i]] = { section: sec, divider: div };
       }
 
+      var anchor = preview.querySelector('.hp-footer'); /* keep footer last; reorder sections before it */
       var ordered = cfg.slice().sort(function(a,b){ return (a.order||0) - (b.order||0); });
       ordered.forEach(function(item){
         var rec = byKey[item.key];
@@ -1067,8 +1068,8 @@ document.addEventListener('DOMContentLoaded',eotdInit);
         } else {
           rec.section.style.display = '';
           if (rec.divider) rec.divider.style.display = '';
-          if (rec.divider) preview.appendChild(rec.divider);
-          preview.appendChild(rec.section);
+          if (rec.divider) preview.insertBefore(rec.divider, anchor);
+          preview.insertBefore(rec.section, anchor);
         }
       });
     }).catch(function(){ /* offline / error → hardcoded order stays */ });
