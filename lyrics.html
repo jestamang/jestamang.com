@@ -13355,43 +13355,54 @@ function loadLyrics(){
     .then(function(snap){
       var docs=[];
       snap.forEach(function(doc){var d=doc.data();d._id=doc.id;if(d.visible===false)return;docs.push(d);});
-      if(!docs.length)return;                       /* v296: keep hardcoded DOM as offline fallback */
+      if(!docs.length)return;                       /* empty read: keep hardcoded DOM as offline fallback */
       var sbScroll=document.querySelector('.sidebar-scroll');
       var ca=document.getElementById('contentArea');
       if(!sbScroll||!ca)return;
-      /* v296: Firestore is canonical — clear the hardcoded content + rebuild (replace, not append) */
+      /* v297: build into DETACHED fragments first; touch the live DOM only after a clean build */
+      var sbFrag=document.createDocumentFragment();
+      var caFrag=document.createDocumentFragment();
+      var built=0;
+      try{
+        var groups=[],gmap={};
+        docs.forEach(function(d){
+          if(!d.artist || !d.albumTitle)return;
+          var aSlug=artistSlug(d.artist);
+          if(!gmap[aSlug]){gmap[aSlug]={slug:aSlug,label:(ARTIST_NAMES[aSlug]||d.artist),albums:[]};groups.push(gmap[aSlug]);ARTIST_NAMES[aSlug]=gmap[aSlug].label;}
+          gmap[aSlug].albums.push(d);
+        });
+        groups.forEach(function(g){
+          var btn=document.createElement('button');
+          btn.className='art-btn';btn.setAttribute('data-aslug',g.slug);btn.textContent=g.label;
+          sbFrag.appendChild(btn);built++;
+          var ap=document.createElement('div');ap.className='album-panel';ap.id='ap-'+g.slug;
+          g.albums.forEach(function(d){
+            var alSlug=toSlug(d.albumTitle);
+            ALBUM_NAMES[g.slug+'__'+alSlug]=d.albumTitle;
+            var card=document.createElement('button');
+            card.className='al-card';card.setAttribute('data-aslug',g.slug);card.setAttribute('data-alslug',alSlug);
+            card.innerHTML='<img src="'+esc(_lyrArt(d.artwork))+'" alt="'+esc(d.albumTitle)+'" class="al-cover" loading="lazy" width="300" height="300"><span class="al-label">'+esc(d.albumTitle)+'</span>';
+            ap.appendChild(card);
+            var lp=document.createElement('div');lp.className='lyr-panel';lp.id='lp-'+g.slug+'-'+alSlug;
+            lp.innerHTML=buildLyrHtml(g.slug,alSlug,d.songs,d.youtubeUrl);
+            caFrag.appendChild(lp);
+          });
+          caFrag.appendChild(ap);
+        });
+      }catch(e){
+        console.error('[lyrics] rebuild failed, keeping hardcoded fallback:',e);
+        return;                                     /* live DOM untouched -> hardcoded catalog stays visible */
+      }
+      if(!built){console.warn('[lyrics] 0 entities built, keeping fallback');return;}
+      /* success: clear live containers (same scope as before) + swap in the fragments */
       sbScroll.querySelectorAll('.art-btn').forEach(function(b){b.remove();});
       ca.querySelectorAll('.album-panel, .lyr-panel').forEach(function(pn){pn.remove();});
-      var fade=document.getElementById('sidebarFade');
-      var groups=[],gmap={};
-      docs.forEach(function(d){
-        if(!d.artist || !d.albumTitle)return;
-        var aSlug=artistSlug(d.artist);
-        if(!gmap[aSlug]){gmap[aSlug]={slug:aSlug,label:(ARTIST_NAMES[aSlug]||d.artist),albums:[]};groups.push(gmap[aSlug]);ARTIST_NAMES[aSlug]=gmap[aSlug].label;}
-        gmap[aSlug].albums.push(d);
-      });
-      groups.forEach(function(g){
-        var btn=document.createElement('button');
-        btn.className='art-btn';btn.setAttribute('data-aslug',g.slug);btn.textContent=g.label;
-        if(fade)sbScroll.insertBefore(btn,fade);else sbScroll.appendChild(btn);
-        var ap=document.createElement('div');ap.className='album-panel';ap.id='ap-'+g.slug;
-        g.albums.forEach(function(d){
-          var alSlug=toSlug(d.albumTitle);
-          ALBUM_NAMES[g.slug+'__'+alSlug]=d.albumTitle;
-          var card=document.createElement('button');
-          card.className='al-card';card.setAttribute('data-aslug',g.slug);card.setAttribute('data-alslug',alSlug);
-          card.innerHTML='<img src="'+esc(_lyrArt(d.artwork))+'" alt="'+esc(d.albumTitle)+'" class="al-cover" loading="lazy" width="300" height="300"><span class="al-label">'+esc(d.albumTitle)+'</span>';
-          ap.appendChild(card);
-          var lp=document.createElement('div');lp.className='lyr-panel';lp.id='lp-'+g.slug+'-'+alSlug;
-          lp.innerHTML=buildLyrHtml(g.slug,alSlug,d.songs,d.youtubeUrl);
-          ca.appendChild(lp);
-        });
-        ca.appendChild(ap);
-      });
+      sbScroll.appendChild(sbFrag);
+      ca.appendChild(caFrag);
       wireLyricsUI();                               /* rich wiring (mobile back-buttons + breadcrumb) */
       handleLyricsHash();                           /* re-open deep-linked album */
     })
-    .catch(function(){});                           /* v296: keep hardcoded DOM as offline fallback */
+    .catch(function(e){ console.error('[lyrics] load failed, keeping fallback:',e); });
 }
 
 var _jt=0,_jiv=setInterval(function(){
