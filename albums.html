@@ -488,79 +488,6 @@ window._albumPlayTrack=function(btn,idx,card){
 };</script>
 
 <script>
-/* ALBUMS .txt wiring retired v302 — Firestore/doc-canonical since v299-v301.
-   Dead after Step 3 (drawer+preview read data-*-urls by index). Kept commented
-   for one-revert rollback; .txt files remain on disk.
-(function(){
-function _nk(s){return(s||'').toLowerCase().replace(/æ/g,'ae').replace(/Æ/g,'ae').replace(/[,\.\[\]()]/g,'').replace(/[–—]/g,' ').replace(/\s+/g,' ').trim();}
-window._normalizeAlbumKey=_nk;
-function _parseUrls(line){
-  var r={sp:'',yt:'',bc:'',am:''};
-  var m;
-  if((m=line.match(/spotify:\s*(https?:\/\/[^\s|]+)/)))r.sp=m[1].replace(/\s+$/,'');
-  if((m=line.match(/youtube:\s*(https?:\/\/[^\s|]+)/)))r.yt=m[1].replace(/\s+$/,'');
-  if((m=line.match(/bandcamp:\s*(https?:\/\/[^\s|]+)/)))r.bc=m[1].replace(/\s+$/,'');
-  if((m=line.match(/apple:\s*(https?:\/\/[^\s|]+)/)))r.am=m[1].replace(/\s+$/,'');
-  return r;
-}
-function _parseAlbumTxt(txt){
-  var out={};var lines=txt.split(/\r?\n/);
-  for(var i=0;i<lines.length;i++){
-    var line=lines[i].trim();
-    if(line.charAt(0)!=='|')continue;
-    for(var j=i-1;j>=0;j--){
-      var prev=lines[j].trim();
-      if(!prev||prev==='---'||/^=+$/.test(prev))continue;
-      var d=prev.indexOf(' — ');
-      if(d===-1)d=prev.indexOf(' - ');
-      if(d!==-1){
-        var ap=prev.slice(d+3);
-        var p=ap.indexOf(' (');
-        if(p!==-1)ap=ap.slice(0,p);
-        out[_nk(ap)]=_parseUrls(line);
-      }
-      break;
-    }
-  }
-  return out;
-}
-function _parseTrackTxt(txt){
-  var out={};var lines=txt.split(/\r?\n/);var cur='';
-  var SKIP=/^(JESTAMANG\s*—\s*DIRECT|JESTAMANG\s*-\s*DIRECT|Fill|Format|Leave|QUARTER DAYS$|2K2323$|2K2123$|NONS$|---$|=+$)/;
-  for(var i=0;i<lines.length;i++){
-    var line=lines[i].trim();
-    if(!line||SKIP.test(line))continue;
-    if(line.indexOf(' | ')!==-1){
-      var pi=line.indexOf(' | ');
-      var tt=line.slice(0,pi).trim().toLowerCase();
-      if(cur)out[cur+'::'+tt]=_parseUrls(line.slice(pi+3));
-    } else {
-      var d=line.indexOf(' — ');
-      if(d===-1)d=line.indexOf(' - ');
-      if(d!==-1){
-        var ap=line.slice(d+3);
-        var p=ap.indexOf(' (');
-        if(p!==-1)ap=ap.slice(0,p);
-        cur=_nk(ap);
-      } else {
-        cur=_nk(line);
-      }
-    }
-  }
-  return out;
-}
-window._albumUrls={};window._trackUrls={};
-Promise.all([
-  fetch('assets/albums/album urls.txt').then(function(r){return r.text();}),
-  fetch('assets/albums/urls.txt').then(function(r){return r.text();})
-]).then(function(res){
-  window._albumUrls=_parseAlbumTxt(res[0]);
-  window._trackUrls=_parseTrackTxt(res[1]);
-}).catch(function(){});
-})();
-*/
-</script>
-<script>
 /* hoisted to globals so loadCatalog() can re-run them after it rebuilds the grid (grid.innerHTML='' wipes ids) */
 function assignAlbumIds(){
   document.querySelectorAll('.album-card').forEach(function(card){
@@ -754,14 +681,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <script>
 /* ── Full Catalog Firestore Loader ── */
 (function(){
-  var _ALBUMS_FALLBACK = []; /* existing hardcoded HTML sections serve as fallback */
 
-  var SECTION_DEFS = [
-    {name:'Quarter Days', id:'quarter-days'},
-    {name:'2K2323',       id:'2k2323'},
-    {name:'2K2123',       id:'2k2123'},
-    {name:'NONS',         id:'nons'}
-  ];
 
   var COLOR_MAP = {
     /* Quarter Days */
@@ -845,25 +765,6 @@ document.addEventListener('DOMContentLoaded',function(){
     return div;
   }
 
-  function replaceGrid(secEl, albums) {
-    var grid = secEl.querySelector('.album-grid');
-    if (!grid || albums.length === 0) return;
-    var hasTrackUrls = albums.some(function(a) {
-      return (a.tracks || []).some(function(t) {
-        return t && typeof t === 'object' && (
-          t.youtubeUrl||t.youtube || t.spotifyUrl||t.spotify ||
-          t.appleUrl||t.appleMusic || t.bandcampUrl||t.bandcamp
-        );
-      });
-    });
-    if (!hasTrackUrls) return;
-    if (window._activeDrawer && grid.contains(window._activeDrawer)) {
-      if (window._activeDrawer.parentNode) window._activeDrawer.parentNode.removeChild(window._activeDrawer);
-      window._activeDrawer = null; window._activeCard = null;
-    }
-    grid.innerHTML = '';
-    albums.forEach(function(a){ grid.appendChild(buildCatalogCard(a)); });
-  }
 
   /* Build a fresh band shell matching the hardcoded .series-section structure. */
   function buildBand(sec) {
