@@ -488,6 +488,9 @@ window._albumPlayTrack=function(btn,idx,card){
 };</script>
 
 <script>
+/* ALBUMS .txt wiring retired v302 — Firestore/doc-canonical since v299-v301.
+   Dead after Step 3 (drawer+preview read data-*-urls by index). Kept commented
+   for one-revert rollback; .txt files remain on disk.
 (function(){
 function _nk(s){return(s||'').toLowerCase().replace(/æ/g,'ae').replace(/Æ/g,'ae').replace(/[,\.\[\]()]/g,'').replace(/[–—]/g,' ').replace(/\s+/g,' ').trim();}
 window._normalizeAlbumKey=_nk;
@@ -555,6 +558,7 @@ Promise.all([
   window._trackUrls=_parseTrackTxt(res[1]);
 }).catch(function(){});
 })();
+*/
 </script>
 <script>
 /* hoisted to globals so loadCatalog() can re-run them after it rebuilds the grid (grid.innerHTML='' wipes ids) */
