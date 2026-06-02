@@ -1060,13 +1060,24 @@ document.addEventListener('DOMContentLoaded',eotdInit);
       var anchor = preview.querySelector('.hp-footer'); /* keep footer last */
       var ordered = cfg.slice().sort(function(a,b){ return (a.order||0) - (b.order||0); });
 
-      /* 1) show/hide only — no DOM moves */
+      /* 1) show/hide + color/text — no DOM moves */
       ordered.forEach(function(item){
         var rec = byKey[item.key];
         if (!rec) return;
         var hide = (item.visible === false);
         rec.section.style.display = hide ? 'none' : '';
         if (rec.divider) rec.divider.style.display = hide ? 'none' : '';
+        if (!hide) {
+          if (item.color && ['green','purple','red'].indexOf(item.color) !== -1) {
+            rec.section.className = rec.section.className.replace(/hp-section--(green|purple|red)/, 'hp-section--' + item.color);
+          }
+          if (typeof item.title === 'string' && item.title.trim()) {
+            var _t = rec.section.querySelector('.hp-title'); if (_t) _t.textContent = item.title;
+          }
+          if (typeof item.desc === 'string' && item.desc.trim()) {
+            var _d = rec.section.querySelector('.hp-desc'); if (_d) _d.textContent = item.desc;
+          }
+        }
       });
 
       /* 2) reorder ONLY if the visible order actually differs (avoid needless DOM churn) */
