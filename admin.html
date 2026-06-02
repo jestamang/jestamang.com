@@ -709,6 +709,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="tab-bar">
         <button class="tab-btn active" id="alm-tab-list">Album List</button>
         <button class="tab-btn" id="alm-tab-add">Add New Album</button>
+        <button class="tab-btn" id="alm-tab-sections">Sections</button>
       </div>
       <!-- Album List pane -->
       <div class="tab-pane active" id="alm-pane-list">
@@ -722,6 +723,22 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <button class="btn-ghost" id="alm-add-clear-btn">Clear</button>
         </div>
         <p class="status-msg" id="alm-add-status"></p>
+      </div>
+      <!-- Sections pane -->
+      <div class="tab-pane" id="alm-pane-sections">
+        <div id="alm-sections-inner" style="min-height:60px;"><div style="color:rgba(201,168,76,0.4);font-size:0.7rem;letter-spacing:0.2em;">Loading sections...</div></div>
+        <div style="margin-top:20px;border-top:1px solid rgba(201,168,76,0.15);padding-top:16px;">
+          <div style="font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.7);margin-bottom:8px;">Add Section</div>
+          <div class="alm-form-grid">
+            <div><label class="field-label" style="margin-top:0">Name</label><input class="field-input" id="asm-add-name"></div>
+            <div><label class="field-label" style="margin-top:0">Grid class</label><input class="field-input" id="asm-add-grid" placeholder="(blank = default album-grid)"></div>
+            <div style="grid-column:1/-1"><label class="field-label">Caption</label><input class="field-input" id="asm-add-caption"></div>
+          </div>
+          <div class="btn-row" style="margin-top:12px;">
+            <button class="btn-gold" id="asm-add-btn">Add Section</button>
+          </div>
+          <p class="status-msg" id="asm-add-status"></p>
+        </div>
       </div>
       <p class="status-msg" id="alm-status"></p>
     </div>
