@@ -1,6 +1,17 @@
 (function(){
 /* ── Album Manager ── */
-var ALM_SECTIONS = ['Quarter Days','2K2323','2K2123','NONS'];
+var _almSections = []; /* cached albumSections docs (live); declared before the helpers below use it */
+/* Fallback section list — used only if the albumSections read fails / _almSections is empty.
+   Mirrors the seeded collection (slug = doc id = sectionId). */
+var ALM_SECTIONS_FALLBACK = [
+  {name:'Quarter Days', slug:'quarter-days', caption:'The four seasons',          gridClass:'four-col',  order:0, visible:true},
+  {name:'2K2323',       slug:'2k2323',       caption:"Jan 23, '23 – Dec 31, '23", gridClass:'',          order:1, visible:true},
+  {name:'2K2123',       slug:'2k2123',       caption:"Jan 23, '21 – Mar 23, '21", gridClass:'',          order:2, visible:true},
+  {name:'NONS',         slug:'nons',         caption:'Prologue',                   gridClass:'nons-grid', order:3, visible:true}
+];
+function _almSecList(){ return (_almSections && _almSections.length) ? _almSections : ALM_SECTIONS_FALLBACK; }
+function _almSlugToName(slug){ var l=_almSecList(); for(var i=0;i<l.length;i++){ if((l[i].slug||l[i]._id)===slug) return l[i].name; } return slug||''; }
+function _almNameToSlug(name){ var l=_almSecList(); for(var i=0;i<l.length;i++){ if(l[i].name===name) return (l[i].slug||l[i]._id); } return ''; }
 var _almDocs = {}; /* docId -> data */
 
 function almEsc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -20,8 +31,11 @@ function almBuildForm(data, prefix) {
   var tracks = data.tracks || [];
   var pfx = prefix || 'almf';
 
-  var sectionOpts = ALM_SECTIONS.map(function(s){
-    return '<option value="'+almEsc(s)+'"'+(data.section===s?' selected':'')+'>'+almEsc(s)+'</option>';
+  var _curSid = data.sectionId || '';
+  var sectionOpts = _almSecList().map(function(s){
+    var slug = s.slug || s._id;
+    var sel = _curSid ? (slug===_curSid) : (data.section===s.name);
+    return '<option value="'+almEsc(slug)+'"'+(sel?' selected':'')+'>'+almEsc(s.name)+'</option>';
   }).join('');
 
   var trackRows = '';
@@ -127,7 +141,8 @@ function almReadForm(pfx) {
   return {
     title:           val('title'),
     artist:          val('artist'),
-    section:         val('section'),
+    sectionId:       val('section'),
+    section:         _almSlugToName(val('section')),
     year:            val('year'),
     genre:           val('genre'),
     order:           parseInt(val('order'),10)||0,
@@ -151,24 +166,30 @@ function almRenderList(docs) {
     return;
   }
 
-  var grouped = {};
-  ALM_SECTIONS.forEach(function(s){ grouped[s] = []; });
+  var secs = _almSecList();
+  var grouped = {}, other = [];
+  secs.forEach(function(s){ grouped[(s.slug||s._id)] = []; });
   docs.forEach(function(item){
-    var sec = item.data.section;
-    if (grouped[sec]) grouped[sec].push(item);
-    else { if (!grouped['Other']) grouped['Other']=[]; grouped['Other'].push(item); }
+    var sid = item.data.sectionId;
+    if (!sid && item.data.section) sid = _almNameToSlug(item.data.section); /* legacy fallback */
+    if (sid && grouped[sid]) grouped[sid].push(item);
+    else other.push(item);
   });
 
   var html = '';
-  ALM_SECTIONS.forEach(function(sec){
-    var list = grouped[sec];
+  secs.forEach(function(s){
+    var slug = s.slug || s._id;
+    var list = grouped[slug];
     if (!list || list.length === 0) return;
-    html += '<div class="alm-section-group"><div class="alm-section-label">'+almEsc(sec)+'</div>';
-    list.forEach(function(item){
-      html += almRowHtml(item.id, item.data);
-    });
+    html += '<div class="alm-section-group"><div class="alm-section-label">'+almEsc(s.name)+'</div>';
+    list.forEach(function(item){ html += almRowHtml(item.id, item.data); });
     html += '</div>';
   });
+  if (other.length){
+    html += '<div class="alm-section-group"><div class="alm-section-label">Other</div>';
+    other.forEach(function(item){ html += almRowHtml(item.id, item.data); });
+    html += '</div>';
+  }
   container.innerHTML = html;
   almAttachCompressWidgets(container);
 
@@ -273,8 +294,12 @@ window.almSave = function(docId) {
 
 window.almMoveOrder = function(docId, dir) {
   if (!window.jestaDB || !_almDocs[docId]) return;
-  var sec = _almDocs[docId].section;
-  var peers = Object.keys(_almDocs).filter(function(id){ return _almDocs[id].section === sec; });
+  var _d = _almDocs[docId];
+  var _sid = _d.sectionId || null;
+  var peers = Object.keys(_almDocs).filter(function(id){
+    var dd = _almDocs[id];
+    return _sid ? (dd.sectionId === _sid) : (dd.section === _d.section);
+  });
   peers.sort(function(a,b){ return (_almDocs[a].order||0) - (_almDocs[b].order||0); });
   var idx = peers.indexOf(docId);
   var swapIdx = dir === 'up' ? idx - 1 : idx + 1;
@@ -319,7 +344,9 @@ function almLoad() {
 function almInitAddForm() {
   var formEl = document.getElementById('alm-add-form');
   if (!formEl) return;
-  formEl.innerHTML = almBuildForm({section:'Quarter Days', order:0, visible:true}, 'almn');
+  var _first = _almSecList()[0];
+  var _def = _first ? {sectionId:(_first.slug||_first._id), section:_first.name, order:0, visible:true} : {order:0, visible:true};
+  formEl.innerHTML = almBuildForm(_def, 'almn');
   almAttachCompressWidgets(formEl);
 }
 
@@ -341,23 +368,24 @@ function almAttachCompressWidgets(container) {
 }
 
 /* ── Album Sections manager (Step 3) ── */
-var _almSections = []; /* cached section docs; Step 4 will also read this for the album form */
 
 function _asmFind(slug){
   for (var i=0;i<_almSections.length;i++){ if((_almSections[i].slug||_almSections[i]._id)===slug) return _almSections[i]; }
   return null;
 }
 
-function asmLoad(){
-  if (!window.jestaDB) return;
-  var c = document.getElementById('alm-sections-inner');
-  if (c) c.innerHTML = '<div style="color:rgba(201,168,76,0.4);font-size:0.7rem;letter-spacing:0.2em;">Loading sections...</div>';
-  window.jestaDB.collection('albumSections').orderBy('order').get()
+function asmFetch(){
+  if (!window.jestaDB) return Promise.resolve();
+  return window.jestaDB.collection('albumSections').orderBy('order').get()
     .then(function(snap){
       _almSections = [];
       snap.forEach(function(doc){ var d = doc.data(); d._id = doc.id; _almSections.push(d); });
-      asmRenderList();
-    })
+    });
+}
+function asmLoad(){
+  var c = document.getElementById('alm-sections-inner');
+  if (c) c.innerHTML = '<div style="color:rgba(201,168,76,0.4);font-size:0.7rem;letter-spacing:0.2em;">Loading sections...</div>';
+  asmFetch().then(function(){ asmRenderList(); })
     .catch(function(e){ if (c) c.innerHTML = '<div style="color:rgba(251,56,56,0.7);font-size:0.7rem;">Failed to load sections: '+(e.message||e)+'</div>'; });
 }
 
@@ -510,6 +538,7 @@ var _almTabList=document.getElementById('alm-tab-list');if(_almTabList)_almTabLi
   document.getElementById('alm-pane-list').classList.add('active');
   document.getElementById('alm-pane-add').classList.remove('active');
   var sp=document.getElementById('alm-pane-sections'); if(sp) sp.classList.remove('active');
+  almRefreshList();
 });
 var _almTabAdd=document.getElementById('alm-tab-add');if(_almTabAdd)_almTabAdd.addEventListener('click', function(){
   document.getElementById('alm-tab-add').classList.add('active');
@@ -518,6 +547,7 @@ var _almTabAdd=document.getElementById('alm-tab-add');if(_almTabAdd)_almTabAdd.a
   document.getElementById('alm-pane-add').classList.add('active');
   document.getElementById('alm-pane-list').classList.remove('active');
   var sp=document.getElementById('alm-pane-sections'); if(sp) sp.classList.remove('active');
+  almInitAddForm();
 });
 var _almTabSections=document.getElementById('alm-tab-sections');if(_almTabSections)_almTabSections.addEventListener('click', function(){
   document.getElementById('alm-tab-sections').classList.add('active');
@@ -556,9 +586,11 @@ var _almAddClearBtn=document.getElementById('alm-add-clear-btn');if(_almAddClear
 
 /* ── Boot ── */
 (function(){
-  almInitAddForm();
   var _jt=0,_jiv=setInterval(function(){
-    if(window.jestaDB){ clearInterval(_jiv); almLoad(); }
+    if(window.jestaDB){
+      clearInterval(_jiv);
+      asmFetch().catch(function(){}).then(function(){ almInitAddForm(); almLoad(); });
+    }
     else if(++_jt>80){ clearInterval(_jiv); var c=document.getElementById('alm-list-inner'); if(c) c.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>'; }
   },100);
 })();
