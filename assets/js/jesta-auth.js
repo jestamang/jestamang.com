@@ -216,6 +216,8 @@
   function checkMaintenance(user) {
     var isAdmin = user && user.email === 'thejestamang@gmail.com';
     if (isAdmin) return;
+    var _mp = window.location.pathname.split('/').pop() || 'index.html';
+    if (_mp === 'login.html' || _mp === 'verify.html') return;
     if (!window.jestaDB) {
       var _jt = 0, _jiv = setInterval(function () {
         if (window.jestaDB) { clearInterval(_jiv); checkMaintenance(user); }
