@@ -627,6 +627,10 @@ function entBuildForm(d,pfx){
   +[['Sun','sun'],['Moon','moon'],['Rising','rising'],['Mercury','mercury'],['Venus','venus'],['Mars','mars'],['Jupiter','jupiter'],['Saturn','saturn'],['Uranus','uranus'],['Neptune','neptune'],['Pluto','pluto'],['North Node','north-node'],['South Node','south-node'],['Lilith Moon','lilith-moon'],['Fortune','fortune']].map(function(p){
     return '<div><label class="field-label" style="font-size:0.58rem;">'+p[0]+'</label><input class="field-input" id="'+pfx+'-natal-'+p[1]+'" value="'+entEsc(n[p[0]]||'')+'" placeholder="Sign deg (House)" style="font-size:0.72rem;"></div>';
   }).join('')
+  +'</div></div>'
+  +'<div style="margin-top:12px;"><div class="field-label" style="margin-bottom:6px;letter-spacing:0.2em;">House Cusps (children)</div>'
+  +'<div class="ent-natal-grid">'
+  +(function(){var HL=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];var hs=(n.houses&&n.houses.length)?n.houses:[];var o='';for(var i=0;i<12;i++){o+='<div><label class="field-label" style="font-size:0.58rem;">'+HL[i]+' House</label><input class="field-input" id="'+pfx+'-house-'+i+'" value="'+entEsc(hs[i]||'')+'" placeholder="Sign deg" style="font-size:0.72rem;"></div>';}return o;})()
   +'</div></div>';
   return html;
 }
@@ -637,6 +641,9 @@ function entReadForm(pfx){
   [['Sun','sun'],['Moon','moon'],['Rising','rising'],['Mercury','mercury'],['Venus','venus'],['Mars','mars'],['Jupiter','jupiter'],['Saturn','saturn'],['Uranus','uranus'],['Neptune','neptune'],['Pluto','pluto'],['North Node','north-node'],['South Node','south-node'],['Lilith Moon','lilith-moon'],['Fortune','fortune']].forEach(function(p){
     var val=v('natal-'+p[1]);if(val)natal[p[0]]=val;
   });
+  var houses=[],anyH=false;
+  for(var hi=0;hi<12;hi++){var hv=v('house-'+hi);houses.push(hv);if(hv)anyH=true;}
+  if(anyH)natal.houses=houses;
   return {
     name:v('name'),type:v('type'),image:v('image'),bgColor:v('bgColor'),
     albums:v('albums'),likes:v('likes'),hates:v('hates'),bio:v('bio'),
