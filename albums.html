@@ -594,7 +594,7 @@ document.addEventListener('DOMContentLoaded',function(){
     var card=document.createElement('div');
     card.className='album-card';
     card.dataset.artist=r.artist||'';
-    card.dataset.album=r.album||'';
+    card.dataset.album=r.albumTitle||r.album||'';
     card.dataset.year=r.year?String(r.year):'';
     card.dataset.genre=r.genre||'';
     card.dataset.tracks=JSON.stringify(titles);
@@ -612,7 +612,7 @@ document.addEventListener('DOMContentLoaded',function(){
     img.onclick=function(){toggleDrawer(card);};
     var titleLbl=document.createElement('div');
     titleLbl.className='album-title-label';
-    titleLbl.textContent=r.album||'';
+    titleLbl.textContent=r.albumTitle||r.album||'';
     var artistLbl=document.createElement('div');
     artistLbl.className='album-artist';
     artistLbl.textContent=r.artist||'';
