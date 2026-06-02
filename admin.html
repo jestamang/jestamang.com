@@ -481,6 +481,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div style="font-size:0.58rem;letter-spacing:0.28em;color:rgba(201,168,76,0.7);padding:12px 10px 2px;margin-top:6px;border-top:1px solid rgba(201,168,76,0.12);text-transform:uppercase;font-family:'Luminari',serif;">Community</div>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-3')">Members</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-24')">Treats</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-31')">Member Updates</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-5')">Moderation</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-6')">Inquiries</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-21')">Top Members</button>
@@ -502,7 +503,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-17')">Maintenance</button>
 </nav>
 <div id="adm-mobtabs" role="navigation" aria-label="Section tabs">
-  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-29')">Lyrics</button><button class="adm-mobtab" onclick="admNavTo('sec-30')">Captions</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-28')">TxtStyle</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
+  <button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-29')">Lyrics</button><button class="adm-mobtab" onclick="admNavTo('sec-30')">Captions</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-31')">Updates</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-28')">TxtStyle</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
 </div>
 
   <div class="adm-header">
@@ -636,6 +637,36 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <button id="bp-prev" class="btn-ghost btn-sm" aria-label="Previous page" style="min-width:44px;">←</button>
           <span id="bp-page-indicator" style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,168,76,0.55);"></span>
           <button id="bp-next" class="btn-ghost btn-sm" aria-label="Next page" style="min-width:44px;">→</button>
+        </div>
+      </div>
+    </div>
+    <div class="adm-ornament">✦</div>
+    <div class="adm-section" id="sec-31">
+      <div class="adm-section-title">✦ Member Updates</div>
+      <div class="adm-section-underline"></div>
+
+      <label class="field-label" for="mu-title">Title</label>
+      <input class="field-input" id="mu-title" type="text" placeholder="Update title..." maxlength="120">
+
+      <label class="field-label" for="mu-date">Date</label>
+      <input class="field-input" id="mu-date" type="date">
+
+      <label class="field-label" for="mu-content">Content</label>
+      <textarea class="field-input field-textarea" id="mu-content" placeholder="Write the update..." style="min-height:160px;" maxlength="100000"></textarea>
+
+      <div class="btn-row">
+        <button class="btn-gold" id="mu-publish-btn">Publish</button>
+        <button class="btn-ghost" id="mu-draft-btn">Save Draft</button>
+      </div>
+      <div class="status-msg" id="mu-status"></div>
+
+      <div style="margin-top:32px;">
+        <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Recent Updates</div>
+        <div id="mu-post-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
+        <div id="mu-pager" style="display:none;align-items:center;justify-content:center;gap:18px;margin-top:16px;font-family:'Luminari',serif;">
+          <button id="mu-prev" class="btn-ghost btn-sm" aria-label="Previous page" style="min-width:44px;">←</button>
+          <span id="mu-page-indicator" style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,168,76,0.55);"></span>
+          <button id="mu-next" class="btn-ghost btn-sm" aria-label="Next page" style="min-width:44px;">→</button>
         </div>
       </div>
     </div>
@@ -1756,6 +1787,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     if (window.initSigilCardEditor) window.initSigilCardEditor();
     initPhotos();
     initTreats();
+    initMembersUpdates();
     initTabs();
     initQuickLinks();
   }
@@ -2204,6 +2236,178 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     statusEl.className = 'status-msg';
   };
 
+  /* ══════════════ SECTION 31: MEMBER UPDATES ══════════════ */
+  window._muEditId  = null;
+  window._muData    = {};
+  var _muUpdatesAll = [];
+  var _muPage       = 0;
+  var MU_PER_PAGE   = 5;
+
+  function initMembersUpdates() {
+    var mdate = document.getElementById('mu-date');
+    if (mdate) mdate.value = new Date().toISOString().slice(0,10);
+    var _muPub=document.getElementById('mu-publish-btn');if(_muPub)_muPub.addEventListener('click', function () { saveMemberUpdate(true); });
+    var _muDraft=document.getElementById('mu-draft-btn');if(_muDraft)_muDraft.addEventListener('click', function () { saveMemberUpdate(false); });
+    var _muPrev=document.getElementById('mu-prev');if(_muPrev)_muPrev.addEventListener('click', function () { if(_muPage>0){_muPage--;renderRecentUpdatesPage();} });
+    var _muNext=document.getElementById('mu-next');if(_muNext)_muNext.addEventListener('click', function () { var tp=Math.ceil(_muUpdatesAll.length/MU_PER_PAGE); if(_muPage<tp-1){_muPage++;renderRecentUpdatesPage();} });
+    loadRecentUpdates();
+  }
+
+  function saveMemberUpdate(publish) {
+    var title   = (document.getElementById('mu-title').value   || '').trim();
+    var dateVal = (document.getElementById('mu-date').value    || '').trim();
+    var content = (document.getElementById('mu-content').value || '').trim();
+    var statusEl = document.getElementById('mu-status');
+    if (!title)   { statusEl.textContent='Title required';   statusEl.className='status-msg status-err'; return; }
+    if (!content) { statusEl.textContent='Content required'; statusEl.className='status-msg status-err'; return; }
+    document.getElementById('mu-publish-btn').disabled = true;
+    document.getElementById('mu-draft-btn').disabled   = true;
+    statusEl.textContent = '';
+    var payload = {
+      title:         title,
+      date:          dateVal,
+      dateFormatted: dateVal ? ritualDate(dateVal) : '',
+      content:       content,
+      excerpt:       content.slice(0,150),
+      timestamp:     firebase.firestore.FieldValue.serverTimestamp(),
+      published:     publish
+    };
+    var op = window._muEditId
+      ? db.collection('membersUpdates').doc(window._muEditId).update(payload)
+      : db.collection('membersUpdates').add(payload);
+    op.then(function () {
+      statusEl.textContent = publish ? 'PUBLISHED ✦' : 'DRAFT SAVED ✦';
+      statusEl.className   = 'status-msg status-ok';
+      document.getElementById('mu-title').value   = '';
+      document.getElementById('mu-content').value = '';
+      document.getElementById('mu-date').value    = new Date().toISOString().slice(0,10);
+      document.getElementById('mu-publish-btn').disabled = false;
+      document.getElementById('mu-draft-btn').disabled   = false;
+      if (window._muEditId) { window.cancelEditUpdate(); }
+      loadRecentUpdates();
+    }).catch(function (e) {
+      statusEl.textContent = 'Error: ' + e.message;
+      statusEl.className   = 'status-msg status-err';
+      document.getElementById('mu-publish-btn').disabled = false;
+      document.getElementById('mu-draft-btn').disabled   = false;
+    });
+  }
+
+  function loadRecentUpdates() {
+    var el = document.getElementById('mu-post-list');
+    db.collection('membersUpdates').orderBy('timestamp','desc').get().then(function (snap) {
+      _muUpdatesAll = [];
+      window._muData = {};
+      snap.forEach(function (doc) {
+        window._muData[doc.id] = doc.data();
+        _muUpdatesAll.push({ id: doc.id, data: doc.data() });
+      });
+      var totalPages = Math.max(1, Math.ceil(_muUpdatesAll.length / MU_PER_PAGE));
+      if (_muPage > totalPages - 1) _muPage = totalPages - 1;
+      if (_muPage < 0) _muPage = 0;
+      renderRecentUpdatesPage();
+    }).catch(function(e){ el.innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>'; });
+  }
+
+  function renderRecentUpdatesPage() {
+    var el    = document.getElementById('mu-post-list');
+    var pager = document.getElementById('mu-pager');
+    if (!_muUpdatesAll.length) {
+      el.innerHTML = '<div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">No updates yet.</div>';
+      if (pager) pager.style.display = 'none';
+      return;
+    }
+    var total = _muUpdatesAll.length;
+    var totalPages = Math.ceil(total / MU_PER_PAGE);
+    var slice = _muUpdatesAll.slice(_muPage * MU_PER_PAGE, _muPage * MU_PER_PAGE + MU_PER_PAGE);
+    var html = '';
+    slice.forEach(function (item) {
+      var d = item.data, docId = item.id;
+      var eid = 'mu-'+docId;
+      var pub = d.published ? '<span class="badge badge-green">Published</span>' : '<span class="badge badge-dim">Draft</span>';
+      var raw = (d.content || d.excerpt || '').replace(/<[^>]*>/g,'');
+      var preview = raw.length > 80 ? raw.slice(0,80) + '…' : raw;
+      html += '<div class="post-row" id="row-'+eid+'">'
+        + '<div class="post-row-title">' + esc(d.title) + ' ' + pub + '</div>'
+        + '<div class="post-row-meta">' + esc(d.dateFormatted || d.date || '—') + '</div>'
+        + (preview ? '<div style="font-size:0.7rem;color:rgba(240,230,211,0.5);margin-top:4px;font-style:italic;">' + esc(preview) + '</div>' : '')
+        + '<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">'
+        + '<button class="btn-ghost btn-sm" onclick="editUpdate(\'' + docId + '\')">Edit</button>'
+        + (!d.published ? '<button class="btn-gold btn-sm" onclick="publishUpdate(\'' + docId + '\')">Publish</button>' : '')
+        + (d.published ? '<button class="btn-danger btn-sm" onclick="unpublishUpdate(\'' + docId + '\')">Unpublish</button>' : '')
+        + '<button class="btn-danger btn-sm" onclick="askDelete(\'' + eid + '\')">Delete</button>'
+        + makeDeleteRow('membersUpdates', docId, eid)
+        + '</div>'
+        + '</div>';
+    });
+    el.innerHTML = html;
+    if (pager) {
+      if (totalPages <= 1) {
+        pager.style.display = 'none';
+      } else {
+        pager.style.display = 'flex';
+        document.getElementById('mu-page-indicator').textContent = 'Page ' + (_muPage + 1) + ' / ' + totalPages;
+        var prev = document.getElementById('mu-prev');
+        var next = document.getElementById('mu-next');
+        prev.disabled = (_muPage === 0);
+        next.disabled = (_muPage >= totalPages - 1);
+        prev.style.opacity = prev.disabled ? '0.3' : '1';
+        next.style.opacity = next.disabled ? '0.3' : '1';
+      }
+    }
+  }
+
+  window.unpublishUpdate = function (id) {
+    db.collection('membersUpdates').doc(id).update({ published: false })
+      .then(loadRecentUpdates).catch(function(){});
+  };
+
+  window.publishUpdate = function (id) {
+    db.collection('membersUpdates').doc(id).update({
+      published: true,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(loadRecentUpdates).catch(function(){});
+  };
+
+  window.editUpdate = function (id) {
+    var d = window._muData[id];
+    if (!d) return;
+    window._muEditId = id;
+    document.getElementById('mu-title').value   = d.title   || '';
+    document.getElementById('mu-date').value    = d.date    || '';
+    document.getElementById('mu-content').value = d.content || '';
+    var heading = document.querySelector('#sec-31 .adm-section-title');
+    if (heading) heading.textContent = '✦ Edit Member Update';
+    document.getElementById('mu-publish-btn').textContent = 'Update';
+    document.getElementById('mu-draft-btn').textContent   = 'Save as Draft';
+    if (!document.getElementById('mu-cancel-edit')) {
+      var cancelBtn = document.createElement('button');
+      cancelBtn.id = 'mu-cancel-edit';
+      cancelBtn.className = 'btn-ghost';
+      cancelBtn.textContent = 'Cancel';
+      cancelBtn.onclick = function () { window.cancelEditUpdate(); };
+      document.getElementById('mu-publish-btn').parentNode.appendChild(cancelBtn);
+    }
+    var sec = document.getElementById('sec-31');
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  window.cancelEditUpdate = function () {
+    window._muEditId = null;
+    var heading = document.querySelector('#sec-31 .adm-section-title');
+    if (heading) heading.textContent = '✦ Member Updates';
+    document.getElementById('mu-publish-btn').textContent = 'Publish';
+    document.getElementById('mu-draft-btn').textContent   = 'Save Draft';
+    var cancelBtn = document.getElementById('mu-cancel-edit');
+    if (cancelBtn) cancelBtn.remove();
+    document.getElementById('mu-title').value   = '';
+    document.getElementById('mu-date').value    = new Date().toISOString().slice(0,10);
+    document.getElementById('mu-content').value = '';
+    var statusEl = document.getElementById('mu-status');
+    statusEl.textContent = '';
+    statusEl.className = 'status-msg';
+  };
+
   /* ══════════════ SECTION 24: TREATS ══════════════ */
   var treatUnsub = null;
 
@@ -2415,6 +2619,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       if (row) row.remove();
       // Blog: refresh the paginated list so totals/pager update and an emptied page steps back
       if (collection === 'blogPosts' && typeof loadRecentPosts === 'function') loadRecentPosts();
+      if (collection === 'membersUpdates' && typeof loadRecentUpdates === 'function') loadRecentUpdates();
     }).catch(function(){});
   };
 
