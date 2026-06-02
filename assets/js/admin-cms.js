@@ -783,9 +783,13 @@ function lymRowHtml(docId,d){
   +'</div>';
 }
 
+function sortName(s){ return String(s||'').toLowerCase().replace(/^the\s+/,'').trim(); }
 function lymRenderList(docs){
   var sorted=Object.keys(docs).map(function(id){return{id:id,d:docs[id]};});
-  sorted.sort(function(a,b){return(a.d.order||0)-(b.d.order||0);});
+  sorted.sort(function(a,b){
+    var n=sortName(a.d.artist).localeCompare(sortName(b.d.artist));
+    return n!==0?n:((a.d.order||0)-(b.d.order||0));
+  });
   var html='';sorted.forEach(function(e){html+=lymRowHtml(e.id,e.d);});
   if(!html)html='<div style="color:rgba(201,168,76,0.3);font-size:0.7rem;">No albums found.</div>';
   var c=document.getElementById('lym-list-inner');if(c){c.innerHTML=html;c.querySelectorAll('.lym-song-list').forEach(lymWireDragDrop);lymAttachCompressWidgets(c);}
@@ -816,11 +820,18 @@ window.lymSetVisible=function(docId,vis){
 };
 
 window.lymMoveOrder=function(docId,dir){
-  var all=Object.keys(_lymDocs).sort(function(a,b){return(_lymDocs[a].order||0)-(_lymDocs[b].order||0);});
+  /* v298: sort the SAME entity-then-order view the list renders, so ▲▼ moves albums within their entity only */
+  var all=Object.keys(_lymDocs).sort(function(a,b){
+    var n=sortName(_lymDocs[a].artist).localeCompare(sortName(_lymDocs[b].artist));
+    return n!==0?n:((_lymDocs[a].order||0)-(_lymDocs[b].order||0));
+  });
   var idx=all.indexOf(docId);
+  if(idx<0)return;
   var swapIdx=dir==='up'?idx-1:idx+1;
   if(swapIdx<0||swapIdx>=all.length)return;
   var swapId=all[swapIdx];
+  /* no-op at the entity's first/last album — never swap across entities */
+  if(sortName(_lymDocs[swapId].artist)!==sortName(_lymDocs[docId].artist))return;
   var a=_lymDocs[docId].order||0,b=_lymDocs[swapId].order||0;
   var batch=window.jestaDB.batch();
   batch.set(window.jestaDB.collection('lyrics').doc(docId),{order:b},{merge:true});
