@@ -1077,6 +1077,16 @@ document.addEventListener('DOMContentLoaded',eotdInit);
           if (typeof item.desc === 'string' && item.desc.trim()) {
             var _d = rec.section.querySelector('.hp-desc'); if (_d) _d.textContent = item.desc;
           }
+          if (item.key === 'listening-chamber' && item.extras) {
+            var _ex = item.extras, _sec = rec.section;
+            var _nums = _sec.querySelectorAll('.hp-lc-stat-num');
+            var _labs = _sec.querySelectorAll('.hp-lc-stat-label');
+            var _setHp = function(el, v){ if (el && typeof v === 'string' && v.trim()) el.textContent = v; };
+            _setHp(_nums[0], _ex.stat0num); _setHp(_labs[0], _ex.stat0label);
+            _setHp(_nums[1], _ex.stat1num); _setHp(_labs[1], _ex.stat1label);
+            _setHp(_nums[2], _ex.stat2num); _setHp(_labs[2], _ex.stat2label);
+            _setHp(_sec.querySelector('.hp-cta'), _ex.cta);
+          }
         }
       });
 
