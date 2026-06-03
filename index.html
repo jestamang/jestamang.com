@@ -1125,6 +1125,16 @@ document.addEventListener('DOMContentLoaded',eotdInit);
             var _abcta = _absec.querySelector('.hp-cta');
             if (_abcta && _abx.cta && _abx.cta.trim()) _abcta.textContent = _abx.cta;
           }
+          if (item.key === 'comix' && item.extras) {
+            var _cmx = item.extras, _cmsec = rec.section;
+            var _cmimgs = _cmsec.querySelectorAll('.hp-comix-strip img');
+            for (var _cq = 0; _cq < _cmimgs.length; _cq++) {
+              var _cmim = _cmx['img' + _cq];
+              if (_cmimgs[_cq] && _cmim && _cmim.trim()) _cmimgs[_cq].src = _cmim;
+            }
+            var _cmcta = _cmsec.querySelector('.hp-cta');
+            if (_cmcta && _cmx.cta && _cmx.cta.trim()) _cmcta.textContent = _cmx.cta;
+          }
         }
       });
 
