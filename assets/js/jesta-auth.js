@@ -676,3 +676,28 @@ window.openSocial = function(platform) {
   window.open(config.web, '_blank', 'noopener,noreferrer');
   window.location.href = config.app;
 };
+
+/* ── Page Metadata applier: overlays browser-tab title + meta description from siteConfig/pageMeta ── */
+(function () {
+  var path = location.pathname;
+  var page = path.substring(path.lastIndexOf('/') + 1);
+  if (!page) page = 'index.html';
+  var tries = 0;
+  var iv = setInterval(function () {
+    if (window.jestaDB) {
+      clearInterval(iv);
+      window.jestaDB.collection('siteConfig').doc('pageMeta').get().then(function (d) {
+        if (!d.exists) return;
+        var pages = d.data().pages || {};
+        var m = pages[page];
+        if (!m) return;
+        if (m.title && m.title.trim()) { document.title = m.title; }
+        if (m.desc && m.desc.trim()) {
+          var el = document.querySelector('meta[name="description"]');
+          if (!el) { el = document.createElement('meta'); el.setAttribute('name', 'description'); document.head.appendChild(el); }
+          el.setAttribute('content', m.desc);
+        }
+      }).catch(function () {});
+    } else if (++tries > 40) { clearInterval(iv); }
+  }, 100);
+})();
