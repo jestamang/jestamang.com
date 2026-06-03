@@ -1135,6 +1135,18 @@ document.addEventListener('DOMContentLoaded',eotdInit);
             var _cmcta = _cmsec.querySelector('.hp-cta');
             if (_cmcta && _cmx.cta && _cmx.cta.trim()) _cmcta.textContent = _cmx.cta;
           }
+          if (item.key === 'games' && item.extras) {
+            var _gmx = item.extras, _gmsec = rec.section;
+            var _gmlinks = _gmsec.querySelectorAll('.hp-games-list li a');
+            for (var _gq = 0; _gq < _gmlinks.length; _gq++) {
+              var _gmn = _gmx['game' + _gq + 'name'];
+              var _gml = _gmx['game' + _gq + 'link'];
+              if (_gmlinks[_gq] && _gmn && _gmn.trim()) _gmlinks[_gq].textContent = _gmn;
+              if (_gmlinks[_gq] && _gml && _gml.trim()) _gmlinks[_gq].href = _gml;
+            }
+            var _gmcta = _gmsec.querySelector('.hp-cta');
+            if (_gmcta && _gmx.cta && _gmx.cta.trim()) _gmcta.textContent = _gmx.cta;
+          }
         }
       });
 
