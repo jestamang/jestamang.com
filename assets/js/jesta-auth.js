@@ -764,3 +764,19 @@ window.openSocial = function(platform) {
     } else if (++gtries > 40) { clearInterval(giv); }
   }, 100);
 })();
+
+/* ── Comix cover overlay: siteConfig/comixConfig → .cover-title / .cover-sub on comix.html (fallback-first) ── */
+(function () {
+  if ((location.pathname.split('/').pop() || '') !== 'comix.html') return;
+  var ct = 0, civ = setInterval(function () {
+    if (window.jestaDB) {
+      clearInterval(civ);
+      window.jestaDB.collection('siteConfig').doc('comixConfig').get().then(function (d) {
+        if (!d.exists) return;
+        var o = d.data() || {};
+        if (o.title && (''+o.title).trim()) { var t = document.querySelector('.cover-title'); if (t) t.textContent = o.title; }
+        if (o.sub && (''+o.sub).trim()) { var s = document.querySelector('.cover-sub'); if (s) s.textContent = o.sub; }
+      }).catch(function () {});
+    } else if (++ct > 80) { clearInterval(civ); }
+  }, 100);
+})();
