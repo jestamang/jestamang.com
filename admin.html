@@ -464,7 +464,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <nav id="adm-sidenav" aria-label="Section navigation">
   <span class="adm-sidenav-head">Sections</span>
   <div style="font-size:0.58rem;letter-spacing:0.28em;color:rgba(201,168,76,0.7);padding:12px 10px 2px;text-transform:uppercase;font-family:'Luminari',serif;">Content</div>
-  <button class="adm-sidenav-link" onclick="admNavTo('sec-32')">Index</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-33')">Page Metadata</button> <button class="adm-sidenav-link" onclick="admNavTo('sec-32')">Index</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-13')">Announcement</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-4')">Blog Publisher</button>
   <!-- v263: Catalog Manager removed — duplicated Announcement's New-Releases write (overlay now fed by Announcement). Album Manager (Albums) unaffected.
@@ -642,7 +642,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
     <div class="adm-ornament">✦</div>
-    <div class="adm-section" id="sec-32">
+    <div class="adm-section" id="sec-33"> <div class="adm-section-title">✦ Page Metadata</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Override the browser-tab title and meta description per page. Blank = the hardcoded default stays (fallback-first). The tab title updates instantly; the description is picked up by Google when it re-renders. Social-share link previews (OG tags) are NOT affected by this — those need a code push.</div> <div id="pm-list"></div> </div>
+<div class="adm-section" id="sec-32">
       <div class="adm-section-title">✦ Index</div>
       <div class="adm-section-underline"></div>
       <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Reorder and show/hide homepage sections. The hardcoded order is the fallback.</div>
@@ -1802,6 +1803,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initTreats();
     initMembersUpdates();
     initIndexManager();
+    initPageMeta();
     initTabs();
     initQuickLinks();
   }
@@ -2423,6 +2425,109 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     }).catch(function(){ var arr=[]; for (var dk in EOTD_CAP_DEFAULTS) { if (EOTD_CAP_DEFAULTS.hasOwnProperty(dk)) { var p=dk.split('|'); arr.push({key:dk,name:p[1]||dk,type:p[0]==='ONE OF THE CHILDREN'?'CHILD':'CARTOON'}); } } _eotdCapList = arr; finish(); });
   }
   var _ixState = [];
+
+  function initPageMeta() {
+    var PM_PAGES = [
+      {f:'index.html',label:'Home'},{f:'albums.html',label:'Albums'},{f:'entities.html',label:'Entities'},
+      {f:'lyrics.html',label:'Lyrics'},{f:'photos.html',label:'Photos'},{f:'videos.html',label:'Videos'},
+      {f:'shows.html',label:'Shows'},{f:'blog.html',label:'Blog'},{f:'merch.html',label:'Merch'},
+      {f:'comix.html',label:'Comix'},{f:'arcade.html',label:'Arcade'},{f:'radio.html',label:'Radio'},
+      {f:'email.html',label:'Email'},{f:'dossier.html',label:'Dossier'},{f:'privacy.html',label:'Privacy'},
+      {f:'terms.html',label:'Terms'},{f:'accessibility.html',label:'Accessibility'},{f:'refund.html',label:'Refund'}
+    ];
+    var listEl = document.getElementById('pm-list');
+    if (!listEl) return;
+    var _pmSaved = {}, _pmCurrent = {}, _pmOpen = {}, _pmEdit = {};
+
+    function fetchCurrent(file, cb){
+      if (_pmCurrent[file]) { cb(); return; }
+      fetch(file).then(function(r){return r.text();}).then(function(html){
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var tEl = doc.querySelector('title');
+        var dEl = doc.querySelector('meta[name="description"]');
+        _pmCurrent[file] = { title: (tEl ? tEl.textContent : '').trim(), desc: (dEl ? (dEl.getAttribute('content')||'') : '').trim() };
+        cb();
+      }).catch(function(){ _pmCurrent[file] = { title:'', desc:'' }; cb(); });
+    }
+
+    function render(){
+      var h = '';
+      PM_PAGES.forEach(function(p){
+        var ov = _pmSaved[p.f];
+        var hasOv = ov && ((ov.title && ov.title.trim()) || (ov.desc && ov.desc.trim()));
+        h += '<div style="border-bottom:1px solid rgba(201,168,76,0.1);padding:11px 0;">';
+        h += '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">';
+        h += '<div style="font-size:0.82rem;color:#e8dcc8;">' + esc(p.label) + ' <span style="color:rgba(201,168,76,0.35);font-size:0.62rem;letter-spacing:0.08em;">' + esc(p.f) + '</span>' + (hasOv ? ' <span style="color:rgba(2,225,39,0.7);font-size:0.58rem;letter-spacing:0.12em;">● OVERRIDDEN</span>' : '') + '</div>';
+        h += '<button class="pm-edit" data-f="' + esc(p.f) + '" style="flex-shrink:0;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);color:#c9a84c;font-family:inherit;font-size:0.66rem;letter-spacing:0.1em;padding:5px 12px;cursor:pointer;border-radius:3px;">' + (_pmOpen[p.f] ? 'CLOSE' : 'EDIT') + '</button>';
+        h += '</div>';
+        if (_pmOpen[p.f]) {
+          var cur = _pmCurrent[p.f];
+          if (!cur) {
+            h += '<div style="margin-top:8px;font-size:0.72rem;color:rgba(201,168,76,0.5);">Loading current values…</div>';
+          } else {
+            var ed = _pmEdit[p.f] || {};
+            var tv = (ed.title != null) ? ed.title : ((ov && ov.title != null) ? ov.title : cur.title);
+            var dv = (ed.desc != null) ? ed.desc : ((ov && ov.desc != null) ? ov.desc : cur.desc);
+            h += '<div style="margin-top:10px;">';
+            h += '<label style="display:block;font-size:0.58rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:3px;">BROWSER TAB TITLE</label>';
+            h += '<input class="field-input pm-title" data-f="' + esc(p.f) + '" value="' + esc(tv) + '" maxlength="70" style="width:100%;margin:0 0 8px;font-size:0.8rem;">';
+            h += '<label style="display:block;font-size:0.58rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:3px;">META DESCRIPTION <span style="color:rgba(201,168,76,0.3);">(aim ~155 chars)</span></label>';
+            h += '<textarea class="field-input pm-desc" data-f="' + esc(p.f) + '" rows="2" maxlength="200" style="width:100%;margin:0;font-size:0.78rem;line-height:1.5;resize:vertical;">' + esc(dv) + '</textarea>';
+            h += '<div style="margin-top:8px;display:flex;align-items:center;flex-wrap:wrap;gap:8px;">';
+            h += '<button class="pm-save" data-f="' + esc(p.f) + '" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:inherit;font-size:0.7rem;letter-spacing:0.12em;padding:7px 16px;cursor:pointer;border-radius:3px;">SAVE</button>';
+            h += '<button class="pm-revert" data-f="' + esc(p.f) + '" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:rgba(201,168,76,0.6);font-family:inherit;font-size:0.7rem;letter-spacing:0.12em;padding:7px 14px;cursor:pointer;border-radius:3px;">REVERT TO DEFAULT</button>';
+            h += '<span class="pm-status" data-f="' + esc(p.f) + '" style="font-size:0.72rem;color:rgba(2,225,39,0.85);"></span>';
+            h += '</div>';
+            h += '<div style="margin-top:7px;font-size:0.62rem;color:rgba(201,168,76,0.3);line-height:1.5;">Hardcoded default — title: ' + esc(cur.title || '—') + '</div>';
+            h += '</div>';
+          }
+        }
+        h += '</div>';
+      });
+      listEl.innerHTML = h;
+      wire();
+    }
+
+    function sel(cls, f){ return listEl.querySelector('.' + cls + '[data-f="' + f + '"]'); }
+
+    function writeDoc(f, st, doneMsg){
+      if (st) { st.style.color = 'rgba(201,168,76,0.7)'; st.textContent = 'Saving…'; }
+      db.collection('siteConfig').doc('pageMeta').set({ pages: _pmSaved }).then(function(){
+        if (_pmEdit[f]) delete _pmEdit[f];
+        render();
+        var st2 = sel('pm-status', f);
+        if (st2) { st2.style.color = 'rgba(2,225,39,0.85)'; st2.textContent = doneMsg; }
+      }).catch(function(e){ if (st) { st.style.color = 'rgba(251,56,56,0.9)'; st.textContent = 'Error: ' + ((e && e.message) || 'failed'); } });
+    }
+
+    function wire(){
+      listEl.querySelectorAll('.pm-edit').forEach(function(b){ b.addEventListener('click', function(){
+        var f = this.getAttribute('data-f'); _pmOpen[f] = !_pmOpen[f];
+        if (_pmOpen[f] && !_pmCurrent[f]) { fetchCurrent(f, render); }
+        render();
+      }); });
+      listEl.querySelectorAll('.pm-title').forEach(function(t){ t.addEventListener('input', function(){ var f=this.getAttribute('data-f'); if(!_pmEdit[f])_pmEdit[f]={}; _pmEdit[f].title=this.value; }); });
+      listEl.querySelectorAll('.pm-desc').forEach(function(t){ t.addEventListener('input', function(){ var f=this.getAttribute('data-f'); if(!_pmEdit[f])_pmEdit[f]={}; _pmEdit[f].desc=this.value; }); });
+      listEl.querySelectorAll('.pm-save').forEach(function(b){ b.addEventListener('click', function(){
+        var f = this.getAttribute('data-f');
+        var ti = sel('pm-title', f), de = sel('pm-desc', f), st = sel('pm-status', f);
+        var t = ti ? ti.value.trim() : '', d = de ? de.value.trim() : '';
+        var entry = {}; if (t) entry.title = t; if (d) entry.desc = d;
+        if (t || d) _pmSaved[f] = entry; else delete _pmSaved[f];
+        writeDoc(f, st, 'Saved ✦');
+      }); });
+      listEl.querySelectorAll('.pm-revert').forEach(function(b){ b.addEventListener('click', function(){
+        var f = this.getAttribute('data-f'); var st = sel('pm-status', f);
+        delete _pmSaved[f]; delete _pmEdit[f];
+        writeDoc(f, st, 'Reverted ✦');
+      }); });
+    }
+
+    db.collection('siteConfig').doc('pageMeta').get().then(function(d){
+      _pmSaved = (d.exists && d.data().pages) || {};
+      render();
+    }).catch(function(){ render(); });
+  }
 
   function initIndexManager() {
     function defaultState(){ return IX_KEYS.map(function(k){ return {key:k, visible:true, color:(IX_COLORS[k]||'green'), title:'', desc:'', extras:{}}; }); }
