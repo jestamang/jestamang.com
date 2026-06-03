@@ -2353,7 +2353,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       {k:'cta', ph:'Enter (button label)', w:'200px'},
       {k:'note', ph:'Transmissions rotate every 24 hours', w:'100%', max:80}
     ]},
-    'entity-of-day': { label:'Button (entity rotates daily, scraped from entities.html)', entityPin:true, fields:[
+    'entity-of-day': { label:'Button (entity rotates daily, scraped from entities.html)', entityPin:true, captions:true, fields:[
       {k:'cta', ph:'Explore All Entities (button label)', w:'260px'}
     ]}
   };
@@ -2376,6 +2376,51 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       doc.querySelectorAll('.entity-name').forEach(function(n){ var t=n.textContent.trim(); if(t)pool.push(t); });
       _ixEntPool = pool; _ixEntLoaded = true; cb && cb();
     }).catch(function(){ _ixEntLoaded = true; cb && cb(); });
+  }
+  var EOTD_CAP_DEFAULTS = {
+'ONE OF THE CHILDREN|The Ace of Chase':'Born between the worlds, this one chases harmonics through the astral corridor.',
+'ONE OF THE CHILDREN|Austinich':'His frequencies predate the stars. He carries the first sound inside his chest.',
+'ONE OF THE CHILDREN|Cricket Om':'She sings in the key of evening. The crickets answer without being asked.',
+'ONE OF THE CHILDREN|Israel':'A prophet in the making, walking barefoot across the edge of revelation.',
+'ONE OF THE CHILDREN|Kek-Buh':'He arrived in silence. The walls are still resonating.',
+'ONE OF THE CHILDREN|Porphigen':'Neither origin nor destination — she is the purple space between all things.',
+'CARTOON ENTITY|The Ace of Chase':'The eternal pursuer. His guitar strings vibrate at the frequency of longing.',
+'CARTOON ENTITY|Alissa Orange':'A citrus specter drifting through the warm seasons of sound.',
+'CARTOON ENTITY|Atlas Is Alice-Lillenger':'She carries the weight of a world only she can map.',
+'CARTOON ENTITY|Big Boy, New Cat. Records':'They pressed the vinyl before the groove existed.',
+'CARTOON ENTITY|Big Smoke, lil Skeez, DEW, Sno Bunni':'Four frequencies. One signal. The four corners hold.',
+'CARTOON ENTITY|Blue Jays':'They sing at the frequency of things that almost were.',
+'CARTOON ENTITY|The Boston Society of the Temple of Psychick Youth':'Ancient rites in a northern city. The ritual never ceased.',
+'CARTOON ENTITY|Caleb Mars':'A red planet spirit in a blue world. His percussion echoes across the void.',
+'CARTOON ENTITY|The Colours':'Each one a vibration. Together, they are light itself.',
+'CARTOON ENTITY|Father P. Journee':'The wayward priest walks forward. The road is the sermon.',
+'CARTOON ENTITY|Hodge':'He remembers everything the universe chose to forget.',
+'CARTOON ENTITY|J.R. Mason':'He built his cathedral out of recorded silence.',
+'CARTOON ENTITY|Jonas Kyle':'A transmitter between frequencies. He speaks in channels others cannot find.',
+'CARTOON ENTITY|Mike 55':'Fifty-five orbits and still accelerating toward the center.',
+'CARTOON ENTITY|Mutt Tour':'They move through towns like weather. Nothing stays the same after.',
+'CARTOON ENTITY|Ode to Bonnie':'This song never ends. It only changes form.',
+'CARTOON ENTITY|The Perfect Trip':'There is no destination — only the endless becoming.',
+'CARTOON ENTITY|Sounds Across the World':'The whole earth vibrates. This is the record of that hum.',
+'CARTOON ENTITY|Venus and the Flytrap':'She lures with beauty and transforms with darkness.',
+'CARTOON ENTITY|The Woodland Singapore Orchestra':'Deep in the green corridor, the rehearsal never ends.',
+'CARTOON ENTITY|You and the 7.5 Evils of the World':'Not all of the evils are enemies. Some are just misunderstood frequencies.'
+  };
+  var _eotdCapList = [], _eotdCapSaved = {}, _eotdCapEdit = {}, _eotdCapLoaded = false;
+  function loadEotdCaps(cb){
+    if (_eotdCapLoaded) { cb && cb(); return; }
+    function finish(){
+      if (window.jestaDB) {
+        db.collection('siteConfig').doc('eotdCaptions').get().then(function(d){ _eotdCapSaved = (d.exists && d.data().captions) || {}; _eotdCapLoaded = true; cb && cb(); }).catch(function(){ _eotdCapLoaded = true; cb && cb(); });
+      } else { _eotdCapLoaded = true; cb && cb(); }
+    }
+    fetch('entities.html').then(function(r){return r.text();}).then(function(html){
+      var doc = new DOMParser().parseFromString(html, 'text/html'), arr = [], seen = {};
+      doc.querySelectorAll('.dossier-name').forEach(function(n){ var nm=n.textContent.trim(); if(!nm)return; var k='ONE OF THE CHILDREN|'+nm; if(seen[k])return; seen[k]=1; arr.push({key:k,name:nm,type:'CHILD'}); });
+      doc.querySelectorAll('.entity-name').forEach(function(n){ var nm=n.textContent.trim(); if(!nm)return; var k='CARTOON ENTITY|'+nm; if(seen[k])return; seen[k]=1; arr.push({key:k,name:nm,type:'CARTOON'}); });
+      for (var dk in EOTD_CAP_DEFAULTS) { if (EOTD_CAP_DEFAULTS.hasOwnProperty(dk) && !seen[dk]) { var p=dk.split('|'); arr.push({key:dk,name:p[1]||dk,type:p[0]==='ONE OF THE CHILDREN'?'CHILD':'CARTOON'}); seen[dk]=1; } }
+      _eotdCapList = arr; finish();
+    }).catch(function(){ var arr=[]; for (var dk in EOTD_CAP_DEFAULTS) { if (EOTD_CAP_DEFAULTS.hasOwnProperty(dk)) { var p=dk.split('|'); arr.push({key:dk,name:p[1]||dk,type:p[0]==='ONE OF THE CHILDREN'?'CHILD':'CARTOON'}); } } _eotdCapList = arr; finish(); });
   }
   var _ixState = [];
 
@@ -2410,10 +2455,29 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           pinHtml += '<div style="margin-top:8px;width:100%;"><label style="display:block;font-size:0.6rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:4px;">FEATURE AN ENTITY (overrides daily rotation)</label><select class="field-input ix-entpin" data-i="' + i + '" style="width:100%;margin:0;font-size:0.78rem;">' + eopts + '</select></div>';
         }
       }
+      var capHtml = '';
+      if (spec.captions) {
+        if (!_eotdCapLoaded) {
+          capHtml = '<div style="margin-top:12px;font-size:0.72rem;color:rgba(201,168,76,0.5);">Loading captions…</div>';
+        } else {
+          var capRows = '';
+          _eotdCapList.forEach(function(e){
+            var cv = (_eotdCapEdit[e.key]!=null) ? _eotdCapEdit[e.key] : ((_eotdCapSaved[e.key]!=null) ? _eotdCapSaved[e.key] : (EOTD_CAP_DEFAULTS[e.key]||''));
+            capRows += '<div style="margin-bottom:9px;"><label style="display:block;font-size:0.7rem;color:rgba(240,230,210,0.8);margin-bottom:3px;">' + esc(e.name) + ' <span style="color:rgba(201,168,76,0.4);font-size:0.56rem;letter-spacing:0.1em;">' + esc(e.type) + '</span></label><textarea class="field-input eotd-cap" data-key="' + esc(e.key) + '" rows="2" style="width:100%;margin:0;font-size:0.76rem;line-height:1.5;resize:vertical;font-style:italic;">' + esc(cv) + '</textarea></div>';
+          });
+          capHtml = '<div style="margin-top:14px;border-top:1px solid rgba(201,168,76,0.15);padding-top:12px;">'
+            + '<div style="font-size:0.6rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:10px;">ENTITY CAPTIONS — the italic line shown under each entity (blank = built-in default)</div>'
+            + capRows
+            + '<button class="eotd-cap-save" style="margin-top:4px;padding:7px 16px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:inherit;font-size:0.72rem;letter-spacing:0.12em;cursor:pointer;border-radius:3px;">SAVE CAPTIONS</button>'
+            + '<span class="eotd-cap-status" style="margin-left:12px;font-size:0.72rem;color:rgba(2,225,39,0.85);"></span>'
+            + '</div>';
+        }
+      }
       return '<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(201,168,76,0.12);">'
         + '<div style="font-size:0.6rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);margin-bottom:8px;">' + esc(spec.label) + ' — blank = keep default</div>'
         + '<div style="display:flex;flex-wrap:wrap;align-items:center;">' + inner + '</div>'
         + pinHtml
+        + capHtml
         + '</div>';
     }
 
@@ -2457,10 +2521,21 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       list.querySelectorAll('.ix-col').forEach(function(b){ b.addEventListener('click', function(){ var i=+this.getAttribute('data-i'); _ixState[i].color = this.getAttribute('data-color'); render(); }); });
       list.querySelectorAll('.ix-title').forEach(function(b){ b.addEventListener('input', function(){ var i=+this.getAttribute('data-i'); _ixState[i].title = this.value; }); });
       list.querySelectorAll('.ix-desc').forEach(function(b){ b.addEventListener('input', function(){ var i=+this.getAttribute('data-i'); _ixState[i].desc = this.value; }); });
-      list.querySelectorAll('.ix-edit').forEach(function(b){ b.addEventListener('click', function(){ var i=+this.getAttribute('data-i'); var k=_ixState[i].key; _ixOpen[k] = !_ixOpen[k]; if (_ixOpen[k] && IX_EXTRAS[k] && IX_EXTRAS[k].pin && !_ixLyricLoaded) { loadLyricPool(function(){ render(); }); } if (_ixOpen[k] && IX_EXTRAS[k] && IX_EXTRAS[k].entityPin && !_ixEntLoaded) { loadEntityPool(function(){ render(); }); } render(); }); });
+      list.querySelectorAll('.ix-edit').forEach(function(b){ b.addEventListener('click', function(){ var i=+this.getAttribute('data-i'); var k=_ixState[i].key; _ixOpen[k] = !_ixOpen[k]; if (_ixOpen[k] && IX_EXTRAS[k] && IX_EXTRAS[k].pin && !_ixLyricLoaded) { loadLyricPool(function(){ render(); }); } if (_ixOpen[k] && IX_EXTRAS[k] && IX_EXTRAS[k].entityPin && !_ixEntLoaded) { loadEntityPool(function(){ render(); }); } if (_ixOpen[k] && IX_EXTRAS[k] && IX_EXTRAS[k].captions && !_eotdCapLoaded) { loadEotdCaps(function(){ render(); }); } render(); }); });
       list.querySelectorAll('.ix-extra').forEach(function(b){ b.addEventListener('input', function(){ var i=+this.getAttribute('data-i'); var fk=this.getAttribute('data-fk'); if(!_ixState[i].extras) _ixState[i].extras={}; _ixState[i].extras[fk]=this.value; }); });
       list.querySelectorAll('.ix-pin').forEach(function(b){ b.addEventListener('change', function(){ var i=+this.getAttribute('data-i'); if(!_ixState[i].extras) _ixState[i].extras={}; _ixState[i].extras.pinId=this.value; }); });
       list.querySelectorAll('.ix-entpin').forEach(function(b){ b.addEventListener('change', function(){ var i=+this.getAttribute('data-i'); if(!_ixState[i].extras) _ixState[i].extras={}; _ixState[i].extras.pinName=this.value; }); });
+      list.querySelectorAll('.eotd-cap').forEach(function(t){ t.addEventListener('input', function(){ _eotdCapEdit[this.getAttribute('data-key')] = this.value; }); });
+      list.querySelectorAll('.eotd-cap-save').forEach(function(b){ b.addEventListener('click', function(){
+        var stat = this.parentNode.querySelector('.eotd-cap-status');
+        var map = {};
+        list.querySelectorAll('.eotd-cap').forEach(function(t){ var v=t.value.trim(); if(v) map[t.getAttribute('data-key')] = v; });
+        if (stat) { stat.style.color='rgba(201,168,76,0.7)'; stat.textContent='Saving…'; }
+        db.collection('siteConfig').doc('eotdCaptions').set({captions:map}).then(function(){
+          _eotdCapSaved = map; _eotdCapEdit = {};
+          if (stat) { stat.style.color='rgba(2,225,39,0.85)'; stat.textContent='Captions saved ✦'; }
+        }).catch(function(e){ if (stat) { stat.style.color='rgba(251,56,56,0.9)'; stat.textContent='Error: '+((e&&e.message)||'failed'); } });
+      }); });
     }
 
     function load() {
