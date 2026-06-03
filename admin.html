@@ -2469,7 +2469,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         else { var bt=doc.querySelector('.big-title'); title=bt?(bt.textContent||'').trim():''; }
         var se=doc.querySelector('.sub'), sub='';
         if(se){ sub=se.innerHTML.replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,'').replace(/^\s+|\s+$/g,''); }
-        _gcDefaults[href]={title:title,sub:sub}; cb();
+        var sbn=doc.getElementById('startBtn'), start=sbn?(sbn.textContent||'').trim():'';
+        var rbn=doc.getElementById('restartBtn'), replay=rbn?(rbn.textContent||'').trim():'';
+        _gcDefaults[href]={title:title,sub:sub,start:start,replay:replay}; cb();
       }).catch(function(){ _gcDefaults[href]={title:'',sub:''}; cb(); });
     }
 
@@ -2504,6 +2506,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
               h+='<div style="border-left:2px solid rgba(201,168,76,0.15);padding-left:12px;margin-bottom:8px;">';
               h+=pfld(g.href,'title','Page title (each word = a stacked line)','input',gcCur(g.href,'title'));
               h+=pfld(g.href,'sub','Page subtitle (line break = new line)','textarea',gcCur(g.href,'sub'));
+              h+=pfld(g.href,'start','Start button label','input',gcCur(g.href,'start'));
+              h+=pfld(g.href,'replay','Replay button label','input',gcCur(g.href,'replay'));
               h+='<button class="am-pagesave" data-href="'+esc(g.href)+'" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:inherit;font-size:0.66rem;letter-spacing:0.12em;padding:6px 14px;cursor:pointer;border-radius:3px;">SAVE PAGE</button>';
               h+='<button class="am-pagereset" data-href="'+esc(g.href)+'" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:rgba(201,168,76,0.55);font-family:inherit;font-size:0.66rem;letter-spacing:0.12em;padding:6px 12px;margin-left:6px;cursor:pointer;border-radius:3px;">REVERT</button>';
               h+='<span class="am-pagestatus" data-href="'+esc(g.href)+'" style="margin-left:10px;font-size:0.7rem;color:rgba(2,225,39,0.85);"></span>';
@@ -2540,8 +2544,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var st=formEl.querySelector('.am-pagestatus[data-href="'+href+'"]');
         var ti=formEl.querySelector('.am-pf[data-href="'+href+'"][data-pk="title"]');
         var si=formEl.querySelector('.am-pf[data-href="'+href+'"][data-pk="sub"]');
+        var sti=formEl.querySelector('.am-pf[data-href="'+href+'"][data-pk="start"]');
+        var rpi=formEl.querySelector('.am-pf[data-href="'+href+'"][data-pk="replay"]');
         var t=ti?ti.value.replace(/^\s+|\s+$/g,''):'', su=si?si.value.replace(/^\s+|\s+$/g,''):'';
-        var entry={}; if(t)entry.title=t; if(su)entry.sub=su;
+        var stv=sti?sti.value.replace(/^\s+|\s+$/g,''):'', rpv=rpi?rpi.value.replace(/^\s+|\s+$/g,''):'';
+        var entry={}; if(t)entry.title=t; if(su)entry.sub=su; if(stv)entry.start=stv; if(rpv)entry.replay=rpv;
         if(t||su)_gcSaved[href]=entry; else delete _gcSaved[href];
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Saving…';}
         db.collection('siteConfig').doc('gameContent').set({games:_gcSaved}).then(function(){ if(_gcEdit[href])delete _gcEdit[href]; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Saved ✦';} }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error: '+((e&&e.message)||'failed');} });
