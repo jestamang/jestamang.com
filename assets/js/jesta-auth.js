@@ -707,6 +707,9 @@ window.openSocial = function(platform) {
   var key = location.pathname.replace(/^\//, '');
   if (!key) return;
   function _e(t){ return (''+t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _gset(sel, v){ if (v && (''+v).trim()) { var e = document.querySelector(sel); if (e) e.textContent = v; } }
+  function _gstack(sel, cls, v){ if (v && (''+v).trim()) { var e = document.querySelector(sel); if (e) { var ws = (''+v).trim().split(/\s+/), h = ''; for (var i = 0; i < ws.length; i++) h += '<span class="' + cls + '">' + _e(ws[i]) + '</span>'; e.innerHTML = h; } } }
+  function _gfirst(sel, v){ if (v && (''+v).trim()) { var e = document.querySelector(sel); if (e && e.childNodes.length && e.childNodes[0].nodeType === 3) e.childNodes[0].nodeValue = (''+v) + ' '; } }
   var gtries = 0;
   var giv = setInterval(function () {
     if (window.jestaDB) {
@@ -730,6 +733,23 @@ window.openSocial = function(platform) {
         }
         if (o.start && (''+o.start).trim()) { var sbn = document.getElementById('startBtn'); if (sbn) sbn.textContent = o.start; }
         if (o.replay && (''+o.replay).trim()) { var rbn = document.getElementById('restartBtn'); if (rbn) rbn.textContent = o.replay; }
+        if (key === 'game-oracle.html') {
+          _gstack('#game-title', 'gt-line', o.title);
+          _gset('.card-back-label', o.cardback);
+          _gset('.card-signature', o.signature);
+          _gset('#draw-btn', o.draw);
+          _gset('#share-btn', o.share);
+        }
+        if (key === 'game-memory.html') {
+          _gstack('#game-title', 'gt-line', o.title);
+          _gset('#btn-restart', o.restart);
+          _gset('#btn-again', o.again);
+        }
+        if (key === 'games/entity-pair.html') {
+          _gfirst('#ep-title', o.title);
+          _gset('#btn-restart', o.restart);
+          _gset('#btn-again', o.again);
+        }
       }).catch(function () {});
     } else if (++gtries > 40) { clearInterval(giv); }
   }, 100);
