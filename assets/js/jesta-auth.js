@@ -710,6 +710,7 @@ window.openSocial = function(platform) {
   function _gset(sel, v){ if (v && (''+v).trim()) { var e = document.querySelector(sel); if (e) e.textContent = v; } }
   function _gstack(sel, cls, v){ if (v && (''+v).trim()) { var e = document.querySelector(sel); if (e) { var ws = (''+v).trim().split(/\s+/), h = ''; for (var i = 0; i < ws.length; i++) h += '<span class="' + cls + '">' + _e(ws[i]) + '</span>'; e.innerHTML = h; } } }
   function _gfirst(sel, v){ if (v && (''+v).trim()) { var e = document.querySelector(sel); if (e && e.childNodes.length && e.childNodes[0].nodeType === 3) e.childNodes[0].nodeValue = (''+v) + ' '; } }
+  function _gpar(v){ if(!(v&&(''+v).trim())) return ''; var bl=(''+v).replace(/\r\n/g,'\n').split(/\n\s*\n/), out=''; for(var i=0;i<bl.length;i++){ var b=bl[i].replace(/^\s+|\s+$/g,''); if(b) out+='<p>'+_e(b).replace(/\n/g,'<br>')+'</p>'; } return out; }
   var gtries = 0;
   var giv = setInterval(function () {
     if (window.jestaDB) {
@@ -749,6 +750,15 @@ window.openSocial = function(platform) {
           _gfirst('#ep-title', o.title);
           _gset('#btn-restart', o.restart);
           _gset('#btn-again', o.again);
+        }
+        if (key === 'games/pitch-oracle.html') {
+          var _ltt = document.querySelectorAll('#ltn-inner .ltn-sec-title');
+          if (o.lt1 && (''+o.lt1).trim() && _ltt[0]) _ltt[0].textContent = o.lt1;
+          if (o.lt2 && (''+o.lt2).trim() && _ltt[1]) _ltt[1].textContent = o.lt2;
+          if (o.lt3 && (''+o.lt3).trim() && _ltt[2]) _ltt[2].textContent = o.lt3;
+          var _ltp = document.querySelectorAll('#ltn-inner .ltn-prose');
+          if (o.lp1 && (''+o.lp1).trim() && _ltp[0]) _ltp[0].innerHTML = _gpar(o.lp1);
+          if (o.lp2 && (''+o.lp2).trim() && _ltp[1]) _ltp[1].innerHTML = _gpar(o.lp2);
         }
       }).catch(function () {});
     } else if (++gtries > 40) { clearInterval(giv); }

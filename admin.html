@@ -2466,6 +2466,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         {k:'again',label:'Play-again button label',sel:'#btn-again',mode:'text'}
       ]
     };
+    var PAGE_EXTRA_FIELDS = {
+      'games/pitch-oracle.html':[
+        {k:'lt1',label:'Learn ▸ "The 12 Notes" heading',sel:'#ltn-inner .ltn-sec-title',idx:0,mode:'text',type:'input'},
+        {k:'lt2',label:'Learn ▸ "How to Train Your Ear" heading',sel:'#ltn-inner .ltn-sec-title',idx:1,mode:'text',type:'input'},
+        {k:'lt3',label:'Learn ▸ "Sharps vs Flats" heading',sel:'#ltn-inner .ltn-sec-title',idx:2,mode:'text',type:'input'},
+        {k:'lp1',label:'Learn ▸ "Train Your Ear" body (blank line = new paragraph)',sel:'#ltn-inner .ltn-prose',idx:0,mode:'para',type:'textarea'},
+        {k:'lp2',label:'Learn ▸ "Sharps vs Flats" body (blank line = new paragraph)',sel:'#ltn-inner .ltn-prose',idx:1,mode:'para',type:'textarea'}
+      ]
+    };
     var _gcSaved = {}, _gcDefaults = {}, _gcOpen = {}, _gcEdit = {};
     function pfld(href,k,label,type,val){
       var at='data-href="'+esc(href)+'" data-pk="'+k+'"';
@@ -2499,7 +2508,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         if(se){ sub=se.innerHTML.replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,'').replace(/^\s+|\s+$/g,''); }
         var sbn=doc.getElementById('startBtn'), start=sbn?(sbn.textContent||'').trim():'';
         var rbn=doc.getElementById('restartBtn'), replay=rbn?(rbn.textContent||'').trim():'';
-        _gcDefaults[href]={title:title,sub:sub,start:start,replay:replay}; cb();
+        var _base={title:title,sub:sub,start:start,replay:replay};
+        var _ex=PAGE_EXTRA_FIELDS[href];
+        if(_ex){ _ex.forEach(function(f){ var _ns=doc.querySelectorAll(f.sel), _el=_ns[f.idx]; if(!_el){ _base[f.k]=''; return; } if(f.mode==='para'){ var _ps=_el.querySelectorAll('p'); if(_ps.length){ var _a=[]; for(var _i=0;_i<_ps.length;_i++)_a.push((_ps[_i].textContent||'').replace(/^\s+|\s+$/g,'')); _base[f.k]=_a.join('\n\n'); } else _base[f.k]=(_el.textContent||'').replace(/^\s+|\s+$/g,''); } else { _base[f.k]=(_el.textContent||'').replace(/^\s+|\s+$/g,''); } }); }
+        _gcDefaults[href]=_base; cb();
       }).catch(function(){ _gcDefaults[href]={title:'',sub:''}; cb(); });
     }
 
@@ -2537,6 +2549,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
                 h+=pfld(g.href,'sub','Page subtitle (line break = new line)','textarea',gcCur(g.href,'sub'));
                 h+=pfld(g.href,'start','Start button label','input',gcCur(g.href,'start'));
                 h+=pfld(g.href,'replay','Replay button label','input',gcCur(g.href,'replay'));
+                var _ex=PAGE_EXTRA_FIELDS[g.href];
+                if(_ex){ h+='<div style="font-size:0.56rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-transform:uppercase;margin:10px 0 8px;border-top:1px dashed rgba(201,168,76,0.15);padding-top:10px;">Learn Panel</div>'; _ex.forEach(function(f){ h+=pfld(g.href,f.k,f.label,f.type||'input',gcCur(g.href,f.k)); }); }
               } else {
                 BESPOKE_FIELDS[g.href].forEach(function(f){ h+=pfld(g.href,f.k,f.label,f.t||'input',gcCur(g.href,f.k)); });
               }
@@ -2583,6 +2597,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           var t=ti?ti.value.replace(/^\s+|\s+$/g,''):'', su=si?si.value.replace(/^\s+|\s+$/g,''):'';
           var stv=sti?sti.value.replace(/^\s+|\s+$/g,''):'', rpv=rpi?rpi.value.replace(/^\s+|\s+$/g,''):'';
           if(t)entry.title=t; if(su)entry.sub=su; if(stv)entry.start=stv; if(rpv)entry.replay=rpv;
+          var _ex=PAGE_EXTRA_FIELDS[href];
+          if(_ex){ _ex.forEach(function(f){ var el=formEl.querySelector('.am-pf[data-href="'+href+'"][data-pk="'+f.k+'"]'); var v=el?el.value.replace(/^\s+|\s+$/g,''):''; if(v)entry[f.k]=v; }); }
         } else if(BESPOKE_FIELDS[href]){
           BESPOKE_FIELDS[href].forEach(function(f){ var el=formEl.querySelector('.am-pf[data-href="'+href+'"][data-pk="'+f.k+'"]'); var v=el?el.value.replace(/^\s+|\s+$/g,''):''; if(v)entry[f.k]=v; });
         }
