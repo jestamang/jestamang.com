@@ -1099,6 +1099,19 @@ document.addEventListener('DOMContentLoaded',eotdInit);
             var _sva = _ssec.querySelector('.hp-conj-viewall a');
             if (_sva && _sx.viewall && _sx.viewall.trim()) _sva.textContent = _sx.viewall;
           }
+          if (item.key === 'entities' && item.extras) {
+            var _enx = item.extras, _ensec = rec.section;
+            var _ennames = _ensec.querySelectorAll('.hp-entity-name');
+            var _enimgs = _ensec.querySelectorAll('.hp-entity-img');
+            for (var _eq = 0; _eq < _ennames.length; _eq++) {
+              var _ennm = _enx['ent' + _eq + 'name'];
+              var _enim = _enx['ent' + _eq + 'img'];
+              if (_ennames[_eq] && _ennm && _ennm.trim()) _ennames[_eq].textContent = _ennm;
+              if (_enimgs[_eq] && _enim && _enim.trim()) { _enimgs[_eq].src = _enim; if (_ennm && _ennm.trim()) _enimgs[_eq].alt = _ennm; }
+            }
+            var _encta = _ensec.querySelector('.hp-cta');
+            if (_encta && _enx.cta && _enx.cta.trim()) _encta.textContent = _enx.cta;
+          }
         }
       });
 
