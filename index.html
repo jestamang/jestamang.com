@@ -1147,6 +1147,20 @@ document.addEventListener('DOMContentLoaded',eotdInit);
             var _gmcta = _gmsec.querySelector('.hp-cta');
             if (_gmcta && _gmx.cta && _gmx.cta.trim()) _gmcta.textContent = _gmx.cta;
           }
+          if (item.key === 'merch' && item.extras) {
+            var _mrx = item.extras, _mrsec = rec.section;
+            var _mrnames = _mrsec.querySelectorAll('.hp-merch-name');
+            var _mrprices = _mrsec.querySelectorAll('.hp-merch-price');
+            var _mrimgs = _mrsec.querySelectorAll('.hp-merch-item img');
+            for (var _mq = 0; _mq < _mrnames.length; _mq++) {
+              var _mn = _mrx['m' + _mq + 'name'], _mp = _mrx['m' + _mq + 'price'], _mi = _mrx['m' + _mq + 'img'];
+              if (_mrnames[_mq] && _mn && _mn.trim()) _mrnames[_mq].textContent = _mn;
+              if (_mrprices[_mq] && _mp && _mp.trim()) _mrprices[_mq].textContent = _mp;
+              if (_mrimgs[_mq] && _mi && _mi.trim()) { _mrimgs[_mq].src = _mi; if (_mn && _mn.trim()) _mrimgs[_mq].alt = _mn; }
+            }
+            var _mrcta = _mrsec.querySelector('.hp-cta');
+            if (_mrcta && _mrx.cta && _mrx.cta.trim()) _mrcta.textContent = _mrx.cta;
+          }
         }
       });
 
