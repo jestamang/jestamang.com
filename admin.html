@@ -2352,6 +2352,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     'lyrics': { label:'Button + rotate note (lyric rotates daily from the lyrics collection)', pin:true, fields:[
       {k:'cta', ph:'Enter (button label)', w:'200px'},
       {k:'note', ph:'Transmissions rotate every 24 hours', w:'100%', max:80}
+    ]},
+    'entity-of-day': { label:'Button (entity rotates daily, scraped from entities.html)', entityPin:true, fields:[
+      {k:'cta', ph:'Explore All Entities (button label)', w:'260px'}
     ]}
   };
   var _ixOpen = {};
@@ -2363,6 +2366,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       snap.forEach(function(doc){ var d=doc.data(); if(d.visible===false)return; (d.songs||[]).forEach(function(song){ if(!song.lyrics)return; pool.push({artist:d.artist||'', track:song.title||''}); }); });
       _ixLyricPool = pool; _ixLyricLoaded = true; cb && cb();
     }).catch(function(){ _ixLyricLoaded = true; cb && cb(); });
+  }
+  var _ixEntPool = [], _ixEntLoaded = false;
+  function loadEntityPool(cb){
+    if (_ixEntLoaded) { cb && cb(); return; }
+    fetch('entities.html').then(function(r){return r.text();}).then(function(html){
+      var doc = new DOMParser().parseFromString(html, 'text/html'), pool = [];
+      doc.querySelectorAll('.dossier-name').forEach(function(n){ var t=n.textContent.trim(); if(t)pool.push(t); });
+      doc.querySelectorAll('.entity-name').forEach(function(n){ var t=n.textContent.trim(); if(t)pool.push(t); });
+      _ixEntPool = pool; _ixEntLoaded = true; cb && cb();
+    }).catch(function(){ _ixEntLoaded = true; cb && cb(); });
   }
   var _ixState = [];
 
@@ -2385,6 +2398,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           var opts = '<option value="">— Daily rotation (default) —</option>';
           _ixLyricPool.forEach(function(p){ var id = p.artist + '|||' + p.track; opts += '<option value="' + esc(id) + '"' + (id===cur?' selected':'') + '>' + esc(p.artist + ' — ' + p.track) + '</option>'; });
           pinHtml = '<div style="margin-top:8px;width:100%;"><label style="display:block;font-size:0.6rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:4px;">FEATURE A LYRIC (overrides daily rotation)</label><select class="field-input ix-pin" data-i="' + i + '" style="width:100%;margin:0;font-size:0.78rem;">' + opts + '</select></div>';
+        }
+      }
+      if (spec.entityPin) {
+        var ecur = (item.extras && item.extras.pinName) || '';
+        if (!_ixEntLoaded) {
+          pinHtml += '<div style="margin-top:8px;font-size:0.72rem;color:rgba(201,168,76,0.5);">Loading entity list…</div>';
+        } else {
+          var eopts = '<option value="">— Daily rotation (default) —</option>';
+          _ixEntPool.forEach(function(nm){ eopts += '<option value="' + esc(nm) + '"' + (nm===ecur?' selected':'') + '>' + esc(nm) + '</option>'; });
+          pinHtml += '<div style="margin-top:8px;width:100%;"><label style="display:block;font-size:0.6rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:4px;">FEATURE AN ENTITY (overrides daily rotation)</label><select class="field-input ix-entpin" data-i="' + i + '" style="width:100%;margin:0;font-size:0.78rem;">' + eopts + '</select></div>';
         }
       }
       return '<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(201,168,76,0.12);">'
@@ -2434,9 +2457,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       list.querySelectorAll('.ix-col').forEach(function(b){ b.addEventListener('click', function(){ var i=+this.getAttribute('data-i'); _ixState[i].color = this.getAttribute('data-color'); render(); }); });
       list.querySelectorAll('.ix-title').forEach(function(b){ b.addEventListener('input', function(){ var i=+this.getAttribute('data-i'); _ixState[i].title = this.value; }); });
       list.querySelectorAll('.ix-desc').forEach(function(b){ b.addEventListener('input', function(){ var i=+this.getAttribute('data-i'); _ixState[i].desc = this.value; }); });
-      list.querySelectorAll('.ix-edit').forEach(function(b){ b.addEventListener('click', function(){ var i=+this.getAttribute('data-i'); var k=_ixState[i].key; _ixOpen[k] = !_ixOpen[k]; if (_ixOpen[k] && IX_EXTRAS[k] && IX_EXTRAS[k].pin && !_ixLyricLoaded) { loadLyricPool(function(){ render(); }); } render(); }); });
+      list.querySelectorAll('.ix-edit').forEach(function(b){ b.addEventListener('click', function(){ var i=+this.getAttribute('data-i'); var k=_ixState[i].key; _ixOpen[k] = !_ixOpen[k]; if (_ixOpen[k] && IX_EXTRAS[k] && IX_EXTRAS[k].pin && !_ixLyricLoaded) { loadLyricPool(function(){ render(); }); } if (_ixOpen[k] && IX_EXTRAS[k] && IX_EXTRAS[k].entityPin && !_ixEntLoaded) { loadEntityPool(function(){ render(); }); } render(); }); });
       list.querySelectorAll('.ix-extra').forEach(function(b){ b.addEventListener('input', function(){ var i=+this.getAttribute('data-i'); var fk=this.getAttribute('data-fk'); if(!_ixState[i].extras) _ixState[i].extras={}; _ixState[i].extras[fk]=this.value; }); });
       list.querySelectorAll('.ix-pin').forEach(function(b){ b.addEventListener('change', function(){ var i=+this.getAttribute('data-i'); if(!_ixState[i].extras) _ixState[i].extras={}; _ixState[i].extras.pinId=this.value; }); });
+      list.querySelectorAll('.ix-entpin').forEach(function(b){ b.addEventListener('change', function(){ var i=+this.getAttribute('data-i'); if(!_ixState[i].extras) _ixState[i].extras={}; _ixState[i].extras.pinName=this.value; }); });
     }
 
     function load() {

@@ -1004,7 +1004,28 @@ function eotdRender(entity,cycle){
     };
   }
 }
+function eotdGetPin(cb){
+  var t=0, iv=setInterval(function(){
+    if(window.jestaDB){ clearInterval(iv);
+      window.jestaDB.collection('siteConfig').doc('indexSections').get().then(function(d){
+        var pn=''; if(d.exists){ var ss=(d.data().sections)||[]; for(var i=0;i<ss.length;i++){ if(ss[i].key==='entity-of-day'&&ss[i].extras&&ss[i].extras.pinName){ pn=ss[i].extras.pinName; break; } } }
+        cb(pn);
+      }).catch(function(){ cb(''); });
+    } else if(++t>40){ clearInterval(iv); cb(''); }
+  },100);
+}
+function eotdPick(entities,pinName){
+  if(!entities.length){var c0=document.getElementById('eotd-card');if(c0)c0.style.opacity='0.3';return;}
+  var entity=null;
+  if(pinName){ for(var i=0;i<entities.length;i++){ if(entities[i].name===pinName){ entity=entities[i]; break; } } }
+  var day=getDayOfYear(new Date());
+  if(!entity){ entity=entities[day%entities.length]; }
+  var cycle=Math.floor(day/entities.length);
+  eotdRender(entity,cycle);
+}
 function eotdInit(){
+  var entitiesReady=null, pinReady=null, done=false;
+  function tryRender(){ if(done)return; if(entitiesReady!==null&&pinReady!==null){ done=true; eotdPick(entitiesReady,pinReady); } }
   fetch('entities.html').then(function(r){return r.text();}).then(function(html){
     var parser=new DOMParser();var doc=parser.parseFromString(html,'text/html');
     var entities=[];
@@ -1016,12 +1037,9 @@ function eotdInit(){
       var img=card.querySelector('.entity-photo');var nameEl=card.querySelector('.entity-name');
       if(img&&nameEl)entities.push({name:nameEl.textContent.trim(),photo:img.getAttribute('src'),type:'CARTOON',rawType:'CARTOON ENTITY'});
     });
-    if(!entities.length){document.getElementById('eotd-card').style.opacity='0.3';return;}
-    var day=getDayOfYear(new Date());
-    var entity=entities[day%entities.length];
-    var cycle=Math.floor(day/entities.length);
-    eotdRender(entity,cycle);
+    entitiesReady=entities; tryRender();
   }).catch(function(){var c=document.getElementById('eotd-card');if(c)c.style.display='none';});
+  eotdGetPin(function(pn){ pinReady=pn||''; tryRender(); });
 }
 document.addEventListener('DOMContentLoaded',eotdInit);
 })();</script>
@@ -1188,6 +1206,10 @@ document.addEventListener('DOMContentLoaded',eotdInit);
             if (_lycta && item.extras.cta && item.extras.cta.trim()) _lycta.textContent = item.extras.cta;
             var _lynote = _lysec.querySelector('.hp-lyric-rotate-note');
             if (_lynote && item.extras.note && item.extras.note.trim()) _lynote.textContent = item.extras.note;
+          }
+          if (item.key === 'entity-of-day' && item.extras) {
+            var _eocta = rec.section.querySelector('.eotd-cta');
+            if (_eocta && item.extras.cta && item.extras.cta.trim()) _eocta.textContent = item.extras.cta;
           }
         }
       });
