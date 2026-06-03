@@ -357,7 +357,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <div class="hp-show-card">
         <p class="hp-show-date-ritual">MAY 29 &nbsp;·&nbsp; '26</p>
         <h3 class="hp-show-venue-name">Madhouse</h3>
-        <p style="font-family:'Luminari',serif;font-style:italic;font-size:0.72rem;color:rgba(var(--gold-rgb,201,168,76),0.7);text-align:center;letter-spacing:0.06em;margin:4px 0 6px;">Madhouse - Sataria, Jestamang, Simon Says Nothing, Whatever</p>
+        <p class="hp-show-lineup" style="font-family:'Luminari',serif;font-style:italic;font-size:0.72rem;color:rgba(var(--gold-rgb,201,168,76),0.7);text-align:center;letter-spacing:0.06em;margin:4px 0 6px;">Madhouse - Sataria, Jestamang, Simon Says Nothing, Whatever</p>
         <p class="hp-show-location">Ft. Myers, FL</p>
         <div class="hp-show-rule-c"></div>
         <a href="https://www.eventbrite.com/e/madhouse-sataria-jestamang-whatever-simon-says-nothing-gutter-love-tickets-1986858167263?aff=oddtdtcreator" target="_blank" rel="noopener noreferrer" class="hp-show-btn-c">Get Tickets</a>
@@ -1086,6 +1086,18 @@ document.addEventListener('DOMContentLoaded',eotdInit);
             _setHp(_nums[1], _ex.stat1num); _setHp(_labs[1], _ex.stat1label);
             _setHp(_nums[2], _ex.stat2num); _setHp(_labs[2], _ex.stat2label);
             _setHp(_sec.querySelector('.hp-cta'), _ex.cta);
+          }
+          if (item.key === 'shows' && item.extras) {
+            var _sx = item.extras, _ssec = rec.section;
+            var _setS = function(sel, v){ var el = _ssec.querySelector(sel); if (el && typeof v === 'string' && v.trim()) el.textContent = v; };
+            _setS('.hp-show-date-ritual', _sx.date);
+            _setS('.hp-show-venue-name', _sx.venue);
+            _setS('.hp-show-lineup', _sx.lineup);
+            _setS('.hp-show-location', _sx.location);
+            var _sbtn = _ssec.querySelector('.hp-show-btn-c');
+            if (_sbtn) { if (_sx.btnText && _sx.btnText.trim()) _sbtn.textContent = _sx.btnText; if (_sx.btnUrl && _sx.btnUrl.trim()) _sbtn.href = _sx.btnUrl; }
+            var _sva = _ssec.querySelector('.hp-conj-viewall a');
+            if (_sva && _sx.viewall && _sx.viewall.trim()) _sva.textContent = _sx.viewall;
           }
         }
       });
