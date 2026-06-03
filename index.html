@@ -1170,6 +1170,11 @@ document.addEventListener('DOMContentLoaded',eotdInit);
               if (_gmlinks[_gq] && _gmn && _gmn.trim()) _gmlinks[_gq].textContent = _gmn;
               if (_gmlinks[_gq] && _gml && _gml.trim()) _gmlinks[_gq].href = _gml;
             }
+            var _gmgl = _gmsec.querySelectorAll('.hp-games-glyph');
+            for (var _gq2 = 0; _gq2 < _gmgl.length; _gq2++) {
+              var _gmg = _gmx['game' + _gq2 + 'glyph'];
+              if (_gmgl[_gq2] && _gmg && _gmg.trim()) _gmgl[_gq2].textContent = _gmg;
+            }
             var _gmcta = _gmsec.querySelector('.hp-cta');
             if (_gmcta && _gmx.cta && _gmx.cta.trim()) _gmcta.textContent = _gmx.cta;
           }
