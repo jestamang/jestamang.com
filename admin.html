@@ -2269,10 +2269,32 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     'albums':'purple','lyrics':'red','comix':'green','games':'purple','merch':'red','blog':'green','photos':'purple'
   };
   var IX_NODESC = { 'entity-of-day': true };
+  var IX_EXTRAS = {
+    'listening-chamber': { label:'Stats & button', fields:[
+      {k:'stat0num', ph:'35+', w:'90px'}, {k:'stat0label', ph:'Albums', w:'180px'},
+      {k:'stat1num', ph:'1,000+', w:'90px'}, {k:'stat1label', ph:'Compositions', w:'180px'},
+      {k:'stat2num', ph:'25+', w:'90px'}, {k:'stat2label', ph:'Entities', w:'180px'},
+      {k:'cta', ph:'Enter (button label)', w:'200px'}
+    ]}
+  };
+  var _ixOpen = {};
   var _ixState = [];
 
   function initIndexManager() {
-    function defaultState(){ return IX_KEYS.map(function(k){ return {key:k, visible:true, color:(IX_COLORS[k]||'green'), title:'', desc:''}; }); }
+    function defaultState(){ return IX_KEYS.map(function(k){ return {key:k, visible:true, color:(IX_COLORS[k]||'green'), title:'', desc:'', extras:{}}; }); }
+
+    function extrasPanel(i, item) {
+      var spec = IX_EXTRAS[item.key];
+      if (!spec || !_ixOpen[item.key]) return '';
+      var ex = item.extras || {}, inner = '';
+      spec.fields.forEach(function(f){
+        inner += '<input class="field-input ix-extra" data-i="' + i + '" data-fk="' + f.k + '" type="text" value="' + esc(ex[f.k]||'') + '" placeholder="' + esc(f.ph) + '" style="width:' + (f.w||'160px') + ';margin:0 6px 6px 0;font-size:0.78rem;" maxlength="60">';
+      });
+      return '<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(201,168,76,0.12);">'
+        + '<div style="font-size:0.6rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);margin-bottom:8px;">' + esc(spec.label) + ' — blank = keep default</div>'
+        + '<div style="display:flex;flex-wrap:wrap;align-items:center;">' + inner + '</div>'
+        + '</div>';
+    }
 
     function colorBtns(i, cur) {
       var cols = [['green','#02E127'],['purple','#7800DE'],['red','#FB3838']];
@@ -2297,12 +2319,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             + '<button class="btn-ghost btn-sm ix-up" data-i="' + i + '" ' + (i===0?'disabled':'') + ' style="letter-spacing:0.1em;">▲</button>'
             + '<button class="btn-ghost btn-sm ix-down" data-i="' + i + '" ' + (i===_ixState.length-1?'disabled':'') + ' style="letter-spacing:0.1em;">▼</button>'
             + '<button class="btn-ghost btn-sm ix-vis" data-i="' + i + '" style="letter-spacing:0.1em;min-width:64px;">' + (item.visible ? 'HIDE' : 'SHOW') + '</button>'
+            + (IX_EXTRAS[item.key] ? '<button class="btn-ghost btn-sm ix-edit" data-i="' + i + '" style="letter-spacing:0.1em;min-width:64px;">' + (_ixOpen[item.key] ? 'CLOSE' : 'EDIT') + '</button>' : '')
           + '</div>'
           + '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
             + '<div style="display:flex;gap:5px;">' + colorBtns(i, item.color) + '</div>'
             + '<input class="field-input ix-title" data-i="' + i + '" type="text" value="' + esc(item.title||'') + '" placeholder="' + esc(label) + '" style="flex:1;min-width:140px;margin:0;font-size:0.78rem;" maxlength="80">'
             + (noDesc ? '' : '<input class="field-input ix-desc" data-i="' + i + '" type="text" value="' + esc(item.desc||'') + '" placeholder="Default subtitle (blank = keep)" style="flex:2;min-width:180px;margin:0;font-size:0.78rem;" maxlength="160">')
           + '</div>'
+          + extrasPanel(i, item)
           + '</div>';
       });
       list.innerHTML = html;
@@ -2312,6 +2336,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       list.querySelectorAll('.ix-col').forEach(function(b){ b.addEventListener('click', function(){ var i=+this.getAttribute('data-i'); _ixState[i].color = this.getAttribute('data-color'); render(); }); });
       list.querySelectorAll('.ix-title').forEach(function(b){ b.addEventListener('input', function(){ var i=+this.getAttribute('data-i'); _ixState[i].title = this.value; }); });
       list.querySelectorAll('.ix-desc').forEach(function(b){ b.addEventListener('input', function(){ var i=+this.getAttribute('data-i'); _ixState[i].desc = this.value; }); });
+      list.querySelectorAll('.ix-edit').forEach(function(b){ b.addEventListener('click', function(){ var i=+this.getAttribute('data-i'); var k=_ixState[i].key; _ixOpen[k] = !_ixOpen[k]; render(); }); });
+      list.querySelectorAll('.ix-extra').forEach(function(b){ b.addEventListener('input', function(){ var i=+this.getAttribute('data-i'); var fk=this.getAttribute('data-fk'); if(!_ixState[i].extras) _ixState[i].extras={}; _ixState[i].extras[fk]=this.value; }); });
     }
 
     function load() {
@@ -2321,8 +2347,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           if (doc.exists && Array.isArray(doc.data().sections) && doc.data().sections.length) {
             var cfg = doc.data().sections.slice().sort(function(a,b){ return (a.order||0)-(b.order||0); });
             var seen = {}, ordered = [];
-            cfg.forEach(function(c){ if (IX_LABELS[c.key] && !seen[c.key]) { seen[c.key]=1; ordered.push({key:c.key, visible: c.visible !== false, color:(c.color||IX_COLORS[c.key]||'green'), title:(c.title||''), desc:(c.desc||'')}); } });
-            IX_KEYS.forEach(function(k){ if(!seen[k]) ordered.push({key:k, visible:true, color:(IX_COLORS[k]||'green'), title:'', desc:''}); });
+            cfg.forEach(function(c){ if (IX_LABELS[c.key] && !seen[c.key]) { seen[c.key]=1; ordered.push({key:c.key, visible: c.visible !== false, color:(c.color||IX_COLORS[c.key]||'green'), title:(c.title||''), desc:(c.desc||''), extras:(c.extras||{})}); } });
+            IX_KEYS.forEach(function(k){ if(!seen[k]) ordered.push({key:k, visible:true, color:(IX_COLORS[k]||'green'), title:'', desc:'', extras:{}}); });
             _ixState = ordered;
           }
           render();
@@ -2333,7 +2359,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var saveBtn = document.getElementById('ix-save-btn');
     if (saveBtn) saveBtn.addEventListener('click', function(){
       var statusEl = document.getElementById('ix-status');
-      var sections = _ixState.map(function(item, i){ return { key:item.key, order:i, visible: item.visible, color:(item.color||'green'), title:(item.title||'').trim(), desc:(item.desc||'').trim() }; });
+      var sections = _ixState.map(function(item, i){ var o = { key:item.key, order:i, visible: item.visible, color:(item.color||'green'), title:(item.title||'').trim(), desc:(item.desc||'').trim() }; var ex=item.extras||{}, clean={}, has=false; for(var fk in ex){ if(ex[fk] && String(ex[fk]).trim()){ clean[fk]=String(ex[fk]).trim(); has=true; } } if(has) o.extras=clean; return o; });
       saveBtn.disabled = true;
       db.collection('siteConfig').doc('indexSections').set({ sections: sections }, { merge: true }).then(function(){
         if (statusEl) { statusEl.textContent = 'HOMEPAGE LAYOUT SAVED ✦'; statusEl.className = 'status-msg status-ok'; }
