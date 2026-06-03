@@ -464,8 +464,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <nav id="adm-sidenav" aria-label="Section navigation">
   <span class="adm-sidenav-head">Sections</span>
   <div style="font-size:0.58rem;letter-spacing:0.28em;color:rgba(201,168,76,0.7);padding:12px 10px 2px;text-transform:uppercase;font-family:'Luminari',serif;">Content</div>
-  <button class="adm-sidenav-link" onclick="admNavTo('sec-35')">Arcade</button> <button class="adm-sidenav-link" onclick="admNavTo('sec-34')">Radio</button> <button class="adm-sidenav-link" onclick="admNavTo('sec-33')">Page Metadata</button> <button class="adm-sidenav-link" onclick="admNavTo('sec-32')">Index</button> <button class="adm-sidenav-link" onclick="admNavTo('sec-36')">Profile</button> <button class="adm-sidenav-link" onclick="admNavTo('sec-37')">Comix</button>
-  <button class="adm-sidenav-link" onclick="admNavTo('sec-13')">Announcement</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-34')">Radio</button> <button class="adm-sidenav-link" onclick="admNavTo('sec-32')">Index</button> <button class="adm-sidenav-link" onclick="admNavTo('sec-36')">Profile</button> <button class="adm-sidenav-link" onclick="admNavTo('sec-37')">Comix</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-4')">Blog Publisher</button>
   <!-- v263: Catalog Manager removed — duplicated Announcement's New-Releases write (overlay now fed by Announcement). Album Manager (Albums) unaffected.
   <button class="adm-sidenav-link" onclick="admNavTo('sec-10')">Catalog</button>
@@ -487,6 +486,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-6')">Inquiries</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-21')">Top Members</button>
   <div style="font-size:0.58rem;letter-spacing:0.28em;color:rgba(201,168,76,0.7);padding:12px 10px 2px;margin-top:6px;border-top:1px solid rgba(201,168,76,0.12);text-transform:uppercase;font-family:'Luminari',serif;">Engagement</div>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-13')">Announcement</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-2')">Transmissions</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-18')">Email</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-19')">Nav Badges</button>
@@ -494,9 +494,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <!-- v259: Arcade Analytics removed — duplicated the Leaderboards Manager (Cosmic Scrolls) and read a dead subcollection path. Nav entry commented out; recoverable.
   <button class="adm-sidenav-link" onclick="admNavTo('sec-16')">Arcade</button>
   -->
+  <!-- Arcade content manager (sec-35) — moved here from Content in v350; distinct from the dead sec-16 above -->
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-35')">Arcade</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-11')">Leaderboards</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-22')">Sigil Cards</button>
   <div style="font-size:0.58rem;letter-spacing:0.28em;color:rgba(201,168,76,0.7);padding:12px 10px 2px;margin-top:6px;border-top:1px solid rgba(201,168,76,0.12);text-transform:uppercase;font-family:'Luminari',serif;">System</div>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-33')">Page Metadata</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-25')">Theme</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-28')">Text Styles</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-1')">Analytics</button>
