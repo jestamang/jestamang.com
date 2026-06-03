@@ -2893,6 +2893,28 @@ var NC = (function(){
     }
   };
 
+  /* ── Cosmic Signature overlay: siteConfig/profileInterp over INTERPRETATIONS (fallback-first, in-scope) ── */
+  (function(){
+    var _pft=0, _pfiv=setInterval(function(){
+      if(window.jestaDB){
+        clearInterval(_pfiv);
+        window.jestaDB.collection('siteConfig').doc('profileInterp').get().then(function(d){
+          if(!d.exists) return;
+          var o=d.data()||{};
+          ['Sun','Moon','Rising'].forEach(function(g){
+            if(o[g]&&INTERPRETATIONS[g]){
+              for(var s in o[g]){
+                if(o[g].hasOwnProperty(s)&&o[g][s]&&(''+o[g][s]).trim()&&INTERPRETATIONS[g].hasOwnProperty(s)){
+                  INTERPRETATIONS[g][s]=o[g][s];
+                }
+              }
+            }
+          });
+        }).catch(function(){});
+      } else if(++_pft>80){ clearInterval(_pfiv); }
+    },100);
+  })();
+
   function generateInterpretation(result){
     var sun=result.planets['Sun'],moon=result.planets['Moon'],asc=result.ascData;
     var html='';
