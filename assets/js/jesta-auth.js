@@ -728,6 +728,8 @@ window.openSocial = function(platform) {
           var sb = document.querySelector('.sub');
           if (sb) sb.innerHTML = _e(o.sub).replace(/\n/g, '<br>');
         }
+        if (o.start && (''+o.start).trim()) { var sbn = document.getElementById('startBtn'); if (sbn) sbn.textContent = o.start; }
+        if (o.replay && (''+o.replay).trim()) { var rbn = document.getElementById('restartBtn'); if (rbn) rbn.textContent = o.replay; }
       }).catch(function () {});
     } else if (++gtries > 40) { clearInterval(giv); }
   }, 100);
