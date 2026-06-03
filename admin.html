@@ -464,7 +464,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <nav id="adm-sidenav" aria-label="Section navigation">
   <span class="adm-sidenav-head">Sections</span>
   <div style="font-size:0.58rem;letter-spacing:0.28em;color:rgba(201,168,76,0.7);padding:12px 10px 2px;text-transform:uppercase;font-family:'Luminari',serif;">Content</div>
-  <button class="adm-sidenav-link" onclick="admNavTo('sec-33')">Page Metadata</button> <button class="adm-sidenav-link" onclick="admNavTo('sec-32')">Index</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-34')">Radio</button> <button class="adm-sidenav-link" onclick="admNavTo('sec-33')">Page Metadata</button> <button class="adm-sidenav-link" onclick="admNavTo('sec-32')">Index</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-13')">Announcement</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-4')">Blog Publisher</button>
   <!-- v263: Catalog Manager removed — duplicated Announcement's New-Releases write (overlay now fed by Announcement). Album Manager (Albums) unaffected.
@@ -642,7 +642,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
     <div class="adm-ornament">✦</div>
-    <div class="adm-section" id="sec-33"> <div class="adm-section-title">✦ Page Metadata</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Override the browser-tab title and meta description per page. Blank = the hardcoded default stays (fallback-first). The tab title updates instantly; the description is picked up by Google when it re-renders. Social-share link previews (OG tags) are NOT affected by this — those need a code push.</div> <div id="pm-list"></div> </div>
+    <div class="adm-section" id="sec-34"> <div class="adm-section-title">✦ Radio</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Edit the Listening Chamber's curated text — heading, subtitle, and the Station / Frequency / Albums / Entities / Shows panels. Blank = the hardcoded default stays (fallback-first). The music, Elsewhere links, email signup, and live Shows data are managed elsewhere.</div> <div id="rm-form"></div> </div>
+<div class="adm-section" id="sec-33"> <div class="adm-section-title">✦ Page Metadata</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Override the browser-tab title and meta description per page. Blank = the hardcoded default stays (fallback-first). The tab title updates instantly; the description is picked up by Google when it re-renders. Social-share link previews (OG tags) are NOT affected by this — those need a code push.</div> <div id="pm-list"></div> </div>
 <div class="adm-section" id="sec-32">
       <div class="adm-section-title">✦ Index</div>
       <div class="adm-section-underline"></div>
@@ -1804,6 +1805,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initMembersUpdates();
     initIndexManager();
     initPageMeta();
+    initRadioManager();
     initTabs();
     initQuickLinks();
   }
@@ -2425,6 +2427,89 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     }).catch(function(){ var arr=[]; for (var dk in EOTD_CAP_DEFAULTS) { if (EOTD_CAP_DEFAULTS.hasOwnProperty(dk)) { var p=dk.split('|'); arr.push({key:dk,name:p[1]||dk,type:p[0]==='ONE OF THE CHILDREN'?'CHILD':'CARTOON'}); } } _eotdCapList = arr; finish(); });
   }
   var _ixState = [];
+
+  function initRadioManager() {
+    var RM_GROUPS = [
+      {g:'Header', fields:[ {k:'heading',label:'Heading',t:'input'}, {k:'subtitle',label:'Subtitle',t:'input'} ]},
+      {g:'Station', fields:[ {k:'station-h',label:'Heading',t:'input'}, {k:'station-body',label:'Text',t:'textarea'} ]},
+      {g:'Frequency', fields:[
+        {k:'freq-h',label:'Heading',t:'input'},
+        {k:'stat0-num',label:'Stat 1 number',t:'input',w:'120px'}, {k:'stat0-label',label:'Stat 1 label',t:'input'},
+        {k:'stat1-num',label:'Stat 2 number',t:'input',w:'120px'}, {k:'stat1-label',label:'Stat 2 label',t:'input'},
+        {k:'stat2-num',label:'Stat 3 number',t:'input',w:'120px'}, {k:'stat2-label',label:'Stat 3 label',t:'input'},
+        {k:'session-label',label:'Session label',t:'input'}
+      ]},
+      {g:'Albums', fields:[ {k:'albums-h',label:'Heading',t:'input'}, {k:'albums-link',label:'Link text',t:'input'} ]},
+      {g:'Entities', fields:[ {k:'entities-h',label:'Heading',t:'input'}, {k:'entities-body',label:'Text',t:'input'}, {k:'entities-link',label:'Link text',t:'input'} ]},
+      {g:'Shows', fields:[ {k:'shows-h',label:'Heading',t:'input'}, {k:'shows-body',label:'Text',t:'input'}, {k:'shows-link',label:'Link text',t:'input'} ]}
+    ];
+    var formEl = document.getElementById('rm-form');
+    if (!formEl) return;
+    var _rmSaved = {}, _rmDefaults = {};
+
+    function loadDefaults(cb){
+      fetch('radio.html').then(function(r){return r.text();}).then(function(html){
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var nodes = doc.querySelectorAll('[data-rk]');
+        for (var i=0;i<nodes.length;i++){ _rmDefaults[nodes[i].getAttribute('data-rk')] = (nodes[i].textContent||'').trim(); }
+        cb();
+      }).catch(function(){ cb(); });
+    }
+
+    function render(){
+      var h = '';
+      RM_GROUPS.forEach(function(grp){
+        h += '<div style="margin-bottom:22px;">';
+        h += '<div style="font-size:0.62rem;letter-spacing:0.2em;color:rgba(201,168,76,0.55);text-transform:uppercase;border-bottom:1px solid rgba(201,168,76,0.15);padding-bottom:6px;margin-bottom:12px;">' + esc(grp.g) + '</div>';
+        grp.fields.forEach(function(f){
+          var v = (_rmSaved[f.k] != null) ? _rmSaved[f.k] : (_rmDefaults[f.k] || '');
+          h += '<label style="display:block;font-size:0.58rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:3px;">' + esc(f.label) + '</label>';
+          if (f.t === 'textarea') {
+            h += '<textarea class="field-input rm-f" data-k="' + f.k + '" rows="2" style="width:100%;margin:0 0 12px;font-size:0.78rem;line-height:1.5;resize:vertical;">' + esc(v) + '</textarea>';
+          } else {
+            h += '<input class="field-input rm-f" data-k="' + f.k + '" value="' + esc(v) + '" style="width:' + (f.w||'100%') + ';margin:0 0 12px;font-size:0.8rem;">';
+          }
+        });
+        h += '</div>';
+      });
+      h += '<button id="rm-save" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:inherit;font-size:0.72rem;letter-spacing:0.12em;padding:8px 18px;cursor:pointer;border-radius:3px;">SAVE RADIO</button>';
+      h += '<button id="rm-reset" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:rgba(201,168,76,0.6);font-family:inherit;font-size:0.72rem;letter-spacing:0.12em;padding:8px 16px;margin-left:8px;cursor:pointer;border-radius:3px;">RESET ALL TO DEFAULT</button>';
+      h += '<span id="rm-status" style="margin-left:12px;font-size:0.72rem;color:rgba(2,225,39,0.85);"></span>';
+      formEl.innerHTML = h;
+      wire();
+    }
+
+    function wire(){
+      formEl.querySelectorAll('.rm-f').forEach(function(el){ el.addEventListener('input', function(){ _rmSaved[this.getAttribute('data-k')] = this.value; }); });
+      var sv = document.getElementById('rm-save');
+      if (sv) sv.addEventListener('click', function(){
+        var st = document.getElementById('rm-status');
+        var map = {};
+        formEl.querySelectorAll('.rm-f').forEach(function(el){ var v=el.value.trim(); if(v) map[el.getAttribute('data-k')] = v; });
+        if (st) { st.style.color='rgba(201,168,76,0.7)'; st.textContent='Saving…'; }
+        db.collection('siteConfig').doc('radioConfig').set({ fields: map }).then(function(){
+          _rmSaved = {}; for (var k in map) { if (map.hasOwnProperty(k)) _rmSaved[k]=map[k]; }
+          if (st) { st.style.color='rgba(2,225,39,0.85)'; st.textContent='Saved ✦'; }
+        }).catch(function(e){ if (st) { st.style.color='rgba(251,56,56,0.9)'; st.textContent='Error: '+((e&&e.message)||'failed'); } });
+      });
+      var rs = document.getElementById('rm-reset');
+      if (rs) rs.addEventListener('click', function(){
+        var st = document.getElementById('rm-status');
+        _rmSaved = {};
+        if (st) { st.style.color='rgba(201,168,76,0.7)'; st.textContent='Resetting…'; }
+        db.collection('siteConfig').doc('radioConfig').set({ fields: {} }).then(function(){
+          render();
+          var st2 = document.getElementById('rm-status');
+          if (st2) { st2.style.color='rgba(2,225,39,0.85)'; st2.textContent='Reset to defaults ✦'; }
+        }).catch(function(e){ var st3=document.getElementById('rm-status'); if (st3) { st3.style.color='rgba(251,56,56,0.9)'; st3.textContent='Error'; } });
+      });
+    }
+
+    db.collection('siteConfig').doc('radioConfig').get().then(function(d){
+      _rmSaved = (d.exists && d.data().fields) || {};
+      loadDefaults(render);
+    }).catch(function(){ loadDefaults(render); });
+  }
 
   function initPageMeta() {
     var PM_PAGES = [
