@@ -701,3 +701,34 @@ window.openSocial = function(platform) {
     } else if (++tries > 40) { clearInterval(iv); }
   }, 100);
 })();
+
+/* ── Game page content applier: overlays .big-title + .sub from siteConfig/gameContent, keyed by page href ── */
+(function () {
+  var key = location.pathname.replace(/^\//, '');
+  if (!key) return;
+  function _e(t){ return (''+t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var gtries = 0;
+  var giv = setInterval(function () {
+    if (window.jestaDB) {
+      clearInterval(giv);
+      window.jestaDB.collection('siteConfig').doc('gameContent').get().then(function (d) {
+        if (!d.exists) return;
+        var games = d.data().games || {};
+        var o = games[key];
+        if (!o) return;
+        if (o.title && (''+o.title).trim()) {
+          var bt = document.querySelector('.big-title');
+          if (bt) {
+            var words = (''+o.title).trim().split(/\s+/), html = '';
+            for (var i = 0; i < words.length; i++) html += '<span class="bl">' + _e(words[i]) + '</span>';
+            bt.innerHTML = html;
+          }
+        }
+        if (o.sub && (''+o.sub).trim()) {
+          var sb = document.querySelector('.sub');
+          if (sb) sb.innerHTML = _e(o.sub).replace(/\n/g, '<br>');
+        }
+      }).catch(function () {});
+    } else if (++gtries > 40) { clearInterval(giv); }
+  }, 100);
+})();

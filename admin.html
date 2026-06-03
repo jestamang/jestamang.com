@@ -2446,6 +2446,32 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var formEl = document.getElementById('am-form');
     if (!formEl) return;
     var _amSaved = { header:{}, games:{} };
+    var PAGE_EDITABLE = {'games/void.html':1,'games/cosmic-conductor.html':1,'games/rhythm-architect.html':1,'games/chord-conjurer.html':1,'games/harmony-oracle.html':1,'games/pitch-oracle.html':1};
+    var _gcSaved = {}, _gcDefaults = {}, _gcOpen = {}, _gcEdit = {};
+    function pfld(href,k,label,type,val){
+      var at='data-href="'+esc(href)+'" data-pk="'+k+'"';
+      var h='<label style="display:block;font-size:0.58rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:3px;">'+esc(label)+'</label>';
+      if(type==='textarea') h+='<textarea class="field-input am-pf" '+at+' rows="2" style="width:100%;margin:0 0 10px;font-size:0.78rem;line-height:1.5;resize:vertical;">'+esc(val)+'</textarea>';
+      else h+='<input class="field-input am-pf" '+at+' value="'+esc(val)+'" style="width:100%;margin:0 0 10px;font-size:0.8rem;">';
+      return h;
+    }
+    function gcCur(href,k){
+      if(_gcEdit[href]&&_gcEdit[href][k]!=null) return _gcEdit[href][k];
+      if(_gcSaved[href]&&_gcSaved[href][k]!=null) return _gcSaved[href][k];
+      return (_gcDefaults[href]&&_gcDefaults[href][k])||'';
+    }
+    function gcFetch(href,cb){
+      if(_gcDefaults[href]){ cb(); return; }
+      fetch(href).then(function(r){return r.text();}).then(function(html){
+        var doc=new DOMParser().parseFromString(html,'text/html');
+        var bls=doc.querySelectorAll('.big-title .bl'), title='';
+        if(bls.length){ var ws=[]; for(var i=0;i<bls.length;i++) ws.push((bls[i].textContent||'').trim()); title=ws.join(' '); }
+        else { var bt=doc.querySelector('.big-title'); title=bt?(bt.textContent||'').trim():''; }
+        var se=doc.querySelector('.sub'), sub='';
+        if(se){ sub=se.innerHTML.replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,'').replace(/^\s+|\s+$/g,''); }
+        _gcDefaults[href]={title:title,sub:sub}; cb();
+      }).catch(function(){ _gcDefaults[href]={title:'',sub:''}; cb(); });
+    }
 
     function gObj(href){ for (var i=0;i<ARC_GAMES.length;i++) if (ARC_GAMES[i].href===href) return ARC_GAMES[i]; return null; }
     function curH(k){ return (_amSaved.header && _amSaved.header[k]!=null) ? _amSaved.header[k] : (ARC_HEADER[k]||''); }
@@ -2470,6 +2496,21 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         h+=fld('game|'+g.href+'|desc','Description','textarea',curG(g.href,'desc'));
         h+=fld('game|'+g.href+'|tag','Tag','input',curG(g.href,'tag'),'180px');
         h+=fld('game|'+g.href+'|glyph','Glyph','input',curG(g.href,'glyph'),'160px');
+        if(PAGE_EDITABLE[g.href]){
+          h+='<button class="am-pagetoggle" data-href="'+esc(g.href)+'" style="margin:2px 0 10px;background:transparent;border:1px solid rgba(201,168,76,0.25);color:rgba(201,168,76,0.7);font-family:inherit;font-size:0.62rem;letter-spacing:0.12em;padding:5px 12px;cursor:pointer;border-radius:3px;">'+(_gcOpen[g.href]?'▾ GAME PAGE':'▸ EDIT GAME PAGE')+'</button>';
+          if(_gcOpen[g.href]){
+            if(!_gcDefaults[g.href]){ h+='<div style="font-size:0.7rem;color:rgba(201,168,76,0.5);margin-bottom:10px;">Loading page content…</div>'; }
+            else {
+              h+='<div style="border-left:2px solid rgba(201,168,76,0.15);padding-left:12px;margin-bottom:8px;">';
+              h+=pfld(g.href,'title','Page title (each word = a stacked line)','input',gcCur(g.href,'title'));
+              h+=pfld(g.href,'sub','Page subtitle (line break = new line)','textarea',gcCur(g.href,'sub'));
+              h+='<button class="am-pagesave" data-href="'+esc(g.href)+'" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:inherit;font-size:0.66rem;letter-spacing:0.12em;padding:6px 14px;cursor:pointer;border-radius:3px;">SAVE PAGE</button>';
+              h+='<button class="am-pagereset" data-href="'+esc(g.href)+'" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:rgba(201,168,76,0.55);font-family:inherit;font-size:0.66rem;letter-spacing:0.12em;padding:6px 12px;margin-left:6px;cursor:pointer;border-radius:3px;">REVERT</button>';
+              h+='<span class="am-pagestatus" data-href="'+esc(g.href)+'" style="margin-left:10px;font-size:0.7rem;color:rgba(2,225,39,0.85);"></span>';
+              h+='</div>';
+            }
+          }
+        }
         h+='</div>';
       });
       h+='<button id="am-save" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:inherit;font-size:0.72rem;letter-spacing:0.12em;padding:8px 18px;cursor:pointer;border-radius:3px;">SAVE ARCADE</button>';
@@ -2491,6 +2532,27 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     }
 
     function wire(){
+      formEl.querySelectorAll('.am-f').forEach(function(el){ el.addEventListener('input', function(){ var p=this.getAttribute('data-amk').split('|'); if(p[0]==='header'){ if(!_amSaved.header)_amSaved.header={}; _amSaved.header[p[1]]=this.value; } else { if(!_amSaved.games[p[1]])_amSaved.games[p[1]]={}; _amSaved.games[p[1]][p[2]]=this.value; } }); });
+      formEl.querySelectorAll('.am-pf').forEach(function(el){ el.addEventListener('input', function(){ var href=this.getAttribute('data-href'), k=this.getAttribute('data-pk'); if(!_gcEdit[href])_gcEdit[href]={}; _gcEdit[href][k]=this.value; }); });
+      formEl.querySelectorAll('.am-pagetoggle').forEach(function(b){ b.addEventListener('click', function(){ var href=this.getAttribute('data-href'); _gcOpen[href]=!_gcOpen[href]; if(_gcOpen[href]&&!_gcDefaults[href]){ gcFetch(href, render); } render(); }); });
+      formEl.querySelectorAll('.am-pagesave').forEach(function(b){ b.addEventListener('click', function(){
+        var href=this.getAttribute('data-href');
+        var st=formEl.querySelector('.am-pagestatus[data-href="'+href+'"]');
+        var ti=formEl.querySelector('.am-pf[data-href="'+href+'"][data-pk="title"]');
+        var si=formEl.querySelector('.am-pf[data-href="'+href+'"][data-pk="sub"]');
+        var t=ti?ti.value.replace(/^\s+|\s+$/g,''):'', su=si?si.value.replace(/^\s+|\s+$/g,''):'';
+        var entry={}; if(t)entry.title=t; if(su)entry.sub=su;
+        if(t||su)_gcSaved[href]=entry; else delete _gcSaved[href];
+        if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Saving…';}
+        db.collection('siteConfig').doc('gameContent').set({games:_gcSaved}).then(function(){ if(_gcEdit[href])delete _gcEdit[href]; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Saved ✦';} }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error: '+((e&&e.message)||'failed');} });
+      }); });
+      formEl.querySelectorAll('.am-pagereset').forEach(function(b){ b.addEventListener('click', function(){
+        var href=this.getAttribute('data-href');
+        var st=formEl.querySelector('.am-pagestatus[data-href="'+href+'"]');
+        delete _gcSaved[href]; delete _gcEdit[href];
+        if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Reverting…';}
+        db.collection('siteConfig').doc('gameContent').set({games:_gcSaved}).then(function(){ render(); }).catch(function(e){ var s2=formEl.querySelector('.am-pagestatus[data-href="'+href+'"]'); if(s2){s2.style.color='rgba(251,56,56,0.9)';s2.textContent='Error';} });
+      }); });
       var sv=document.getElementById('am-save');
       if(sv) sv.addEventListener('click', function(){
         var st=document.getElementById('am-status'); var cfg=collect();
@@ -2513,7 +2575,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     db.collection('siteConfig').doc('arcadeConfig').get().then(function(d){
       var data=(d.exists&&d.data())||{};
       _amSaved={header:data.header||{},games:data.games||{}};
-      render();
+      db.collection('siteConfig').doc('gameContent').get().then(function(gd){
+        _gcSaved=(gd.exists&&gd.data().games)||{};
+        render();
+      }).catch(function(){ render(); });
     }).catch(function(){ render(); });
   }
 
