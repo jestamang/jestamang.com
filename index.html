@@ -581,8 +581,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   });});
 
   // Firestore-backed daily selection — replaces fallback once loaded
-  function loadLyrics(){
-    if(!window.jestaDB){setTimeout(loadLyrics,200);return;}
+  function pickAndRender(pinId){
     window.jestaDB.collection('lyrics').get().then(function(snap){
       var pool=[];
       snap.forEach(function(doc){
@@ -596,10 +595,19 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         });
       });
       if(!pool.length)return;
-      var fsRand=mulberry32(DAY);
-      var chosen=pool[Math.floor(fsRand()*pool.length)];
+      var chosen=null;
+      if(pinId){ for(var k=0;k<pool.length;k++){ if((pool[k].artist+'|||'+pool[k].track)===pinId){ chosen=pool[k]; break; } } }
+      if(!chosen){ var fsRand=mulberry32(DAY); chosen=pool[Math.floor(fsRand()*pool.length)]; }
       renderEntry(chosen);
     }).catch(function(err){console.log('[lyrics] query FAILED:',err.code,err.message);});
+  }
+  function loadLyrics(){
+    if(!window.jestaDB){setTimeout(loadLyrics,200);return;}
+    window.jestaDB.collection('siteConfig').doc('indexSections').get().then(function(cfgDoc){
+      var pinId='';
+      if(cfgDoc.exists){ var secs=(cfgDoc.data().sections)||[]; for(var i=0;i<secs.length;i++){ if(secs[i].key==='lyrics'&&secs[i].extras&&secs[i].extras.pinId){ pinId=secs[i].extras.pinId; break; } } }
+      pickAndRender(pinId);
+    }).catch(function(){ pickAndRender(''); });
   }
   setTimeout(loadLyrics,300);
 })();
@@ -1173,6 +1181,13 @@ document.addEventListener('DOMContentLoaded',eotdInit);
           if (item.key === 'photos' && item.extras) {
             var _phcta = rec.section.querySelector('.hp-cta');
             if (_phcta && item.extras.cta && item.extras.cta.trim()) _phcta.textContent = item.extras.cta;
+          }
+          if (item.key === 'lyrics' && item.extras) {
+            var _lysec = rec.section;
+            var _lycta = _lysec.querySelector('.hp-cta');
+            if (_lycta && item.extras.cta && item.extras.cta.trim()) _lycta.textContent = item.extras.cta;
+            var _lynote = _lysec.querySelector('.hp-lyric-rotate-note');
+            if (_lynote && item.extras.note && item.extras.note.trim()) _lynote.textContent = item.extras.note;
           }
         }
       });
