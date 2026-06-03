@@ -245,13 +245,13 @@ h1{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0
 <!-- ── PAGE CONTENT ── -->
 <div class="arc-wrap">
   <header class="arc-header">
-    <h1 class="arc-title">Arcade</h1>
+    <h1 class="arc-title" data-ak="title">Arcade</h1>
     <div class="arc-rule">
       <span class="arc-rule-line"></span>
       <span class="arc-rule-glyph">✦</span>
       <span class="arc-rule-line"></span>
     </div>
-    <p class="arc-sub">Games forged in the Jestamang universe.<br>Play at your own risk.</p>
+    <p class="arc-sub" data-ak="sub">Games forged in the Jestamang universe.<br>Play at your own risk.</p>
   </header>
 
   <div class="arc-grid" id="arcGrid"></div>
@@ -288,6 +288,7 @@ var GAMES = [
   GAMES.forEach(function(g){
     var card = document.createElement('div');
     card.className = 'arc-card';
+    card.setAttribute('data-arc-key', g.href);
 
     var lbBtn = g.lb
       ? '<button class="arc-lb" onclick="event.stopPropagation();openLB(\''+g.lb+'\',\''+g.name+'\','+g.lowerBetter+')">Leaderboard ✦</button>'
@@ -410,5 +411,26 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
   .arc-desc{color:rgba(255,255,255,0.60)}
   .lb-date{color:rgba(var(--gold-rgb,201,168,76),0.52)}
 }</style>
+<script>(function(){
+  function _e(t){ return (''+t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var _at=0, _aiv=setInterval(function(){
+    if(window.jestaDB){ clearInterval(_aiv);
+      window.jestaDB.collection('siteConfig').doc('arcadeConfig').get().then(function(d){
+        if(!d.exists) return;
+        var cfg=d.data()||{}, hd=cfg.header||{}, gms=cfg.games||{};
+        if(hd.title&&(''+hd.title).trim()){ var tEl=document.querySelector('[data-ak="title"]'); if(tEl)tEl.textContent=hd.title; }
+        if(hd.sub&&(''+hd.sub).trim()){ var sEl=document.querySelector('[data-ak="sub"]'); if(sEl)sEl.innerHTML=_e(hd.sub).replace(/\n/g,'<br>'); }
+        var cards=document.querySelectorAll('.arc-card[data-arc-key]');
+        for(var i=0;i<cards.length;i++){
+          var key=cards[i].getAttribute('data-arc-key'), o=gms[key]; if(!o)continue;
+          if(o.name&&(''+o.name).trim()){ var n=cards[i].querySelector('.arc-name'); if(n)n.textContent=o.name; }
+          if(o.desc&&(''+o.desc).trim()){ var ds=cards[i].querySelector('.arc-desc'); if(ds)ds.textContent=o.desc; }
+          if(o.tag&&(''+o.tag).trim()){ var tg=cards[i].querySelector('.arc-tag'); if(tg)tg.textContent=o.tag; }
+          if(o.glyph&&(''+o.glyph).trim()){ var gl=cards[i].querySelector('.arc-glyph'); if(gl)gl.innerHTML=o.glyph; }
+        }
+      }).catch(function(){});
+    } else if(++_at>40){ clearInterval(_aiv); }
+  },100);
+})();</script>
 </body>
 </html>
