@@ -288,8 +288,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <main id="lc-stage" class="lc-stage">
 
   <div class="lc-page-head">
-    <h1 class="lc-heading">✦ Listening Chamber ✦</h1>
-    <p class="lc-sub">A continuous broadcast from the inner world.</p>
+    <h1 class="lc-heading" data-rk="heading">✦ Listening Chamber ✦</h1>
+    <p class="lc-sub" data-rk="subtitle">A continuous broadcast from the inner world.</p>
   </div>
 
   <div class="lc-grid">
@@ -320,19 +320,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
       <!-- THE STATION -->
       <div class="lc-side-panel">
-        <h2 class="lc-panel-h">✦ Station ✦</h2>
-        <p class="lc-panel-body" style="line-height:1.4">A signal from our inner world. 35+ albums, 25+ entities broadcasting across 1,000+ compositions. Tune in... Stay tuned...</p>
+        <h2 class="lc-panel-h" data-rk="station-h">✦ Station ✦</h2>
+        <p class="lc-panel-body" style="line-height:1.4" data-rk="station-body">A signal from our inner world. 35+ albums, 25+ entities broadcasting across 1,000+ compositions. Tune in... Stay tuned...</p>
       </div>
 
       <!-- FREQUENCY -->
       <div class="lc-side-panel">
-        <h2 class="lc-panel-h">✦ Frequency ✦</h2>
+        <h2 class="lc-panel-h" data-rk="freq-h">✦ Frequency ✦</h2>
         <div class="lc-stats">
-          <div class="lc-stat-row"><span class="lc-stat-num">37</span><span class="lc-stat-label">Albums</span></div>
-          <div class="lc-stat-row"><span class="lc-stat-num">1,185</span><span class="lc-stat-label">Compositions</span></div>
-          <div class="lc-stat-row"><span class="lc-stat-num">27</span><span class="lc-stat-label">Entities</span></div>
+          <div class="lc-stat-row"><span class="lc-stat-num" data-rk="stat0-num">37</span><span class="lc-stat-label" data-rk="stat0-label">Albums</span></div>
+          <div class="lc-stat-row"><span class="lc-stat-num" data-rk="stat1-num">1,185</span><span class="lc-stat-label" data-rk="stat1-label">Compositions</span></div>
+          <div class="lc-stat-row"><span class="lc-stat-num" data-rk="stat2-num">27</span><span class="lc-stat-label" data-rk="stat2-label">Entities</span></div>
           <hr class="lc-sess-divider">
-          <div class="lc-sess-row"><span class="lc-sess-label">Your Session</span><span id="lc-sess-time">—</span></div>
+          <div class="lc-sess-row"><span class="lc-sess-label" data-rk="session-label">Your Session</span><span id="lc-sess-time">—</span></div>
         </div>
       </div>
 
@@ -403,23 +403,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
       <!-- THE CATALOG -->
       <div class="lc-side-panel">
-        <h2 class="lc-panel-h">✦ Albums ✦</h2>
-        <a href="albums.html" class="lc-catalog-link">Browse Every Album →</a>
+        <h2 class="lc-panel-h" data-rk="albums-h">✦ Albums ✦</h2>
+        <a href="albums.html" class="lc-catalog-link" data-rk="albums-link">Browse Every Album →</a>
       </div>
 
       <!-- THE ENTITIES -->
       <div class="lc-side-panel">
-        <h2 class="lc-panel-h">✦ Entities ✦</h2>
-        <p class="lc-panel-body">The voices behind the broadcast.</p>
-        <a href="entities.html" class="lc-panel-btn">View All Entities →</a>
+        <h2 class="lc-panel-h" data-rk="entities-h">✦ Entities ✦</h2>
+        <p class="lc-panel-body" data-rk="entities-body">The voices behind the broadcast.</p>
+        <a href="entities.html" class="lc-panel-btn" data-rk="entities-link">View All Entities →</a>
       </div>
 
       <!-- ARRIVING — next upcoming show from Firestore -->
       <div class="lc-side-panel">
-        <h2 class="lc-panel-h">✦ Shows ✦</h2>
+        <h2 class="lc-panel-h" data-rk="shows-h">✦ Shows ✦</h2>
         <div id="lc-arriving">
-          <p class="lc-panel-body">Watch the seasons.</p>
-          <a href="shows.html" class="lc-panel-btn">See the Calendar →</a>
+          <p class="lc-panel-body" data-rk="shows-body">Watch the seasons.</p>
+          <a href="shows.html" class="lc-panel-btn" data-rk="shows-link">See the Calendar →</a>
         </div>
       </div>
 
@@ -467,4 +467,16 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 <style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
 <style>/* reserve space before recent transmissions list populates */@media(max-width:768px){#lc-recent-list{min-height:400px}}</style>
 <style>@media(max-width:768px){body{background-attachment:scroll!important}}</style>
+<script>(function(){
+  var _rt=0, _riv=setInterval(function(){
+    if(window.jestaDB){ clearInterval(_riv);
+      window.jestaDB.collection('siteConfig').doc('radioConfig').get().then(function(d){
+        if(!d.exists) return;
+        var f=d.data().fields||{};
+        var nodes=document.querySelectorAll('[data-rk]');
+        for(var i=0;i<nodes.length;i++){ var k=nodes[i].getAttribute('data-rk'); var v=f[k]; if(v&&(''+v).trim()) nodes[i].textContent=v; }
+      }).catch(function(){});
+    } else if(++_rt>40){ clearInterval(_riv); }
+  },100);
+})();</script>
 </body> </html>
