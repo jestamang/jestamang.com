@@ -1161,6 +1161,15 @@ document.addEventListener('DOMContentLoaded',eotdInit);
             var _mrcta = _mrsec.querySelector('.hp-cta');
             if (_mrcta && _mrx.cta && _mrx.cta.trim()) _mrcta.textContent = _mrx.cta;
           }
+          if (item.key === 'blog' && item.extras) {
+            var _blx = item.extras, _blsec = rec.section;
+            var _setB = function(sel, v){ var el = _blsec.querySelector(sel); if (el && typeof v === 'string' && v.trim()) el.textContent = v; };
+            _setB('.hp-blog-date', _blx.date);
+            _setB('.hp-blog-ttl', _blx.posttitle);
+            _setB('.hp-blog-excerpt', _blx.excerpt);
+            var _blcta = _blsec.querySelector('.hp-cta');
+            if (_blcta && _blx.cta && _blx.cta.trim()) _blcta.textContent = _blx.cta;
+          }
         }
       });
 
