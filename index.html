@@ -1170,6 +1170,10 @@ document.addEventListener('DOMContentLoaded',eotdInit);
             var _blcta = _blsec.querySelector('.hp-cta');
             if (_blcta && _blx.cta && _blx.cta.trim()) _blcta.textContent = _blx.cta;
           }
+          if (item.key === 'photos' && item.extras) {
+            var _phcta = rec.section.querySelector('.hp-cta');
+            if (_phcta && item.extras.cta && item.extras.cta.trim()) _phcta.textContent = item.extras.cta;
+          }
         }
       });
 
