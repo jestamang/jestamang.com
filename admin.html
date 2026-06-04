@@ -2483,6 +2483,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       ]
     };
     var _gcSaved = {}, _gcDefaults = {}, _gcOpen = {}, _gcEdit = {};
+    var NOTE_ORDER=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+    var NOTE_DESC_DEFAULTS={
+      'C':'The tonic — foundation of Western harmony. C major is the first scale most students learn.',
+      'C#':'A half-step above C. Adds darkness and jazz colour. Enharmonic with D♭.',
+      'D':'Bright and resonant. D major carries a heroic, triumphant character.',
+      'D#':'Warm and expressive. The minor third of C — at the heart of minor harmony. Enharmonic with E♭.',
+      'E':'Warm and intimate. The major third of C, defining the brightness of C major.',
+      'F':'The subdominant of C — a pivotal note in harmony, pulling gently toward resolution.',
+      'F#':'The tritone from C — the most dissonant interval in Western music. Enharmonic with G♭.',
+      'G':'The dominant — strong and resolving. Melody naturally wants to return home from here.',
+      'G#':'Lush and bittersweet. The minor sixth above C. Common in romantic and jazz idioms. Enharmonic with A♭.',
+      'A':'A440 — the universal tuning standard. Every orchestra in the world tunes to this pitch.',
+      'A#':'An ornamental blues note. A half-step below the tonic B. Enharmonic with B♭.',
+      'B':'The leading tone — just a half-step below the octave, creating powerful upward pull.'
+    };
+    var _pnSaved={}, _pnEdit={};
+    function pnCur(nt){ if(_pnEdit[nt]!=null) return _pnEdit[nt]; return (_pnSaved[nt]!=null&&(''+_pnSaved[nt]).trim())?_pnSaved[nt]:(NOTE_DESC_DEFAULTS[nt]||''); }
     function pfld(href,k,label,type,val){
       var at='data-href="'+esc(href)+'" data-pk="'+k+'"';
       var h='<label style="display:block;font-size:0.58rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:3px;">'+esc(label)+'</label>';
@@ -2564,6 +2581,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
               h+='<button class="am-pagesave" data-href="'+esc(g.href)+'" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:inherit;font-size:0.66rem;letter-spacing:0.12em;padding:6px 14px;cursor:pointer;border-radius:3px;">SAVE PAGE</button>';
               h+='<button class="am-pagereset" data-href="'+esc(g.href)+'" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:rgba(201,168,76,0.55);font-family:inherit;font-size:0.66rem;letter-spacing:0.12em;padding:6px 12px;margin-left:6px;cursor:pointer;border-radius:3px;">REVERT</button>';
               h+='<span class="am-pagestatus" data-href="'+esc(g.href)+'" style="margin-left:10px;font-size:0.7rem;color:rgba(2,225,39,0.85);"></span>';
+              if(g.href==='games/pitch-oracle.html'){
+                h+='<div style="font-size:0.56rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);text-transform:uppercase;margin:16px 0 8px;border-top:1px dashed rgba(201,168,76,0.15);padding-top:12px;">Note Descriptions (Learn-panel cards)</div>';
+                NOTE_ORDER.forEach(function(nt){
+                  var ov=!!(_pnSaved[nt]!=null&&(''+_pnSaved[nt]).trim());
+                  h+='<label style="display:block;font-size:0.6rem;letter-spacing:0.14em;color:rgba(201,168,76,0.5);margin-bottom:3px;">'+esc(nt)+(ov?' <span style="color:rgba(2,225,39,0.7);">● overridden</span>':'')+'</label>';
+                  h+='<textarea class="field-input am-pn" data-pn="'+esc(nt)+'" rows="2" style="width:100%;margin:0 0 10px;font-size:0.78rem;line-height:1.5;resize:vertical;">'+esc(pnCur(nt))+'</textarea>';
+                });
+                h+='<button class="am-pnsave" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:inherit;font-size:0.66rem;letter-spacing:0.12em;padding:6px 14px;cursor:pointer;border-radius:3px;">SAVE NOTE DESCRIPTIONS</button>';
+                h+='<button class="am-pnreset" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:rgba(201,168,76,0.55);font-family:inherit;font-size:0.66rem;letter-spacing:0.12em;padding:6px 12px;margin-left:6px;cursor:pointer;border-radius:3px;">RESET NOTES</button>';
+                h+='<span class="am-pnstatus" style="margin-left:10px;font-size:0.7rem;color:rgba(2,225,39,0.85);"></span>';
+              }
               h+='</div>';
             }
           }
@@ -2620,6 +2648,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Reverting…';}
         db.collection('siteConfig').doc('gameContent').set({games:_gcSaved}).then(function(){ render(); }).catch(function(e){ var s2=formEl.querySelector('.am-pagestatus[data-href="'+href+'"]'); if(s2){s2.style.color='rgba(251,56,56,0.9)';s2.textContent='Error';} });
       }); });
+      formEl.querySelectorAll('.am-pn').forEach(function(el){ el.addEventListener('input', function(){ _pnEdit[this.getAttribute('data-pn')]=this.value; }); });
+      formEl.querySelectorAll('.am-pnsave').forEach(function(b){ b.addEventListener('click', function(){
+        var notes={};
+        formEl.querySelectorAll('.am-pn').forEach(function(el){ var nt=el.getAttribute('data-pn'); var v=el.value.replace(/^\s+|\s+$/g,''); if(v && v!==(NOTE_DESC_DEFAULTS[nt]||'')) notes[nt]=v; });
+        var st=formEl.querySelector('.am-pnstatus');
+        if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Saving…';}
+        db.collection('siteConfig').doc('pitchNotes').set({notes:notes}).then(function(){ _pnSaved=notes; _pnEdit={}; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Saved ✦';} render(); }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error: '+((e&&e.message)||'failed');} });
+      }); });
+      formEl.querySelectorAll('.am-pnreset').forEach(function(b){ b.addEventListener('click', function(){
+        if(!confirm('Reset all 12 note descriptions to the hardcoded defaults?')) return;
+        var st=formEl.querySelector('.am-pnstatus');
+        if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Resetting…';}
+        db.collection('siteConfig').doc('pitchNotes').set({notes:{}}).then(function(){ _pnSaved={}; _pnEdit={}; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Reset ✦';} render(); }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error';} });
+      }); });
       var sv=document.getElementById('am-save');
       if(sv) sv.addEventListener('click', function(){
         var st=document.getElementById('am-status'); var cfg=collect();
@@ -2644,7 +2686,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       _amSaved={header:data.header||{},games:data.games||{}};
       db.collection('siteConfig').doc('gameContent').get().then(function(gd){
         _gcSaved=(gd.exists&&gd.data().games)||{};
-        render();
+        db.collection('siteConfig').doc('pitchNotes').get().then(function(pd){
+          _pnSaved=(pd.exists&&pd.data().notes)||{};
+          render();
+        }).catch(function(){ render(); });
       }).catch(function(){ render(); });
     }).catch(function(){ render(); });
   }

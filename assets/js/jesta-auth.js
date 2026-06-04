@@ -780,3 +780,31 @@ window.openSocial = function(platform) {
     } else if (++ct > 80) { clearInterval(civ); }
   }, 100);
 })();
+
+
+/* ── Pitch Oracle note-description overlay: siteConfig/pitchNotes → .ltn-desc per card (fallback-first, post-render DOM) ── */
+(function () {
+  if ((location.pathname.split('/').pop() || '') !== 'pitch-oracle.html') return;
+  var t = 0, iv = setInterval(function () {
+    if (window.jestaDB) {
+      clearInterval(iv);
+      window.jestaDB.collection('siteConfig').doc('pitchNotes').get().then(function (d) {
+        if (!d.exists) return;
+        var o = (d.data() && d.data().notes) || {};
+        var c = 0, av = setInterval(function () {
+          var cards = document.querySelectorAll('.ltn-card');
+          if (cards.length) {
+            clearInterval(av);
+            for (var i = 0; i < cards.length; i++) {
+              var nm = cards[i].querySelector('.ltn-note-name');
+              var de = cards[i].querySelector('.ltn-desc');
+              if (!nm || !de) continue;
+              var note = (nm.textContent || '').trim();
+              if (o[note] && (''+o[note]).trim()) de.textContent = o[note];
+            }
+          } else if (++c > 60) { clearInterval(av); }
+        }, 100);
+      }).catch(function () {});
+    } else if (++t > 80) { clearInterval(iv); }
+  }, 100);
+})();
