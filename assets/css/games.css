@@ -4,7 +4,7 @@
    byte-for-byte identical across files (path-adjusted for CSS location).
    ════════════════════════════════════════════════════════════════ */
 
-@font-face{font-family:'Luminari';src:url('../fonts/Luminari.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Luminari';src:url('../fonts/Luminari.woff2') format('woff2'),url('../fonts/Luminari.ttf') format('truetype');font-display:swap}
 
 button:focus-visible,
 a:focus-visible {
