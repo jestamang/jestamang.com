@@ -1719,6 +1719,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
 <script src="assets/js/admin-utils.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js" defer></script>
 <script src="assets/js/admin-cms.js" defer></script>
 <script src="assets/js/admin-games.js" defer></script>
 <script src="assets/js/admin-tools.js" defer></script>
@@ -5429,6 +5430,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           bulkTA.value = lines;
         }
       }));
+
+  panel.appendChild(window.__adminUtils.buildPhotoZipWidget({
+    maxDim: 1200, quality: 0.82, thumbDim: 500, thumbQuality: 0.80,
+    title: 'Compress + Thumbnail for Gallery (ZIP: photos/ + thumbs/)',
+    onDownload: function(baseName) {
+      var lines = bulkTA.value ? bulkTA.value.trimEnd() + '\n' + baseName : baseName;
+      bulkTA.value = lines;
+    }
+  }));
 
       var compDivider = document.createElement('div');
       compDivider.style.cssText = 'border-top:1px solid rgba(201,168,76,0.08);margin:14px 0;';

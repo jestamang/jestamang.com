@@ -118,3 +118,53 @@
     return wrap;
   };
 })();
+
+/* Gallery photos: full (maxDim) + thumb (thumbDim) -> one ZIP (photos/ + thumbs/). Reuses compressImage. */
+window.__adminUtils.buildPhotoZipWidget = function(opts){
+  opts = opts || {};
+  var maxDim = opts.maxDim || 1200, quality = opts.quality || 0.82;
+  var thumbDim = opts.thumbDim || 500, thumbQuality = opts.thumbQuality || 0.80;
+  var onDownload = opts.onDownload || function(){};
+  var U = window.__adminUtils;
+  var wrap = document.createElement('div');
+  if (opts.title){ var t=document.createElement('div'); t.textContent=opts.title; t.style.cssText='font-weight:bold;margin-bottom:8px;color:#c9a84c'; wrap.appendChild(t); }
+  var inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.multiple=true; inp.style.cssText='display:block;margin:8px 0'; wrap.appendChild(inp);
+  var status=document.createElement('div'); status.style.cssText='font-size:13px;opacity:.85;margin:8px 0'; wrap.appendChild(status);
+  var rows=document.createElement('div'); rows.style.cssText='display:flex;flex-direction:column;gap:5px;margin:8px 0'; wrap.appendChild(rows);
+  var dl=document.createElement('div'); dl.style.margin='10px 0'; wrap.appendChild(dl);
+  inp.addEventListener('change', function(){
+    var files=[].slice.call(inp.files); rows.innerHTML=''; dl.innerHTML='';
+    if(!files.length) return;
+    if(typeof JSZip==='undefined'){ status.textContent='ZIP library not loaded — refresh admin and retry.'; return; }
+    var zip=new JSZip(), pf=zip.folder('photos'), pt=zip.folder('thumbs'), i=0, ok=0, failed=0;
+    status.textContent='Processing 0/'+files.length+'…';
+    function nextFile(){
+      if(i>=files.length){ finish(); return; }
+      var file=files[i]; i++;
+      var outName=file.name.replace(/\.[^.]+$/,'')+'.jpg';
+      Promise.all([U.compressImage(file,maxDim,quality), U.compressImage(file,thumbDim,thumbQuality)]).then(function(b){
+        pf.file(outName,b[0]); pt.file(outName,b[1]); ok++;
+        onDownload(outName);
+        var r=document.createElement('div'); r.style.cssText='font-size:13px;opacity:.85';
+        r.textContent=outName+' — '+Math.round(file.size/1024)+'KB → full '+Math.round(b[0].size/1024)+'KB · thumb '+Math.round(b[1].size/1024)+'KB';
+        rows.appendChild(r);
+      }).catch(function(){
+        failed++; var r=document.createElement('div'); r.style.cssText='font-size:13px;color:#FB3838';
+        r.textContent=file.name+' — could not read (HEIC/RAW? export to JPEG first)'; rows.appendChild(r);
+      }).then(function(){ status.textContent='Processing '+(ok+failed)+'/'+files.length+'…'; nextFile(); });
+    }
+    function finish(){
+      if(!ok){ status.textContent='No images could be processed.'; return; }
+      status.textContent='Zipping '+ok+' photo'+(ok>1?'s':'')+(failed?(' ('+failed+' skipped)'):'')+'…';
+      zip.generateAsync({type:'blob'}).then(function(blob){
+        var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=(opts.zipName||'jesta-gallery-photos')+'.zip';
+        a.textContent='↓ DOWNLOAD ZIP ('+ok+' photo'+(ok>1?'s':'')+')';
+        a.style.cssText='display:inline-block;padding:9px 16px;border:1px solid #c9a84c;border-radius:6px;color:#c9a84c;text-decoration:none';
+        dl.appendChild(a);
+        status.textContent='Done. Unzip → photos/ to assets/photos/ , thumbs/ to assets/photos/thumbs/. Basenames added to Register Existing below.'+(failed?(' '+failed+' skipped.'):'');
+      });
+    }
+    nextFile();
+  });
+  return wrap;
+};
