@@ -144,7 +144,7 @@ var seen={},deduped=[];for(var _i=0;_i<rows.length;_i++){var _k=rows[_i].uid||ro
 var isTop=cur>0&&(rows.length===0||cur>rows[0].score);
 if(isTop&&bn)bn.style.display='block';
 tb.innerHTML='';
-if(!rows.length){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">BE THE FIRST TO MARK YOUR SCORE</td></tr>';return;}
+if(!rows.length){var _pbr=document.getElementById('lb-pb-row');if(_pbr&&/no personal best/i.test(_pbr.textContent))_pbr.innerHTML='';tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">BE THE FIRST TO MARK YOUR SCORE</td></tr>';return;}
 rows.forEach(function(r,i){
 var tr=document.createElement('tr');
 var cls=i===0?'lb-r1':i<3?'lb-r23':'';
