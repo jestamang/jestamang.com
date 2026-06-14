@@ -1971,6 +1971,47 @@ var NC = (function(){
   function mod360(x){ return ((x % 360) + 360) % 360; }
   function calcT(jd){ return (jd - 2451545.0) / 36525; }
 
+  /* --- Outer-planet precomputed table (Uranus/Neptune/Pluto) --- */
+  var JESTA_OP=null, JESTA_OP_READY=false;
+  function _opLonRaw(body, jd){           // tropical lon 0-360, or null if unavailable/out-of-range
+    if(!JESTA_OP) return null;
+    var arr=JESTA_OP.bodies[body]; if(!arr) return null;
+    var jd0=JESTA_OP.jd0, st=JESTA_OP.step, sc=JESTA_OP.scale;
+    var g=(jd-jd0)/st, k=Math.floor(g), fr=g-k;
+    if(k<1 || k>arr.length-3) return null;     // outside table -> fallback
+    var p0=arr[k-1],p1=arr[k],p2=arr[k+1],p3=arr[k+2];
+    var v=0.5*((2*p1)+(-p0+p2)*fr+(2*p0-5*p1+4*p2-p3)*fr*fr+(-p0+3*p1-3*p2+p3)*fr*fr*fr);
+    v=(v/sc)%360; if(v<0)v+=360; return v;
+  }
+  function opLon(body, jd){ return JESTA_OP_READY ? _opLonRaw(body, jd) : null; }
+  function _opSelfTest(){                 // verify data file + lookup reproduce the known chart
+    var jd=2451623.0576;                  // 2000-03-19 13:23:00 UTC
+    var exp={uranus:319.10, neptune:305.90, pluto:252.90};  // Aqu19, Aqu5, Sgr12
+    for(var b in exp){
+      var v=_opLonRaw(b, jd); if(v===null) return false;
+      var d=Math.abs(((v-exp[b]+540)%360)-180);
+      if(d>0.0834) return false;          // 5 arcmin tolerance
+    }
+    return true;
+  }
+  function jestaLoadOP(){
+    try{
+      var x=new XMLHttpRequest();
+      x.open('GET','assets/data/jesta-outer-planets.json',true);
+      x.onreadystatechange=function(){
+        if(x.readyState===4){
+          if(x.status===200||x.status===0){
+            try{ JESTA_OP=JSON.parse(x.responseText); JESTA_OP_READY=_opSelfTest();
+                 if(!JESTA_OP_READY) console.warn('[zodiac] outer-planet table self-test failed; using fallback math');
+            }catch(e){ JESTA_OP=null; console.warn('[zodiac] outer-planet table parse failed; fallback'); }
+          }
+        }
+      };
+      x.send();
+    }catch(e){ JESTA_OP=null; }
+  }
+  jestaLoadOP();
+
   function toJulianDate(year, month, day, hour, minute, second){
     second = second || 0;
     if(month <= 2){ year--; month += 12; }
@@ -2226,6 +2267,7 @@ var NC = (function(){
 
   // Uranus geocentric longitude — VSOP87 Meeus Table 33.a + Keplerian geocentric
   function uranusLongitude(jd){
+    var _u=opLon('uranus',jd); if(_u!==null) return _u;
     var T=calcT(jd), tau=T/10;
     var L0=_vsop([
       [548129294.619,0,0],
@@ -2266,13 +2308,14 @@ var NC = (function(){
   // The 10-term truncated VSOP87 was removed: it introduced 125' of heliocentric
   // truncation error (consistently 100-190' too high for 2000-2020), which was
   // far worse than the pure Keplerian (~35'). The same approach was used for Pluto.
-  function neptuneLongitude(jd){ return planetLongitude('Neptune', jd); }
+  function neptuneLongitude(jd){ var _n=opLon('neptune',jd); if(_n!==null) return _n; return planetLongitude('Neptune', jd); }
 
   // Pluto geocentric longitude — Keplerian 3-D orbit (J2000 elements)
   // Note: the Meeus Ch.37 perturbation table was removed because its heliocentric
   // longitude output was ~2.6° too high for dates near J2000, causing a 165' geocentric
   // error that is worse than the pure Keplerian (tested error: ~7').
   function plutoLongitude(jd){
+    var _p=opLon('pluto',jd); if(_p!==null) return _p;
     var T=calcT(jd);
     var el=PLANET_ELEMENTS['Pluto'];
     var varpi=mod360(el.omega0+el.omegaR*T);

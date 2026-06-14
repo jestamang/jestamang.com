@@ -4,7 +4,7 @@
 // UPDATE CACHE_VERSION DATE ON EVERY PUSH
 // ════════════════════════════════════════════════════════════════
 
-var CACHE_NAME = 'jestamang-v371';
+var CACHE_NAME = 'jestamang-v372';
 var BADGE      = '/assets/icons/icon-192.png';
 
 var PRECACHE_URLS = [
@@ -43,7 +43,8 @@ var PRECACHE_URLS = [
   '/assets/js/firebase-config.js',
   '/assets/js/jesta-auth.js',
   '/assets/js/jesta-leaderboard.js',
-  '/assets/js/jesta-search-index.js'
+  '/assets/js/jesta-search-index.js',
+  '/assets/data/jesta-outer-planets.json'
 ];
 
 // ── Install: precache core assets ────────────────────────────
