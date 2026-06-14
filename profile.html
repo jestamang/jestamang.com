@@ -4728,7 +4728,8 @@ document.addEventListener('DOMContentLoaded', function(){
     if(_pobLat !== null && _pobLng !== null){
       _withCoords(_pobLat, _pobLng, _pobDisplayName || pobVal);
     } else {
-      fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(pobVal) + '&format=json&limit=1&addressdetails=1', {
+      // No dropdown selection — geocode with multiple results; proceed only if unambiguous, else force a choice
+      fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(pobVal) + '&format=json&limit=10&dedupe=1&addressdetails=1', {
         headers: { 'Accept-Language': 'en', 'User-Agent': 'Jestamang/1.0 (jestamang.com)' }
       })
       .then(function(r){ return r.json(); })
@@ -4739,13 +4740,50 @@ document.addEventListener('DOMContentLoaded', function(){
           setError('This location is unknown to the cosmic record. Try a nearby city or more specific name.');
           return;
         }
-        _withCoords(parseFloat(data[0].lat), parseFloat(data[0].lon), _pobCleanName(data[0]));
+        // Dedupe exactly like the autocomplete (clean name + 0.1 deg proximity)
+        var seenNames = {}, seenCoords = [], unique = [];
+        data.forEach(function(rr){
+          var nm = _pobCleanName(rr); if(!nm || seenNames[nm]) return;
+          var la = parseFloat(rr.lat), ln = parseFloat(rr.lon);
+          var close = seenCoords.some(function(c){ return Math.abs(c[0]-la) < 0.1 && Math.abs(c[1]-ln) < 0.1; });
+          if(close) return;
+          seenNames[nm] = true; seenCoords.push([la, ln]); unique.push(rr);
+        });
+        if(unique.length === 1){
+          var r0 = unique[0];
+          _withCoords(parseFloat(r0.lat), parseFloat(r0.lon), _pobCleanName(r0));
+          return;
+        }
+        // Ambiguous — never auto-pick; force the user to choose from the dropdown
+        hideLoading();
+        document.getElementById('natal-form-area').style.display = 'block';
+        var box = document.getElementById('nc-pob-suggestions');
+        if(box){
+          box.innerHTML = '';
+          _pobActiveIdx = -1;
+          unique.slice(0, 10).forEach(function(rr){
+            var item = document.createElement('div');
+            item.className = 'nc-pob-sug-item';
+            item.setAttribute('role','option');
+            item.textContent = _pobCleanName(rr);
+            item.addEventListener('mousedown', function(e){
+              e.preventDefault();
+              _pobSelectResult(rr);
+              _withCoords(parseFloat(rr.lat), parseFloat(rr.lon), _pobCleanName(rr));
+            });
+            box.appendChild(item);
+          });
+          box.classList.add('open');
+        }
+        _pobSetStatus('not-found', 'Several places share that name — choose yours from the list.');
+        var inp = document.getElementById('nc-pob');
+        if(inp){ try { inp.focus(); } catch(e){} try { inp.scrollIntoView({block:'center'}); } catch(e){} }
       })
       .catch(function(e){
         console.error('Geocoding error:', e);
         hideLoading();
         document.getElementById('natal-form-area').style.display = 'block';
-        setError('Could not reach the celestial coordinates service. Check your connection and try again.');
+        setError('Could not reach the location service. Check your connection and try again.');
       });
     }
   }
