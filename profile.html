@@ -1986,7 +1986,7 @@ var NC = (function(){
   function opLon(body, jd){ return JESTA_OP_READY ? _opLonRaw(body, jd) : null; }
   function _opSelfTest(){                 // verify data file + lookup reproduce the known chart
     var jd=2451623.0576;                  // 2000-03-19 13:23:00 UTC
-    var exp={uranus:319.10, neptune:305.90, pluto:252.90};  // Aqu19, Aqu5, Sgr12
+    var exp={uranus:319.10, neptune:305.90, pluto:252.90, chiron:257.18};  // Aqu19, Aqu5, Sgr12
     for(var b in exp){
       var v=_opLonRaw(b, jd); if(v===null) return false;
       var d=Math.abs(((v-exp[b]+540)%360)-180);
@@ -2209,6 +2209,7 @@ var NC = (function(){
 
   // Chiron — Keplerian orbit with equation of center (e=0.38276, period ~50.76 yr)
   function chironLongitude(jd){
+    var _c=opLon('chiron',jd); if(_c!==null) return _c;
     var T = calcT(jd);
     var D = jd - 2451545.0;
 
