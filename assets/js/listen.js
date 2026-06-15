@@ -135,15 +135,33 @@
   function $id(id) { return document.getElementById(id); }
 
   /* ---- UI ---- */
+  function _preloadCovers(list) {
+    if (!list || !list.length) return;
+    var urls = [], seen = {}, i;
+    for (i = 0; i < list.length; i++) {
+      var u = list[i] && list[i].artwork;
+      if (u && !seen[u]) { seen[u] = 1; urls.push(u); }
+    }
+    var n = 0;
+    (function next() {
+      if (n >= urls.length) return;
+      (new Image()).src = urls[n++];
+      setTimeout(next, 120); // gentle stagger so it doesn't fight the audio stream
+    })();
+  }
+
   function setArt(url) {
     var el = $id('lc-artwork');
     if (!el) return;
-    if (url) {
-      el.src = url;
-      el.classList.remove('lc-art-fallback');
-    } else {
+    if (!url) {
       el.src = 'assets/homepage/logo png.png';
       el.classList.add('lc-art-fallback');
+    } else {
+      // Preload the new cover; swap it in only once it's ready, so we never show the previous song's art during the fetch
+      var _pre = new Image();
+      _pre.onload  = function () { el.src = url; el.classList.remove('lc-art-fallback'); };
+      _pre.onerror = function () { el.src = url; el.classList.remove('lc-art-fallback'); };
+      _pre.src = url;
     }
     function _clearSwitching() {
       if (switchTmr) { clearTimeout(switchTmr); switchTmr = null; }
@@ -502,6 +520,7 @@
             showLoad(false); showErr('empty'); return;
           }
           allTracks = raw;
+          _preloadCovers(allTracks);
           applyStation(pendingStation);
           var isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
           if (isIos) {
