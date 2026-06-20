@@ -4,7 +4,7 @@
 <meta name="google-site-verification" content="F0vLeLanJlIFwutiQUULIfp1ffXuDX1-n6afZ1QkSUo" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jestamang · A Psychedelic Music Collective</title>
-<meta name="description" content="Jestamang is a psychedelic music collective of 25+ artist entities releasing one album per month. Listen, explore lyrics, discover the mythology.">
+<meta name="description" content="A psychedelic-folk collective built as a total artwork — 27 entities, an invented cosmology, 37 albums, and a working natal-chart calculator. Step inside the mythology.">
 <meta name="keywords" content="Jestamang, psychedelic music, experimental, indie collective, Quarter Days, NONS, 2K2123, Jestamang universe, psychedelic rock, psychedelic collective, experimental rock, Fort Myers">
 <meta name="robots" content="index, follow">
 <meta name="google-site-verification" content="Nq194oD8bHihUs_4k9kMwPX9WW7mstyrY7ytw4Fvx6g">
@@ -13,12 +13,12 @@
 <meta property="og:site_name" content="Jestamang">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Jestamang · A Psychedelic Music Collective">
-<meta property="og:description" content="Jestamang is a psychedelic music collective of 25+ artist entities releasing one album per month. Listen, explore lyrics, discover the mythology.">
+<meta property="og:description" content="A psychedelic-folk collective built as a total artwork — 27 entities, an invented cosmology, 37 albums, and a working natal-chart calculator. Step inside the mythology.">
 <meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 <meta property="og:url" content="https://jestamang.com/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Jestamang · A Psychedelic Music Collective">
-<meta name="twitter:description" content="Jestamang is a psychedelic music collective of 25+ artist entities releasing one album per month. Listen, explore lyrics, discover the mythology.">
+<meta name="twitter:description" content="A psychedelic-folk collective built as a total artwork — 27 entities, an invented cosmology, 37 albums, and a working natal-chart calculator. Step inside the mythology.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
    
 <script type="application/ld+json">
@@ -32,7 +32,7 @@
     "Experimental",
     "Indie"
   ],
-  "description": "Experimental psychedelic music collective based in Fort Myers, FL, releasing one album per month across a rotating roster of artist entities organized around the Quarter Days — the solstices and equinoxes.",
+  "description": "Experimental psychedelic-folk collective based in Fort Myers, FL — a rotating roster of 27 artist entities releasing across the Quarter Days, anchored to an invented cosmology and a 37-album catalog.",
   "image": "https://jestamang.com/assets/homepage/logo%20png.png",
   "sameAs": [
     "https://open.spotify.com/artist/7cbDkEdfEILr6evXmvLO7P",
@@ -344,7 +344,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
       <!-- ── Featured show card ──────────────────────────────── -->
       <!-- Update date/ticket link in shows.html when confirmed  -->
-      <div class="hp-show-card">
+      <div class="hp-show-card" data-show-date="2026-05-29">
         <p class="hp-show-date-ritual">MAY 29 &nbsp;·&nbsp; '26</p>
         <h3 class="hp-show-venue-name">Madhouse</h3>
         <p class="hp-show-lineup" style="font-family:'Luminari',serif;font-style:italic;font-size:0.72rem;color:rgba(var(--gold-rgb,201,168,76),0.7);text-align:center;letter-spacing:0.06em;margin:4px 0 6px;">Madhouse - Sataria, Jestamang, Simon Says Nothing, Whatever</p>
@@ -352,6 +352,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         <div class="hp-show-rule-c"></div>
         <a href="https://www.eventbrite.com/e/madhouse-sataria-jestamang-whatever-simon-says-nothing-gutter-love-tickets-1986858167263?aff=oddtdtcreator" target="_blank" rel="noopener noreferrer" class="hp-show-btn-c">Get Tickets</a>
       </div>
+      <p class="hp-show-none" style="display:none;font-family:'Luminari',serif;font-style:italic;font-size:0.82rem;color:rgba(var(--gold-rgb,201,168,76),0.75);text-align:center;letter-spacing:0.05em;padding:18px 0;">No upcoming appearances right now — <a href="shows.html" style="color:var(--gold,#c9a84c);text-decoration:underline;">view past shows&nbsp;&#8594;</a></p>
 
       <div class="hp-conj-viewall">
         <a href="shows.html">View all appearances &nbsp;&#8594;</a>
@@ -1235,6 +1236,20 @@ document.addEventListener('DOMContentLoaded',eotdInit);
         preview.insertBefore(frag, anchor);
       }
     }).catch(function(){ /* offline / error → hardcoded order stays */ });
+  }
+})();
+</script>
+<script>
+(function(){
+  var card=document.querySelector('.hp-show-card[data-show-date]');
+  if(!card) return;
+  var d=card.getAttribute('data-show-date');
+  var end=new Date(d+'T23:59:59'); // keep showing through the event day
+  if(isNaN(end.getTime())) return;
+  if(Date.now() > end.getTime()){
+    card.style.display='none';
+    var none=document.querySelector('.hp-show-none');
+    if(none) none.style.display='block';
   }
 })();
 </script>
