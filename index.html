@@ -344,7 +344,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
       <!-- ── Featured show card ──────────────────────────────── -->
       <!-- Update date/ticket link in shows.html when confirmed  -->
-      <div class="hp-show-card" data-show-date="2026-05-29">
+      <div class="hp-show-card">
         <p class="hp-show-date-ritual">MAY 29 &nbsp;·&nbsp; '26</p>
         <h3 class="hp-show-venue-name">Madhouse</h3>
         <p class="hp-show-lineup" style="font-family:'Luminari',serif;font-style:italic;font-size:0.72rem;color:rgba(var(--gold-rgb,201,168,76),0.7);text-align:center;letter-spacing:0.06em;margin:4px 0 6px;">Madhouse - Sataria, Jestamang, Simon Says Nothing, Whatever</p>
@@ -352,7 +352,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         <div class="hp-show-rule-c"></div>
         <a href="https://www.eventbrite.com/e/madhouse-sataria-jestamang-whatever-simon-says-nothing-gutter-love-tickets-1986858167263?aff=oddtdtcreator" target="_blank" rel="noopener noreferrer" class="hp-show-btn-c">Get Tickets</a>
       </div>
-      <p class="hp-show-none" style="display:none;font-family:'Luminari',serif;font-style:italic;font-size:0.82rem;color:rgba(var(--gold-rgb,201,168,76),0.75);text-align:center;letter-spacing:0.05em;padding:18px 0;">No upcoming appearances right now — <a href="shows.html" style="color:var(--gold,#c9a84c);text-decoration:underline;">view past shows&nbsp;&#8594;</a></p>
 
       <div class="hp-conj-viewall">
         <a href="shows.html">View all appearances &nbsp;&#8594;</a>
@@ -1236,20 +1235,6 @@ document.addEventListener('DOMContentLoaded',eotdInit);
         preview.insertBefore(frag, anchor);
       }
     }).catch(function(){ /* offline / error → hardcoded order stays */ });
-  }
-})();
-</script>
-<script>
-(function(){
-  var card=document.querySelector('.hp-show-card[data-show-date]');
-  if(!card) return;
-  var d=card.getAttribute('data-show-date');
-  var end=new Date(d+'T23:59:59'); // keep showing through the event day
-  if(isNaN(end.getTime())) return;
-  if(Date.now() > end.getTime()){
-    card.style.display='none';
-    var none=document.querySelector('.hp-show-none');
-    if(none) none.style.display='block';
   }
 })();
 </script>
