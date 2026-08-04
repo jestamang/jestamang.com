@@ -1115,7 +1115,7 @@ document.addEventListener('DOMContentLoaded',eotdInit);
             _setS('.hp-show-lineup', _sx.lineup);
             _setS('.hp-show-location', _sx.location);
             var _sbtn = _ssec.querySelector('.hp-show-btn-c');
-            if (_sbtn) { if (_sx.btnText && _sx.btnText.trim()) _sbtn.textContent = _sx.btnText; if (_sx.btnUrl && _sx.btnUrl.trim()) _sbtn.href = _sx.btnUrl; }
+            if (_sbtn) { var _bu = (_sx.btnUrl && _sx.btnUrl.trim()) ? _sx.btnUrl.trim() : ''; var _bt = (_sx.btnText && _sx.btnText.trim()) ? _sx.btnText.trim() : ''; if (_bt.slice(0,4) === 'http') { if (!_bu) _bu = _bt; _bt = ''; } if (_bt) _sbtn.textContent = _bt; if (_bu) _sbtn.href = _bu; }
             var _sva = _ssec.querySelector('.hp-conj-viewall a');
             if (_sva && _sx.viewall && _sx.viewall.trim()) _sva.textContent = _sx.viewall;
           }
