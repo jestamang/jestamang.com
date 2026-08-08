@@ -219,7 +219,7 @@ function parseBgRgb(s){var m=s.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
   function entSlug(n){return ENT_SLUG[n]||String(n||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
   function buildDossier(d,idx){
     var bg=d.bgColor||'rgba(0,0,0,0.62)',rgb=parseBgRgb(bg);
-    var bgStyle=rgb?'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',0.15)':bg;
+    var bgStyle='rgba(0,0,0,0.85)';
     var bright=rgb?brightenRgb(rgb[0],rgb[1],rgb[2]):null;var accent=bright?'rgb('+bright[0]+','+bright[1]+','+bright[2]+')':'rgba(var(--gold-rgb,201,168,76),0.6)';
     var n={},_rn=d.natal||CHILD_NATAL[d.name]||{};
     Object.keys(_rn).forEach(function(k){n[k.toLowerCase()]=_rn[k];});
