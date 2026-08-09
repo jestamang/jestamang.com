@@ -223,7 +223,7 @@ function parseBgRgb(s){var m=s.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
     var bright=rgb?brightenRgb(rgb[0],rgb[1],rgb[2]):null;var accent=bright?'rgb('+bright[0]+','+bright[1]+','+bright[2]+')':'rgba(var(--gold-rgb,201,168,76),0.6)';
     var n={},_rn=d.natal||CHILD_NATAL[d.name]||{};
     Object.keys(_rn).forEach(function(k){n[k.toLowerCase()]=_rn[k];});
-    var _cn=CHILD_NATAL[d.name];if(!n.houses&&_cn&&_cn.houses)n.houses=_cn.houses;
+    var _cn=CHILD_NATAL[d.name];if(!n.houses&&_cn&&_cn.houses)n.houses=_cn.houses; if(n['south node']&&n['north node']&&n['south node'].indexOf('(')===-1){var _snm=n['north node'].match(/\(([IVX]+)\s*House\)/);if(_snm){var _R={I:1,II:2,III:3,IV:4,V:5,VI:6,VII:7,VIII:8,IX:9,X:10,XI:11,XII:12},_RR=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'],_nh=_R[_snm[1]];if(_nh)n['south node']=n['south node']+' ('+_RR[(_nh+5)%12]+' House)';}}
     var planets='';
     PLANETS.forEach(function(p){var v=n[p.key];if(!v)return;
       planets+='<div class="dossier-row"><span class="doss-glyph">'+zodiacGlyph(v)+'</span><span class="doss-label">'+p.label+'</span><span class="doss-value">'+esc(v)+'</span><span class="doss-planet-sym">'+p.sym+'</span></div>';
