@@ -1,0 +1,16 @@
+# GitHub Pages (Jekyll) build config.
+# Pages have no YAML front matter, so Jekyll copies them verbatim; this file only
+# controls which repo files are published. Keep backend config and housekeeping
+# files out of the public site.
+exclude:
+  - firestore.rules
+  - firestore.indexes.json
+  - firebase.json
+  - skills-lock.json
+  - CHANGELOG.txt
+  - BACKUP-LOG.txt
+  - README.md
+  - lyrics.html.bak2
+  - scripts/
+  - backups/
+  - node_modules/
