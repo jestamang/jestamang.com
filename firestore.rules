@@ -36,6 +36,11 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /albumSections/{docId} {
+      allow read:  if true;
+      allow write: if isAdmin();
+    }
+
     match /photos/{docId} {
       allow read:  if true;
       allow write: if isAdmin();
@@ -79,8 +84,28 @@ service cloud.firestore {
 
     // ── LEADERBOARDS & SCORES ────────────────────────────────────────────────
     match /leaderboards/{entryId} {
+      // Validate exactly what the games send: game, name, score, uid, photoURL,
+      // timestamp (serverTimestamp), and Memory Vault's boolean `flawless`.
       allow read:   if true;
-      allow create: if isSignedIn();
+      allow create: if isSignedIn()
+                    && request.resource.data.keys().hasAll(['game','name','score','uid','timestamp'])
+                    && request.resource.data.keys().hasOnly(['game','name','score','uid','photoURL','timestamp','flawless'])
+                    && request.resource.data.game is string
+                    && request.resource.data.game.size() > 0
+                    && request.resource.data.game.size() <= 40
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() <= 40
+                    && request.resource.data.score is number
+                    && request.resource.data.score >= 0
+                    && request.resource.data.score <= 10000000
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.timestamp == request.time
+                    && (!('photoURL' in request.resource.data)
+                        || request.resource.data.photoURL == null
+                        || (request.resource.data.photoURL is string
+                            && request.resource.data.photoURL.size() <= 500))
+                    && (!('flawless' in request.resource.data)
+                        || request.resource.data.flawless is bool);
       allow update: if false;
       allow delete: if isAdmin();
     }
@@ -154,13 +179,27 @@ service cloud.firestore {
     }
 
 
-    // ── FAVORITES ────────────────────────────────────────────────────────────
-    match /favorites/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
+    // ── MEMBER UPDATES (members-only writings) ───────────────────────────────
+    match /membersUpdates/{docId} {
+      allow read:  if isSignedIn();
+      allow write: if isAdmin();
+    }
 
-      match /{item=**} {
-        allow read, write: if isOwner(userId) || isAdmin();
-      }
+
+    // ── FAVORITES ────────────────────────────────────────────────────────────
+    // Flat collection with auto IDs; the owner is recorded in `userId`
+    // (albums.html and profile.html query .where('userId','==',uid)).
+    match /favorites/{docId} {
+      allow read:   if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn()
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.keys().hasOnly(['userId','songTitle','artist','album','savedAt'])
+                    && request.resource.data.songTitle is string
+                    && request.resource.data.songTitle.size() <= 200
+                    && request.resource.data.artist is string
+                    && request.resource.data.artist.size() <= 200;
+      allow update: if false;
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
     }
 
 
@@ -171,9 +210,14 @@ service cloud.firestore {
     }
 
 
-    // ── NOTIFICATIONS ────────────────────────────────────────────────────────
+    // ── NOTIFICATIONS (transmissions) ────────────────────────────────────────
     match /notifications/{notifId} {
-      allow read, write: if isAdmin();
+      allow read:           if isSignedIn();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin()
+                    || (isSignedIn()
+                        && request.resource.data.diff(resource.data)
+                             .affectedKeys().hasOnly(['seen']));
     }
 
 
