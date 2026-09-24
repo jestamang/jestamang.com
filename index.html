@@ -222,15 +222,15 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 {
   "@context": "https://schema.org",
   "@type": "Event",
-  "name": "Jestamang Live",
-  "startDate": "2026-06-21T20:00:00-04:00",
-  "endDate": "2026-06-21T23:00:00-04:00",
+  "name": "Jestamang Live at 239 Underground",
+  "startDate": "2026-10-17T17:00:00-04:00",
+  "endDate": "2026-10-17T20:00:00-04:00",
   "location": {
     "@type": "Place",
-    "name": "Ft. Myers, FL",
+    "name": "239 Underground",
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": "Fort Myers",
+      "addressLocality": "Cape Coral",
       "addressRegion": "FL",
       "addressCountry": "US"
     }
@@ -243,7 +243,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   "eventStatus": "https://schema.org/EventScheduled",
   "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
   "image": "https://jestamang.com/assets/homepage/logo%20png.png",
-  "description": "Jestamang performing live in Fort Myers, FL. Presented by Jestamang.",
+  "description": "Jestamang performing live at 239 Underground. Presented by Jestamang.",
   "performer": {
     "@type": "MusicGroup",
     "name": "Jestamang"
@@ -254,7 +254,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     "price": "0",
     "priceCurrency": "USD",
     "availability": "https://schema.org/InStock",
-    "validFrom": "2026-05-22"
+    "validFrom": "2026-09-17"
   }
 }
 </script>
@@ -343,14 +343,16 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       </div>
 
       <!-- ── Featured show card ──────────────────────────────── -->
-      <!-- Update date/ticket link in shows.html when confirmed  -->
+      <!-- Static fallback. Mirrors Firestore siteConfig/indexSections -> shows.extras
+           (Admin > Index Manager). The JS overlay below replaces these values on load;
+           keep both in sync so crawlers and the overlay agree. -->
       <div class="hp-show-card">
-        <p class="hp-show-date-ritual">MAY 29 &nbsp;·&nbsp; '26</p>
-        <h3 class="hp-show-venue-name">Madhouse</h3>
-        <p class="hp-show-lineup" style="font-family:'Luminari',serif;font-style:italic;font-size:0.72rem;color:rgba(var(--gold-rgb,201,168,76),0.7);text-align:center;letter-spacing:0.06em;margin:4px 0 6px;">Madhouse - Sataria, Jestamang, Simon Says Nothing, Whatever</p>
-        <p class="hp-show-location">Ft. Myers, FL</p>
+        <p class="hp-show-date-ritual">OCT / 17 / 2026</p>
+        <h3 class="hp-show-venue-name">239 Underground</h3>
+        <p class="hp-show-lineup" style="font-family:'Luminari',serif;font-style:italic;font-size:0.72rem;color:rgba(var(--gold-rgb,201,168,76),0.7);text-align:center;letter-spacing:0.06em;margin:4px 0 6px;">Jestamang, The Glow of Streetlights, I'm Like the Blue Rose etc.</p>
+        <p class="hp-show-location">Cape Coral, FL</p>
         <div class="hp-show-rule-c"></div>
-        <a href="https://www.eventbrite.com/e/madhouse-sataria-jestamang-whatever-simon-says-nothing-gutter-love-tickets-1986858167263?aff=oddtdtcreator" target="_blank" rel="noopener noreferrer" class="hp-show-btn-c">Get Tickets</a>
+        <a href="https://jestamang.com/shows.html" target="_blank" rel="noopener noreferrer" class="hp-show-btn-c">Kava Nirvana Speakeasy</a>
       </div>
 
       <div class="hp-conj-viewall">
