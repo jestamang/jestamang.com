@@ -188,15 +188,15 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 {
   "@context": "https://schema.org",
   "@type": "Event",
-  "name": "Jestamang Live",
-  "startDate": "2026-06-21T20:00:00-04:00",
-  "endDate": "2026-06-21T23:00:00-04:00",
+  "name": "Jestamang Live at 239 Underground",
+  "startDate": "2026-10-17T17:00:00-04:00",
+  "endDate": "2026-10-17T20:00:00-04:00",
   "location": {
     "@type": "Place",
-    "name": "Ft. Myers, FL",
+    "name": "239 Underground",
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": "Fort Myers",
+      "addressLocality": "Cape Coral",
       "addressRegion": "FL",
       "addressCountry": "US"
     }
@@ -208,8 +208,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   },
   "eventStatus": "https://schema.org/EventScheduled",
   "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-  "image": "https://jestamang.com/assets/homepage/jesta-logo.png",
-  "description": "Jestamang performing live in Fort Myers, FL. Presented by Jestamang.",
+  "image": "https://jestamang.com/assets/homepage/logo%20png.png",
+  "description": "Jestamang performing live at 239 Underground. Presented by Jestamang.",
   "performer": {
     "@type": "MusicGroup",
     "name": "Jestamang"
@@ -220,7 +220,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     "price": "0",
     "priceCurrency": "USD",
     "availability": "https://schema.org/InStock",
-    "validFrom": "2026-05-22"
+    "validFrom": "2026-09-17"
   }
 }
 </script>
@@ -235,43 +235,29 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <a href="index.html" class="home-btn">&#8592; Home</a> <div class="page-wrap" id="main-content"> <header class="header"> <h1 class="header-title">Shows</h1> <p class="header-subtitle">the physical world</p> <div class="header-ornament">✦</div> </header> <h2 class="section-heading">Upcoming</h2>
 
 <!-- ═══════════════════════════════════════════════════════════════════
-     ADD SHOW: Copy the article block below and paste a new one above it.
-     Fill in each field:
-       show-date   → ritual date format: "APRIL · XIV · MMXXVI"
-       show-venue  → venue name
-       show-city   → city and state
-       show-detail → time, any details (e.g. "Doors 8PM · $10 at the door")
-       TICKETS href → paste any ticket URL here (Eventbrite, Dice, Ticketmaster, direct venue, etc.)
-
-     TICKET STATE OPTIONS (uncomment the one that applies):
-       Standard:  <a class="show-ticket-btn" href="TICKET_URL">Acquire Entry</a>
-       Free:      <span class="show-free-entry">Free Entry</span>
-       Sold out:  <span class="show-sold-out">The Conjuring Is Full</span>
+     SHOWS are managed in Admin > Conjuring Manager (Firestore `shows`).
+     The static fallback card and past list below are what crawlers and no-JS
+     visitors see; keep them mirroring Firestore when a show is added or passes.
      ═══════════════════════════════════════════════════════════════════ -->
-
-<!-- retired v275 — upcoming now Firestore-driven via Conjuring Manager. Reversible.
-     (Hardcoded Madhouse card kept commented; inner dev-hint comment markers removed so this block wraps cleanly with no stray closer.)
-<article class="show-card show-card--tba">
-  <span class="show-numeral">I</span>
-  <span class="show-status">Forthcoming</span>
-  <p class="show-date">MAY 29 · '26</p>
-  <h3 class="show-venue" style="text-align:center">Madhouse</h3>
-  <p style="font-family:'Luminari',serif;font-style:italic;font-size:0.72rem;color:rgba(var(--gold-rgb,201,168,76),0.7);text-align:center;letter-spacing:0.06em;margin:4px 0 6px;">Madhouse - Sataria, Jestamang, Simon Says Nothing, Whatever</p>
-  <p class="show-city">Ft. Myers, FL</p>
-  <div class="show-rule"></div>
-  <p class="show-detail" style="text-align:center">Watch the seasons. The calendar knows.</p>
-  <div class="show-ticket-wrap" style="text-align:center">
-    <a class="show-ticket-btn" href="https://www.eventbrite.com/e/madhouse-sataria-jestamang-whatever-simon-says-nothing-gutter-love-tickets-1986858167263?aff=oddtdtcreator" target="_blank" rel="noopener noreferrer">Get Tickets</a>
-  </div>
-</article>
--->
 
 <!-- ══ DYNAMIC SHOWS — loaded from Firestore shows collection ══ -->
 <div id="shows-loading" style="display:none;"></div>
 <div id="shows-upcoming"></div>
 
-<!-- Fallback: displayed only if Firestore fails -->
-<div id="shows-fallback"></div>
+<!-- Static fallback: what crawlers and no-JS visitors see, and what stays if Firestore fails.
+     Mirrors the next `shows` doc exactly as renderUpcoming() would draw it. Update when the show changes. -->
+<div id="shows-fallback">
+<article class="show-card visible">
+  <span class="show-numeral">I</span>
+  <span class="show-status">Upcoming</span>
+  <p class="show-date">Oct 17, ’26</p>
+  <h3 class="show-venue">239 Underground</h3>
+  <p class="show-city">Cape Coral</p>
+  <div class="show-rule"></div>
+  <p class="show-detail" style="text-align:center">Kava Nirvana Speakeasy/Thieves Den. 5PM-1AM</p>
+  <p class="show-detail">Doors 5:00 PM · $10</p>
+</article>
+</div>
 
 <section id="shows-past-section" class="past-section" style="display:none;">
   <h2 class="section-heading">Past Shows</h2>
@@ -280,7 +266,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 </section>
 
 <!-- Fallback past list: displayed only if Firestore fails -->
-<section id="shows-past-fallback" class="past-section"> <h2 class="section-heading">Past Shows</h2> <ul class="past-list"> <li class="past-entry"> <span class="past-date">Feb 21, '26</span> <span class="past-venue">Prison Break</span> <span class="past-city">Immokalee, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 11, '25</span> <span class="past-venue">Kava Culture</span> <span class="past-city">Bonita Springs, FL</span> </li> <li class="past-entry"> <span class="past-date">Jul 23, '25</span> <span class="past-venue">529</span> <span class="past-city">Atlanta, GA</span> </li> <li class="past-entry"> <span class="past-date">Jun 20, '25</span> <span class="past-venue">Summer Solstice Parade</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">May 7, '25</span> <span class="past-venue">The Hanging Gardens</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Apr 15, '25</span> <span class="past-venue">WSLR 96.5</span> <span class="past-city">Sarasota, FL</span> </li> <li class="past-entry"> <span class="past-date">Feb 21, '25</span> <span class="past-venue">Soundgarden</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Jan 18, '25</span> <span class="past-venue">Beach Records</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Jan 17, '25</span> <span class="past-venue">Sidney Berne &amp; Davis Art Center</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 7, '24</span> <span class="past-venue">Beach Records</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 3, '24</span> <span class="past-venue">WSLR 96.5</span> <span class="past-city">Sarasota, FL</span> </li> <li class="past-entry"> <span class="past-date">Oct 26, '24</span> <span class="past-venue">Lost World Books</span> <span class="past-city">Ft. Myers, FL</span> </li> </ul> </section>
+<section id="shows-past-fallback" class="past-section"> <h2 class="section-heading">Past Shows</h2> <ul class="past-list"> <li class="past-entry"> <span class="past-date">Sep 5, ’26</span> <span class="past-venue">Glitchhouse</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">May 29, ’26</span> <span class="past-venue">Madhouse</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Feb 21, ’26</span> <span class="past-venue">Prison Break</span> <span class="past-city">Immokalee, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 11, ’25</span> <span class="past-venue">Kava Culture</span> <span class="past-city">Bonita Springs, FL</span> </li> <li class="past-entry"> <span class="past-date">Jul 23, ’25</span> <span class="past-venue">529</span> <span class="past-city">Atlanta, GA</span> </li> <li class="past-entry"> <span class="past-date">Jun 20, ’25</span> <span class="past-venue">Summer Solstice Parade</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">May 7, ’25</span> <span class="past-venue">The Hanging Gardens</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Apr 15, ’25</span> <span class="past-venue">WSLR 96.5</span> <span class="past-city">Sarasota, FL</span> </li> <li class="past-entry"> <span class="past-date">Feb 21, ’25</span> <span class="past-venue">Soundgarden</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Jan 18, ’25</span> <span class="past-venue">Beach Records</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Jan 17, ’25</span> <span class="past-venue">Sidney Berne &amp; Davis Art Center</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 7, ’24</span> <span class="past-venue">Beach Records</span> <span class="past-city">Ft. Myers, FL</span> </li> <li class="past-entry"> <span class="past-date">Dec 3, ’24</span> <span class="past-venue">WSLR 96.5</span> <span class="past-city">Sarasota, FL</span> </li> <li class="past-entry"> <span class="past-date">Oct 26, ’24</span> <span class="past-venue">Lost World Books</span> <span class="past-city">Ft. Myers, FL</span> </li> </ul> </section>
 
 <section class="ml-signup-sect">
   <div class="ml-signup-box">
@@ -607,7 +593,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         },
         'eventStatus': 'https://schema.org/EventScheduled',
         'eventAttendanceMode': 'https://schema.org/OfflineEventAttendanceMode',
-        'image': s.flyerUrl || s.image || 'https://jestamang.com/assets/homepage/jesta-logo.png',
+        'image': s.flyerUrl || s.image || 'https://jestamang.com/assets/homepage/logo%20png.png',
         'description': s.description || ((s.artist || 'Jestamang') + ' performing live at ' + (s.venue || cityStr) + '. Presented by Jestamang.'),
         'performer': {'@type': 'MusicGroup', 'name': s.artist || 'Jestamang'}
       };
