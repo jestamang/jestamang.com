@@ -416,6 +416,10 @@ h1 {
 </div>
 
 <script>
+/* Canvas colors cannot use CSS variables. Read the theme's --gold-rgb (set by jesta-auth applyTheme)
+   at most every 500ms and fall back to the default gold, so canvases follow the admin theme. */
+function goldRGB(){var n=Date.now();if(goldRGB._t&&n-goldRGB._t<500)return goldRGB._v;var v='';try{v=getComputedStyle(document.documentElement).getPropertyValue('--gold-rgb').trim();}catch(e){}goldRGB._v=/^\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}$/.test(v)?v:'201,168,76';goldRGB._t=n;return goldRGB._v;}
+
 var gc = document.getElementById('gc');
 var gx = gc.getContext('2d');
 var GW, GH;
@@ -573,7 +577,7 @@ function triggerWin() {
   ST = 'win';
   flashCol = 'gold'; flashA = 1.0;
   showNarrator('THE UNIVERSE WELCOMES YOU BACK');
-  burst(portal.x, portal.y, 'var(--gold,#c9a84c)', 80);
+  burst(portal.x, portal.y, 'rgb('+goldRGB()+')', 80);
   setTimeout(function() {
     document.getElementById('w-ov').classList.remove('off');
   }, 600);
@@ -589,8 +593,8 @@ function drawObstacles() {
     gx.textAlign = 'left';
     gx.textBaseline = 'middle';
     var danger = blinking && Math.floor(invT/7)%2===0;
-    gx.fillStyle = danger ? 'rgba(255,60,60,0.35)' : 'rgba(var(--gold-rgb,201,168,76),' + (0.16 + o.fs * 0.005) + ')';
-    gx.shadowColor = danger ? '#FF3838' : 'rgba(var(--gold-rgb,201,168,76),0.25)';
+    gx.fillStyle = danger ? 'rgba(255,60,60,0.35)' : 'rgba('+goldRGB()+',' + (0.16 + o.fs * 0.005) + ')';
+    gx.shadowColor = danger ? '#FF3838' : 'rgba('+goldRGB()+',0.25)';
     gx.shadowBlur = 7;
     gx.fillText(o.name, o.x, o.y, o.w + 2);
     gx.restore();
@@ -606,16 +610,16 @@ function drawFragments() {
     gx.rotate(f.spin);
     // Outer aura
     var g = gx.createRadialGradient(0,0,0,0,0,f.r*3.2);
-    g.addColorStop(0, 'rgba(var(--gold-rgb,201,168,76),' + (gv*0.42) + ')');
-    g.addColorStop(0.6, 'rgba(var(--gold-rgb,201,168,76),' + (gv*0.08) + ')');
+    g.addColorStop(0, 'rgba('+goldRGB()+',' + (gv*0.42) + ')');
+    g.addColorStop(0.6, 'rgba('+goldRGB()+',' + (gv*0.08) + ')');
     g.addColorStop(1, 'transparent');
     gx.beginPath(); gx.arc(0,0,f.r*3.2,0,6.283); gx.fillStyle=g; gx.fill();
     // Diamond
     gx.beginPath();
     gx.moveTo(0,-f.r); gx.lineTo(f.r*0.62,0); gx.lineTo(0,f.r); gx.lineTo(-f.r*0.62,0);
     gx.closePath();
-    gx.fillStyle = 'rgba(var(--gold-rgb,201,168,76),' + (gv) + ')';
-    gx.shadowColor = 'var(--gold,#c9a84c)'; gx.shadowBlur = 20;
+    gx.fillStyle = 'rgba('+goldRGB()+',' + (gv) + ')';
+    gx.shadowColor = 'rgb('+goldRGB()+')'; gx.shadowBlur = 20;
     gx.fill();
     gx.strokeStyle = 'rgba(255,229,100,' + (gv*0.8) + ')'; gx.lineWidth = 1.2; gx.stroke();
     gx.shadowBlur = 0;
@@ -630,15 +634,15 @@ function drawPortal() {
   gx.translate(portal.x, portal.y);
   // Outer glow
   var g = gx.createRadialGradient(0,0,0,0,0,portal.r*2.8);
-  g.addColorStop(0, 'rgba(var(--gold-rgb,201,168,76),' + (gv*0.65) + ')');
-  g.addColorStop(0.5, 'rgba(var(--gold-rgb,201,168,76),' + (gv*0.18) + ')');
+  g.addColorStop(0, 'rgba('+goldRGB()+',' + (gv*0.65) + ')');
+  g.addColorStop(0.5, 'rgba('+goldRGB()+',' + (gv*0.18) + ')');
   g.addColorStop(1, 'transparent');
   gx.beginPath(); gx.arc(0,0,portal.r*2.8,0,6.283); gx.fillStyle=g; gx.fill();
   // Spinning outer ring
   gx.rotate(portal.spin);
   gx.beginPath(); gx.arc(0,0,portal.r,0,6.283);
-  gx.strokeStyle='rgba(var(--gold-rgb,201,168,76),' + (0.65+gv*0.35) + ')';
-  gx.lineWidth=3; gx.shadowColor='var(--gold,#c9a84c)'; gx.shadowBlur=28; gx.stroke(); gx.shadowBlur=0;
+  gx.strokeStyle='rgba('+goldRGB()+',' + (0.65+gv*0.35) + ')';
+  gx.lineWidth=3; gx.shadowColor='rgb('+goldRGB()+')'; gx.shadowBlur=28; gx.stroke(); gx.shadowBlur=0;
   // 8 orbit gems
   for (var i=0; i<8; i++) {
     var a=i/8*6.283;
@@ -660,7 +664,7 @@ function drawTrail() {
   for (var i=0; i<player.trail.length; i++) {
     var a=i/player.trail.length;
     gx.beginPath(); gx.arc(player.trail[i].x, player.trail[i].y, player.r*a*0.58, 0, 6.283);
-    gx.fillStyle = invT>0 ? 'rgba(255,60,60,' + (a*0.28) + ')' : 'rgba(var(--gold-rgb,201,168,76),' + (a*0.25) + ')';
+    gx.fillStyle = invT>0 ? 'rgba(255,60,60,' + (a*0.28) + ')' : 'rgba('+goldRGB()+',' + (a*0.25) + ')';
     gx.fill();
   }
 }
@@ -668,10 +672,10 @@ function drawTrail() {
 function drawPlayer() {
   if (invT>0 && Math.floor(invT/6)%2===0) return; // blink
   var g = gx.createRadialGradient(player.x,player.y,0,player.x,player.y,player.r*3.8);
-  g.addColorStop(0,'rgba(var(--gold-rgb,201,168,76),0.38)'); g.addColorStop(1,'transparent');
+  g.addColorStop(0,'rgba('+goldRGB()+',0.38)'); g.addColorStop(1,'transparent');
   gx.beginPath(); gx.arc(player.x,player.y,player.r*3.8,0,6.283); gx.fillStyle=g; gx.fill();
   gx.beginPath(); gx.arc(player.x,player.y,player.r,0,6.283);
-  gx.fillStyle='var(--gold,#c9a84c)'; gx.shadowColor='var(--gold,#c9a84c)'; gx.shadowBlur=22; gx.fill(); gx.shadowBlur=0;
+  gx.fillStyle='rgb('+goldRGB()+')'; gx.shadowColor='rgb('+goldRGB()+')'; gx.shadowBlur=22; gx.fill(); gx.shadowBlur=0;
 }
 
 function drawParticles() {
@@ -685,7 +689,7 @@ function drawParticles() {
 
 function drawFlash() {
   if (flashA<=0) return;
-  if (flashCol==='gold')      gx.fillStyle='rgba(var(--gold-rgb,201,168,76),' + (flashA) + ')';
+  if (flashCol==='gold')      gx.fillStyle='rgba('+goldRGB()+',' + (flashA) + ')';
   else if (flashCol==='red')  gx.fillStyle='rgba(255,40,40,' + (flashA) + ')';
   gx.fillRect(0,0,GW,GH);
   flashA=Math.max(0,flashA-0.038);
@@ -703,7 +707,7 @@ function loop(ts) {
   for (var s of stars) {
     s.y+=s.sp; if(s.y>GH){s.y=0;s.x=Math.random()*GW;}
     gx.beginPath(); gx.arc(s.x,s.y,s.r,0,6.283);
-    gx.fillStyle='rgba(var(--gold-rgb,201,168,76),' + (s.a*0.55) + ')'; gx.fill();
+    gx.fillStyle='rgba('+goldRGB()+',' + (s.a*0.55) + ')'; gx.fill();
   }
 
   if (ST!=='playing') {
@@ -758,7 +762,7 @@ function loop(ts) {
     f.spin+=0.033; f.gp+=0.042;
     if(Math.hypot(player.x-f.x,player.y-f.y)<player.r+f.r+5){
       f.collected=true; fragsGot++;
-      burst(f.x,f.y,'var(--gold,#c9a84c)',32);
+      burst(f.x,f.y,'rgb('+goldRGB()+')',32);
       showNarrator('A PIECE OF THE PATH REVEALS ITSELF');
       updateHUD();
       if(fragsGot>=5){
