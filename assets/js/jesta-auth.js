@@ -5,6 +5,10 @@
 (function () {
   'use strict';
 
+  // Anonymous sign-in exists only so guests can save game scores. Everywhere else an
+  // anonymous user is treated as logged out. Pages can reuse this check.
+  window.jestaIsMember = function (u) { return !!(u && !u.isAnonymous); };
+
   // ── Inject auth CSS ───────────────────────────────────────────
   var style = document.createElement('style');
   style.textContent = [
@@ -277,6 +281,7 @@
 
   // ── Update nav based on auth state ───────────────────────────
   function updateNav(user) {
+    if (user && user.isAnonymous) { user = null; } // guests are not members: render the logged-out nav
     var wrap = document.getElementById('jtnav-auth');
     var mobWrap = document.getElementById('jtnav-mob-auth');
     if (!wrap) return;

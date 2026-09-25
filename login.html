@@ -589,7 +589,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // ── Returning user detection ───────────────────────────────────
   firebase.auth().onAuthStateChanged(function(user){
-    if(user && !redirectPending){
+    if(user && !user.isAnonymous && !redirectPending){
       redirectPending = true;
       // Fade out immediately — before any async ops so jesta-auth.js nav mutations
       // (renderAuthNav, checkNavBadges) land on an already-invisible page, preventing
