@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dossier · Jestamang — Press Kit & Collective Biography</title>
-<meta name="description" content="The Jestamang dossier: biography, press kit, and full documentation of the psychedelic music collective for media inquiries and press coverage.">
-<meta name="keywords" content="Jestamang, psychedelic music, experimental, indie collective, Quarter Days, NONS, 2K2123, Jestamang universe, psychedelic rock, dossier, member files, private archive, inner circle, collective records">
-<meta name="robots" content="index, follow">
+<title>Cosmic Dossier · Jestamang — Shared Natal Chart</title>
+<meta name="description" content="A natal chart shared by a member of the Jestamang Inner Circle: planetary positions, houses, elements, modes, and aspects. Calculate your own free chart on your profile.">
+<meta name="keywords" content="Jestamang, psychedelic music, experimental, indie collective, Quarter Days, NONS, 2K2123, Jestamang universe, psychedelic rock, natal chart, cosmic dossier, shared chart, astrology, inner circle">
+<meta name="robots" content="noindex, follow">
 <link rel="canonical" href="https://jestamang.com/dossier.html">
 <meta property="og:site_name" content="Jestamang">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Dossier · Jestamang — Press Kit & Collective Biography">
-<meta property="og:description" content="The Jestamang dossier: biography, press kit, and full documentation of the psychedelic music collective for media inquiries and press coverage.">
+<meta property="og:title" content="Cosmic Dossier · Jestamang — Shared Natal Chart">
+<meta property="og:description" content="A natal chart shared by a member of the Jestamang Inner Circle: planetary positions, houses, elements, modes, and aspects. Calculate your own free chart on your profile.">
 <meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 <meta property="og:url" content="https://jestamang.com/dossier.html">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Dossier · Jestamang — Press Kit & Collective Biography">
-<meta name="twitter:description" content="The Jestamang dossier: biography, press kit, and full documentation of the psychedelic music collective for media inquiries and press coverage.">
+<meta name="twitter:title" content="Cosmic Dossier · Jestamang — Shared Natal Chart">
+<meta name="twitter:description" content="A natal chart shared by a member of the Jestamang Inner Circle: planetary positions, houses, elements, modes, and aspects. Calculate your own free chart on your profile.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 
 
@@ -743,13 +743,10 @@ var NC = (function(){
 
   var db = firebase.firestore();
 
-  // Load user profile + natal chart
-  Promise.all([
-    db.collection('users').doc(targetUid).get(),
-    db.collection('users').doc(targetUid).collection('natalChart').doc('chart').get()
-  ]).then(function(results){
-    var userDoc = results[0];
-    var chartDoc = results[1];
+  // Load the shared chart only. publicCharts/{uid} is written by the owner when
+  // they click "Copy Dossier Link" on their profile and holds rendered chart data
+  // only; this page never reads the private users or natalChart documents.
+  db.collection('publicCharts').doc(targetUid).get().then(function(chartDoc){
 
     document.getElementById('state-loading').style.display = 'none';
 
@@ -759,8 +756,7 @@ var NC = (function(){
     }
 
     var cd = chartDoc.data();
-    var userData = userDoc.exists ? userDoc.data() : {};
-    var userName = userData.username || 'Inner Circle Member';
+    var userName = (typeof cd.name === 'string' && cd.name.trim()) ? cd.name.trim() : 'Inner Circle Member';
 
     // Reconstruct result from saved data
     var result = {

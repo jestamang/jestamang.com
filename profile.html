@@ -1775,6 +1775,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       <div class="natal-share-row">
         <button class="btn-gold" id="natal-share-btn" style="padding:13px 28px;">Share My Chart</button>
         <button class="btn-dl-chart" id="natal-dl-btn" title="Download chart as PDF">DOWNLOAD MY CHART &#10022;</button>
+        <button class="btn-dl-chart" id="natal-link-btn" title="Publish a view-only copy of this chart and copy its link">COPY DOSSIER LINK &#10022;</button>
+        <button class="btn-dl-chart" id="natal-unshare-btn" title="Remove the shared copy so the link stops working" style="display:none;">UNSHARE DOSSIER</button>
         <span class="natal-copied-msg" id="natal-copied-msg"></span>
         <span class="natal-copied-msg" id="natal-pdf-msg"></span>
       </div>
@@ -3428,6 +3430,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 if(chartDoc.exists){
                   var cd = chartDoc.data();
                   savedNatalChart = cd;
+                  if (window._refreshUnshareBtn) window._refreshUnshareBtn();
                   if(cd.birthDate) document.getElementById('nc-dob').value = cd.birthDate;
                   if(cd.birthTime) document.getElementById('nc-tob').value = cd.birthTime;
                   if(cd.birthPlace) document.getElementById('nc-pob').value = cd.birthPlace;
@@ -4170,6 +4173,57 @@ document.addEventListener('DOMContentLoaded', function(){
         showDossierMsg('Saved to device \u2756');
       }
     });
+  });
+
+  // ── Copy Dossier Link / Unshare ──────────────────────────────────────
+  // Publishes a view-only copy of the saved chart to publicCharts/{uid}.
+  // Only rendered chart fields are copied; birthDate/birthTime/birthPlace/
+  // lat/lng never leave the private natalChart doc (the rules enforce the
+  // same allowlist server-side).
+  var PUBLIC_CHART_FIELDS = ['planets','ascendant','mc','houseCusps','elements','modes','aspects','hasTime'];
+  var _natalLinkBtn = document.getElementById('natal-link-btn');
+  var _natalUnshareBtn = document.getElementById('natal-unshare-btn');
+  function _dossierLink(uid){ return 'https://jestamang.com/dossier.html?user=' + encodeURIComponent(uid); }
+  function _copyText(text, okMsg){
+    var done = function(){ showDossierMsg(okMsg); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(function(){ window.prompt('Copy your dossier link:', text); });
+    } else { window.prompt('Copy your dossier link:', text); }
+  }
+  window._refreshUnshareBtn = function(){
+    if (!_natalUnshareBtn || !currentUser) return;
+    firebase.firestore().collection('publicCharts').doc(currentUser.uid).get().then(function(d){
+      _natalUnshareBtn.style.display = d.exists ? '' : 'none';
+    }).catch(function(){});
+  };
+  if (_natalLinkBtn) _natalLinkBtn.addEventListener('click', function(){
+    var btn = this;
+    if (!currentUser) { showDossierMsg('Sign in to share'); return; }
+    if (!savedNatalChart || !savedNatalChart.planets) { showDossierMsg('Calculate and save your chart first'); return; }
+    var pub = {};
+    PUBLIC_CHART_FIELDS.forEach(function(k){ if (savedNatalChart[k] !== undefined && savedNatalChart[k] !== null) pub[k] = savedNatalChart[k]; });
+    var nameEl = document.getElementById('nr-name');
+    pub.name = ((nameEl && nameEl.textContent.trim()) || 'Inner Circle Member').slice(0, 60);
+    pub.sharedAt = firebase.firestore.FieldValue.serverTimestamp();
+    btn.disabled = true;
+    firebase.firestore().collection('publicCharts').doc(currentUser.uid).set(pub).then(function(){
+      btn.disabled = false;
+      if (_natalUnshareBtn) _natalUnshareBtn.style.display = '';
+      _copyText(_dossierLink(currentUser.uid), 'Dossier link copied ❖');
+    }).catch(function(e){
+      btn.disabled = false;
+      console.error('publicCharts write failed:', e);
+      showDossierMsg('Could not publish dossier');
+    });
+  });
+  if (_natalUnshareBtn) _natalUnshareBtn.addEventListener('click', function(){
+    var btn = this;
+    if (!currentUser) return;
+    btn.disabled = true;
+    firebase.firestore().collection('publicCharts').doc(currentUser.uid).delete().then(function(){
+      btn.disabled = false; btn.style.display = 'none';
+      showDossierMsg('Dossier unshared ❖');
+    }).catch(function(e){ btn.disabled = false; console.error('publicCharts delete failed:', e); showDossierMsg('Could not unshare'); });
   });
 
   function showDossierMsg(msg){

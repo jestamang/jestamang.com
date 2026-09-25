@@ -171,6 +171,22 @@ service cloud.firestore {
       allow read, write: if isOwner(userId) || isAdmin();
     }
 
+    // ── PUBLIC CHARTS (opt-in dossier sharing) ───────────────────────────────
+    // Written by the owner from profile.html "Copy Dossier Link" and read by
+    // dossier.html?user=<uid>. Holds only the rendered chart. The field
+    // allowlist makes it impossible to publish birthDate/birthTime/birthPlace/
+    // lat/lng here, and the private natalChart and users docs stay owner-only.
+    match /publicCharts/{userId} {
+      allow read:   if true;
+      allow create, update: if isOwner(userId)
+                    && request.resource.data.keys().hasOnly(['planets','ascendant','mc','houseCusps','elements','modes','aspects','hasTime','name','sharedAt'])
+                    && request.resource.data.keys().hasAll(['planets','name','sharedAt'])
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() <= 60
+                    && request.resource.data.sharedAt == request.time;
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+
 
     // ── TREATS ───────────────────────────────────────────────────────────────
     match /treats/{docId} {
