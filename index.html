@@ -262,6 +262,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   }
 }
 </script>
+<style id="mob-pr4">/* 320px phones only: icon grid drops to three columns so every label fits at the 11px floor; entity strip columns cannot exceed the viewport */
+@media(max-width:340px){.mob-nav-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px 6px!important;padding:16px 10px 48px!important}.mob-nav-item{min-width:0}.mob-nav-label{white-space:normal!important;letter-spacing:0.08em!important;line-height:1.2}.hp-entity-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}.hp-entity-item{min-width:0}.hp-entity-name{overflow-wrap:anywhere}}
+</style>
 </head> <body>
 <a href="#hp-hero" class="skip-link">Skip to main content</a>
 
