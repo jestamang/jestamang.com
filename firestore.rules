@@ -13,8 +13,15 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // A member is a real account (Google or email). Anonymous sign-in exists only so
+    // guests can save game scores; it must never unlock member features.
+    function isMember() {
+      return isSignedIn()
+          && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+
     function isOwner(uid) {
-      return isSignedIn() && request.auth.uid == uid;
+      return isMember() && request.auth.uid == uid;
     }
 
     // ── ADMIN WILDCARD — full access to everything ────────────────────────
@@ -112,7 +119,7 @@ service cloud.firestore {
 
     match /scores/{entryId} {
       allow read:   if true;
-      allow create: if isSignedIn();
+      allow create: if isMember();
       allow update: if false;
       allow delete: if isAdmin();
     }
@@ -121,7 +128,7 @@ service cloud.firestore {
     // ── COMMENTS ─────────────────────────────────────────────────────────────
     match /comments/{commentId} {
       allow read:   if true;
-      allow create: if isSignedIn();
+      allow create: if isMember();
       allow update: if false;
       allow delete: if isOwner(resource.data.userId) || isAdmin();
     }
@@ -144,7 +151,7 @@ service cloud.firestore {
     // ── GUESTBOOK ────────────────────────────────────────────────────────────
     match /guestbook/{userId} {
       allow read:   if true;
-      allow create: if isSignedIn()
+      allow create: if isMember()
                     && request.auth.uid == userId
                     && !exists(/databases/$(database)/documents/guestbook/$(request.auth.uid));
       allow update: if isOwner(userId) || isAdmin();
@@ -154,8 +161,8 @@ service cloud.firestore {
 
     // ── INNER CIRCLE CHAT ────────────────────────────────────────────────────
     match /innerCircleChat/{messageId} {
-      allow read:   if isSignedIn();
-      allow create: if isSignedIn();
+      allow read:   if isMember();
+      allow create: if isMember();
       allow update: if false;
       allow delete: if isOwner(resource.data.uid) || isAdmin();
     }
@@ -190,14 +197,14 @@ service cloud.firestore {
 
     // ── TREATS ───────────────────────────────────────────────────────────────
     match /treats/{docId} {
-      allow read:  if isSignedIn();
+      allow read:  if isMember();
       allow write: if isAdmin();
     }
 
 
     // ── MEMBER UPDATES (members-only writings) ───────────────────────────────
     match /membersUpdates/{docId} {
-      allow read:  if isSignedIn();
+      allow read:  if isMember();
       allow write: if isAdmin();
     }
 
@@ -206,8 +213,8 @@ service cloud.firestore {
     // Flat collection with auto IDs; the owner is recorded in `userId`
     // (albums.html and profile.html query .where('userId','==',uid)).
     match /favorites/{docId} {
-      allow read:   if isSignedIn() && resource.data.userId == request.auth.uid;
-      allow create: if isSignedIn()
+      allow read:   if isMember() && resource.data.userId == request.auth.uid;
+      allow create: if isMember()
                     && request.resource.data.userId == request.auth.uid
                     && request.resource.data.keys().hasOnly(['userId','songTitle','artist','album','savedAt'])
                     && request.resource.data.songTitle is string
@@ -228,10 +235,10 @@ service cloud.firestore {
 
     // ── NOTIFICATIONS (transmissions) ────────────────────────────────────────
     match /notifications/{notifId} {
-      allow read:           if isSignedIn();
+      allow read:           if isMember();
       allow create, delete: if isAdmin();
       allow update: if isAdmin()
-                    || (isSignedIn()
+                    || (isMember()
                         && request.resource.data.diff(resource.data)
                              .affectedKeys().hasOnly(['seen']));
     }

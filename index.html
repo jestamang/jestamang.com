@@ -783,6 +783,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script>
 (function(){
   function updateHomeLogin(user){
+    if(user&&user.isAnonymous)user=null; // guests see the Login link
     var desktop=document.getElementById('hp-login-desktop');
     var mobile=document.getElementById('hp-login-mobile');
     [desktop,mobile].forEach(function(el){
