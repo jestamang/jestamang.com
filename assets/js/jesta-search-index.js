@@ -18,7 +18,7 @@ var IDX = [
 {n:'Privacy Policy',u:'/privacy.html',c:'Page',i:'◉',t:'privacy policy data'},
 {n:'Accessibility',u:'/accessibility.html',c:'Page',i:'◉',t:'accessibility ada compliance'},
 {n:'Terms of Service',u:'/terms.html',c:'Page',i:'◉',t:'terms service legal'},
-{n:'Dossier',u:'/dossier.html',c:'Page',i:'◉',t:'bio biography press kit dossier'},
+{n:'Dossier',u:'/dossier.html',c:'Page',i:'◉',t:'natal chart cosmic dossier shared chart'},
 {n:'Quarter Days',u:'/albums.html#quarter-days',c:'Album Series',i:'◈',t:'jestamang series quarter days'},
 {n:'2K2323',u:'/albums.html#2k2323',c:'Album Series',i:'◈',t:'release 2023 series'},
 {n:'2K2123',u:'/albums.html#2k2123',c:'Album Series',i:'◈',t:'release 2021 series'},
