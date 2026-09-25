@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# jestamang.com pre-push hook. Activate once with: git config core.hooksPath .githooks
+# Skip for one push (rare, deliberate):        git push --no-verify
+#
+# Blocking:  1) service worker: HTML/JS/CSS changed in the push but sw.js CACHE_NAME not bumped
+#            2) drift-check: static fallbacks vs Firestore/R2 (errors block, warnings pass)
+#            3) games load pass, only when the push touches game files, run against a local
+#               server of the working tree (Chrome headless, about 90 seconds)
+set -u
+ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT" || exit 1
+Z40=0000000000000000000000000000000000000000
+BOLD=$'\033[1m'; RED=$'\033[31m'; YEL=$'\033[33m'; GRN=$'\033[32m'; DIM=$'\033[2m'; RST=$'\033[0m'
+fail=0; problems=(); changed_all=""
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ -z "${local_sha:-}" ] && continue
+  [ "$local_sha" = "$Z40" ] && continue                      # deleting a remote branch: nothing to check
+  if [ "$remote_sha" = "$Z40" ]; then                        # new remote branch: compare against origin/main
+    base="$(git merge-base "$local_sha" origin/main 2>/dev/null || true)"
+  else
+    base="$remote_sha"
+  fi
+  [ -z "$base" ] && base="$(git rev-parse "${local_sha}~1" 2>/dev/null || echo "$local_sha")"
+  files="$(git diff --name-only "$base" "$local_sha" 2>/dev/null || true)"
+  [ -z "$files" ] && continue
+  changed_all="${changed_all}${files}"$'\n'
+  site="$(printf '%s\n' "$files" | grep -E '\.(html|js|css)$' | grep -vE '^(sw\.js$|tools/|\.githooks/)' || true)"
+  if [ -n "$site" ]; then
+    old="$(git show "$base:sw.js" 2>/dev/null | grep -oE "CACHE_NAME = '[^']+'" || echo none)"
+    new="$(git show "$local_sha:sw.js" 2>/dev/null | grep -oE "CACHE_NAME = '[^']+'" || echo none)"
+    if [ "$old" = "$new" ]; then
+      fail=1; n="$(printf '%s\n' "$site" | grep -c .)"
+      problems+=("service worker: ${n} HTML/JS/CSS file(s) in this push but sw.js ${new} is unchanged. Bump CACHE_NAME.")
+    fi
+  fi
+done
+
+echo "${DIM}pre-push: drift-check${RST}"
+if ! node tools/drift-check/drift-check.js --quiet; then
+  fail=1; problems+=("drift-check reported errors (see above). Fix the static fallback or the Firestore data.")
+fi
+
+if printf '%s' "$changed_all" | grep -qE '^(games/|game-memory\.html|game-oracle\.html|arcade\.html|assets/js/jesta-leaderboard\.js|assets/js/admin-games\.js|assets/css/games\.css)'; then
+  if [ -x "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" ]; then
+    echo "${DIM}pre-push: game files changed, running the games load pass against the working tree (about 90s)${RST}"
+    if [ -n "$(git status --porcelain -- games game-memory.html game-oracle.html arcade.html assets/js/jesta-leaderboard.js assets/css/games.css 2>/dev/null)" ]; then
+      echo "${YEL}note: uncommitted game-file changes are in the working tree and will be what the load pass sees${RST}"
+    fi
+    PORT=$((8800 + RANDOM % 200))
+    python3 -m http.server "$PORT" --bind 127.0.0.1 >/dev/null 2>&1 & SRV=$!
+    sleep 1
+    if ! GAMES_BASE="http://127.0.0.1:${PORT}/" node tools/games-check/load-pass.js --quiet; then
+      fail=1; problems+=("games load pass found exceptions or failed requests (see above).")
+    fi
+    kill "$SRV" 2>/dev/null; wait "$SRV" 2>/dev/null
+  else
+    echo "${YEL}pre-push: game files changed but Google Chrome was not found; games load pass skipped${RST}"
+  fi
+else
+  echo "${DIM}pre-push: no game files in this push, games load pass skipped${RST}"
+fi
+
+if [ "$fail" -ne 0 ]; then
+  echo
+  echo "${RED}${BOLD}PUSH BLOCKED${RST}"
+  for p in "${problems[@]}"; do echo "  ${RED}*${RST} $p"; done
+  echo
+  echo "  Fix and push again, or skip this hook once with:  ${BOLD}git push --no-verify${RST}"
+  exit 1
+fi
+echo "${GRN}pre-push: all checks passed${RST}"
+exit 0
