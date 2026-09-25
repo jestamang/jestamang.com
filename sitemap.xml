@@ -16,7 +16,7 @@
   <!-- Discovery pages -->
   <url><loc>https://jestamang.com/arcade.html</loc><lastmod>2026-06-03</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://jestamang.com/radio.html</loc><lastmod>2026-09-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://jestamang.com/email.html</loc><lastmod>2026-06-02</lastmod><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://jestamang.com/email.html</loc><lastmod>2026-09-25</lastmod><changefreq>yearly</changefreq><priority>0.5</priority></url>
 
   <!-- Games (all linked from arcade.html) -->
   <url><loc>https://jestamang.com/game-oracle.html</loc><lastmod>2026-09-24</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
