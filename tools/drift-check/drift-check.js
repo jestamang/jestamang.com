@@ -246,7 +246,7 @@ function checkSwBump() {
   const area = 'service worker';
   try {
     const status = git('git status --porcelain').split('\n').filter(Boolean);
-    const changed = status.map((l) => l.slice(3).trim().replace(/^"|"$/g, '')).filter((f) => /\.(html|js|css)$/.test(f) && f !== 'sw.js');
+    const changed = status.map((l) => l.slice(3).trim().replace(/^"|"$/g, '')).filter((f) => /\.(html|js|css)$/.test(f) && f !== 'sw.js' && !/^(tools|\.githooks|scripts|backups|node_modules)\//.test(f));
     if (!changed.length) { INFO(area, 'no uncommitted HTML/JS/CSS changes; bump check not needed'); return; }
     const cur = first(/CACHE_NAME = '([^']+)'/, read('sw.js')); const head = first(/CACHE_NAME = '([^']+)'/, git('git show HEAD:sw.js'));
     if (cur === head) ERR(area, `${changed.length} HTML/JS/CSS file(s) modified (${changed.slice(0, 3).join(', ')}${changed.length > 3 ? ', ...' : ''}) but CACHE_NAME is still ${cur}; bump it`);
