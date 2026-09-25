@@ -153,40 +153,10 @@ textarea.tx-input{resize:vertical;min-height:88px;line-height:1.65}
   font-weight:normal!important}
 .ml-form-horizontalRow button[type="submit"],
 .ml-form-embedSubmit button[type="submit"],
-.ml-embedded button[type="submit"]{
-  background:var(--gold,#c9a84c)!important;
-  border:none!important;
-  border-radius:0!important;
-  color:transparent!important;
-  font-family:'Luminari',serif!important;
-  font-size:0!important;
-  letter-spacing:0.42em!important;
-  text-transform:uppercase!important;
-  padding:0!important;
-  width:100%!important;
-  min-height:56px!important;
-  cursor:pointer!important;
-  transition:background 0.22s,box-shadow 0.22s!important;
-  margin-top:14px!important;
-  position:relative!important;
-  display:block!important;
-  box-shadow:none!important}
 .ml-form-horizontalRow button[type="submit"]::after,
 .ml-form-embedSubmit button[type="submit"]::after,
-.ml-embedded button[type="submit"]::after{
-  content:'TRANSMIT';
-  position:absolute;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Luminari',serif;
-  font-size:0.82rem;
-  letter-spacing:0.42em;
-  color:#08060a;
-  text-transform:uppercase}
 .ml-form-horizontalRow button[type="submit"]:hover,
 .ml-form-embedSubmit button[type="submit"]:hover,
-.ml-embedded button[type="submit"]:hover{
-  background:#deb95c!important;
-  box-shadow:0 0 40px rgba(var(--gold-rgb,201,168,76),0.45),0 0 80px rgba(var(--gold-rgb,201,168,76),0.15)!important}
 .ml-form-successBody,.ml-form-successContent,.ml-success-content{
   background:transparent!important;
   border:none!important;
@@ -267,6 +237,22 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 </style>
 
 <style>body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 35%,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.75) 100%);pointer-events:none;z-index:0;}</style>
+<style id="ml-embed-styles">
+/* MailerLite embed skin, identical declarations to shows.html, scoped to the signup panel */
+#signup-panel .ml-form-embedWrapper{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important}
+#signup-panel .ml-form-embedWrapper .ml-form-embedBody, #signup-panel .ml-form-embedWrapper .ml-form-embedBody .ml-form-formContent{padding:0!important;background:transparent!important}
+#signup-panel .ml-form-embedContent, #signup-panel .ml-form-embedContentDefault{display:none!important}
+#signup-panel #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit button[type="submit"], #signup-panel .ml-form-embedSubmit button[type="submit"]{background:var(--gold,#c9a84c)!important;color:#08060a!important;font-family:'Luminari',serif!important;font-size:0.6rem!important;font-weight:normal!important;line-height:normal!important;letter-spacing:0.45em!important;text-transform:uppercase!important;text-align:center!important;border:none!important;border-radius:0!important;padding:0!important;width:auto!important;min-width:200px!important;min-height:46px!important;cursor:pointer!important;margin-top:18px!important;transition:box-shadow 0.2s!important;display:block!important;margin-left:auto!important;margin-right:auto!important;box-shadow:none!important;min-width:180px!important}
+#signup-panel #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit, #signup-panel .ml-form-embedSubmit{float:none!important;text-align:center!important}
+#signup-panel #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit button[type="submit"]:hover, #signup-panel .ml-form-embedSubmit button[type="submit"]:hover{background:var(--gold,#c9a84c)!important;box-shadow:0 0 24px rgba(var(--gold-rgb,201,168,76),0.35)!important}
+#signup-panel .ml-form-successBody, #signup-panel .ml-form-successContent{background:transparent!important;border:none!important;box-shadow:none!important}
+#signup-panel .ml-form-successContent h4{font-family:'Luminari',serif!important;color:rgba(var(--gold-rgb,201,168,76),0.7)!important;letter-spacing:0.3em!important;text-transform:uppercase!important;font-size:0.72rem!important;font-weight:normal!important}
+#signup-panel .ml-form-successContent p{font-family:'Luminari',serif!important;color:rgba(240,230,210,0.35)!important;font-size:0.62rem!important;letter-spacing:0.14em!important}
+#signup-panel .ml-form-fieldRow{margin-bottom:4px!important}
+#signup-panel .ml-form-embedSubmitLoad{display:none!important}
+</style>
+<!-- MailerLite embedded signup (same account/form as shows.html and blog.html) -->
+<script>(function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[]).push(arguments);};l=d.createElement(e);l.async=1;l.src=u;n=d.getElementsByTagName(e)[0];n.parentNode.insertBefore(l,n);})(window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');ml('account','2245401');</script>
 </head> <body>
 <a href="#tx-page" class="skip-link">Skip to main content</a>
 
@@ -280,11 +266,26 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
 <div class="tx-page">
 
+  <!-- Newsletter signup: the page's purpose (nav label "Email", title "Join the Jestagang") -->
+  <div class="tx-panel" id="signup-panel" style="margin-bottom:28px">
+
+    <div class="tx-header">
+      <h1 class="tx-title">Join the Jestagang</h1>
+      <p class="tx-sub">New releases, shows, chronicles, and transmissions from the collective.</p>
+    </div>
+
+    <div class="tx-rule"></div>
+
+    <div class="ml-embedded" data-form="8EZtSf"></div>
+
+  </div>
+
+  <!-- Direct contact (EmailJS), kept below the signup -->
   <div class="tx-panel">
 
     <div class="tx-header">
-      <h1 class="tx-title">Transmissions</h1>
-      <p class="tx-sub">A signal sent across the drift. We receive what the cosmos allows.</p>
+      <h2 class="tx-title">Transmissions</h2>
+      <p class="tx-sub">Or send a signal across the drift. We receive what the cosmos allows.</p>
     </div>
 
     <div class="tx-rule"></div>
