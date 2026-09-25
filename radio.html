@@ -268,6 +268,42 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <style id="mob-pr1">/* mobile only: 11px floor on Elsewhere links and panel headings */
 @media(max-width:767px){.lc-social-link{font-size:0.7rem!important}.lc-panel-h{font-size:0.7rem!important}}
 </style>
+<style id="mob-pr5">/* mobile only: compact hero so art, title and transport share one screen; 44px seek hit area; mini transport when the real one scrolls away */
+#lc-mini{display:none}
+@media(max-width:767px){
+  .lc-stage{padding-top:40px!important}
+  .lc-page-head{margin-bottom:18px!important}
+  .lc-heading{font-size:1.15rem!important;letter-spacing:0.18em!important;text-indent:0.18em!important;margin-bottom:6px!important}
+  .lc-sub{font-size:0.8rem!important}
+  .lc-center{padding:20px 16px!important}
+  .lc-stations{margin-bottom:10px!important}
+  .lc-st-btn{min-height:44px!important;padding:6px 14px!important}
+  .lc-onair{margin-bottom:6px!important}
+  #lc-wave{width:180px!important;height:28px!important;margin-bottom:6px!important}
+  .lc-art-wrap{width:180px!important;height:180px!important;margin-bottom:12px!important}
+  #lc-artwork{width:180px!important;height:180px!important}
+  #lc-artwork.lc-art-fallback{padding:26px!important}
+  .lc-station-id{display:none!important} /* the page heading and the mini bar already name the station */
+  /* skeleton bars fade out after load but kept holding 68px above the title; collapse them once loaded */
+  .lc-center:not(.lc-sk) #lc-skel-title,.lc-center:not(.lc-sk) #lc-skel-meta{height:0!important;margin:0!important}
+  #lc-meta{margin-bottom:8px!important}
+  /* seek bar: 44px touch target, 5px visual track drawn in the middle */
+  .lc-prog-wrap{margin-top:-10px!important}
+  #lc-progress{height:44px!important;background:transparent!important;border-radius:0!important}
+  #lc-progress::before{content:'';position:absolute;left:0;right:0;top:50%;height:5px;margin-top:-2.5px;background:rgba(var(--gold-rgb,201,168,76),0.15);border-radius:2px}
+  #lc-fill{position:absolute;left:0;top:50%;height:5px!important;margin-top:-2.5px}
+  #lc-time{margin-top:-8px!important;margin-bottom:14px!important}
+  /* mini transport */
+  #lc-mini{position:fixed;left:0;right:0;bottom:0;z-index:400;display:none;align-items:center;gap:6px;padding:6px 10px calc(6px + env(safe-area-inset-bottom));background:rgba(6,4,10,0.94);border-top:1px solid rgba(var(--gold-rgb,201,168,76),0.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transform:translateY(110%);transition:transform 0.25s ease}
+  #lc-mini.on{display:flex}
+  #lc-mini.show{transform:none}
+  #lc-mini-track{position:absolute;left:0;top:-1px;height:2px;width:0%;background:var(--gold,#c9a84c);pointer-events:none}
+  #lc-mini-title{flex:1;min-width:0;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.06em;color:var(--gold,#c9a84c);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:4px}
+  .lc-mini-btn{-webkit-appearance:none;appearance:none;background:none;border:none;color:var(--gold,#c9a84c);min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .lc-mini-btn:active{opacity:0.7}
+  body.lc-mini-open .lc-stage{padding-bottom:calc(80px + 56px + env(safe-area-inset-bottom))!important}
+}
+</style>
 </head>
 <body>
 <a href="#lc-stage" class="skip-link">Skip to main content</a>
@@ -496,5 +532,35 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
       }).catch(function(){});
     } else if(++_rt>40){ clearInterval(_riv); }
   },100);
+})();</script>
+<!-- mobile mini transport: proxies the real controls while they are off screen (see mob-pr5) -->
+<div id="lc-mini" aria-label="Radio transport" role="group">
+  <div id="lc-mini-track"></div>
+  <button class="lc-mini-btn" id="lc-mini-prev" aria-label="Previous"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="2" height="14"/><polygon points="20,5 9,12 20,19"/></svg></button>
+  <button class="lc-mini-btn" id="lc-mini-play" aria-label="Play"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><polygon points="8,5 19,12 8,19"/></svg></button>
+  <button class="lc-mini-btn" id="lc-mini-next" aria-label="Next"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><polygon points="4,5 15,12 4,19"/><rect x="16" y="5" width="2" height="14"/></svg></button>
+  <div id="lc-mini-title" aria-live="off"></div>
+</div>
+<script id="mob-pr5-js">(function(){
+  if(!window.matchMedia||!matchMedia('(max-width:767px)').matches||!('IntersectionObserver' in window))return;
+  var mini=document.getElementById('lc-mini'),ctrls=document.querySelector('.lc-controls'),play=document.getElementById('lc-play'),fill=document.getElementById('lc-fill'),title=document.getElementById('lc-title');
+  if(!mini||!ctrls||!play)return;
+  var mPlay=document.getElementById('lc-mini-play'),mTrack=document.getElementById('lc-mini-track'),mTitle=document.getElementById('lc-mini-title');
+  var PLAY='<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><polygon points="8,5 19,12 8,19"/></svg>';
+  var PAUSE='<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+  function proxy(id,target){var b=document.getElementById(id);if(b)b.addEventListener('click',function(){var t=document.getElementById(target);if(t)t.click();});}
+  proxy('lc-mini-prev','lc-prev');proxy('lc-mini-play','lc-play');proxy('lc-mini-next','lc-next');
+  function sync(){var on=play.getAttribute('data-playing')==='1';mPlay.innerHTML=on?PAUSE:PLAY;mPlay.setAttribute('aria-label',on?'Pause':'Play');if(fill)mTrack.style.width=fill.style.width||'0%';if(title)mTitle.textContent=(title.textContent||'').trim()||'Jestamang Radio';}
+  new MutationObserver(sync).observe(play,{attributes:true,attributeFilter:['data-playing']});
+  if(fill)new MutationObserver(sync).observe(fill,{attributes:true,attributeFilter:['style']});
+  if(title)new MutationObserver(sync).observe(title,{childList:true,characterData:true,subtree:true});
+  sync();
+  var hideT=null;
+  new IntersectionObserver(function(entries){
+    var visible=entries[0].isIntersecting;
+    clearTimeout(hideT);
+    if(visible){mini.classList.remove('show');document.body.classList.remove('lc-mini-open');hideT=setTimeout(function(){mini.classList.remove('on');},260);}
+    else{mini.classList.add('on');document.body.classList.add('lc-mini-open');requestAnimationFrame(function(){mini.classList.add('show');});}
+  },{threshold:0.2}).observe(ctrls);
 })();</script>
 </body> </html>
