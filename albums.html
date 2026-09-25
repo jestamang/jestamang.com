@@ -878,4 +878,23 @@ document.addEventListener('DOMContentLoaded',function(){var inp=document.getElem
 <style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;gap:0!important;background:rgba(0,0,0,0.7);padding:16px 24px 20px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(var(--gold-rgb,201,168,76),0.8);text-shadow:0 1px 4px rgba(0,0,0,0.8);position:relative;z-index:10;}}.hp-footer a{color:var(--gold,#c9a84c)!important;text-decoration:none;white-space:nowrap!important;}.hp-footer a:hover{color:var(--gold,#c9a84c)!important;}.hp-footer a:visited{color:var(--gold,#c9a84c)!important;}.hp-footer-mark{margin:0 10px;color:rgba(var(--gold-rgb,201,168,76),0.4);white-space:nowrap!important;}@media(max-width:768px){.hp-footer{padding:8px 12px 20px!important;font-size:0.7rem!important;flex-direction:row!important;flex-wrap:nowrap!important;}}</style>
 <style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
 <style>@media(max-width:768px){body{background-attachment:scroll!important}}</style>
+<script id="mob-pr3">/* mobile only: defer album covers until they are within 400px of the viewport (Chrome's native lazy distance is far larger on 4G). Static and Firestore-built grids. */
+(function(){
+  if(!window.matchMedia||!matchMedia('(max-width:767px)').matches||!('IntersectionObserver' in window))return;
+  var PH='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 300 300%27%3E%3C/svg%3E';
+  var io=new IntersectionObserver(function(entries){entries.forEach(function(en){if(!en.isIntersecting)return;var im=en.target;io.unobserve(im);if(im.dataset.src){im.src=im.dataset.src;delete im.dataset.src;}});},{rootMargin:'400px 0px'});
+  function defer(root){
+    var near=innerHeight+300;
+    (root.querySelectorAll?root.querySelectorAll('img.album-art'):[]).forEach(function(im){
+      if(im.dataset.deferred)return;im.dataset.deferred='1';
+      if(im.complete&&im.naturalWidth>0)return;               /* already in cache or decoded: leave it */
+      var r=im.getBoundingClientRect();if(r.top<near)return;   /* first screens load normally */
+      im.dataset.src=im.getAttribute('src');im.src=PH;io.observe(im);
+    });
+  }
+  var t=null;function schedule(){clearTimeout(t);t=setTimeout(function(){defer(document);},60);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){defer(document);});else defer(document);
+  new MutationObserver(function(muts){for(var i=0;i<muts.length;i++){if(muts[i].addedNodes.length){schedule();return;}}}).observe(document.body,{childList:true,subtree:true});
+})();
+</script>
 </body> </html>
