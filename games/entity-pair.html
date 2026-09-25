@@ -294,6 +294,7 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
       <button id="lb-name-submit">Inscribe ✦</button>
       <button id="lb-name-skip">Skip</button>
     </div>
+    <div id="lb-name-status" role="status" aria-live="polite" style="min-height:1.2em;margin-top:10px;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;line-height:1.5;"></div>
   </div>
 </div>
 
@@ -706,7 +707,7 @@ function openLB(curScore){
   tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Consulting the stars...</td></tr>';
   m.classList.add('lb-open');
   document.getElementById('lb-game-display').textContent=gameDisp();
-  db.collection('leaderboards').where('game','==',gameId()).orderBy('score','desc').limit(50).get()
+  db.collection('leaderboards').where('game','==',gameId()).orderBy('score','desc').limit(50).get({source:'server'})
   .then(function(snap){
     var rows=[];
     snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp,photoURL:d.photoURL||'',uid:d.uid||''});});
@@ -720,13 +721,25 @@ function openLB(curScore){
       var cls=i===0?'lb-r1':i<3?'lb-r23':'';
       if(_docId&&r.id===_docId)cls+=(cls?' ':'')+'lb-cur';
       tr.className=cls;
-      tr.innerHTML='<td>'+(i===0?'<span style="color:var(--gold,#c9a84c);font-size:1rem">✦</span>':(i+1))+'</td><td style="display:flex;align-items:center;gap:6px">'+JestaLeaderboard.scrollAvatar(r)+esc(r.name||'?')+'</td><td>'+JestaLeaderboard.formatScrollScore(r.score,'points')+'</td><td>'+JestaLeaderboard.formatScrollDate(r.ts)+'</td>';
+      tr.innerHTML='<td>'+(i===0?'<span style="color:var(--gold,#c9a84c);font-size:1rem">✦</span>':(i+1))+'</td><td style="display:flex;align-items:center;gap:6px">'+JestaLeaderboard.scrollAvatar(r)+esc(r.name||'?')+'</td><td>'+JestaLeaderboard.formatScrollScore(r.score,'points')+'</td><td>'+(r.ts?JestaLeaderboard.formatScrollDate(r.ts):'—')+'</td>';
       tb.appendChild(tr);
     });
     JestaLeaderboard.lbFetchMissingAvatars(tb);
   }).catch(function(){tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Signal lost</td></tr>';});
 }
 function closeLB(){document.getElementById('lb-modal').classList.remove('lb-open');}
+
+var _lbFromModal=false;
+function lbSaveStatus(kind,e){
+var st=document.getElementById('lb-name-status'),nm=document.getElementById('lb-name-modal'),ns=document.getElementById('lb-name-submit');
+if(kind==='saving'){if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='SEALING YOUR SCORE…';}if(ns)ns.disabled=true;return;}
+if(ns)ns.disabled=false;
+if(kind==='ok'){if(st)st.textContent='';if(_lbFromModal){_lbFromModal=false;if(nm)nm.classList.remove('lb-open');openLB(_score);}return;}
+var txt=String((e&&e.code)||'')+' '+String((e&&e.message)||'');
+var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED — SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED — SIGNAL LOST, TRY AGAIN';
+if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=msg;}
+if(nm&&!nm.classList.contains('lb-open'))nm.classList.add('lb-open');
+}
 
 function saveScore(name,score){
   if(!score||score<=0)return;
@@ -740,11 +753,11 @@ function saveScore(name,score){
   try{var pb=JSON.parse(localStorage.getItem(pbKey)||'null');if(!pb||ps>pb.score){localStorage.setItem(pbKey,JSON.stringify({score:ps,date:new Date().toISOString()}));}}catch(e){}
   var uid=null,photoURL=null;
   try{if(window.jestaAuth&&window.jestaAuth.currentUser){uid=window.jestaAuth.currentUser.uid;photoURL=window.jestaAuth.currentUser.photoURL||null;}}catch(e){}
-  db.collection('leaderboards').add({
+  return db.collection('leaderboards').add({
     game:gameId(),name:san(name)||'Unknown',score:ps,
     uid:uid,photoURL:photoURL,
     timestamp:window.firebase.firestore.FieldValue.serverTimestamp()
-  }).then(function(ref){_docId=ref.id;}).catch(function(e){console.warn('ep lb:',e);});
+  }).then(function(ref){_docId=ref.id;lbSaveStatus('ok');}).catch(function(e){console.warn('ep lb:',e);_docId=null;lbSaveStatus('fail',e);});
 }
 
 /* ── Keyboard navigation ── */
@@ -781,7 +794,7 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-submit-win').addEventListener('click',function(){
     var user=null;
     try{if(window.jestaAuth&&window.jestaAuth.currentUser)user=window.jestaAuth.currentUser;}catch(e){}
-    if(user&&user.displayName){saveScore(user.displayName,_score);openLB(_score);}
+    if(user&&user.displayName){_lbFromModal=true;lbSaveStatus('saving');saveScore(user.displayName,_score);}
     else{
       var nm=document.getElementById('lb-name-modal');
       nm.classList.add('lb-open');
@@ -794,9 +807,8 @@ document.addEventListener('DOMContentLoaded',function(){
     var inp=document.getElementById('lb-name-input');
     var n=inp?san(inp.value):'';
     if(!n){if(inp)inp.focus();return;}
-    document.getElementById('lb-name-modal').classList.remove('lb-open');
+    _lbFromModal=true;lbSaveStatus('saving');
     saveScore(n,_score);
-    openLB(_score);
   });
   document.getElementById('lb-name-skip').addEventListener('click',function(){
     document.getElementById('lb-name-modal').classList.remove('lb-open');
