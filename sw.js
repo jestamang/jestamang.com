@@ -4,7 +4,7 @@
 // UPDATE CACHE_VERSION DATE ON EVERY PUSH
 // ════════════════════════════════════════════════════════════════
 
-var CACHE_NAME = 'jestamang-v393';
+var CACHE_NAME = 'jestamang-v394';
 var BADGE      = '/assets/icons/icon-192.png';
 
 var PRECACHE_URLS = [
@@ -35,7 +35,7 @@ var PRECACHE_URLS = [
   '/terms.html',
   '/accessibility.html',
   '/offline.html',
-  '/assets/fonts/Luminari.ttf',
+  '/assets/fonts/Luminari.woff2',
   '/assets/icons/icon-192.png',
   '/assets/homepage/logo%20png.webp',
   '/assets/homepage/background/Jesta background.jpg',
