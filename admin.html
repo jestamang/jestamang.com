@@ -492,10 +492,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-19')">Nav Badges</button>
   <div style="font-size:0.58rem;letter-spacing:0.28em;color:rgba(201,168,76,0.7);padding:12px 10px 2px;margin-top:6px;border-top:1px solid rgba(201,168,76,0.12);text-transform:uppercase;font-family:'Luminari',serif;">Games</div>
   <!-- v259: Arcade Analytics removed — duplicated the Leaderboards Manager (Cosmic Scrolls) and read a dead subcollection path. Nav entry commented out; recoverable.
-  <button class="adm-sidenav-link" onclick="admNavTo('sec-16')">Arcade</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-16')">Arcade Analytics</button>
   -->
   <!-- Arcade content manager (sec-35) — moved here from Content in v350; distinct from the dead sec-16 above -->
-  <button class="adm-sidenav-link" onclick="admNavTo('sec-35')">Arcade</button>
+  <button class="adm-sidenav-link" onclick="admNavTo('sec-35')">Arcade Manager</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-11')">Leaderboards</button>
   <button class="adm-sidenav-link" onclick="admNavTo('sec-22')">Sigil Cards</button>
   <div style="font-size:0.58rem;letter-spacing:0.28em;color:rgba(201,168,76,0.7);padding:12px 10px 2px;margin-top:6px;border-top:1px solid rgba(201,168,76,0.12);text-transform:uppercase;font-family:'Luminari',serif;">System</div>
@@ -2601,7 +2601,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       });
       h+='<button id="am-save" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:inherit;font-size:0.72rem;letter-spacing:0.12em;padding:8px 18px;cursor:pointer;border-radius:3px;">SAVE ARCADE</button>';
       h+='<button id="am-reset" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:rgba(201,168,76,0.6);font-family:inherit;font-size:0.72rem;letter-spacing:0.12em;padding:8px 16px;margin-left:8px;cursor:pointer;border-radius:3px;">RESET ALL TO DEFAULT</button>';
-      h+='<span id="am-status" style="margin-left:12px;font-size:0.72rem;color:rgba(2,225,39,0.85);"></span>';
+      h+='<span id="arcm-status" style="margin-left:12px;font-size:0.72rem;color:rgba(2,225,39,0.85);"></span>';
       formEl.innerHTML=h; wire();
     }
 
@@ -2665,7 +2665,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       }); });
       var sv=document.getElementById('am-save');
       if(sv) sv.addEventListener('click', function(){
-        var st=document.getElementById('am-status'); var cfg=collect();
+        var st=document.getElementById('arcm-status'); var cfg=collect();
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Saving…';}
         db.collection('siteConfig').doc('arcadeConfig').set(cfg).then(function(){
           _amSaved={header:cfg.header||{},games:cfg.games||{}};
@@ -2674,11 +2674,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       });
       var rs=document.getElementById('am-reset');
       if(rs) rs.addEventListener('click', function(){
-        var st=document.getElementById('am-status'); _amSaved={header:{},games:{}};
+        var st=document.getElementById('arcm-status'); _amSaved={header:{},games:{}};
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Resetting…';}
         db.collection('siteConfig').doc('arcadeConfig').set({header:{},games:{}}).then(function(){
-          render(); var st2=document.getElementById('am-status'); if(st2){st2.style.color='rgba(2,225,39,0.85)';st2.textContent='Reset to defaults ✦';}
-        }).catch(function(e){ var st3=document.getElementById('am-status'); if(st3){st3.style.color='rgba(251,56,56,0.9)';st3.textContent='Error';} });
+          render(); var st2=document.getElementById('arcm-status'); if(st2){st2.style.color='rgba(2,225,39,0.85)';st2.textContent='Reset to defaults ✦';}
+        }).catch(function(e){ var st3=document.getElementById('arcm-status'); if(st3){st3.style.color='rgba(251,56,56,0.9)';st3.textContent='Error';} });
       });
     }
 
