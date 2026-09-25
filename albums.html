@@ -572,6 +572,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
   if(window.jestaAuth){
     window.jestaAuth.onAuthStateChanged(function(user){
+      if(user&&user.isAnonymous)user=null; // guests cannot save favorites
       currentUser = user;
       if(user) loadSaved(user.uid); else savedSongs.clear();
     });

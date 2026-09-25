@@ -953,6 +953,7 @@ function pressSectionToggle(){
   }
 
   function initAll(user){
+    if(user&&user.isAnonymous)user=null; // guests cannot comment
     _currentUser = user;
     initAllComments(user);
     loadAdminPosts(user);

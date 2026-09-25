@@ -453,7 +453,7 @@ function syncToFirestore(idx,drawTs){
   try{
     var db=window.jestaDB;
     var user=window.jestaAuth&&window.jestaAuth.currentUser;
-    if(!db||!user)return;
+    if(!db||!user||user.isAnonymous)return;
     db.collection('users').doc(user.uid).set({sigilLastDraw:drawTs,sigilLastCard:idx},{merge:true})
       .catch(function(e){console.warn('sigil:fs write',e);});
   }catch(e){}
@@ -634,7 +634,7 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!window.jestaAuth)return;
     clearInterval(authPoll);
     window.jestaAuth.onAuthStateChanged(function(user){
-      if(!user||!window.jestaDB)return;
+      if(!user||user.isAnonymous||!window.jestaDB)return;
       window.jestaDB.collection('users').doc(user.uid).get().then(function(doc){
         if(!doc.exists)return;
         var d=doc.data();

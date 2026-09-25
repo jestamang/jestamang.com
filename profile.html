@@ -3218,7 +3218,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var loadingTimer = null;
 
   firebase.auth().onAuthStateChanged(function(user){
-    if(!user){ window.location.href = 'login.html'; return; }
+    if(!user||user.isAnonymous){ window.location.href = 'login.html'; return; }
     currentUser = user;
     db = firebase.firestore();
     var _pc=document.getElementById('page-content');if(_pc)_pc.style.opacity='1';
@@ -5136,7 +5136,7 @@ document.addEventListener('DOMContentLoaded', function(){
   // ── On auth ready ────────────────────────────────────────────
   if (window.jestaAuth) {
     window.jestaAuth.onAuthStateChanged(function (user) {
-      if (user) {
+      if (user && !user.isAnonymous) {
         restoreState();
         if (localStorage.getItem(LS_KEY) === 'true') startFirestoreListener();
       }

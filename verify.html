@@ -570,7 +570,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   resendBtn.addEventListener('click', function() {
     var user = firebase.auth().currentUser;
-    if (user) {
+    if (user && !user.isAnonymous) {
       resendBtn.disabled = true;
       resendBtn.textContent = 'Sending\u2026';
       user.sendEmailVerification().then(function() {
