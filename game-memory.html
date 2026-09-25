@@ -244,6 +244,7 @@ a.ctrl-btn{text-decoration:none;display:inline-block}
       <button class="lb-name-cancel" id="lb-name-cancel">Cancel</button>
       <button class="lb-name-confirm" id="lb-name-confirm">Inscribe ✦</button>
     </div>
+    <div id="lb-name-status" role="status" aria-live="polite" style="min-height:1.2em;margin-top:10px;font-size:0.72rem;letter-spacing:0.06em;line-height:1.5;"></div>
   </div>
 </div>
 
@@ -257,10 +258,10 @@ var ALL_PHOTOS = [
   "hanging gardens.jpg","hanging gardens 2.jpg","hanging gardens 3.jpg","hanging gardens 4.jpg","hanging gardens 5.jpg",
   "mutt tour 2.jpg","mutt tour 4.jpg","mutt tour 5.jpeg","mutt tour 6.jpg",
   "shelly 1.jpg","shelly 2.jpg","shelly 3.jpg","shelly 4.jpg","shelly and jr.jpg",
-  "venus.jpg","venus 1.jpg","venus 2.jpg","venus 3.jpg","venus 4.jpg","venus 5.jpg",
+  "venus.jpg","venus 1.jpg","venus 2.jpg","venus 3.jpg","venus 4.JPG","venus 5.jpg",
   "kek buh.jpeg","kek buh.jpg","kek buh 2.jpg","kek buh 3.jpg",
   "blue jays.jpeg","blue jays 2.jpeg",
-  "addison.jpg","alissa orange.JPG","atlas is alice lillenger.jpg","atlas is alice lillenger 2.jpg","austinich.jpg","beach records.jpg","beach records 2.jpg","big boy new cat records.jpg","big boy new cat 2.jpg","big smoke.jpg","boston.jpg","cats.jpg","coin.jpg","cricket om.jpg","cricket om 2.jpg","evils.jpg","father p journee.jpg","father p journee 2.jpg","hodge.jpg","jonas kyle.jpg","jonas kyle 2.jpg","jr mason.JPG","jr mason 2.jpg","jr mason 3.jpg","lilly.jpg","max.jpeg","max.jpg","mike 55.jpg","nails.jpg","ode to bonnie.jpeg","ode to bonnie 2.JPG","ode to bonnie 3.jpeg","sidney berne.jpeg","sounds across the world.JPG","tbsottopy.jpg","tbsottopy 2.jpg","the colours.jpg","the woodland singapore orchestra.jpg","trash.jpg"
+  "addison.jpg","alissa orange.JPG","atlas is alice lillenger.jpg","atlas is alice lillenger 2.jpg","austinich.jpg","beach records.jpg","beach records 2.jpg","big boy new cat records.jpg","big boy new cat 2.jpg","big smoke.JPG","boston.jpg","cats.jpg","coin.jpg","cricket om.jpg","cricket om 2.jpg","evils.jpg","father p journee.jpg","father p journee 2.JPG","hodge.jpg","jonas kyle.jpg","jonas kyle 2.jpg","jr mason.JPG","jr mason 2.jpg","jr mason 3.jpg","lilly.jpg","max.jpeg","max.jpg","mike 55.jpg","nails.jpg","ode to bonnie.jpeg","ode to bonnie 2.JPG","ode to bonnie 3.jpeg","sidney berne.jpeg","sounds across the world.JPG","tbsottopy.jpg","tbsottopy 2.jpg","the colours.jpg","the woodland singapore orchestra.jpg","trash.jpg"
 ];
 var ACTIVE_PHOTOS = ALL_PHOTOS;
 var DIFF = 'easy';
@@ -497,7 +498,7 @@ window.openLB=function(game,title,lowerBetter){
   modal.classList.add('open');
   var db=_getDb();
   if(!db){list.innerHTML='<div class="lb-empty">The scrolls are unavailable.</div>';return;}
-  db.collection('leaderboards').where('game','==',game).limit(50).get()
+  db.collection('leaderboards').where('game','==',game).limit(50).get({source:'server'})
     .then(function(snap){
       if(snap.empty){
         list.innerHTML='<div class="lb-empty">BE THE FIRST TO MARK YOUR SCORE</div>';return;
@@ -530,13 +531,20 @@ window.submitScore=function(game,score,lowerBetter,cb,extra){
     var _rec={game:game,name:_san(name),score:score,uid:_uid,photoURL:_photo,timestamp:window.firebase.firestore.FieldValue.serverTimestamp()};
     if(extra){for(var _k in extra){if(Object.prototype.hasOwnProperty.call(extra,_k)&&_k!=='game'&&_k!=='score'&&_k!=='name'&&_k!=='uid'&&_k!=='photoURL'&&_k!=='timestamp')_rec[_k]=extra[_k];}}
     db.collection('leaderboards').add(_rec)
-      .then(function(){if(cb)cb();}).catch(function(){if(cb)cb();});
+      .then(function(){lbSaveStatus('ok');if(cb)cb();}).catch(function(e){console.warn('lb:',e);lbSaveStatus('fail',e);if(cb)cb();});
   }
   try{var auth=window.firebase&&window.firebase.auth&&window.firebase.auth();if(auth&&auth.currentUser&&auth.currentUser.displayName){doSave(auth.currentUser.displayName);return;}}catch(e){}
   var nm=document.getElementById('lb-name-modal');var inp=document.getElementById('lb-name-inp');
   nm.classList.add('open');inp.value='';setTimeout(function(){inp.focus();},100);
+  function lbSaveStatus(kind,e){var st=document.getElementById('lb-name-status');var ok=document.getElementById('lb-name-confirm');var nm2=document.getElementById('lb-name-modal');
+    if(kind==='saving'){if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Sealing your score\u2026';}if(ok)ok.disabled=true;return;}
+    if(ok)ok.disabled=false;
+    if(kind==='ok'){if(st)st.textContent='';if(nm2)nm2.classList.remove('open');if(typeof inp!=='undefined'&&inp)cleanup();return;}
+    var txt=String((e&&e.code)||'')+' '+String((e&&e.message)||'');
+    if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=/permission|unauthenticated/i.test(txt)?'Score not saved \u2014 sign in to mark the scrolls':'Score not saved \u2014 signal lost, try again';}
+    if(nm2&&!nm2.classList.contains('open'))nm2.classList.add('open');}
   function doCancel(){nm.classList.remove('open');cleanup();if(cb)cb();}
-  function doConfirm(){var n=inp.value.trim();if(!n){inp.focus();return;}nm.classList.remove('open');cleanup();doSave(n);}
+  function doConfirm(){var n=inp.value.trim();if(!n){inp.focus();return;}lbSaveStatus('saving');doSave(n);}
   function cleanup(){var _lbc=document.getElementById('lb-name-confirm');if(_lbc)_lbc.onclick=null;var _lbcl=document.getElementById('lb-name-cancel');if(_lbcl)_lbcl.onclick=null;inp.onkeydown=null;}
   var _lbNameConfirm=document.getElementById('lb-name-confirm');if(_lbNameConfirm)_lbNameConfirm.onclick=doConfirm;
   var _lbNameCancel=document.getElementById('lb-name-cancel');if(_lbNameCancel)_lbNameCancel.onclick=doCancel;

@@ -21,6 +21,7 @@
   }
 
   function formatScrollDate(ts) {
+    if (ts == null || ts === '') return '—';
     try {
       var d;
       if (ts && typeof ts.toDate === 'function') { d = ts.toDate(); }
