@@ -14,3 +14,7 @@ package-lock.json
 backups/
 scripts/serviceAccountKey.json
 skills-lock.json
+
+# hook/tool outputs
+tools/games-check/last-*.json
+tools/games-check/*.png
