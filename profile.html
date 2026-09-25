@@ -2373,14 +2373,13 @@ var NC = (function(){
   }
 
   function calcAscendant(jd, lat, lng){
+    // ASC = atan2(cos RAMC, -(sin RAMC cos e + tan phi sin e)). The direct form needs no quadrant
+    // patch; the previous version negated both atan2 arguments and then added 180 only when
+    // cos(RAMC) > 0, which returned the Descendant for every RAMC between 90 and 270.
     var LST = localSiderealTime(jd, lng);
     var eps = obliquity(jd);
     var E = eps * DEG, R = LST * DEG, latRad = lat * DEG;
-    var y = -Math.cos(R);
-    var x = Math.sin(R)*Math.cos(E) + Math.tan(latRad)*Math.sin(E);
-    var asc = Math.atan2(y, x) * RAD;
-    if(asc < 0) asc += 360;
-    if(Math.cos(R) > 0) asc = mod360(asc + 180);
+    var asc = Math.atan2(Math.cos(R), -(Math.sin(R)*Math.cos(E) + Math.tan(latRad)*Math.sin(E))) * RAD;
     return mod360(asc);
   }
 
@@ -2581,9 +2580,12 @@ var NC = (function(){
     if(timeStr&&timeStr.length>=4){
       var tp=timeStr.split(':').map(Number),hh=tp[0],mm=tp[1];
       var offsetMins=(utcOffsetMinutes!==null&&utcOffsetMinutes!==undefined)?utcOffsetMinutes:Math.round(lng/15*60);
-      var totalLocalMins=hh*60+mm, totalUTCMins=totalLocalMins-offsetMins;
-      utcHour=Math.floor(((totalUTCMins%1440)+1440)%1440/60);
-      utcMin=((totalUTCMins%60)+60)%60;
+      // Local wall time minus the offset, carried through the calendar so a birth whose UT falls on
+      // the previous or next day gets that day. The old code kept the local date and only wrapped
+      // the hour, which computed evening US births and morning Asia/Australia births one day off.
+      var u=new Date(Date.UTC(yr,mo-1,dy,hh,mm,0) - offsetMins*60000);
+      yr=u.getUTCFullYear(); mo=u.getUTCMonth()+1; dy=u.getUTCDate();
+      utcHour=u.getUTCHours(); utcMin=u.getUTCMinutes();
     }
     var jd=toJulianDate(yr,mo,dy,utcHour,utcMin,0);
     // JD_TT: apply Delta T for planet positions (TT = UT + ΔT)
