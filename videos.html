@@ -139,6 +139,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 </style>
 
 <style>body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 35%,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.75) 100%);pointer-events:none;z-index:0;}</style>
+<style id="mob-pr4">/* 320px phones only: single column so cards cannot widen the viewport */
+@media(max-width:340px){#videoGrid.video-grid,.video-grid{grid-template-columns:minmax(0,1fr)!important;gap:14px!important}}
+</style>
 </head> <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 

@@ -160,6 +160,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <style id="mob-pr1">/* mobile only: darken tinted season badges so white text reads */
 @media(max-width:767px){.album-season[style*='background-color']{background-image:linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45))!important}}
 </style>
+<style id="mob-pr4">/* 320px phones only: two columns that cannot exceed the viewport, season badges wrap */
+@media(max-width:340px){.album-grid,.album-grid.nons-grid,.album-grid.four-col{grid-template-columns:repeat(2,minmax(0,1fr))!important}.album-card{min-width:0}.album-season{white-space:normal!important}}
+</style>
 </head> <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
