@@ -741,11 +741,16 @@ var NC = (function(){
     return;
   }
 
-  var db = firebase.firestore();
+  function showLoadError(msg){
+    document.getElementById('state-loading').style.display = 'none';
+    document.getElementById('state-error').style.display = 'block';
+    document.getElementById('error-msg-text').textContent = msg;
+  }
 
   // Load the shared chart only. publicCharts/{uid} is written by the owner when
   // they click "Copy Dossier Link" on their profile and holds rendered chart data
   // only; this page never reads the private users or natalChart documents.
+  function loadDossier(db){
   db.collection('publicCharts').doc(targetUid).get().then(function(chartDoc){
 
     document.getElementById('state-loading').style.display = 'none';
@@ -790,10 +795,27 @@ var NC = (function(){
 
   }).catch(function(e){
     console.error('Dossier load error:', e);
-    document.getElementById('state-loading').style.display = 'none';
-    document.getElementById('state-error').style.display = 'block';
-    document.getElementById('error-msg-text').textContent = 'This dossier could not be retrieved. The cosmic record may be restricted.';
+    showLoadError('This dossier could not be retrieved. The cosmic record may be restricted.');
   });
+  }
+
+  // The Firebase SDK and firebase-config.js load with `defer`, so they have not
+  // run yet when this inline script executes. Start once window.jestaDB exists:
+  // immediately if it already does, otherwise on DOMContentLoaded (deferred
+  // scripts run before that event), with a short poll as a fallback and an
+  // error state instead of an endless spinner if Firebase never appears.
+  function startWhenReady(){
+    if (window.jestaDB) { loadDossier(window.jestaDB); return true; }
+    return false;
+  }
+  if (!startWhenReady()) {
+    var _tries = 0;
+    var _poll = setInterval(function(){
+      if (startWhenReady()) { clearInterval(_poll); return; }
+      if (++_tries >= 100) { clearInterval(_poll); showLoadError('The cosmic record is unreachable right now. Please try again.'); }
+    }, 100);
+    document.addEventListener('DOMContentLoaded', function(){ if (startWhenReady()) clearInterval(_poll); });
+  }
 })();
 </script>
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>©<span class="jcyr">2026</span>&nbsp;Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a></footer>
