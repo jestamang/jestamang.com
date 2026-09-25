@@ -146,6 +146,9 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <style id="mob-pr1">/* mobile only: darken green/red pills so white text reads */
 @media(max-width:767px){.entity-row:nth-child(3),.entity-row:nth-child(5){background-image:linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45))!important}}
 </style>
+<style id="mob-pr4">/* 320px phones only: planetary position values wrap instead of being clipped by the panel edge */
+@media(max-width:340px){.dossier-planets{grid-template-columns:minmax(0,1fr)!important}.dossier-row{min-width:0}.doss-value{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;min-width:0}}
+</style>
 </head> <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
