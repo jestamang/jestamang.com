@@ -247,7 +247,7 @@ if(pbRow){
 }
 tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr>';
 m.classList.add('lb-open');
-window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(10).get()
+window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(10).get({source:'server'})
 .then(function(snap){
 var rows=[];snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp,photoURL:d.photoURL||'',uid:d.uid||''});});
 var isTop=cur>0&&(rows.length===0||cur>rows[0].score);
@@ -272,8 +272,20 @@ var ps=FLFLOAT?parseFloat(score):parseInt(score);
 var _pbKey='lbBest_'+GID;
 try{var _pb=JSON.parse(localStorage.getItem(_pbKey)||'null');if(!_pb||ps>_pb.score){localStorage.setItem(_pbKey,JSON.stringify({score:ps,date:new Date().toISOString()}));}}catch(e){}
 var uid=null,photoURL=null;try{if(window.jestaAuth&&window.jestaAuth.currentUser){uid=window.jestaAuth.currentUser.uid;photoURL=window.jestaAuth.currentUser.photoURL||null;}}catch(e){}
-window.jestaDB.collection('leaderboards').add({game:GID,name:san(name)||'Unknown',score:ps,uid:uid,photoURL:photoURL,timestamp:firebase.firestore.FieldValue.serverTimestamp()})
-.then(function(ref){_docId=ref.id;}).catch(function(e){console.warn('lb:',e);});
+return window.jestaDB.collection('leaderboards').add({game:GID,name:san(name)||'Unknown',score:ps,uid:uid,photoURL:photoURL,timestamp:firebase.firestore.FieldValue.serverTimestamp()})
+.then(function(ref){_docId=ref.id;lbSaveStatus('ok');}).catch(function(e){console.warn('lb:',e);_docId=null;lbSaveStatus('fail',e);});
+}
+
+var _lbFromModal=false;
+function lbSaveStatus(kind,e){
+var st=document.getElementById('lb-name-status'),nm=document.getElementById('lb-name-modal'),ns=document.getElementById('lb-name-submit');
+if(kind==='saving'){if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='SEALING YOUR SCORE…';}if(ns)ns.disabled=true;return;}
+if(ns)ns.disabled=false;
+if(kind==='ok'){if(st)st.textContent='';if(_lbFromModal){_lbFromModal=false;if(nm)nm.classList.remove('lb-open');openLB(_score);}return;}
+var txt=String((e&&e.code)||'')+' '+String((e&&e.message)||'');
+var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED — SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED — SIGNAL LOST, TRY AGAIN';
+if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=msg;}
+if(nm&&!nm.classList.contains('lb-open'))nm.classList.add('lb-open');
 }
 window.lbOnGameOver=function(score){
 _score=score;_docId=null;
@@ -293,7 +305,7 @@ var nm=document.getElementById('lb-name-modal'),ni=document.getElementById('lb-n
 var lm=document.getElementById('lb-modal'),lc=document.getElementById('lb-modal-close');
 var hb=document.getElementById('lb-btn-hud'),ob=document.getElementById('lb-btn-over');
 var sb=document.getElementById('startBtn'),rb=document.getElementById('restartBtn');
-function doSubmit(){var n=ni?san(ni.value):'';if(!n){if(ni)ni.focus();return;}if(nm)nm.classList.remove('lb-open');saveScore(n,_score);openLB(_score);}
+function doSubmit(){var n=ni?san(ni.value):'';if(!n){if(ni)ni.focus();return;}_lbFromModal=true;lbSaveStatus('saving');saveScore(n,_score);}
 if(ns)ns.addEventListener('click',doSubmit);
 if(ni)ni.addEventListener('keydown',function(e){if(e.key==='Enter')doSubmit();});
 if(nsk)nsk.addEventListener('click',function(){if(nm)nm.classList.remove('lb-open');openLB(0);});
@@ -419,6 +431,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 <input id="lb-name-input" type="text" maxlength="20" autocomplete="off" spellcheck="false" placeholder="YOUR NAME..." aria-label="Enter your name">
 <button id="lb-name-submit">SEAL IT</button>
 <button id="lb-name-skip">ENTER WITHOUT SAVING</button>
+<div id="lb-name-status" role="status" aria-live="polite" style="min-height:1.2em;margin-top:10px;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;line-height:1.5;"></div>
 </div></div>
 <div id="lb-modal">
 <div id="lb-modal-inner">

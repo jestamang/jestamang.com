@@ -343,6 +343,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <button id="lb-name-submit">Seal It</button>
     <br>
     <button id="lb-name-skip">Skip</button>
+    <div id="lb-name-status" role="status" aria-live="polite" style="min-height:1.2em;margin-top:10px;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;line-height:1.5;"></div>
   </div>
 </div>
 
@@ -385,7 +386,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Consulting the stars...</td></tr>';
     m.classList.add('lb-open');
     if(!window.jestaDB){var _jt=0,_jiv=setInterval(function(){if(window.jestaDB){clearInterval(_jiv);openLB(cur);}else if(++_jt>80){clearInterval(_jiv);tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Signal lost</td></tr>';}},100);return;}
-    window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(50).get()
+    window.jestaDB.collection('leaderboards').where('game','==',GID).orderBy('score','desc').limit(50).get({source:'server'})
     .then(function(snap){
       var rows=[];snap.forEach(function(doc){var d=doc.data();rows.push({id:doc.id,name:d.name,score:d.score,ts:d.timestamp,photoURL:d.photoURL||'',uid:d.uid||''});});
       var seen={},deduped=[];for(var _i=0;_i<rows.length;_i++){var _k=rows[_i].uid||rows[_i].name;if(!_k){deduped.push(rows[_i]);continue;}if(!seen[_k]){seen[_k]=true;deduped.push(rows[_i]);}}rows=deduped.slice(0,10);
@@ -413,12 +414,24 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     try{var _pb=JSON.parse(localStorage.getItem(_pbKey)||'null');if(!_pb||ps>_pb.score){localStorage.setItem(_pbKey,JSON.stringify({score:ps,date:new Date().toISOString()}));}}catch(e){}
     var uid=null,photoURL=null;try{if(window.jestaAuth&&window.jestaAuth.currentUser){uid=window.jestaAuth.currentUser.uid;photoURL=window.jestaAuth.currentUser.photoURL||null;}}catch(e){}
     if(window.jestaDB&&window.firebase){
-      window.jestaDB.collection('leaderboards').add({game:GID,name:san(name)||'Unknown',score:ps,uid:uid,photoURL:photoURL,timestamp:window.firebase.firestore.FieldValue.serverTimestamp()})
-      .then(function(ref){_docId=ref.id;}).catch(function(e){console.warn('lb:',e);});
+      return window.jestaDB.collection('leaderboards').add({game:GID,name:san(name)||'Unknown',score:ps,uid:uid,photoURL:photoURL,timestamp:window.firebase.firestore.FieldValue.serverTimestamp()})
+      .then(function(ref){_docId=ref.id;lbSaveStatus('ok');}).catch(function(e){console.warn('lb:',e);_docId=null;lbSaveStatus('fail',e);});
     }
   }
 
-  window.lbOnGameOver_RA=function(score){
+  
+var _lbFromModal=false;
+function lbSaveStatus(kind,e){
+var st=document.getElementById('lb-name-status'),nm=document.getElementById('lb-name-modal'),ns=document.getElementById('lb-name-submit');
+if(kind==='saving'){if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='SEALING YOUR SCORE…';}if(ns)ns.disabled=true;return;}
+if(ns)ns.disabled=false;
+if(kind==='ok'){if(st)st.textContent='';if(_lbFromModal){_lbFromModal=false;if(nm)nm.classList.remove('lb-open');openLB(_score);}return;}
+var txt=String((e&&e.code)||'')+' '+String((e&&e.message)||'');
+var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED — SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED — SIGNAL LOST, TRY AGAIN';
+if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=msg;}
+if(nm&&!nm.classList.contains('lb-open'))nm.classList.add('lb-open');
+}
+window.lbOnGameOver_RA=function(score){
     _score=score;_docId=null;
     if(!score||score<=0)return;
     var ob=document.getElementById('lb-btn-over');if(ob)ob.style.display='inline-block';
@@ -437,7 +450,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     if(ob)ob.addEventListener('click',function(){openLB(_score);});
     if(lc)lc.addEventListener('click',function(){if(lm)lm.classList.remove('lb-open');});
     if(lm)lm.addEventListener('click',function(e){if(e.target===lm)lm.classList.remove('lb-open');});
-    function doSubmit(){var n=ni?san(ni.value):'';if(!n){if(ni)ni.focus();return;}if(nm)nm.classList.remove('lb-open');saveScore(n,_score);openLB(_score);}
+    function doSubmit(){var n=ni?san(ni.value):'';if(!n){if(ni)ni.focus();return;}_lbFromModal=true;lbSaveStatus('saving');saveScore(n,_score);}
     if(ns)ns.addEventListener('click',doSubmit);
     if(ni)ni.addEventListener('keydown',function(e){if(e.key==='Enter')doSubmit();});
     if(nsk)nsk.addEventListener('click',function(){if(nm)nm.classList.remove('lb-open');openLB(0);});
