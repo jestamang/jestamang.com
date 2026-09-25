@@ -1,38 +1,9 @@
 // ════════════════════════════════════════════════════════════════
 // JESTAMANG FIREBASE CONFIGURATION
 // ════════════════════════════════════════════════════════════════
-//
-// FIRESTORE SECURITY RULES (paste into Firestore → Rules tab):
-// ────────────────────────────────────────────────────────────────
-// rules_version = '2';
-// service cloud.firestore {
-//   match /databases/{database}/documents {
-//     match /users/{userId} {
-//       allow read, write: if request.auth != null && request.auth.uid == userId;
-//     }
-//     match /favorites/{docId} {
-//       allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
-//       allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
-//     }
-//     match /comments/{docId} {
-//       allow read: if true;
-//       allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
-//       allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
-//     }
-//     match /inquiries/{docId} {
-//       allow create: if true;
-//     }
-//     match /posts/{docId} {
-//       allow read: if true;
-//       allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
-//       allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
-//     }
-//     match /leaderboards/{scoreId} {
-//       allow read: if true;
-//       allow write: if request.auth != null;
-//     }
-//   }
-// }
+// Firestore security rules live in /firestore.rules (deployed with
+// `firebase deploy --only firestore:rules` from main). Do not copy
+// rules into this file.
 // ════════════════════════════════════════════════════════════════
 
 const firebaseConfig = {
@@ -76,15 +47,3 @@ window.JESTA_VAPID_KEY = 'BH9tGcRFeHW2MbKwkgXmkEhozQAIuflcEwEiNrsp9LObjKO6DOlnvE
     window.jestaMessaging = null;
   }
 })();
-
-// Also add notifications and users Firestore security rules:
-// ────────────────────────────────────────────────────────────
-//     match /notifications/{docId} {
-//       allow read: if request.auth != null;
-//       allow write: if request.auth != null &&
-//         request.auth.token.email == 'andrewwace0319@gmail.com';
-//     }
-//     match /users/{userId} {
-//       allow read, write: if request.auth != null && request.auth.uid == userId;
-//     }
-// ────────────────────────────────────────────────────────────
