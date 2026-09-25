@@ -48,6 +48,12 @@
     '@media(max-width:767px){#mlb2-39458675.ml-form-embedContainer.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-fieldRow input{font-size:16px!important}#mlb2-39458675.ml-form-embedContainer.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit button[type=submit]{font-size:0.7rem!important;min-height:44px!important}}',
     '@media(max-width:767px){#lb-name-skip{display:inline-flex!important;align-items:center;justify-content:center;min-height:44px!important;padding:10px 16px!important;font-size:0.7rem!important;color:rgba(201,168,76,0.55)!important}}',
     '@media(max-width:767px){#back,#back-link,#lb-btn-hud,#ep-lb-hud{font-size:0.7rem!important}#lb-btn-hud,#ep-lb-hud{min-height:44px!important}.sub,.btn-learn{font-size:0.7rem!important}}',
+    /* iOS safe area (mobile audit PR 2). env() is 0 everywhere except notch/home-bar iPhones with viewport-fit=cover, so desktop and Android are unchanged. 1024px so landscape phones are covered. */
+    '@media(max-width:1024px){body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}body:not(:has(#jtnav)){padding-top:env(safe-area-inset-top)}}',
+    '@media(max-width:1024px){#jtnav{height:calc(52px + env(safe-area-inset-top))!important;padding-top:env(safe-area-inset-top);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);box-sizing:border-box}body:has(#jtnav){padding-top:calc(52px + env(safe-area-inset-top))!important}}',
+    '@media(max-width:1024px){#jtnav-mobile-overlay{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}}',
+    '@media(max-width:1024px){#ck-banner{padding-bottom:calc(14px + env(safe-area-inset-bottom))!important;padding-left:calc(16px + env(safe-area-inset-left))!important;padding-right:calc(16px + env(safe-area-inset-right))!important}}',
+    '@media(max-width:1024px){#j-notif-banner,#j-verify-banner{top:calc(80px + env(safe-area-inset-top))!important}}',
   ].join('');
   document.head.appendChild(style);
 

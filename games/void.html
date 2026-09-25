@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="dns-prefetch" href="https://firestore.googleapis.com">
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>The Void · Jestamang Games — Browser Survival Game</title>
 <meta name="description" content="The Void — a browser survival game from the Jestamang universe. Dodge shapes, survive the darkness, and chase the leaderboard. How long can you last?">
 <meta name="keywords" content="Jestamang, psychedelic music, experimental, indie collective, Quarter Days, NONS, 2K2123, Jestamang universe, psychedelic rock, The Void, arcade game, survival game, Jestamang game, browser game">
@@ -220,6 +220,9 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
   #lb-modal-inner{box-shadow:0 0 24px rgba(201,168,76,0.12)}
 }
 </style>
+<style id="mob-pr2">/* iOS safe area: canvas starts below the header, which sits below the notch */
+@media(max-width:1024px){:root{--game-header-h:calc(60px + env(safe-area-inset-top))}#game-header{min-height:60px}}
+</style>
 </head>
 <body>
 <a href="#hud" class="skip-link">Skip to main content</a>
@@ -324,11 +327,11 @@ window.addEventListener('keydown', function(e) {
 window.addEventListener('keyup', function(e) { keys[e.key] = false; });
 C.addEventListener('touchstart', function(e) {
   e.preventDefault(); touch.on = true;
-  touch.x = e.touches[0].clientX; touch.y = e.touches[0].clientY - 60;
+  touch.x = e.touches[0].clientX; touch.y = e.touches[0].clientY - C.getBoundingClientRect().top;
 }, { passive: false });
 C.addEventListener('touchmove', function(e) {
   e.preventDefault();
-  if (e.touches.length) { touch.x = e.touches[0].clientX; touch.y = e.touches[0].clientY - 60; }
+  if (e.touches.length) { touch.x = e.touches[0].clientX; touch.y = e.touches[0].clientY - C.getBoundingClientRect().top; }
 }, { passive: false });
 C.addEventListener('touchend', function(e) {
   if (!e.touches.length) { touch.on = false; }
