@@ -1978,6 +1978,12 @@ var NC = (function(){
 
   /* --- Outer-planet precomputed table (Uranus/Neptune/Pluto) --- */
   var JESTA_OP=null, JESTA_OP_READY=false;
+  var _opResolve=null, JESTA_OP_PROMISE=new Promise(function(res){ _opResolve=res; });
+  function opRangeYears(){               // usable interpolation window of the table (first/last two samples excluded)
+    if(!JESTA_OP) return {from:1895,to:2104};
+    var n=JESTA_OP.bodies.uranus.length, st=JESTA_OP.step, jd0=JESTA_OP.jd0;
+    return {from:Math.ceil(2000+(jd0+st-2451545)/365.25), to:Math.floor(2000+(jd0+st*(n-3)-2451545)/365.25)};
+  }
   function _opLonRaw(body, jd){           // tropical lon 0-360, or null if unavailable/out-of-range
     if(!JESTA_OP) return null;
     var arr=JESTA_OP.bodies[body]; if(!arr) return null;
@@ -2007,13 +2013,14 @@ var NC = (function(){
         if(x.readyState===4){
           if(x.status===200||x.status===0){
             try{ JESTA_OP=JSON.parse(x.responseText); JESTA_OP_READY=_opSelfTest();
-                 if(!JESTA_OP_READY) console.warn('[zodiac] outer-planet table self-test failed; using fallback math');
-            }catch(e){ JESTA_OP=null; console.warn('[zodiac] outer-planet table parse failed; fallback'); }
+                 if(!JESTA_OP_READY) console.warn('[zodiac] outer-planet table self-test failed; Uranus, Neptune, Pluto and Chiron will be reported unavailable');
+            }catch(e){ JESTA_OP=null; console.warn('[zodiac] outer-planet table parse failed; outer bodies unavailable'); }
           }
+          if(_opResolve){ _opResolve(JESTA_OP_READY); _opResolve=null; }
         }
       };
       x.send();
-    }catch(e){ JESTA_OP=null; }
+    }catch(e){ JESTA_OP=null; if(_opResolve){ _opResolve(false); _opResolve=null; } }
   }
   jestaLoadOP();
 
@@ -2212,37 +2219,9 @@ var NC = (function(){
     return geo;
   }
 
-  // Chiron — Keplerian orbit with equation of center (e=0.38276, period ~50.76 yr)
-  function chironLongitude(jd){
-    var _c=opLon('chiron',jd); if(_c!==null) return _c;
-    var T = calcT(jd);
-    var D = jd - 2451545.0;
-
-    // Mean longitude (calibrated at J2000.0)
-    var L = mod360(300.053 + (360.0/18530.47)*D);
-
-    // Reference perihelion longitude (slowly precessing)
-    var varpi = mod360(339.5066 + 0.019*T);
-
-    // Effective mean anomaly
-    var M_rad = mod360(L - varpi) * DEG;
-
-    // Equation of center for e = 0.38276 (full 3-term series)
-    var e = 0.38276;
-    var C = (2*e - e*e*e/4)*Math.sin(M_rad)
-          + (5/4)*e*e*Math.sin(2*M_rad)
-          + (13/12)*e*e*e*Math.sin(3*M_rad);
-    var C_deg = C * RAD;
-
-    // Heliocentric ecliptic longitude
-    var lon_helio = mod360(L + C_deg);
-
-    // Geocentric correction (simplified parallax for ~13.6 AU)
-    var sun_lon = sunLongitude(jd);
-    var geo_correction = (1.0/13.6452)*Math.sin((sun_lon - lon_helio)*DEG)*RAD;
-
-    return mod360(lon_helio + geo_correction);
-  }
+  // Chiron: DE440s table only. The former Keplerian fallback was off by tens of degrees
+  // (98 degrees on an 1890 test chart), so outside the table the body is reported unavailable.
+  function chironLongitude(jd){ return opLon('chiron', jd); }
 
   function northNodeLongitude(jd){
     var T = calcT(jd);
@@ -2266,82 +2245,12 @@ var NC = (function(){
     return mod360(83.3532465 + 4069.0137287*T - 0.0103200*T*T + 180);
   }
 
-  // Shared VSOP87 series summer — A*cos(B + C*tau), tau = Julian millennia from J2000
-  function _vsop(terms, tau){
-    var s=0; for(var i=0;i<terms.length;i++) s+=terms[i][0]*Math.cos(terms[i][1]+terms[i][2]*tau); return s;
-  }
-
-  // Uranus geocentric longitude — VSOP87 Meeus Table 33.a + Keplerian geocentric
-  function uranusLongitude(jd){
-    var _u=opLon('uranus',jd); if(_u!==null) return _u;
-    var T=calcT(jd), tau=T/10;
-    var L0=_vsop([
-      [548129294.619,0,0],
-      [4061993.0,5.4831435,74.7815986],[263464.0,5.4801213,149.5631971],
-      [18990.0,5.4801,224.3447957],[1610.0,5.4804,299.1263943],
-      [140.0,5.481,373.9079929],[14.0,5.48,448.6895915],
-      [105.0,0.3460,36.6485829],[45.0,1.780,138.5174968],
-      [35.0,0.950,3.9321533],[31.0,2.740,1.4844727]
-    ],tau);
-    var L1=_vsop([
-      [7478270000.0,0,0],
-      [175482.0,3.09177,74.7815986],[71240.0,5.39108,149.5631971],
-      [4900.0,5.393,224.3447957],[805.0,1.4007,36.6485829],
-      [305.0,5.432,35.1640902],[350.0,2.779,3.9321533]
-    ],tau);
-    var L2=_vsop([
-      [22440.0,0.6996,74.7815986],[4727.0,1.699,149.5631971],
-      [1682.0,4.648,224.3447957],[1270.0,2.676,36.6485829]
-    ],tau);
-    var L3=_vsop([[1164.0,4.7345,74.7815986],[212.0,3.343,149.5631971]],tau);
-    var L_helio=mod360((L0+L1*tau+L2*tau*tau+L3*tau*tau*tau)*1e-8*RAD);
-    // Keplerian r (eccentricity small, accurate enough)
-    var el=PLANET_ELEMENTS['Uranus'];
-    var varpi=mod360(el.omega0+el.omegaR*T);
-    var M_rad=mod360(el.L0+el.Lr*T-varpi)*DEG;
-    var E_p=solveKepler(M_rad,el.e);
-    var r_p=el.a*(1-el.e*Math.cos(E_p));
-    var X_p=r_p*Math.cos(L_helio*DEG), Y_p=r_p*Math.sin(L_helio*DEG);
-    var lon_e=mod360(sunLongitude(jd)+180);
-    var Me=mod360(357.52911+35999.05029*T-0.0001537*T*T);
-    var E_e=solveKepler(Me*DEG,0.016709);
-    var r_e=1.000001018*(1-0.016709*Math.cos(E_e));
-    var X_e=r_e*Math.cos(lon_e*DEG), Y_e=r_e*Math.sin(lon_e*DEG);
-    return mod360(Math.atan2(Y_p-Y_e,X_p-X_e)*RAD);
-  }
-
-  // Neptune geocentric longitude — Keplerian 3-D orbit (J2000 elements)
-  // The 10-term truncated VSOP87 was removed: it introduced 125' of heliocentric
-  // truncation error (consistently 100-190' too high for 2000-2020), which was
-  // far worse than the pure Keplerian (~35'). The same approach was used for Pluto.
-  function neptuneLongitude(jd){ var _n=opLon('neptune',jd); if(_n!==null) return _n; return planetLongitude('Neptune', jd); }
-
-  // Pluto geocentric longitude — Keplerian 3-D orbit (J2000 elements)
-  // Note: the Meeus Ch.37 perturbation table was removed because its heliocentric
-  // longitude output was ~2.6° too high for dates near J2000, causing a 165' geocentric
-  // error that is worse than the pure Keplerian (tested error: ~7').
-  function plutoLongitude(jd){
-    var _p=opLon('pluto',jd); if(_p!==null) return _p;
-    var T=calcT(jd);
-    var el=PLANET_ELEMENTS['Pluto'];
-    var varpi=mod360(el.omega0+el.omegaR*T);
-    var Omega=mod360(el.Omega0+el.OmegaR*T);
-    var incRad=(el.i0+el.ir*T)*DEG;
-    var M_rad=mod360(el.L0+el.Lr*T-varpi)*DEG;
-    var E_p=solveKepler(M_rad,el.e);
-    var r_p=el.a*(1-el.e*Math.cos(E_p));
-    var v_p=2*Math.atan2(Math.sqrt(1+el.e)*Math.sin(E_p/2),Math.sqrt(1-el.e)*Math.cos(E_p/2));
-    var u=(varpi-Omega)*DEG+v_p;
-    var OmR=Omega*DEG;
-    var X_p=r_p*(Math.cos(OmR)*Math.cos(u)-Math.sin(OmR)*Math.sin(u)*Math.cos(incRad));
-    var Y_p=r_p*(Math.sin(OmR)*Math.cos(u)+Math.cos(OmR)*Math.sin(u)*Math.cos(incRad));
-    var lon_e=mod360(sunLongitude(jd)+180);
-    var Me=mod360(357.52911+35999.05029*T-0.0001537*T*T);
-    var E_e=solveKepler(Me*DEG,0.016709);
-    var r_e=1.000001018*(1-0.016709*Math.cos(E_e));
-    var X_e=r_e*Math.cos(lon_e*DEG), Y_e=r_e*Math.sin(lon_e*DEG);
-    return mod360(Math.atan2(Y_p-Y_e,X_p-X_e)*RAD);
-  }
+  // Uranus, Neptune, Pluto: DE440s table only (0.02 arcmin against Swiss Ephemeris inside
+  // 1895 to 2104). The truncated VSOP87 and Keplerian fallbacks that used to run outside the
+  // table were 1 to 3 degrees off and are removed; the bodies are reported unavailable instead.
+  function uranusLongitude(jd){  return opLon('uranus',  jd); }
+  function neptuneLongitude(jd){ return opLon('neptune', jd); }
+  function plutoLongitude(jd){   return opLon('pluto',   jd); }
 
   function getRawLon(name, jd){
     if(name === 'Sun')        return sunLongitude(jd);
@@ -2361,6 +2270,7 @@ var NC = (function(){
     if(name==='Sun'||name==='Moon'||name==='North Node'||name==='South Node'||name==='Chiron'||name==='Lilith') return false;
     var lon1 = getRawLon(name, jd - 0.5);
     var lon2 = getRawLon(name, jd + 0.5);
+    if(lon1===null||lon2===null) return false;
     var delta = mod360(lon2 - lon1);
     if(delta > 180) delta -= 360;
     return delta < 0;
@@ -2602,6 +2512,9 @@ var NC = (function(){
       Chiron:chironLongitude(jdTT),Lilith:lilithLongitude(jdTT),
     };
 
+    var unavailable=[];
+    Object.keys(rawPos).forEach(function(k){ if(rawPos[k]===null||rawPos[k]===undefined||isNaN(rawPos[k])){ unavailable.push(k); delete rawPos[k]; } });
+
     var planets={};
     var pnames=Object.keys(rawPos);
     for(var pi=0;pi<pnames.length;pi++){
@@ -2631,7 +2544,7 @@ var NC = (function(){
       planets['Fortune']=fortuneData;
     }
 
-    var coreplanets=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
+    var coreplanets=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'].filter(function(n){ return !!planets[n]; });
     var elements={Fire:0,Earth:0,Air:0,Water:0},modes={Cardinal:0,Fixed:0,Mutable:0};
     var total=coreplanets.length;
     for(var ci=0;ci<coreplanets.length;ci++){
@@ -2644,7 +2557,7 @@ var NC = (function(){
     if(ascData) corePlanObj['Ascendant']=ascData;
     var aspects=findAspects(corePlanObj);
 
-    return {jd:jd,planets:planets,ascData:ascData,mcData:mcData,houseCusps:houseCusps,elements:elements,modes:modes,aspects:aspects,hasTime:hasTime,total:total};
+    return {jd:jd,planets:planets,ascData:ascData,mcData:mcData,houseCusps:houseCusps,elements:elements,modes:modes,aspects:aspects,hasTime:hasTime,total:total,unavailable:unavailable,ephemRange:opRangeYears()};
   }
 
   // ════════════════════════ SVG CHART WHEEL ════════════════════════
@@ -3030,11 +2943,24 @@ var NC = (function(){
       for(var ri=0;ri<pRows.length;ri++){
         var rn=pRows[ri][0],rsym=pRows[ri][1];
         var p=(rn==='Ascendant')?ascData:((rn==='MC')?mcData:planets[rn]);
-        if(!p) continue;
         var pi2=PLANET_INFO[rn]||{color:'#fff'};
+        if(!p){
+          if(result.unavailable&&result.unavailable.indexOf(rn)!==-1){
+            var rg=result.ephemRange||{from:1895,to:2104};
+            html+='<tr><td><span style="color:'+pi2.color+';font-size:1.05rem;font-variant-emoji:text;">'+rsym+'</span> '+rn+'</td>'
+                +'<td colspan="4" style="color:rgba(var(--gold-rgb,201,168,76),0.55);font-style:italic;font-size:0.82rem;">Outside the ephemeris table ('+rg.from+' to '+rg.to+'), not computed</td></tr>';
+          }
+          continue;
+        }
         var retroStr=p.retrograde?'<span style="color:#FB3838;font-size:0.95rem;font-weight:700;" title="Retrograde">\u211E</span>':'';
         var dcan=getDecan(p.totalDeg);
         var decanSub='<div style="font-size:10px;color:rgba(var(--gold-rgb,201,168,76),0.6);font-style:italic;margin-top:2px;white-space:nowrap;">'+DECAN_ORDINALS[dcan.num-1]+' Decan \u00B7 '+dcan.ruler+'</div>';
+        if(rn==='North Node'||rn==='South Node'){
+          decanSub+='<div style="font-size:10px;color:rgba(var(--gold-rgb,201,168,76),0.45);margin-top:1px;white-space:nowrap;">True node (approx.)</div>';
+        }
+        if(rn==='Lilith'){
+          decanSub+='<div style="font-size:10px;color:rgba(var(--gold-rgb,201,168,76),0.45);margin-top:1px;white-space:nowrap;">Mean apogee</div>';
+        }
         if(rn==='Fortune'&&p.isDayChart!==undefined&&p.isDayChart!==null){
           decanSub+='<div style="font-size:10px;color:rgba(var(--gold-rgb,201,168,76),0.45);margin-top:1px;white-space:nowrap;">'+(p.isDayChart?'Day Chart':'Night Chart')+'</div>';
         }
@@ -3045,6 +2971,9 @@ var NC = (function(){
             +'<td class="house-num-cell">'+(hasTime&&p.house?'H'+p.house:'\u2014')+'</td>'
             +'<td>'+retroStr+'</td>'
             +'</tr>';
+      }
+      if(!hasTime){
+        html+='<tr><td colspan="5" style="color:rgba(var(--gold-rgb,201,168,76),0.55);font-style:italic;font-size:0.82rem;padding-top:10px;">No birth time given: positions are computed for 12:00 UTC on the birth date. The Moon moves about half a degree an hour, so it can sit several degrees from its true place; houses and angles need a birth time.</td></tr>';
       }
       container.planetsEl.innerHTML=html;
     }
@@ -3149,6 +3078,7 @@ var NC = (function(){
 
   return {
     calculate:calculate,renderDossier:renderDossier,
+    ready:function(){ return JESTA_OP_PROMISE; },
     SIGNS:SIGNS,SIGN_GLYPHS:SIGN_GLYPHS,lonToSign:lonToSign,
     PLANET_INFO:PLANET_INFO,ROMAN_HOUSES:ROMAN_HOUSES,mod360:mod360,
   };
@@ -4411,6 +4341,29 @@ document.addEventListener('DOMContentLoaded', function(){
     var el = document.getElementById('nc-tz-manual');
     if(el) el.style.display = 'block';
   }
+  // UTC offset (minutes) of an IANA zone at a local wall time. Two passes: the first probe treats
+  // the wall time as if it were UTC, which picks the wrong rule within a few hours of a DST switch;
+  // the second probes the corrected instant. The repeated hour on a fall-back night stays ambiguous
+  // and resolves to the first (daylight time) reading, matching IANA's default.
+  function _birthOffsetMinutes(tzName, yr, mo, dy, hh, mm){
+    var fmt = new Intl.DateTimeFormat('en-US', {
+      timeZone: tzName, year:'numeric', month:'numeric', day:'numeric',
+      hour:'numeric', minute:'numeric', second:'numeric', hour12:false
+    });
+    function offsetAt(instantMs){
+      var parts = {};
+      fmt.formatToParts(new Date(instantMs)).forEach(function(p){ parts[p.type] = parseInt(p.value)||0; });
+      var tzH = parts.hour === 24 ? 0 : parts.hour;
+      return Math.round((Date.UTC(parts.year, parts.month-1, parts.day, tzH, parts.minute, parts.second) - instantMs) / 60000);
+    }
+    var wallMs = Date.UTC(yr, mo-1, dy, hh, mm, 0);
+    var first = offsetAt(wallMs);
+    var second = offsetAt(wallMs - first*60000);
+    if(second === first) return first;
+    var third = offsetAt(wallMs - second*60000);
+    return (third === second) ? second : Math.min(first, second);
+  }
+
   function _formatOffsetStr(offsetMins){
     var absMin = Math.abs(offsetMins);
     var h = Math.floor(absMin/60), m = absMin%60;
@@ -4479,7 +4432,7 @@ document.addEventListener('DOMContentLoaded', function(){
     showLoading();
     var fn = _pendingDoCalculate;
     _pendingDoCalculate = null;
-    fn(manualOffset);
+    NC.ready().then(function(){ fn(manualOffset); });
   });
 
   /* ── Place-of-birth autocomplete (Nominatim) ── */
@@ -4758,23 +4711,13 @@ document.addEventListener('DOMContentLoaded', function(){
                 var yr=dobParts[0], mo=dobParts[1], dy=dobParts[2];
                 var tobParts = tobVal.split(':').map(Number);
                 var hh=tobParts[0], mm=tobParts[1];
-                var probe = new Date(Date.UTC(yr, mo-1, dy, hh, mm, 0));
-                var fmt = new Intl.DateTimeFormat('en-US', {
-                  timeZone: tzName,
-                  year:'numeric',month:'numeric',day:'numeric',
-                  hour:'numeric',minute:'numeric',second:'numeric',hour12:false
-                });
-                var parts = {};
-                fmt.formatToParts(probe).forEach(function(p){ parts[p.type] = parseInt(p.value)||0; });
-                var tzH = parts.hour === 24 ? 0 : parts.hour;
-                var displayedMs = Date.UTC(parts.year, parts.month-1, parts.day, tzH, parts.minute, parts.second);
-                offsetMins = Math.round((displayedMs - probe.getTime()) / 60000);
+                offsetMins = _birthOffsetMinutes(tzName, yr, mo, dy, hh, mm);
               } catch(e){ console.warn('Intl offset calc failed:', e); }
             }
             if(offsetMins !== null){
               _setTzStatus('TIMEZONE DETECTED: ' + (tzName || '') + ' \u00b7 ' + _formatOffsetStr(offsetMins));
             }
-            doCalculate(offsetMins);
+            NC.ready().then(function(){ doCalculate(offsetMins); });
           })
           .catch(function(){
             // API unreachable — prompt user for manual offset instead of using wrong geographic fallback
@@ -4783,7 +4726,7 @@ document.addEventListener('DOMContentLoaded', function(){
             _showTzManual(doCalculate);
           });
       } else {
-        doCalculate(null);
+        NC.ready().then(function(){ doCalculate(null); });
       }
     } // end _withCoords
 
