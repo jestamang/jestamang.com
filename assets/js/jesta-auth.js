@@ -41,7 +41,13 @@
     /* Menu tier 768–859: hamburger (same layout as old block, narrowed upper bound) */
     '@media(min-width:768px) and (max-width:859px){#jtnav-links,#jtnav-divider,#jtnav-platforms,#jtnav-auth,#jsearch-btn{display:none!important}#jtnav-mobile-toggle{display:flex!important;position:static;margin-left:16px}#jtnav-logo{position:absolute;left:50%;transform:translateX(-50%);margin:0}}',
     '@media(min-width:768px) and (max-width:859px){#jtnav-mob-login{display:flex!important;align-items:center;font-family:\'Luminari\',serif!important;color:#c9a84c!important;font-size:0.62rem!important;letter-spacing:0.16em!important;text-transform:uppercase!important;padding:0 14px!important;white-space:nowrap!important;line-height:52px!important;margin-left:auto!important;text-decoration:none!important}}',
-    '@media(min-width:768px) and (max-width:859px){#jtnav-mob-auth{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;width:100%;gap:8px}#jtnav-mob-auth .jtnav-mob-link{width:60%;max-width:220px;text-align:center}#jtnav-mob-auth .jtnav-mob-divider{width:100%}}'
+    '@media(min-width:768px) and (max-width:859px){#jtnav-mob-auth{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;width:100%;gap:8px}#jtnav-mob-auth .jtnav-mob-link{width:60%;max-width:220px;text-align:center}#jtnav-mob-auth .jtnav-mob-divider{width:100%}}',
+    /* Mobile text floor + 44px tap targets (mobile audit PR 1). 0.7rem = 11.2px. Desktop untouched. */
+    '@media(max-width:767px){#jtnav-mob-login{font-size:0.7rem!important}}',
+    '@media(max-width:767px){footer.hp-footer,footer.hp-footer a{font-size:0.7rem!important}footer.hp-footer a{min-height:44px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0 8px!important}}',
+    '@media(max-width:767px){#mlb2-39458675.ml-form-embedContainer.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-fieldRow input{font-size:16px!important}#mlb2-39458675.ml-form-embedContainer.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit button[type=submit]{font-size:0.7rem!important;min-height:44px!important}}',
+    '@media(max-width:767px){#lb-name-skip{display:inline-flex!important;align-items:center;justify-content:center;min-height:44px!important;padding:10px 16px!important;font-size:0.7rem!important;color:rgba(201,168,76,0.55)!important}}',
+    '@media(max-width:767px){#back,#back-link,#lb-btn-hud,#ep-lb-hud{font-size:0.7rem!important}#lb-btn-hud,#ep-lb-hud{min-height:44px!important}.sub,.btn-learn{font-size:0.7rem!important}}',
   ].join('');
   document.head.appendChild(style);
 
