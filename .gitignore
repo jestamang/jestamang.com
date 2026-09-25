@@ -11,3 +11,6 @@ package-lock.json
 # macOS metadata
 .DS_Store
 **/.DS_Store
+backups/
+scripts/serviceAccountKey.json
+skills-lock.json
