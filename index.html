@@ -1063,7 +1063,9 @@ document.addEventListener('DOMContentLoaded',eotdInit);
 /* Reserve section heights before content/images load to prevent scroll jitter on mobile */
 @media(max-width:768px){#hp-preview .hp-section{min-height:500px}.hp-section:has(.eotd-wrap){min-height:600px}}</style>
 <style>@media(max-width:768px){body{background-attachment:scroll!important}}</style>
-<style>.hp-section,#hp-preview{content-visibility:auto;contain-intrinsic-size:0 600px}</style>
+<style>.hp-section,#hp-preview{content-visibility:auto;contain-intrinsic-size:0 600px}
+/* phones: render every section up front. The 600px placeholders snapped to real heights (500 to 1029px) mid-scroll, changing the page length ten times per scroll and causing the jerk. */
+@media(max-width:767px){.hp-section,#hp-preview{content-visibility:visible;contain-intrinsic-size:auto}}</style>
 <script>
 /* ── Index Manager applier: reorder + show/hide homepage sections (fallback-first) ── */
 (function(){
