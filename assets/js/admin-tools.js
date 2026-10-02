@@ -131,12 +131,15 @@
 (function(){
 /* ── Caption Editor ── */
 var _capDocs = [];  // flat array of caption objects (with ._idx)
+// Load guard (defined in admin.html): no save until we know what Firestore holds, so a failed read can never overwrite the live document
+var _capGuard = window.jestaLoadGuard('cap-list-inner', 'captions', 'CAPTIONS');
 
 function capEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 function capLoad(){
   var el = document.getElementById('cap-list-inner');
   if(el) el.innerHTML = '<div style="color:rgba(201,168,76,0.35);font-size:0.7rem;letter-spacing:0.2em;">Loading\u2026</div>';
+  _capGuard.loading();
   window.jestaDB.collection('siteConfig').doc('captions').get()
     .then(function(doc){
       _capDocs = [];
@@ -144,9 +147,11 @@ function capLoad(){
         var data = doc.data();
         _capDocs = (data.captions || []).map(function(c,i){ return Object.assign({},c,{_idx:i}); });
       }
+      _capGuard.ok();
       capRenderList();
     })
     .catch(function(e){
+      _capGuard.failed(capLoad);
       var el2 = document.getElementById('cap-list-inner');
       if(el2) el2.innerHTML = '<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Load error: '+capEsc(e.message)+'</div>';
     });
@@ -196,6 +201,7 @@ window.capEdit = function(idx){
 window.capDelete = function(idx){
   var c = _capDocs[idx];
   if(!c) return;
+  if(!_capGuard.canSave(document.getElementById('cap-status'), true)) return;
   if(!confirm('Delete caption "' + (c.label||c.selector) + '"?')) return;
   var newList = _capDocs.filter(function(x){ return x._idx !== idx; }).map(function(x,i){
     return { id: x.id||'', page: x.page||'all', selector: x.selector||'', text: x.text||'', label: x.label||'' };
@@ -217,6 +223,7 @@ function capSave(){
   var selector = (document.getElementById('cap-selector').value || '').trim();
   var text     = (document.getElementById('cap-text').value     || '');
   var statusEl = document.getElementById('cap-status');
+  if(!_capGuard.canSave(statusEl, true)) return;
   if(!selector){ if(statusEl){ statusEl.textContent = 'CSS Selector is required.'; statusEl.className = 'status-msg status-err'; } return; }
   if(!text.trim()){ if(statusEl){ statusEl.textContent = 'Caption text is required.'; statusEl.className = 'status-msg status-err'; } return; }
   var saveBtn = document.getElementById('cap-save-btn');
@@ -271,7 +278,7 @@ function capClear(){
   if(clearBtn)   clearBtn.addEventListener('click', capClear);
   var _jt=0, _jiv=setInterval(function(){
     if(window.jestaDB){ clearInterval(_jiv); capLoad(); }
-    else if(++_jt>80){ clearInterval(_jiv); var el=document.getElementById('cap-list-inner'); if(el) el.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>'; }
+    else if(++_jt>80){ clearInterval(_jiv); _capGuard.failed(function(){ if(window.jestaDB) capLoad(); }); var el=document.getElementById('cap-list-inner'); if(el) el.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>'; }
   },100);
 })();
 })();
@@ -380,25 +387,31 @@ window.tseEditRule=function(i){
 };
 
 window.tseDeleteRule=function(i){
+  if(!_tseGuard.canSave(document.getElementById('tse-status'), true)) return;
   _tseStyles.splice(i,1);
   tseSaveToFirestore(function(){tseRenderRules();});
 };
 
 function tseSaveToFirestore(cb){
+  if(!_tseGuard.canSave(document.getElementById('tse-status'), true)) return;
   if(!window.jestaDB){var s=document.getElementById('tse-status');if(s){s.textContent='Firestore not ready.';s.className='status-msg status-err';}return;}
   window.jestaDB.collection('siteConfig').doc('textStyles').set({styles:_tseStyles},{merge:true})
     .then(function(){if(cb)cb();})
     .catch(function(e){var s=document.getElementById('tse-status');if(s){s.textContent='Error: '+e.message;s.className='status-msg status-err';}});
 }
 
+// Load guard (defined in admin.html): no save until we know what Firestore holds
+var _tseGuard = window.jestaLoadGuard('tse-rules-wrap', 'textstyles', 'TEXT STYLE RULES');
 function tseLoad(){
-  if(!window.jestaDB)return;
+  if(!window.jestaDB){ _tseGuard.failed(tseLoad); return; }
+  _tseGuard.loading();
   window.jestaDB.collection('siteConfig').doc('textStyles').get()
     .then(function(doc){
       _tseStyles=doc.exists&&Array.isArray(doc.data().styles)?doc.data().styles:[];
+      _tseGuard.ok();
       tseRenderRules();
     })
-    .catch(function(){tseRenderRules();});
+    .catch(function(){ _tseGuard.failed(tseLoad); tseRenderRules(); });
 }
 
 /* ── Wire up controls ── */
@@ -433,6 +446,7 @@ function tseLoad(){
   if(addBtn)addBtn.addEventListener('click',function(){
     var rule=tseReadForm();
     if(!rule.selector){var s=document.getElementById('tse-status');if(s){s.textContent='CSS selector required.';s.className='status-msg status-err';}return;}
+    if(!_tseGuard.canSave(document.getElementById('tse-status'), true)) return;
     addBtn.disabled=true;addBtn.textContent='Saving\u2026';
     if(_tseEditIdx>=0&&_tseEditIdx<_tseStyles.length){
       _tseStyles[_tseEditIdx]=rule;
@@ -456,7 +470,7 @@ function tseLoad(){
   /* Boot: poll for jestaDB then load */
   var _jt=0,_jiv=setInterval(function(){
     if(window.jestaDB){clearInterval(_jiv);tseLoad();}
-    else if(++_jt>80){clearInterval(_jiv);var w=document.getElementById('tse-rules-wrap');if(w)w.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
+    else if(++_jt>80){clearInterval(_jiv);_tseGuard.failed(tseLoad);var w=document.getElementById('tse-rules-wrap');if(w)w.innerHTML='<div style="color:rgba(251,56,56,0.6);font-size:0.7rem;">Firestore unavailable.</div>';}
   },100);
 })();
 })();
