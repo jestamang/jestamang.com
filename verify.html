@@ -575,7 +575,7 @@ document.addEventListener('DOMContentLoaded', function(){
       resendBtn.disabled = true;
       resendBtn.textContent = 'Sending\u2026';
       user.sendEmailVerification().then(function() {
-        resendBtn.textContent = 'Sent \u2014 Check Your Inbox';
+        resendBtn.textContent = 'Sent. Check Your Inbox';
       }).catch(function() {
         resendBtn.disabled = false;
         resendBtn.textContent = 'Resend Verification';

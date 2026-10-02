@@ -1793,7 +1793,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
           <button class="btn-seal" id="natal-seal-btn">SEAL IT</button>
         </div>
         <span class="natal-save-msg" id="natal-save-msg"></span>
-        <div class="saved-charts-limit" id="natal-save-limit">MAXIMUM CHARTS REACHED &mdash; DELETE ONE TO SAVE ANOTHER</div>
+        <div class="saved-charts-limit" id="natal-save-limit">MAXIMUM CHARTS REACHED. DELETE ONE TO SAVE ANOTHER</div>
       </div>
 
       <!-- Recalculate -->
@@ -4097,7 +4097,7 @@ document.addEventListener('DOMContentLoaded', function(){
         navigator.share({
           files: [file],
           title: 'My Jestamang Chart',
-          text:  'My natal chart \u2014 jestamang.com'
+          text:  'My natal chart · jestamang.com'
         }).then(function(){ btn.disabled = false; showDossierMsg('Shared \u2756'); })
           .catch(function(e){
             btn.disabled = false;
@@ -4491,7 +4491,7 @@ document.addEventListener('DOMContentLoaded', function(){
       if(!box) return;
       if(!data || !data.length){
         _pobCloseSuggestions();
-        _pobSetStatus('not-found','LOCATION NOT FOUND \u2014 try being more specific (City, Country)');
+        _pobSetStatus('not-found','LOCATION NOT FOUND. Try being more specific (City, Country)');
         return;
       }
       // Deduplicate: first by clean display name, then by lat/lng proximity (0.1°)
@@ -4781,7 +4781,7 @@ document.addEventListener('DOMContentLoaded', function(){
           });
           box.classList.add('open');
         }
-        _pobSetStatus('not-found', 'Several places share that name — choose yours from the list.');
+        _pobSetStatus('not-found', 'Several places share that name. Choose yours from the list.');
         var inp = document.getElementById('nc-pob');
         if(inp){ try { inp.focus(); } catch(e){} try { inp.scrollIntoView({block:'center'}); } catch(e){} }
       })
@@ -4984,7 +4984,7 @@ document.addEventListener('DOMContentLoaded', function(){
     enableBtn.textContent = 'Enable Notifications';
     enableBtn.classList.remove('notif-active');
     enableBtn.disabled = false;
-    statusEl.textContent = 'Notifications blocked in browser — enable in your browser settings to receive transmissions';
+    statusEl.textContent = 'Notifications blocked in browser. Enable in your browser settings to receive transmissions';
     statusEl.className = 'notif-status notif-status--blocked';
     localStorage.setItem(LS_KEY, 'false');
   }

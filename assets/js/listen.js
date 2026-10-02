@@ -207,7 +207,7 @@
     if (te) te.textContent = t ? t.title : '…';
     if (me) me.textContent = t ? (t.artist === t.album ? t.artist : t.artist + (t.album ? ' · ' + t.album : '')) : '';
     setArt(t && t.artwork ? t.artwork : null);
-    document.title = t ? (t.title + ' — Jestamang Radio') : 'Radio | Jestamang';
+    document.title = t ? (t.title + ' · Jestamang Radio') : 'Radio | Jestamang';
     if (t) {
       var center = document.querySelector('.lc-center');
       if (center) center.classList.remove('lc-sk');
@@ -313,7 +313,7 @@
     if (!list) return;
     if (!r) r = loadRec();
     if (!r.length) {
-      list.innerHTML = '<li class="lc-re-empty">— No transmissions logged yet —</li>';
+      list.innerHTML = '<li class="lc-re-empty">No transmissions logged yet</li>';
       return;
     }
     var html = '';

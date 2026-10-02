@@ -5,20 +5,20 @@
 <link rel="dns-prefetch" href="https://firestore.googleapis.com">
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Harmony Oracle · Jestamang Games — Harmonic Analysis</title>
-<meta name="description" content="Harmony Oracle — identify consonance, tonality, chord progressions, and full harmonic analysis. An educational music theory game. Four levels of depth.">
+<title>Harmony Oracle · Jestamang Games · Harmonic Analysis</title>
+<meta name="description" content="Harmony Oracle: identify consonance, tonality, chord progressions, and full harmonic analysis. An educational music theory game. Four levels of depth.">
 <meta name="keywords" content="Jestamang, harmony, ear training, music theory, chord progression, consonance, dissonance, modal, educational music game">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://jestamang.com/games/harmony-oracle.html">
 <meta property="og:site_name" content="Jestamang">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Harmony Oracle · Jestamang Games — Harmonic Analysis">
-<meta property="og:description" content="Harmony Oracle — identify consonance, tonality, chord progressions, and full harmonic analysis. An educational music theory game. Four levels of depth.">
+<meta property="og:title" content="Harmony Oracle · Jestamang Games · Harmonic Analysis">
+<meta property="og:description" content="Harmony Oracle: identify consonance, tonality, chord progressions, and full harmonic analysis. An educational music theory game. Four levels of depth.">
 <meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 <meta property="og:url" content="https://jestamang.com/games/harmony-oracle.html">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Harmony Oracle · Jestamang Games — Harmonic Analysis">
-<meta name="twitter:description" content="Harmony Oracle — identify consonance, tonality, chord progressions, and full harmonic analysis. An educational music theory game. Four levels of depth.">
+<meta name="twitter:title" content="Harmony Oracle · Jestamang Games · Harmonic Analysis">
+<meta name="twitter:description" content="Harmony Oracle: identify consonance, tonality, chord progressions, and full harmonic analysis. An educational music theory game. Four levels of depth.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 
 <link rel="stylesheet" href="../assets/css/games.css">
@@ -360,10 +360,10 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
 <div id="gs" class="scr off">
   <!-- Level tabs -->
   <div class="game-tabs" id="ho-tabs">
-    <button class="game-tab active" data-level="1" id="ho-tab-1"><span class="tab-label">I<span class="tab-dash"> — </span> Consonance</span></button>
-    <button class="game-tab locked" data-level="2" id="ho-tab-2"><span class="tab-label">II<span class="tab-dash"> — </span> Tonality</span></button>
-    <button class="game-tab locked" data-level="3" id="ho-tab-3"><span class="tab-label">III<span class="tab-dash"> — </span> Progressions</span></button>
-    <button class="game-tab locked" data-level="4" id="ho-tab-4"><span class="tab-label">IV<span class="tab-dash"> — </span> Analysis</span></button>
+    <button class="game-tab active" data-level="1" id="ho-tab-1"><span class="tab-label">I<span class="tab-dash"> · </span> Consonance</span></button>
+    <button class="game-tab locked" data-level="2" id="ho-tab-2"><span class="tab-label">II<span class="tab-dash"> · </span> Tonality</span></button>
+    <button class="game-tab locked" data-level="3" id="ho-tab-3"><span class="tab-label">III<span class="tab-dash"> · </span> Progressions</span></button>
+    <button class="game-tab locked" data-level="4" id="ho-tab-4"><span class="tab-label">IV<span class="tab-dash"> · </span> Analysis</span></button>
   </div>
 
   <!-- How to play -->
@@ -373,7 +373,7 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
   </div>
 
   <!-- HUD -->
-  <div id="ho-level-badge">LEVEL I — CONSONANCE &amp; DISSONANCE</div>
+  <div id="ho-level-badge">LEVEL I · CONSONANCE &amp; DISSONANCE</div>
   <div id="ho-hud">
     <div id="ho-score">SCORE 0</div>
     <div id="ho-streak"></div>
@@ -834,16 +834,16 @@ function unlockTab(level){
   var tab = $('ho-tab-'+level);
   if(!tab) return;
   tab.classList.remove('locked');
-  var labels = {2:'II<span class="tab-dash"> — </span> Tonality', 3:'III<span class="tab-dash"> — </span> Progressions', 4:'IV<span class="tab-dash"> — </span> Analysis'};
+  var labels = {2:'II<span class="tab-dash"> · </span> Tonality', 3:'III<span class="tab-dash"> · </span> Progressions', 4:'IV<span class="tab-dash"> · </span> Analysis'};
   tab.innerHTML = '<span class="tab-label">'+(labels[level]||('Level '+level))+'</span>';
 }
 
 function setLevelBadge(level){
   var labels = {
-    1:'LEVEL I — CONSONANCE & DISSONANCE',
-    2:'LEVEL II — MAJOR, MINOR & MODAL',
-    3:'LEVEL III — CHORD PROGRESSIONS',
-    4:'LEVEL IV — FULL HARMONIC ANALYSIS'
+    1:'LEVEL I · CONSONANCE & DISSONANCE',
+    2:'LEVEL II · MAJOR, MINOR & MODAL',
+    3:'LEVEL III · CHORD PROGRESSIONS',
+    4:'LEVEL IV · FULL HARMONIC ANALYSIS'
   };
   $('ho-level-badge').textContent = labels[level] || '';
 }
@@ -1167,8 +1167,8 @@ function showL4Phase(phase){
     // Question 2: Modulation
     setMsg('DOES IT MODULATE?', '(CHANGE KEY MID-PROGRESSION)');
     buildAnswers([
-      {label:'Yes — It Modulates', value:true},
-      {label:'No — Same Key Throughout', value:false}
+      {label:'Yes, It Modulates', value:true},
+      {label:'No, Same Key Throughout', value:false}
     ], '2', function(opt, btn){
       handleL4Phase(1, opt.value, btn, state.currentRound.data.modulates);
     });
@@ -1188,7 +1188,7 @@ function handleL4Phase(phase, chosen, btn, correctValue){
   var correct = chosen === correctValue;
   var allBtns = getAllAnsButtons();
   var correctLabel = typeof correctValue === 'boolean'
-    ? (correctValue ? 'Yes — It Modulates' : 'No — Same Key Throughout')
+    ? (correctValue ? 'Yes, It Modulates' : 'No, Same Key Throughout')
     : correctValue;
   flashButtons(correctLabel, btn, allBtns);
 
@@ -1267,12 +1267,12 @@ function showGame(){
     t.classList.remove('active','locked');
     if(lvl===1){
       t.classList.add('active');
-      t.innerHTML = '<span class="tab-label">I<span class="tab-dash"> — </span> Consonance</span>';
+      t.innerHTML = '<span class="tab-label">I<span class="tab-dash"> · </span> Consonance</span>';
     } else if(state.unlocked[lvl]){
       unlockTab(lvl);
     } else {
       t.classList.add('locked');
-      var labels = {2:'II<span class="tab-dash"> — </span> Tonality',3:'III<span class="tab-dash"> — </span> Progressions',4:'IV<span class="tab-dash"> — </span> Analysis'};
+      var labels = {2:'II<span class="tab-dash"> · </span> Tonality',3:'III<span class="tab-dash"> · </span> Progressions',4:'IV<span class="tab-dash"> · </span> Analysis'};
       t.innerHTML = '<span class="tab-label">'+(labels[lvl]||('Level '+lvl))+'</span>';
     }
   });
