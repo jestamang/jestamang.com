@@ -1735,6 +1735,26 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   var ADMIN_EMAIL = 'thejestamang@gmail.com';
   var db;
 
+  /* Sections must not start before the deferred admin scripts (admin-cms/games/tools.js) have run.
+     Those sit behind a CDN script in the defer queue, so on a slow connection sign-in could resolve
+     first and the sections they provide were skipped without a word. DOMContentLoaded fires only
+     after every deferred script has executed (or failed to load). */
+  var _scriptsReady = false;
+  document.addEventListener('DOMContentLoaded', function () { _scriptsReady = true; });
+  function whenScriptsReady(cb) {
+    if (_scriptsReady || document.readyState === 'complete') { cb(); return; }
+    document.addEventListener('DOMContentLoaded', function () { cb(); });
+  }
+  // A section whose script never arrived says so instead of sitting empty
+  function scriptMissing(statusId, what) {
+    var el = document.getElementById(statusId);
+    if (el) { el.textContent = 'The ' + what + ' script did not load. Reload the page.'; el.className = 'status-msg status-err'; }
+  }
+  // Shown in place of a list whose read failed, instead of leaving "Loading..." up forever
+  function loadErrHtml(e) {
+    return '<div style="color:rgba(251,56,56,0.75);font-size:0.7rem;">Could not load: ' + esc((e && e.message) || 'read failed') + ' Reload the page to try again.</div>';
+  }
+
   /* ══════════════ LOAD GUARD ══════════════
      Every manager below saves a whole document from what it holds in memory. If its read failed,
      memory is empty or holds defaults, and a save would overwrite the live document. So a save is
@@ -1819,7 +1839,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           if (user.email !== ADMIN_EMAIL) { window.location.replace('index.html'); return; }
           db = window.jestaDB;
           document.getElementById('admin-content').style.display = 'block';
-          initAll();
+          whenScriptsReady(initAll);
         });
       } else if (++_jt > 80) {
         clearInterval(_jiv);
@@ -1839,7 +1859,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initPressManager();
     /* v263: Catalog Manager removed (duplicated Announcement's New-Releases write). Init disabled; functions kept inert below for reference.
     initAlbumManager(); */
-    if (window.initLeaderboards)    window.initLeaderboards();
+    if (window.initLeaderboards)    window.initLeaderboards(); else scriptMissing('lb-status', 'Cosmic Scrolls');
     initAlbumAnnouncer();
     initVideoManager();
     initMerchManager();
@@ -1848,9 +1868,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     initMaintenanceMode();
     initEmailCampaign();
     initNavBadgeManager();
-    if (window.initBackupDashboard) window.initBackupDashboard();
+    if (window.initBackupDashboard) window.initBackupDashboard(); else scriptMissing('bk-all-status', 'Data Backup');
     initTopMembers();
-    if (window.initSigilCardEditor) window.initSigilCardEditor();
+    if (window.initSigilCardEditor) window.initSigilCardEditor(); else scriptMissing('sc-all-status', 'Sigil Card Editor');
     initPhotos();
     initTreats();
     initMembersUpdates();
@@ -1940,7 +1960,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             + '<span style="color:rgba(201,168,76,0.25);font-size:0.62rem;">' + ts + ' · to: ' + esc(d.sendTo) + '</span></div>';
         });
         histEl.innerHTML = html;
-      }, function(e){ console.error('notifications history error:', e.message); });
+      }, function(e){ console.error('notifications history error:', e.message); histEl.innerHTML = loadErrHtml(e); });
   }
 
   /* ══════════════ SECTION 3: MEMBERS ══════════════ */
@@ -4085,7 +4105,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       _shPastAll = past;
       shPastPage = 1;
       window._renderShPastPage();
-    },function(e){ console.error('shows error:', e.message); });
+    },function(e){
+      console.error('shows error:', e.message);
+      var row = '<tr><td colspan="6" style="padding:14px 0;">' + loadErrHtml(e) + '</td></tr>';
+      ['sh-list-upcoming', 'sh-list-past'].forEach(function (id) { var t = document.getElementById(id); if (t) t.innerHTML = row; });
+    });
   }
 
   window.notifyShow = function(venue, city, date){
@@ -4640,7 +4664,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         return tb-ta;                             // timestamp DESC tiebreak
       });
       renderVideoPage();
-    }, function(e){ console.error('videos error:', e.message); });
+    }, function(e){ console.error('videos error:', e.message); var el = document.getElementById('vm-list'); if (el) el.innerHTML = loadErrHtml(e); });
   }
 
   // v285: render the current page (5/page); ↑/↓ disable keyed to GLOBAL index in _vmSorted
@@ -5156,7 +5180,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           + '</div></div></div>';
       });
       listEl.innerHTML = html;
-    }, function(e){ console.error('navBadges error:', e.message); });
+    }, function(e){ console.error('navBadges error:', e.message); listEl.innerHTML = loadErrHtml(e); });
 
     addBtn.addEventListener('click', function () {
       var page     = document.getElementById('nb-page').value;
