@@ -472,13 +472,34 @@ function getCtx(){
 // Equal temperament: freq = 440 * 2^((midi-69)/12)
 function midiToFreq(midi){ return 440*Math.pow(2,(midi-69)/12); }
 
+// Every note goes through one bus so a level switch or End Session can silence what is already scheduled
+var _bus = null;
+function getBus(){
+  var ctx = getCtx(); if(!ctx) return null;
+  if(!_bus){ _bus = ctx.createGain(); _bus.connect(ctx.destination); }
+  return _bus;
+}
+function silenceNotes(){
+  if(!_bus || !_ctx) return;
+  _bus.gain.setTargetAtTime(0, _ctx.currentTime, 0.015);
+  _bus = null;
+}
+
+// Round-scoped timer: every new round (and End Session) bumps roundSeq,
+// so a timer left over from an earlier round or level does nothing
+var roundSeq = 0;
+function later(fn, ms){
+  var s = roundSeq;
+  return setTimeout(function(){ if(s === roundSeq) fn(); }, ms);
+}
+
 // Play single note (sine+triangle blend, 1.2s fade)
 function playNote(midi, startTime, dur){
   var ctx = getCtx(); if(!ctx) return;
   dur = dur||1.2;
   var freq = midiToFreq(midi);
   var gainNode = ctx.createGain();
-  gainNode.connect(ctx.destination);
+  gainNode.connect(getBus());
   gainNode.gain.setValueAtTime(0.001, startTime);
   gainNode.gain.exponentialRampToValueAtTime(0.28, startTime+0.025);
   gainNode.gain.exponentialRampToValueAtTime(0.001, startTime+dur);
@@ -884,6 +905,7 @@ function getAllAnsButtons(){
    LEVEL 1 — CONSONANCE & DISSONANCE
 ══════════════════════════════════════════════════════════════ */
 function startL1Round(){
+  roundSeq++;
   hideExplanation();
   state.answering = false;
   state.replayCount = 0;
@@ -899,7 +921,7 @@ function startL1Round(){
   state.currentRound = {interval:interval, root:root, midi2:midi2};
 
   // Play
-  setTimeout(function(){ playInterval(root, midi2); }, 120);
+  later(function(){ playInterval(root, midi2); }, 120);
 
   // Wire replay
   $('ho-replay').onclick = function(){
@@ -939,7 +961,7 @@ function handleL1Answer(chosen, btn){
 
   showExplanation(round.interval.name + ' — ' + round.interval.desc);
 
-  setTimeout(function(){ startL1Round(); }, 2200);
+  later(function(){ startL1Round(); }, 2200);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -954,6 +976,7 @@ function getL2Options(){
 }
 
 function startL2Round(){
+  roundSeq++;
   hideExplanation();
   state.answering = false;
   state.replayCount = 0;
@@ -970,7 +993,7 @@ function startL2Round(){
 
   state.currentRound = {modeKey:modeKey, mode:mode, root:root, phrase:phrase};
 
-  setTimeout(function(){ playPhrase(phrase); }, 120);
+  later(function(){ playPhrase(phrase); }, 120);
 
   $('ho-replay').onclick = function(){
     if(state.replayCount >= state.maxReplays) return;
@@ -1005,13 +1028,14 @@ function handleL2Answer(chosen, btn){
   updateProgress();
 
   showExplanation(round.mode.desc);
-  setTimeout(function(){ startL2Round(); }, 2400);
+  later(function(){ startL2Round(); }, 2400);
 }
 
 /* ══════════════════════════════════════════════════════════════
    LEVEL 3 — CHORD PROGRESSIONS
 ══════════════════════════════════════════════════════════════ */
 function startL3Round(){
+  roundSeq++;
   hideExplanation();
   state.answering = false;
   state.replayCount = 0;
@@ -1027,7 +1051,7 @@ function startL3Round(){
 
   state.currentRound = {prog:prog, root:root, chords:chords};
 
-  setTimeout(function(){ playProgression(chords); }, 120);
+  later(function(){ playProgression(chords); }, 120);
 
   $('ho-replay').onclick = function(){
     if(state.replayCount >= state.maxReplays) return;
@@ -1074,19 +1098,22 @@ function handleL3Answer(chosen, btn){
   updateProgress();
 
   showExplanation(round.prog.desc);
-  setTimeout(function(){ startL3Round(); }, 2600);
+  later(function(){ startL3Round(); }, 2600);
 }
 
 /* ══════════════════════════════════════════════════════════════
    LEVEL 4 — FULL HARMONIC ANALYSIS
 ══════════════════════════════════════════════════════════════ */
 function startL4Round(){
+  roundSeq++;
   hideExplanation();
   state.answering = false;
   state.replayCount = 0;
   state.l4Phase = 0;
   state.l4Answers = {};
   updateReplayDots();
+  // No question is on screen while the progression plays: remove the previous round's (or level's) buttons
+  $('ho-answers').innerHTML = '';
 
   var roundData = L4_ROUNDS[Math.floor(Math.random()*L4_ROUNDS.length)];
   var root = 55 + Math.floor(Math.random()*8);
@@ -1097,7 +1124,7 @@ function startL4Round(){
   state.currentRound = {data:roundData, root:root, chords:chords};
 
   setMsg('THE ORACLE SPEAKS', 'LISTEN TO THE FULL PROGRESSION');
-  setTimeout(function(){ playProgression(chords); }, 120);
+  later(function(){ playProgression(chords); }, 120);
 
   $('ho-replay').onclick = function(){
     if(state.replayCount >= state.maxReplays) return;
@@ -1107,7 +1134,7 @@ function startL4Round(){
   };
 
   // After progression plays (~6.4s), present question 1
-  setTimeout(function(){ showL4Phase(0); }, 6600);
+  later(function(){ showL4Phase(0); }, 6600);
 }
 
 function showL4Phase(phase){
@@ -1174,11 +1201,11 @@ function handleL4Phase(phase, chosen, btn, correctValue){
   if(phase === 2){
     // All three answered — show explanation
     showExplanation(state.currentRound.data.desc);
-    setTimeout(function(){ startL4Round(); }, 2800);
+    later(function(){ startL4Round(); }, 2800);
   } else {
     var phaseReveal = phase === 0 ? state.currentRound.data.keyDesc : state.currentRound.data.modDesc;
     showExplanation(phaseReveal);
-    setTimeout(function(){ showL4Phase(phase + 1); }, 2400);
+    later(function(){ showL4Phase(phase + 1); }, 2400);
   }
 }
 
@@ -1188,6 +1215,7 @@ function handleL4Phase(phase, chosen, btn, correctValue){
 function startLevel(level){
   state.level = level;
   state.replayCount = 0;
+  silenceNotes();
   hideExplanation();
   setLevelBadge(level);
 
@@ -1246,6 +1274,8 @@ function showGame(){
 }
 
 function showOver(){
+  roundSeq++;
+  silenceNotes();
   $('gs').classList.add('off');
   $('os').classList.remove('off');
   $('finalScore').textContent = state.score;
