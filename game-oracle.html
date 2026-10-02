@@ -440,11 +440,16 @@ function showDrawState(){
 }
 
 /* ── Lock draw ── */
-function lockDraw(idx){
+/* The draw is recorded the instant the card is chosen, before the flip animation.
+   Recording it after the 800ms reveal let a reload in that window throw the card away and draw again. */
+function persistDraw(idx){
   var now=Date.now();
   try{localStorage.setItem('sigilLastDraw',now.toString());}catch(e){}
   try{localStorage.setItem('sigilLastCard',idx.toString());}catch(e){}
   updateStreak();
+  return now;
+}
+function lockDraw(idx){
   document.getElementById('oracle-title').textContent='YOUR SIGIL HAS BEEN CAST';
   document.getElementById('oracle-sub').textContent='Your card for today has been drawn';
   document.getElementById('draw-btn').style.display='none';
@@ -469,6 +474,8 @@ var _drawBtn=document.getElementById('draw-btn');if(_drawBtn)_drawBtn.addEventLi
   if(btn.disabled)return;
   btn.disabled=true;
   var idx=Math.floor(Math.random()*ACTIVE_CARDS.length);
+  var drawTs=persistDraw(idx);
+  syncToFirestore(idx,drawTs);
   fillCard(idx);
   // Play flip sound: low sweep 200→400Hz over 0.8s
   _playTone(200,400,0.8,'sine');
@@ -485,7 +492,6 @@ var _drawBtn=document.getElementById('draw-btn');if(_drawBtn)_drawBtn.addEventLi
         burstParticles(ocard);
         document.getElementById('share-btn').classList.add('show');
         lockDraw(idx);
-        syncToFirestore(idx,parseInt(localStorage.getItem('sigilLastDraw')));
         setTimeout(function(){ostage.classList.remove('flip-shimmer');},100);
       },800);
     });
