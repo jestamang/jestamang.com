@@ -457,18 +457,65 @@ body::before{
   letter-spacing:0.1em;
   color:rgba(var(--gold-rgb,201,168,76),0.5);
 }
+.fav-album{color:inherit;text-decoration:underline;text-decoration-color:rgba(var(--gold-rgb,201,168,76),0.3);text-underline-offset:3px;}
+.fav-album:hover{color:var(--gold,#c9a84c);}
+.fav-play{
+  -webkit-appearance:none;appearance:none;background:transparent;border:1px solid rgba(var(--gold-rgb,201,168,76),0.35);
+  color:var(--gold,#c9a84c);width:36px;height:36px;min-height:0;padding:0;border-radius:50%;cursor:pointer;flex-shrink:0;
+  display:inline-flex;align-items:center;justify-content:center;transition:background 0.15s,border-color 0.15s;
+}
+.fav-play:hover{background:rgba(var(--gold-rgb,201,168,76),0.12);border-color:var(--gold,#c9a84c);}
+.fav-play.playing{color:#02E127;border-color:rgba(2,225,39,0.6);}
+.fav-play:disabled{opacity:0.25;cursor:default;}
+.fav-links{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.fav-link{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;opacity:0.65;transition:opacity 0.2s;flex-shrink:0;}
+.fav-link:hover{opacity:1;}
+.fav-link svg{width:16px;height:16px;}
+.fav-link.bandcamp{color:#1da0c3;}
+.fav-link.youtube{color:#FF0000;}
+.fav-link.spotify{color:#1DB954;}
+.fav-link.apple{color:#fc3c44;}
+.fav-link-off{opacity:0.22;pointer-events:none;cursor:default;}
 .fav-remove{
   background:none;
-  border:none;
-  color:rgba(var(--gold-rgb,201,168,76),0.3);
-  font-size:0.75rem;
+  border:1px solid rgba(255,255,255,0.14);
+  color:rgba(255,255,255,0.45);
+  font-family:'Luminari',serif;
+  font-size:0.7rem;
+  letter-spacing:0.08em;
   cursor:pointer;
-  padding:4px 8px;
-  transition:color 0.2s;
+  padding:5px 9px;
+  margin-left:10px;
+  border-radius:2px;
+  transition:color 0.2s,border-color 0.2s;
   flex-shrink:0;
-  min-height:44px;
+  white-space:nowrap;
+  min-width:80px;
+  text-align:center;
 }
-.fav-remove:hover{color:var(--gold,#c9a84c);}
+.fav-remove:hover{color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.35);}
+.fav-remove.confirm{color:#FB3838;border-color:#FB3838;}
+.fav-embed{margin:-4px 0 10px;background:#000;}
+.fav-embed iframe{display:block;width:100%;border:0;}
+.fav-pager{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px;}
+.fav-page-btn{
+  background:none;border:1px solid rgba(var(--gold-rgb,201,168,76),0.35);color:var(--gold,#c9a84c);
+  width:40px;height:40px;font-size:1.3rem;line-height:1;cursor:pointer;border-radius:2px;font-family:serif;padding:0;
+}
+.fav-page-btn:hover:not(:disabled){background:rgba(var(--gold-rgb,201,168,76),0.1);}
+.fav-page-btn:disabled{opacity:0.25;cursor:default;}
+.fav-page-label{font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.12em;color:rgba(var(--gold-rgb,201,168,76),0.6);min-width:110px;text-align:center;}
+.fav-play:focus-visible,.fav-link:focus-visible,.fav-remove:focus-visible,.fav-page-btn:focus-visible,.fav-album:focus-visible{outline:2px solid var(--gold,#c9a84c);outline-offset:2px;}
+/* phones: title and Remove share the first line, play and the platform icons take the second */
+@media(max-width:600px){
+  .fav-item{flex-wrap:wrap;justify-content:flex-start;row-gap:4px;column-gap:10px;}
+  .fav-info{order:1;flex:1 1 calc(100% - 100px);min-width:0;overflow-wrap:anywhere;}
+  .fav-remove{order:2;margin-left:0;align-self:flex-start;min-height:44px;}
+  .fav-play{order:3;width:44px;height:44px;}
+  .fav-links{order:4;gap:4px;}
+  .fav-link{width:34px;height:44px;}
+  .fav-page-btn{width:44px;height:44px;}
+}
 .empty-state{
   font-family:'Luminari',serif;
   font-style:italic;
@@ -3627,54 +3674,205 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // ── Favorites ──
 
+  /* Saved Transmissions: each saved track can be played (inline preview) or opened on a platform;
+     removing is a small separate two-step control; the list is paged. Links are looked up in the
+     public releases collection by album and track title, since a favorite stores only names. */
+  var FAV_PER_PAGE = (window.matchMedia && matchMedia('(max-width:600px)').matches) ? 5 : 8; /* phone rows are two lines tall */
+  var _favDocs = [], _favPage = 0, _favLinks = {}, _favActive = null;
+  var FAV_EMPTY = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.<br><a class="btn-catalog-cta" href="albums.html">EXPLORE THE CATALOG →</a></div>';
+  var FAV_PLAY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="8,5 19,12 8,19"/></svg>';
+  var FAV_PAUSE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+  var FAV_PLATFORMS = [
+    {key:'bandcamp', label:'Bandcamp',    svg:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M0 18.75l7.437-12.5H24l-7.438 12.5z"/></svg>'},
+    {key:'youtube',  label:'YouTube',     svg:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>'},
+    {key:'spotify',  label:'Spotify',     svg:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>'},
+    {key:'apple',    label:'Apple Music', svg:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>'}
+  ];
+  function _favKey(album, title){ return String(album||'').trim().toLowerCase() + '|' + String(title||'').trim().toLowerCase(); }
+
+  function _favBuildLinks(snap){
+    var map = {};
+    snap.forEach(function(doc){
+      var r = doc.data();
+      var m = String(r.bandcampUrl||'').match(/\/album\/([^/?#]+)/);
+      var href = (m && m[1] && m[1] !== '-') ? 'albums.html#album-' + m[1] : 'albums.html';
+      (r.tracks||[]).forEach(function(t){
+        if(!t) return;
+        var o = (typeof t === 'object') ? t : {title:t};
+        map[_favKey(r.title, o.title)] = {
+          youtube:  o.youtubeUrl  || o.youtube    || '',
+          spotify:  o.spotifyUrl  || o.spotify    || '',
+          apple:    o.appleUrl    || o.appleMusic || '',
+          bandcamp: o.bandcampUrl || o.bandcamp   || '',
+          albumHref: href
+        };
+      });
+    });
+    return map;
+  }
+
+  function _favStopPreview(){
+    if(!_favActive) return;
+    if(_favActive.embed && _favActive.embed.parentNode) _favActive.embed.parentNode.removeChild(_favActive.embed);
+    if(_favActive.btn){ _favActive.btn.innerHTML = FAV_PLAY; _favActive.btn.classList.remove('playing'); _favActive.btn.setAttribute('aria-pressed','false'); }
+    _favActive = null;
+  }
+
+  function _favTogglePreview(btn, item, f, links){
+    var wasThis = _favActive && _favActive.btn === btn;
+    _favStopPreview();
+    if(wasThis) return;
+    var m = String(links.youtube||'').match(/[?&]v=([^&]+)/);
+    if(!m) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'fav-embed';
+    var fr = document.createElement('iframe');
+    fr.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(m[1]) + '?autoplay=1&modestbranding=1&rel=0&iv_load_policy=3&controls=1';
+    fr.height = '80';
+    fr.title = 'Preview: ' + (f.songTitle||'track');
+    fr.setAttribute('allow','autoplay;clipboard-write;encrypted-media;picture-in-picture');
+    wrap.appendChild(fr);
+    item.parentNode.insertBefore(wrap, item.nextSibling);
+    btn.innerHTML = FAV_PAUSE; btn.classList.add('playing'); btn.setAttribute('aria-pressed','true');
+    _favActive = {btn:btn, embed:wrap};
+  }
+
+  function renderFavorites(){
+    var listEl = document.getElementById('favorites-list');
+    if(!listEl) return;
+    _favActive = null;
+    if(!_favDocs.length){ listEl.innerHTML = FAV_EMPTY; return; }
+    var pages = Math.ceil(_favDocs.length / FAV_PER_PAGE);
+    if(_favPage > pages - 1) _favPage = pages - 1;
+    if(_favPage < 0) _favPage = 0;
+    var start = _favPage * FAV_PER_PAGE;
+    var shown = _favDocs.slice(start, start + FAV_PER_PAGE);
+    listEl.innerHTML = '';
+    shown.forEach(function(f){
+      var links = _favLinks[_favKey(f.album, f.songTitle)] || {};
+      var item = document.createElement('div');
+      item.className = 'fav-item';
+
+      var info = document.createElement('div');
+      info.className = 'fav-info';
+      info.innerHTML =
+        '<div class="fav-title">' + escHtml(f.songTitle||'Untitled') + '</div>' +
+        '<div class="fav-meta">' +
+          (f.artist ? escHtml(f.artist) : '') +
+          (f.album ? (f.artist ? ' &nbsp;&middot;&nbsp; ' : '') + '<a class="fav-album" href="' + escHtml(links.albumHref||'albums.html') + '">' + escHtml(f.album) + '</a>' : '') +
+        '</div>';
+
+      var play = document.createElement('button');
+      play.type = 'button';
+      play.className = 'fav-play';
+      play.innerHTML = FAV_PLAY;
+      if(links.youtube){
+        play.setAttribute('aria-label','Play ' + (f.songTitle||'track'));
+        play.setAttribute('aria-pressed','false');
+        play.title = 'Play';
+        play.addEventListener('click', function(){ _favTogglePreview(play, item, f, links); });
+      } else {
+        play.disabled = true;
+        play.title = 'No preview available';
+        play.setAttribute('aria-label','No preview available for ' + (f.songTitle||'this track'));
+      }
+
+      var row = document.createElement('div');
+      row.className = 'fav-links';
+      FAV_PLATFORMS.forEach(function(pf){
+        var a = document.createElement('a');
+        var url = links[pf.key];
+        a.className = 'fav-link ' + pf.key + (url ? '' : ' fav-link-off');
+        a.innerHTML = pf.svg;
+        if(url){
+          a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+          a.title = pf.label; a.setAttribute('aria-label', pf.label + ': ' + (f.songTitle||'track'));
+        } else {
+          a.title = 'Not available on ' + pf.label;
+          a.setAttribute('aria-disabled','true'); a.setAttribute('aria-label', pf.label + ' (not available)'); a.tabIndex = -1;
+        }
+        row.appendChild(a);
+      });
+
+      /* remove: small, labeled, and two clicks, so it cannot happen by accident */
+      var rm = document.createElement('button');
+      rm.type = 'button';
+      rm.className = 'fav-remove';
+      rm.textContent = '✕ Remove';
+      rm.setAttribute('aria-label','Remove ' + (f.songTitle||'track') + ' from saved transmissions');
+      var armed = false, armTimer = null;
+      rm.addEventListener('click', function(){
+        if(!armed){
+          armed = true; rm.classList.add('confirm'); rm.textContent = 'Confirm?';
+          armTimer = setTimeout(function(){ armed = false; rm.classList.remove('confirm'); rm.textContent = '✕ Remove'; }, 4000);
+          return;
+        }
+        clearTimeout(armTimer);
+        rm.disabled = true; rm.textContent = 'Removing...';
+        db.collection('favorites').doc(f.id).delete()
+          .then(function(){
+            _favDocs = _favDocs.filter(function(x){ return x.id !== f.id; });
+            renderFavorites();
+          })
+          .catch(function(e){
+            console.error('Remove error:', e);
+            armed = false; rm.disabled = false; rm.classList.remove('confirm'); rm.textContent = '✕ Remove';
+          });
+      });
+
+      item.appendChild(info); item.appendChild(play); item.appendChild(row); item.appendChild(rm);
+      listEl.appendChild(item);
+    });
+
+    if(pages > 1){
+      var pager = document.createElement('div');
+      pager.className = 'fav-pager';
+      var prev = document.createElement('button');
+      prev.type = 'button'; prev.className = 'fav-page-btn'; prev.innerHTML = '&#8249;';
+      prev.setAttribute('aria-label','Previous page'); prev.disabled = _favPage === 0;
+      prev.addEventListener('click', function(){ _favPage--; renderFavorites(); });
+      var next = document.createElement('button');
+      next.type = 'button'; next.className = 'fav-page-btn'; next.innerHTML = '&#8250;';
+      next.setAttribute('aria-label','Next page'); next.disabled = _favPage >= pages - 1;
+      next.addEventListener('click', function(){ _favPage++; renderFavorites(); });
+      var label = document.createElement('span');
+      label.className = 'fav-page-label';
+      label.setAttribute('aria-live','polite');
+      label.textContent = (start + 1) + ' to ' + (start + shown.length) + ' of ' + _favDocs.length;
+      pager.appendChild(prev); pager.appendChild(label); pager.appendChild(next);
+      listEl.appendChild(pager);
+    }
+  }
+
   function loadFavorites(uid){
     var listEl = document.getElementById('favorites-list');
     if(!uid || !(firebase.auth && firebase.auth().currentUser)){
-      if(listEl) listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.<br><a class="btn-catalog-cta" href="albums.html">EXPLORE THE CATALOG →</a></div>';
+      if(listEl) listEl.innerHTML = FAV_EMPTY;
       return;
     }
-    db.collection('favorites')
+    /* the releases read only adds play and platform links; if it fails the list still shows */
+    var linksP = db.collection('releases').get().then(_favBuildLinks).catch(function(){ return {}; });
+    var favsP = db.collection('favorites')
       .where('userId','==',uid)
       .orderBy('savedAt','desc')
-      .get()
-      .then(function(snap){
-        if(snap.empty){
-          listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.<br><a class="btn-catalog-cta" href="albums.html">EXPLORE THE CATALOG →</a></div>';
-          return;
-        }
-        listEl.innerHTML = '';
+      .get();
+    Promise.all([favsP, linksP])
+      .then(function(res){
+        var snap = res[0];
+        _favLinks = res[1] || {};
+        _favDocs = [];
         snap.forEach(function(doc){
           var d = doc.data();
-          var item = document.createElement('div');
-          item.className = 'fav-item';
-          item.innerHTML =
-            '<div class="fav-info">' +
-              '<div class="fav-title">' + escHtml(d.songTitle||'Untitled') + '</div>' +
-              '<div class="fav-meta">' +
-                (d.artist ? escHtml(d.artist) : '') +
-                (d.album  ? ' &nbsp;&middot;&nbsp; ' + escHtml(d.album) : '') +
-              '</div>' +
-            '</div>' +
-            '<button class="fav-remove" data-id="' + doc.id + '" title="Remove" aria-label="Remove transmission">&#10022;</button>';
-          listEl.appendChild(item);
+          _favDocs.push({id:doc.id, songTitle:d.songTitle, artist:d.artist, album:d.album});
         });
-        listEl.querySelectorAll('.fav-remove').forEach(function(btn){
-          btn.addEventListener('click', function(){
-            var id = btn.getAttribute('data-id');
-            db.collection('favorites').doc(id).delete()
-              .then(function(){ loadFavorites(uid); })
-              .catch(function(e){ console.error('Remove error:', e); });
-          });
-        });
+        _favPage = 0;
+        renderFavorites();
       })
       .catch(function(e){
-        if(e && (e.code === 'permission-denied' || e.code === 'PERMISSION_DENIED')){
-          /* new user — no favorites collection yet */
-          listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.<br><a class="btn-catalog-cta" href="albums.html">EXPLORE THE CATALOG →</a></div>';
-          return;
+        if(!(e && (e.code === 'permission-denied' || e.code === 'PERMISSION_DENIED'))){
+          console.warn('[profile] non-critical: favorites load failed:', e);
         }
-        console.warn('[profile] non-critical: favorites load failed:', e);
-        listEl.innerHTML = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.<br><a class="btn-catalog-cta" href="albums.html">EXPLORE THE CATALOG →</a></div>';
+        listEl.innerHTML = FAV_EMPTY;
       });
   }
 
