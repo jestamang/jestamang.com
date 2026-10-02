@@ -394,9 +394,8 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   .eotd-divider::before,.eotd-divider::after{content:'';display:block;width:40px;height:1px;background:rgba(var(--gold-rgb,201,168,76),0.22)}
   .eotd-narrator{font-family:'Luminari',serif;font-style:italic;font-size:0.88rem;letter-spacing:0.05em;line-height:1.8;color:rgba(240,230,210,0.6);max-width:360px;margin:0 auto}
   .eotd-play-wrap{margin-top:22px}
-  .eotd-embed-wrap{max-width:400px;margin:14px auto 0;overflow:hidden;max-height:0;transition:max-height 0.4s ease}
-  .eotd-embed-wrap.open{max-height:90px}
-  .eotd-embed-wrap iframe{display:block;width:100%;height:80px;border:none}
+  .eotd-embed-wrap{display:none}
+  .eotd-play-wrap .jta-bar{max-width:400px;margin:14px auto 0;border-radius:2px}
   .eotd-play-track{display:block;font-family:'Luminari',serif;font-size:0.58rem;letter-spacing:0.32em;text-transform:uppercase;color:rgba(var(--gold-rgb,201,168,76),0.38);margin-bottom:10px;font-style:italic}
   .eotd-play-btn{display:inline-flex;align-items:center;gap:8px;font-family:'Luminari',serif;font-size:0.62rem;letter-spacing:0.42em;text-transform:uppercase;color:rgba(var(--gold-rgb,201,168,76),0.65);background:none;border:none;border-bottom:1px solid rgba(var(--gold-rgb,201,168,76),0.2);padding:6px 0;cursor:pointer;transition:color 0.2s,border-color 0.2s}
   .eotd-play-btn:hover{color:var(--gold,#c9a84c);border-color:rgba(var(--gold-rgb,201,168,76),0.5)}
@@ -799,6 +798,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
+<script src="assets/js/jesta-track-audio.js" defer></script>
 <script>
 (function(){
   function updateHomeLogin(user){
@@ -994,27 +994,30 @@ function eotdRender(entity,cycle){
     if(playTrack)playTrack.textContent=item.t;
     playWrap.style.display='block';
     var embedWrap=el('eotd-embed-wrap');
-    var playing=false;
-    playBtn.onclick=function(){
-      if(playing){
-        // Stop: clear embed, reset button
-        embedWrap.classList.remove('open');
-        setTimeout(function(){embedWrap.innerHTML='';},400);
-        playBtn.innerHTML='<svg width="11" height="13" viewBox="0 0 11 13" fill="currentColor"><path d="M0 0l11 6.5L0 13V0z"/></svg> Play';
-        playing=false;
-        return;
-      }
-      var ytMatch=item.u.match(/[?&]v=([^&]+)/);
-      var ytId=ytMatch?ytMatch[1]:'';
-      if(ytId){
-        embedWrap.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+ytId+'?autoplay=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&controls=1" allow="autoplay;clipboard-write;encrypted-media;picture-in-picture"></iframe>';
-        requestAnimationFrame(function(){requestAnimationFrame(function(){embedWrap.classList.add('open');});});
-        playBtn.innerHTML='<svg width="10" height="13" viewBox="0 0 10 13" fill="currentColor"><rect x="0" y="0" width="3.5" height="13"/><rect x="6.5" y="0" width="3.5" height="13"/></svg> Stop';
-        playing=true;
-      } else {
-        window.open(item.u,'_blank','noopener');
-      }
-    };
+    /* Plays the R2 file through the shared player (assets/js/jesta-track-audio.js), as on the albums
+       page. The radio manifest loads once this block is near the screen; a track with no file falls
+       back to a plain link to YouTube (no embed). */
+    var PLAY_HTML='<svg width="11" height="13" viewBox="0 0 11 13" fill="currentColor" aria-hidden="true"><path d="M0 0l11 6.5L0 13V0z"/></svg> Play';
+    var STOP_HTML='<svg width="10" height="13" viewBox="0 0 10 13" fill="currentColor" aria-hidden="true"><rect x="0" y="0" width="3.5" height="13"/><rect x="6.5" y="0" width="3.5" height="13"/></svg> Pause';
+    var J=window.jestaTrackAudio;
+    if(J)J.stop();
+    playBtn.innerHTML=PLAY_HTML;
+    playBtn.setAttribute('aria-label','Play '+item.t);
+    playBtn.setAttribute('aria-pressed','false');
+    var spec={artist:entity.name,title:item.t,btn:playBtn,anchor:embedWrap,playHtml:PLAY_HTML,pauseHtml:STOP_HTML};
+    function useLink(){
+      playBtn.innerHTML='<svg width="11" height="13" viewBox="0 0 11 13" fill="currentColor" aria-hidden="true"><path d="M0 0l11 6.5L0 13V0z"/></svg> Listen on YouTube';
+      playBtn.setAttribute('aria-label','Listen to '+item.t+' on YouTube (opens in a new tab)');
+      playBtn.removeAttribute('aria-pressed');
+      playBtn.onclick=function(){window.open(item.u,'_blank','noopener');};
+    }
+    if(!J){useLink();}
+    else{
+      playBtn.onclick=function(){J.toggle(spec);};
+      var decide=function(){J.ready().then(function(ok){var tr=ok?J.findByArtist(entity.name,item.t):null;if(tr){spec.track=tr;}else{useLink();}});};
+      if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){if(!en.some(function(e){return e.isIntersecting;}))return;io.disconnect();decide();},{rootMargin:'300px 0px'});io.observe(playWrap);}
+      else{decide();}
+    }
   }
 }
 function eotdGetPin(cb){
