@@ -514,8 +514,10 @@ var NC = (function(){
     Neptune: { glyph:'\u2646', color:'#6080c0' },
     Pluto:   { glyph:'\u2647', color:'#906080' },
     Chiron:  { glyph:'\u26B7', color:'#d0a870' },
-    'Black Moon Lilith': { glyph:'\u26B8', color:'#c06080' },
     'North Node': { glyph:'\u260A', color:'var(--gold,#c9a84c)' },
+    'South Node': { glyph:'\u260B', color:'var(--gold,#c9a84c)' },
+    Lilith:  { glyph:'\u26B8', color:'#9060b8' },
+    Fortune: { glyph:'\u2295', color:'var(--gold,#c9a84c)' },
     Ascendant: { glyph:'AC', color:'var(--gold,#c9a84c)' },
     MC:        { glyph:'MC', color:'var(--gold,#c9a84c)' },
   };
@@ -642,7 +644,7 @@ var NC = (function(){
         svg += '<text x="' + (mcPos.x) + '" y="' + (mcPos.y + 3) + '" text-anchor="middle" font-size="7" fill="#c9a84c" font-family="serif" font-weight="bold">MC</text>';
       }
     }
-    svg += '<text x="' + (cx) + '" y="' + (cy + 5) + '" text-anchor="middle" font-size="14" fill="rgba(201,168,76,0.4)" font-family="serif">\\u2609</text>';
+    svg += '<text x="' + (cx) + '" y="' + (cy + 5) + '" text-anchor="middle" font-size="14" fill="rgba(201,168,76,0.4)" font-family="serif">\u2609</text>';
     svg += '</svg>';
     return svg;
   }
@@ -668,7 +670,8 @@ var NC = (function(){
       var pRows = [
         ['Sun','☉'],['Moon','☽'],['Mercury','☿'],['Venus','♀'],['Mars','♂'],
         ['Jupiter','♃'],['Saturn','♄'],['Uranus','♅'],['Neptune','♆'],['Pluto','♇'],
-        ['Chiron','⚷'],['Black Moon Lilith','⚸'],['North Node','☊'],
+        ['Chiron','⚷'],['North Node','☊'],['South Node','☋'],
+        ['Lilith','⚸'],['Fortune','⊕'],
       ];
       if(ascData) pRows.push(['Ascendant','AC']);
       if(mcData)  pRows.push(['MC','MC']);
@@ -728,7 +731,7 @@ var NC = (function(){
       } else {
         for(var asp of aspects){
           var cls = aspClasses[asp.aspect] || '';
-          html += '<div class="natal-aspect-row"><span class="asp-symbol ' + (cls) + '">' + (asp.symbol) + '</span><span>' + (asp.p1) + '</span><span class="asp-label">' + (asp.aspect) + '</span><span>' + (asp.p2) + '</span><span class="asp-label" style="margin-left:auto;">' + (asp.orb) + '\\u00B0 orb</span></div>';
+          html += '<div class="natal-aspect-row"><span class="asp-symbol ' + (cls) + '">' + (asp.symbol) + '</span><span>' + (asp.p1) + '</span><span class="asp-label">' + (asp.aspect) + '</span><span>' + (asp.p2) + '</span><span class="asp-label" style="margin-left:auto;">' + (asp.orb) + '\u00B0 orb</span></div>';
         }
       }
       container.aspectsEl.innerHTML = html;
