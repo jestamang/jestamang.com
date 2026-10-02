@@ -753,7 +753,11 @@ body::before{
   text-transform:uppercase;
   text-shadow:0 0 30px rgba(var(--gold-rgb,201,168,76),0.25);
   margin-bottom:8px;
+  overflow-wrap:anywhere;
 }
+/* Phones: a long one-word name used to push the page sideways. Smaller and tighter here,
+   and overflow-wrap above breaks whatever still does not fit. */
+@media(max-width:600px){.natal-result-name{font-size:clamp(1.25rem,6vw,2rem);letter-spacing:0.25em;}}
 .natal-result-sun {
   font-family:'Luminari',serif;
   font-size:1.1rem;
@@ -3165,6 +3169,8 @@ document.addEventListener('DOMContentLoaded', function(){
   firebase.auth().onAuthStateChanged(function(user){
     if(!user||user.isAnonymous){ window.location.href = 'login.html'; return; }
     currentUser = user;
+    claimLegacyCharts();
+    renderSavedChartsList();
     db = firebase.firestore();
     var _pc=document.getElementById('page-content');if(_pc)_pc.style.opacity='1';
     showPage(user);
@@ -3926,8 +3932,12 @@ document.addEventListener('DOMContentLoaded', function(){
   var _deleteAccountBtn=document.getElementById('delete-account-btn');if(_deleteAccountBtn)_deleteAccountBtn.addEventListener('click', function(){
     var confirmed = window.confirm('Are you certain you wish to dissolve your presence from the inner circle? This cannot be undone.');
     if(!confirmed) return;
+    var goneKey = chartsKey();
     currentUser.delete()
-      .then(function(){ window.location.href = 'index.html'; })
+      .then(function(){
+        try{ if(goneKey) localStorage.removeItem(goneKey); localStorage.removeItem(JESTA_CHARTS_ACTIVE); }catch(e){}
+        window.location.href = 'index.html';
+      })
       .catch(function(e){
         console.error('Delete error:', e);
         alert('The mythology holds your record. You may need to sign in again before deleting your account.');
@@ -4203,15 +4213,36 @@ document.addEventListener('DOMContentLoaded', function(){
   })();
 
   // ── Saved Charts (localStorage) ──────────────────────────────
+  // The archive holds birth data, so each account gets its own key (jestaCharts:<uid>) and a
+  // second person signing in on this browser never sees the first person's charts.
+  // jestaChartsActive names the signed-in account for offline.html; jesta-auth.js sets it
+  // on sign-in and removes it on sign-out.
   var JESTA_CHARTS_KEY = 'jestaCharts';
+  var JESTA_CHARTS_ACTIVE = 'jestaChartsActive';
   var MAX_SAVED_CHARTS = 10;
 
+  function chartsKey(){ return currentUser ? JESTA_CHARTS_KEY + ':' + currentUser.uid : null; }
+
   function getSavedCharts(){
-    try{ return JSON.parse(localStorage.getItem(JESTA_CHARTS_KEY)||'[]'); }catch(e){ return []; }
+    var k = chartsKey(); if(!k) return [];
+    try{ return JSON.parse(localStorage.getItem(k)||'[]'); }catch(e){ return []; }
   }
 
   function saveSavedCharts(arr){
-    try{ localStorage.setItem(JESTA_CHARTS_KEY, JSON.stringify(arr)); }catch(e){}
+    var k = chartsKey(); if(!k) return;
+    try{ localStorage.setItem(k, JSON.stringify(arr)); }catch(e){}
+  }
+
+  // One-time move of the old shared archive to the account that is signed in now.
+  function claimLegacyCharts(){
+    try{
+      var k = chartsKey(); if(!k) return;
+      localStorage.setItem(JESTA_CHARTS_ACTIVE, currentUser.uid);
+      var old = localStorage.getItem(JESTA_CHARTS_KEY);
+      if(old === null) return;
+      if(localStorage.getItem(k) === null) localStorage.setItem(k, old);
+      localStorage.removeItem(JESTA_CHARTS_KEY);
+    }catch(e){}
   }
 
   function renderSavedChartsList(){

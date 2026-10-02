@@ -413,6 +413,18 @@
     insertAuthNav();
   }
 
+  // Sealed natal charts are stored per account (jestaCharts:<uid>, see profile.html).
+  // This marker tells offline.html whose archive it may show; it goes away on sign-out.
+  // Registered here, not in insertAuthNav, so it also runs on pages without the shared nav.
+  if (window.jestaAuth) {
+    window.jestaAuth.onAuthStateChanged(function (u) {
+      try {
+        if (u && !u.isAnonymous) localStorage.setItem('jestaChartsActive', u.uid);
+        else localStorage.removeItem('jestaChartsActive');
+      } catch (e) {}
+    });
+  }
+
   // ── Search overlay close button ───────────────────────────────
   function initSearchClose() {
     var inner = document.getElementById('jsearch-inner');
