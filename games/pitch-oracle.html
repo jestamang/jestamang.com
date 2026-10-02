@@ -580,6 +580,19 @@ function noteFreq(name, octave) {
   return 440 * Math.pow(2, (midi - 69) / 12);
 }
 
+/* Every tone goes through one bus so a difficulty switch can silence what the previous round already scheduled */
+var toneBus = null;
+function getBus() {
+  var c = getAC();
+  if (!toneBus) { toneBus = c.createGain(); toneBus.connect(c.destination); }
+  return toneBus;
+}
+function silenceTones() {
+  if (!toneBus || !audioCtx) return;
+  toneBus.gain.setTargetAtTime(0, audioCtx.currentTime, 0.015);
+  toneBus = null;
+}
+
 /* Warm tone: sine + triangle blend, 1.5s sustain, simple delay reverb */
 function playTone(freq, dur, delay, vol) {
   delay = delay || 0; vol = vol || 0.28; dur = dur || 1.5;
@@ -593,7 +606,7 @@ function playTone(freq, dur, delay, vol) {
     g.gain.linearRampToValueAtTime(h[1], now + 0.03);
     g.gain.setValueAtTime(h[1], now + Math.max(0.05, dur - 0.4));
     g.gain.linearRampToValueAtTime(0.001, now + dur);
-    osc.connect(g); g.connect(c.destination);
+    osc.connect(g); g.connect(getBus());
     osc.start(now); osc.stop(now + dur + 0.05);
   });
   /* Simple delay reverb: 2 taps at 120ms and 240ms */
@@ -606,7 +619,7 @@ function playTone(freq, dur, delay, vol) {
     g2.gain.setValueAtTime(0.001, tapStart);
     g2.gain.linearRampToValueAtTime(tapVol, tapStart + 0.02);
     g2.gain.exponentialRampToValueAtTime(0.001, tapStart + tapDur);
-    osc2.connect(g2); g2.connect(c.destination);
+    osc2.connect(g2); g2.connect(getBus());
     osc2.start(tapStart); osc2.stop(tapStart + tapDur + 0.05);
   });
 }
@@ -834,6 +847,12 @@ function triggerPulse(ok) {
 
 /* ── Replay ── */
 var replayData = null;
+/* Round-scoped timer: startRound() bumps roundSeq, so a timer left over from an earlier round (or an earlier difficulty) does nothing */
+var roundSeq = 0;
+function later(fn, ms) {
+  var s = roundSeq;
+  return setTimeout(function() { if (s === roundSeq) fn(); }, ms);
+}
 function handleReplay() {
   if (!state.isListening || state.replayLeft <= 0) return;
   state.replayLeft--;
@@ -846,8 +865,8 @@ function handleReplay() {
     setMsg('THE ORACLE SPEAKS AGAIN', '');
     activateWave(1.6, replayData.freq1);
     playTone(replayData.freq1, 1.0, 0);
-    setTimeout(function() { activateWave(1.0, replayData.freq2); playTone(replayData.freq2, 1.0, 0); }, 1100);
-    setTimeout(function() {
+    later(function() { activateWave(1.0, replayData.freq2); playTone(replayData.freq2, 1.0, 0); }, 1100);
+    later(function() {
       setMsg('NAME THE INTERVAL', '');
       setIntervalEnabled(true); state.isListening = true;
       if (state.replayLeft > 0) { if (btn) btn.style.display = 'inline-block'; }
@@ -857,7 +876,7 @@ function handleReplay() {
     setMsg('THE ORACLE SPEAKS AGAIN', '');
     activateWave(1.5, replayData.freq2);
     playTone(replayData.freq2, 1.5, 0);
-    setTimeout(function() {
+    later(function() {
       setMsg('WHAT NOTE DO YOU HEAR?', '');
       setAllNoteButtonsEnabled(true); state.isListening = true;
       if (state.replayLeft > 0) { if (btn) btn.style.display = 'inline-block'; }
@@ -892,7 +911,7 @@ function handleNoteAnswer(chosen) {
   }
   updateHUD();
   showExplanation(noteInfo.desc);
-  setTimeout(function() {
+  later(function() {
     hideNoteReveal(); hideExplanation(); resetNoteStyles();
     if (state.roundNum >= MAX_ROUNDS) { endGame(); } else { startRound(); }
   }, 2200);
@@ -930,7 +949,7 @@ function handleIntervalAnswer(chosenName) {
   }
   updateHUD();
   showExplanation(state.correctInterval.desc);
-  setTimeout(function() {
+  later(function() {
     hideExplanation();
     if (state.roundNum >= MAX_ROUNDS) { endGame(); } else { startRound(); }
   }, advanceDelay);
@@ -952,6 +971,7 @@ function checkUnlock() {
 
 /* ── Round logic ── */
 function startRound() {
+  roundSeq++;
   state.roundNum++;
   state.answered = false; state.replayLeft = 3;
   hideNoteReveal(); hideExplanation();
@@ -981,7 +1001,7 @@ function startNoteRound() {
   setMsg('THE ORACLE SPEAKS', 'LISTEN CLOSELY');
   activateWave(1.5, state.correctFreq);
   playTone(state.correctFreq, 1.5, 0);
-  setTimeout(function() {
+  later(function() {
     setMsg('WHAT NOTE DO YOU HEAR?', '');
     setAllNoteButtonsEnabled(true);
     state.isListening = true;
@@ -1028,8 +1048,8 @@ function startIntervalRound() {
   });
   setMsg('THE ORACLE PLAYS AN INTERVAL', 'LISTEN TO BOTH NOTES');
   activateWave(1.6, rootFreq); playTone(rootFreq, 1.0, 0);
-  setTimeout(function() { activateWave(1.0, secondFreq); playTone(secondFreq, 1.0, 0); }, 1100);
-  setTimeout(function() {
+  later(function() { activateWave(1.0, secondFreq); playTone(secondFreq, 1.0, 0); }, 1100);
+  later(function() {
     setMsg('NAME THE INTERVAL', '');
     setIntervalEnabled(true); state.isListening = true;
     var btn = document.getElementById('po-replay');
@@ -1041,6 +1061,8 @@ function startIntervalRound() {
 function switchDiff(diff) {
   if (!state.unlocked[diff]) return;
   state.diff = diff; state.score = 0; state.streak = 0; state.correctCount = 0; state.roundNum = 0;
+  state.isListening = false; state.answered = false;
+  silenceTones(); resetNoteStyles();
   hideIntervalButtons(); hideNoteReveal(); hideExplanation();
   document.getElementById('po-replay').style.display = 'none';
   updateDiffTabs(); updateHUD(); startRound();
@@ -1049,6 +1071,7 @@ function switchDiff(diff) {
 function startGame() {
   state.score = 0; state.streak = 0; state.correctCount = 0; state.roundNum = 0;
   state.isListening = false; state.answered = false;
+  silenceTones();
   resetNoteStyles(); hideIntervalButtons(); hideNoteReveal(); hideExplanation();
   document.getElementById('ss').classList.add('off');
   document.getElementById('os').classList.add('off');
@@ -1058,6 +1081,7 @@ function startGame() {
 }
 
 function endGame() {
+  roundSeq++;
   document.getElementById('gs').classList.add('off');
   document.getElementById('os').classList.remove('off');
   document.getElementById('finalScore').textContent = state.score.toLocaleString();
