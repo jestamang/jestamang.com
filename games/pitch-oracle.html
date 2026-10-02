@@ -233,7 +233,7 @@ if(pbRow){
   if(_pb&&_pb.score>0){
     pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.15);"><span style="color:rgba(201,168,76,0.55);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;display:block;margin-bottom:4px;">Your Personal Best</span><span style="color:#c9a84c;font-size:0.9rem;">\u2605 '+fmtS(_pb.score)+'</span></td>';
   } else {
-    pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.06em;">No personal best yet — play to set one</td>';
+    pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.06em;">No personal best yet. Play to set one</td>';
   }
 }
 tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr>';
@@ -274,7 +274,7 @@ if(kind==='saving'){if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent=
 if(ns)ns.disabled=false;
 if(kind==='ok'){if(st)st.textContent='';if(_lbFromModal){_lbFromModal=false;if(nm)nm.classList.remove('lb-open');openLB(_score);}return;}
 var txt=String((e&&e.code)||'')+' '+String((e&&e.message)||'');
-var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED — SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED — SIGNAL LOST, TRY AGAIN';
+var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED. SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED. SIGNAL LOST, TRY AGAIN';
 if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=msg;}
 if(nm&&!nm.classList.contains('lb-open'))nm.classList.add('lb-open');
 }
@@ -358,15 +358,15 @@ if(rb)rb.addEventListener('click',function(){if(ob)ob.style.display='none';_scor
       <div class="ltn-sec-title">✦ How to Train Your Ear</div>
       <div class="ltn-prose">
         <p>The ear is a muscle. It learns through repetition, not theory.</p>
-        <p>Start by memorizing A440 — hum it, sing it, find it in the world around you.</p>
+        <p>Start by memorizing A440. Hum it, sing it, find it in the world around you.</p>
         <p>Then learn its neighbors. A# sits just above. G# just below.</p>
         <p>Over time the distances between notes become familiar. This is called relative pitch.</p>
-        <p>Absolute pitch — knowing a note without reference — takes years. Relative pitch can be learned in weeks.</p>
+        <p>Absolute pitch, knowing a note without reference, takes years. Relative pitch can be learned in weeks.</p>
       </div>
       <div class="gold-rule"></div>
       <div class="ltn-sec-title">✦ Sharps vs Flats</div>
       <div class="ltn-prose">
-        <p>C# and D♭ are the same pitch — two names for the same key on the piano. Which name you use depends on the key you're in. In this game we use sharps.</p>
+        <p>C# and D♭ are the same pitch, two names for the same key on the piano. Which name you use depends on the key you're in. In this game we use sharps.</p>
       </div>
       <div style="text-align:center;margin-top:28px;padding-bottom:8px">
         <button id="ltn-close" class="btn-learn">✦ Close</button>
@@ -517,28 +517,28 @@ var NOTES_ALL = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 var NOTES_NAT = ['C','D','E','F','G','A','B'];
 
 var NOTE_INFO = {
-  'C':  {desc:'The tonic — foundation of Western harmony. C major is the first scale most students learn.'},
+  'C':  {desc:'The tonic, foundation of Western harmony. C major is the first scale most students learn.'},
   'C#': {desc:'A half-step above C. Adds darkness and jazz colour. Enharmonic with D♭.'},
   'D':  {desc:'Bright and resonant. D major carries a heroic, triumphant character.'},
-  'D#': {desc:'Warm and expressive. The minor third of C — at the heart of minor harmony. Enharmonic with E♭.'},
+  'D#': {desc:'Warm and expressive. The minor third of C, at the heart of minor harmony. Enharmonic with E♭.'},
   'E':  {desc:'Warm and intimate. The major third of C, defining the brightness of C major.'},
-  'F':  {desc:'The subdominant of C — a pivotal note in harmony, pulling gently toward resolution.'},
-  'F#': {desc:'The tritone from C — the most dissonant interval in Western music. Enharmonic with G♭.'},
-  'G':  {desc:'The dominant — strong and resolving. Melody naturally wants to return home from here.'},
+  'F':  {desc:'The subdominant of C, a pivotal note in harmony, pulling gently toward resolution.'},
+  'F#': {desc:'The tritone from C, the most dissonant interval in Western music. Enharmonic with G♭.'},
+  'G':  {desc:'The dominant, strong and resolving. Melody naturally wants to return home from here.'},
   'G#': {desc:'Lush and bittersweet. The minor sixth above C. Common in romantic and jazz idioms. Enharmonic with A♭.'},
-  'A':  {desc:'A440 — the universal tuning standard. Every orchestra in the world tunes to this pitch.'},
+  'A':  {desc:'A440, the universal tuning standard. Every orchestra in the world tunes to this pitch.'},
   'A#': {desc:'An ornamental blues note. A half-step below the tonic B. Enharmonic with B♭.'},
-  'B':  {desc:'The leading tone — just a half-step below the octave, creating powerful upward pull.'}
+  'B':  {desc:'The leading tone, just a half-step below the octave, creating powerful upward pull.'}
 };
 
 var INTERVALS_DATA = [
-  {name:'Major 2nd',  semitones:2, desc:'A whole step — the building block of major and minor scales.'},
+  {name:'Major 2nd',  semitones:2, desc:'A whole step, the building block of major and minor scales.'},
   {name:'Minor 3rd',  semitones:3, desc:'The sound of melancholy. Found at the heart of every minor chord.'},
-  {name:'Major 3rd',  semitones:4, desc:'Bright and happy — the defining interval of a major chord.'},
+  {name:'Major 3rd',  semitones:4, desc:'Bright and happy, the defining interval of a major chord.'},
   {name:'Perfect 4th',semitones:5, desc:'Strong and stable. The opening of "Here Comes the Bride."'},
-  {name:'Tritone',    semitones:6, desc:'The devil\u2019s interval \u2014 exactly halfway through the octave. Maximally dissonant.'},
+  {name:'Tritone',    semitones:6, desc:'The devil\u2019s interval, exactly halfway through the octave. Maximally dissonant.'},
   {name:'Perfect 5th',semitones:7, desc:'Pure and powerful. Heard in Superman\u2019s theme and countless fanfares.'},
-  {name:'Octave',     semitones:12,desc:'Perfect equivalence — the same note doubled in frequency. The most consonant interval.'}
+  {name:'Octave',     semitones:12,desc:'Perfect equivalence, the same note doubled in frequency. The most consonant interval.'}
 ];
 var INTERVAL_POOL = ['Perfect 5th','Minor 3rd','Major 2nd','Tritone','Octave','Major 3rd','Perfect 4th'];
 

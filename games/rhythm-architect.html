@@ -254,9 +254,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <button id="how-toggle" class="btn-ghost">▾ How to Play</button>
     <div id="how-body">
       <p>The game plays two bars of a rhythm using kick and hi-hat sounds.</p>
-      <p>Beat 1 of each bar is accented — the large circle pulses on it.</p>
+      <p>Beat 1 of each bar is accented. The large circle pulses on it.</p>
       <p>Choose the correct time signature from four options.</p>
-      <p>3 correct per level to ascend — mistakes won't set you back. 3 wrong = game over.</p>
+      <p>3 correct per level to ascend. Mistakes won't set you back. 3 wrong = game over.</p>
       <p>You have up to 3 replays per question (−2 pts each).</p>
     </div>
   </div>
@@ -383,7 +383,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       if(_pb&&_pb.score>0){
         pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.15)"><span style="color:rgba(201,168,76,0.55);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;display:block;margin-bottom:4px">Your Personal Best</span><span style="color:#c9a84c;font-size:0.9rem">'+JestaLeaderboard.SCROLL_PB_MARKER+' '+JestaLeaderboard.formatScrollScore(_pb.score,'points')+'</span></td>';
       } else {
-        pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-size:0.6rem;letter-spacing:0.06em">No personal best yet — play to set one</td>';
+        pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-size:0.6rem;letter-spacing:0.06em">No personal best yet. Play to set one</td>';
       }
     }
     tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Consulting the stars...</td></tr>';
@@ -430,7 +430,7 @@ if(kind==='saving'){if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent=
 if(ns)ns.disabled=false;
 if(kind==='ok'){if(st)st.textContent='';if(_lbFromModal){_lbFromModal=false;if(nm)nm.classList.remove('lb-open');openLB(_score);}return;}
 var txt=String((e&&e.code)||'')+' '+String((e&&e.message)||'');
-var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED — SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED — SIGNAL LOST, TRY AGAIN';
+var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED. SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED. SIGNAL LOST, TRY AGAIN';
 if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=msg;}
 if(nm&&!nm.classList.contains('lb-open'))nm.classList.add('lb-open');
 }
@@ -504,17 +504,17 @@ function playHatTone(t){
 
 // ── Time Signature Display Data ──────────────────────
 var TIME_SIGS = {
-  '4/4':            {label:'4/4',            desc:'Four beats per bar',            expl:'Four beats per bar — the most common time signature in Western music. ONE two three four.'},
-  '3/4':            {label:'3/4',            desc:'Three beats per bar',           expl:'Three beats per bar. Waltz feel. ONE two three — heard in waltzes, folk music, and countless ballads.'},
-  '2/4':            {label:'2/4',            desc:'Two beats per bar',             expl:'Two quarter note beats per bar. Strong march feel. ONE two — clean, direct, assertive.'},
-  '2/2':            {label:'2/2',            desc:'Cut time — two half-note beats', expl:'Cut time: two half-note beats per bar. Feels spacious and majestic. ONE two — used in classical overtures and fast marches.'},
-  '6/8':            {label:'6/8',            desc:'Two felt beats, triplet feel',   expl:'Six eighth notes felt in two. ONE-two-three-FOUR-five-six. Compound duple — swings and flows, as in jigs and barcarolles.'},
+  '4/4':            {label:'4/4',            desc:'Four beats per bar',            expl:'Four beats per bar, the most common time signature in Western music. ONE two three four.'},
+  '3/4':            {label:'3/4',            desc:'Three beats per bar',           expl:'Three beats per bar. Waltz feel. ONE two three, heard in waltzes, folk music, and countless ballads.'},
+  '2/4':            {label:'2/4',            desc:'Two beats per bar',             expl:'Two quarter note beats per bar. Strong march feel. ONE two, clean, direct, assertive.'},
+  '2/2':            {label:'2/2',            desc:'Cut time, two half-note beats', expl:'Cut time: two half-note beats per bar. Feels spacious and majestic. ONE two, used in classical overtures and fast marches.'},
+  '6/8':            {label:'6/8',            desc:'Two felt beats, triplet feel',   expl:'Six eighth notes felt in two. ONE-two-three-FOUR-five-six. Compound duple, swings and flows, as in jigs and barcarolles.'},
   '9/8':            {label:'9/8',            desc:'Three felt beats, triplet feel', expl:'Nine eighth notes felt in three dotted-quarter beats. ONE-two-three-FOUR-five-six-SEVEN-eight-nine. Flowing, compound triple.'},
-  '5/4':            {label:'5/4',            desc:'Five beats per bar',            expl:'Five beats per bar — asymmetric and hypnotic. Often felt as 3+2 or 2+3. Dave Brubeck\'s "Take Five."'},
-  '7/8':            {label:'7/8',            desc:'Seven eighths — 2+2+3',         expl:'Seven eighth notes per bar. Felt as 2+2+3 or 3+2+2. Found in Balkan folk music and progressive rock.'},
-  '12/8':           {label:'12/8',           desc:'Four felt beats, triplet feel',  expl:'Twelve eighth notes felt in four dotted-quarter beats. Rich, rolling compound feel — the backbone of blues and soul.'},
-  '5/8':            {label:'5/8',            desc:'Five eighths — asymmetric',     expl:'Five eighth notes per bar, often grouped as 2+3 or 3+2. Urgent, limping forward momentum.'},
-  '4/4-syncopated': {label:'Syncopated 4/4', desc:'4/4 — off-beat accents',        expl:'Syncopation: the accent falls between the main beats — on the "and." The rhythm pushes against the steady grid.'}
+  '5/4':            {label:'5/4',            desc:'Five beats per bar',            expl:'Five beats per bar, asymmetric and hypnotic. Often felt as 3+2 or 2+3. Dave Brubeck\'s "Take Five."'},
+  '7/8':            {label:'7/8',            desc:'Seven eighths, 2+2+3',         expl:'Seven eighth notes per bar. Felt as 2+2+3 or 3+2+2. Found in Balkan folk music and progressive rock.'},
+  '12/8':           {label:'12/8',           desc:'Four felt beats, triplet feel',  expl:'Twelve eighth notes felt in four dotted-quarter beats. Rich, rolling compound feel, the backbone of blues and soul.'},
+  '5/8':            {label:'5/8',            desc:'Five eighths, asymmetric',     expl:'Five eighth notes per bar, often grouped as 2+3 or 3+2. Urgent, limping forward momentum.'},
+  '4/4-syncopated': {label:'Syncopated 4/4', desc:'4/4, off-beat accents',        expl:'Syncopation: the accent falls between the main beats, on the "and." The rhythm pushes against the steady grid.'}
 };
 
 // ── Level Display Data ────────────────────────────────
@@ -813,7 +813,7 @@ function handleAnswer(chosen, correct, options){
     state.streak = 0;
     state.lives--;
     setStateLabel('INCORRECT', '');
-    showFeedback('Wrong — ' + TIME_SIGS[correct].label, TIME_SIGS[correct].expl, false);
+    showFeedback('Wrong: ' + TIME_SIGS[correct].label, TIME_SIGS[correct].expl, false);
     updateHUD();
     if(state.lives <= 0){
       document.getElementById('next-btn').textContent = 'See Results';
