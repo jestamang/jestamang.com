@@ -418,7 +418,12 @@ function scheduleOrb() {
   var lanePool = [0,1,2,3];
   var count = elapsed > 60 && Math.random() < 0.25 ? 3 :
                 elapsed > 30 && Math.random() < 0.3 ? 2 : 1;
-  var shuffled = lanePool.sort(function() { return Math.random() - 0.5; }).slice(0, count);
+  // Fisher-Yates: sorting with a random comparator is not a fair shuffle and starved the right-hand lanes
+  for (var li = lanePool.length - 1; li > 0; li--) {
+    var lj = 0 | Math.random() * (li + 1);
+    var lt = lanePool[li]; lanePool[li] = lanePool[lj]; lanePool[lj] = lt;
+  }
+  var shuffled = lanePool.slice(0, count);
   for (var lane of shuffled) {
     var travelMs = (targetY() - 0) / orbSpeed;
     orbs.push({ lane, y: -ORB_R, targetTime: now + travelMs, hit: null, alpha: 1 });
@@ -723,6 +728,9 @@ _rafId = requestAnimationFrame(function loop(ts) {
 
 function gameOver(elapsed) {
   ST = 'over';
+  // Fever ends with the game: its banner and gold wash used to sit over the results for up to 5 seconds
+  feverActive = false; feverTimer = 0;
+  document.getElementById('fever-overlay').style.display = 'none';
   playHit('gameover');
   document.getElementById('finalScore').textContent = score.toLocaleString();
   var best = parseInt(localStorage.getItem('cc_best') || 0);
