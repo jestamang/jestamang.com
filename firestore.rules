@@ -160,9 +160,23 @@ service cloud.firestore {
 
 
     // ── INNER CIRCLE CHAT ────────────────────────────────────────────────────
+    // Each message is written by its own sender (uid must be the caller), with the fields
+    // members.html writes and nothing else; the 500-character limit is enforced here, not
+    // only in the browser. The photo is the sender's avatar (a URL or a small data URL).
     match /innerCircleChat/{messageId} {
       allow read:   if isMember();
-      allow create: if isMember();
+      allow create: if isMember()
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.keys().hasOnly(['uid','name','photo','text','ts'])
+                    && request.resource.data.keys().hasAll(['uid','name','text','ts'])
+                    && request.resource.data.text is string
+                    && request.resource.data.text.size() >= 1
+                    && request.resource.data.text.size() <= 500
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() <= 60
+                    && (!('photo' in request.resource.data)
+                        || (request.resource.data.photo is string && request.resource.data.photo.size() <= 150000))
+                    && request.resource.data.ts == request.time;
       allow update: if false;
       allow delete: if isOwner(resource.data.uid) || isAdmin();
     }
@@ -203,8 +217,10 @@ service cloud.firestore {
 
 
     // ── MEMBER UPDATES (members-only writings) ───────────────────────────────
+    // Members read published writings only; drafts stay admin-only. A member query must
+    // therefore carry where('published', '==', true) (members.html does).
     match /membersUpdates/{docId} {
-      allow read:  if isMember();
+      allow read:  if isAdmin() || (isMember() && resource.data.published == true);
       allow write: if isAdmin();
     }
 
