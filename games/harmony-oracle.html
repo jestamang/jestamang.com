@@ -663,6 +663,8 @@ var PROGRESSIONS = [
 ];
 
 // Level IV: Full harmonic analysis — 8-chord progressions
+// Chords are semitones above middle C and are played exactly as written (no transposition),
+// so each progression always sounds in the key its card names.
 var L4_ROUNDS = [
   {
     key:'C Major',
@@ -686,7 +688,7 @@ var L4_ROUNDS = [
     key:'G Major',
     modulates:true,
     mood:'Tense',
-    chords:[[7,11,14],[7,11,14],[2,5,9],[2,5,9],[0,4,7],[0,4,7],[5,9,12],[7,11,14]],
+    chords:[[7,11,14],[7,11,14],[2,6,9],[2,6,9],[0,4,7],[0,4,7],[5,9,12],[7,11,14]], // G G D D C C F G
     desc:'This progression begins in G but pivots through D major and briefly touches C, suggesting a modulation to C Major before returning — a classic pivot chord modulation.',
     keyDesc:'The progression opens and anchors on G major chords — that is where the tonal home begins.',
     modDesc:'The key shifts mid-progression — it starts in G, pivots through D, briefly touches C, then returns; that sense of the ground moving under you is modulation.'
@@ -704,7 +706,7 @@ var L4_ROUNDS = [
     key:'E Minor',
     modulates:true,
     mood:'Tense',
-    chords:[[9,12,16],[9,12,16],[2,5,9],[7,11,14],[0,4,7],[5,9,12],[7,11,14],[0,4,7]],
+    chords:[[4,7,11],[4,7,11],[2,5,9],[7,11,14],[0,4,7],[5,9,12],[7,11,14],[0,4,7]], // Em Em Dm G C F G C
     desc:'Opens in E minor unrest, then pivots toward C major — the tension of the minor home gives way as the progression resolves into a brighter key.',
     keyDesc:'The opening chord is a minor chord that feels like the tonal home — an E minor anchor.',
     modDesc:'The key shifts mid-progression — what begins minor and tense settles into a major resolution.'
@@ -713,7 +715,7 @@ var L4_ROUNDS = [
     key:'D Major',
     modulates:true,
     mood:'Bright',
-    chords:[[2,5,9],[2,5,9],[7,11,14],[0,4,7],[5,9,12],[7,11,14],[0,4,7],[0,4,7]],
+    chords:[[2,6,9],[2,6,9],[7,11,14],[0,4,7],[5,9,12],[7,11,14],[0,4,7],[0,4,7]], // D D G C F G C C
     desc:'Begins bright in D, then leans through G toward a C major resting place — an upward, opening shift.',
     keyDesc:'The progression opens and anchors on a major chord — a D major home.',
     modDesc:'The key moves mid-progression — it brightens as it settles into a new major center.'
@@ -731,7 +733,7 @@ var L4_ROUNDS = [
     key:'F Major',
     modulates:false,
     mood:'Resolved',
-    chords:[[0,4,7],[5,9,12],[0,4,7],[7,11,14],[0,4,7],[5,9,12],[7,11,14],[0,4,7]],
+    chords:[[5,9,12],[10,14,17],[5,9,12],[12,16,19],[5,9,12],[10,14,17],[12,16,19],[5,9,12]], // F Bb F C F Bb C F
     desc:'A steady F major progression — tonic, subdominant, dominant, always returning home. Settled and complete.',
     keyDesc:'The chords circle back to the same major home and rest there — an F major center.',
     modDesc:'It stays in one key throughout — no shift, fully grounded.'
@@ -1120,7 +1122,9 @@ function startL4Round(){
   $('ho-answers').innerHTML = '';
 
   var roundData = L4_ROUNDS[Math.floor(Math.random()*L4_ROUNDS.length)];
-  var root = 55 + Math.floor(Math.random()*8);
+  // Fixed at middle C. A random root transposed the audio while the key on the card stayed put,
+  // so the demanded key matched the sound in about one round in eight.
+  var root = 60;
   var chords = roundData.chords.map(function(triad){
     return triad.map(function(s){ return root+s; });
   });
