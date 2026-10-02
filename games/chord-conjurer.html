@@ -713,51 +713,59 @@ function shuffle(arr){
   for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
   return a;
 }
+/* Pitch classes of a chord, as a comparable key: two names with the same key are the same sound */
+function pcsKey(root,type){
+  var r=NOTES_ALL.indexOf(root),seen={};
+  INTERVALS[type].forEach(function(st){seen[(r+st)%12]=1;});
+  return Object.keys(seen).map(Number).sort(function(x,y){return x-y;}).join(',');
+}
+/* An augmented triad divides the octave evenly: every inversion sounds like a root position, so "(inv)" cannot be heard */
+function invIsAudible(type){return type!=='AUGMENTED';}
+
+/* Options are built so that nothing but the sound identifies the answer:
+   - two roots share the options (2+2, or 3+2 at five choices with the answer on the bigger side 3 times in 5), so counting roots tells nothing
+   - wrong options carry "(inv)" as often as right answers do, so the label tells nothing
+   - a same-chord pair ("X" and "X (inv)") is as likely to be a decoy as to hold the answer
+   - no wrong option has the same notes as the chord played (aug and sus chords have other names) */
 function generateOptions(correctRoot,correctType,correctInv,numChoices){
   var d=DIFFS[state.diff];
-  var sameRootCount=numChoices-2;
+  var correctKey=pcsKey(correctRoot,correctType);
+  var invRate=(d.inversions.length-1)/d.inversions.length;
+  function mk(root,type,inv){return {root:root,type:type,inv:inv,label:root+' '+type+(inv?' (inv)':''),isCorrect:false};}
+  function foil(root,type){return mk(root,type,Math.random()<invRate?1:0);}
+  function typesFor(root){
+    return shuffle(d.types.filter(function(t){
+      return !(root===correctRoot&&t===correctType)&&pcsKey(root,t)!==correctKey;
+    }));
+  }
 
-  // Oracle only: occasionally add an inversion foil (same root+type, opposite inv state)
-  var invFoil=null;
+  var otherRoot=shuffle(d.roots.filter(function(r){return r!==correctRoot;}))[0];
+  var half=Math.floor(numChoices/2);
+  // Options on the correct root, answer included. At an odd count the bigger group holds the answer
+  // in proportion to its size (3 times in 5), so every option is equally likely whichever group it is in.
+  var sameCount=(numChoices%2===0)?half:(Math.random()<(half+1)/numChoices?half+1:half);
+  var otherCount=numChoices-sameCount;
+  var sameFoils=sameCount-1;
+
+  var foils=[];
+  var otherTypes=typesFor(otherRoot);
+  // Oracle only: sometimes show one chord in both states. 2 of 5 options, so it holds the answer 2 times in 5.
   if(state.diff==='oracle'&&Math.random()<INV_FOIL_CHANCE){
-    var foilInv=correctInv?0:1;
-    var foilLabel=correctRoot+' '+correctType+(correctInv?'':' (inv)');
-    invFoil={root:correctRoot,type:correctType,inv:foilInv,label:foilLabel,isCorrect:false};
-    sameRootCount=sameRootCount-1;
-  }
-
-  var sameRootPool=[];
-  d.types.forEach(function(t){
-    if(t!==correctType){
-      sameRootPool.push({root:correctRoot,type:t,inv:0,label:correctRoot+' '+t,isCorrect:false});
+    if(Math.random()<0.4&&invIsAudible(correctType)&&sameFoils>=1){
+      foils.push(mk(correctRoot,correctType,correctInv?0:1));
+      sameFoils--;
+    } else {
+      var pairType=null;
+      for(var i=0;i<otherTypes.length;i++){if(invIsAudible(otherTypes[i])){pairType=otherTypes.splice(i,1)[0];break;}}
+      if(pairType){foils.push(mk(otherRoot,pairType,0),mk(otherRoot,pairType,1));otherCount-=2;}
     }
-  });
-
-  var crossRootPool=[];
-  d.roots.forEach(function(r){
-    if(r!==correctRoot){
-      d.types.forEach(function(t){
-        crossRootPool.push({root:r,type:t,inv:0,label:r+' '+t,isCorrect:false});
-      });
-    }
-  });
-
-  var shuffledSame=shuffle(sameRootPool);
-  var shuffledCross=shuffle(crossRootPool);
-
-  var sameRootFoils=shuffledSame.slice(0,sameRootCount);
-  var shortfall=sameRootCount-sameRootFoils.length;
-  var crossOffset=0;
-  if(shortfall>0){
-    sameRootFoils=sameRootFoils.concat(shuffledCross.slice(0,shortfall));
-    crossOffset=shortfall;
   }
-  var crossRootFoil=shuffledCross.slice(crossOffset,crossOffset+1);
+  typesFor(correctRoot).slice(0,sameFoils).forEach(function(t){foils.push(foil(correctRoot,t));});
+  otherTypes.slice(0,otherCount).forEach(function(t){foils.push(foil(otherRoot,t));});
 
-  var invLbl=correctInv?' (inv)':'';
-  var correct={root:correctRoot,type:correctType,inv:correctInv,label:correctRoot+' '+correctType+invLbl,isCorrect:true};
-  var foils=invFoil?[invFoil].concat(sameRootFoils):sameRootFoils;
-  return shuffle([correct].concat(foils,crossRootFoil));
+  var correct=mk(correctRoot,correctType,correctInv);
+  correct.isCorrect=true;
+  return shuffle([correct].concat(foils));
 }
 
 /* ── UI helpers ── */
@@ -769,7 +777,9 @@ function updateHUD(){
   var cp=document.getElementById('cc-chord-progress');
   if(cp)cp.textContent='ROUND '+state.roundNum+' / '+state.MAX_ROUNDS;
   var ca=document.getElementById('cc-accuracy');
-  if(ca){var acc=state.roundNum>0?Math.round(state.correctCount/state.roundNum*100):null;ca.textContent=acc!==null?'ACCURACY '+acc+'%':'';}
+  // Accuracy counts answered rounds only; the round in progress is not a miss yet
+  var done=state.roundNum-(state.answered?0:1);
+  if(ca){ca.textContent=done>0?'ACCURACY '+Math.round(state.correctCount/done*100)+'%':'';}
   updateStreakDisplay();updateProgressBar();updateReplayDots();updateDiffTabs();
 }
 function updateStreakDisplay(){
@@ -822,7 +832,9 @@ function showDiagram(noteNames,root,type,inv){
   var wrap=document.getElementById('cc-diagram-wrap');
   var lbl=document.getElementById('cc-diagram-label');
   if(!wrap)return;
-  var invLbl=inv===1?' \u00b7 1st inv':inv===2?' \u00b7 2nd inv':'';
+  // inv 2 puts the top chord tone in the bass: the 5th of a triad (2nd inversion), the 7th of a seventh chord (3rd inversion)
+  var hasSeventh=INTERVALS[type].some(function(st){return st===10||st===11;});
+  var invLbl=inv===1?' \u00b7 1st inv':inv===2?(hasSeventh?' \u00b7 3rd inv':' \u00b7 2nd inv'):'';
   if(lbl)lbl.textContent=root+' '+type+invLbl+' \u2014 '+noteNames.map(function(n){return n.replace(/\d/,'');}).join(' \u00b7 ');
   highlightMiniPiano(noteNames);
   wrap.style.display='block';
