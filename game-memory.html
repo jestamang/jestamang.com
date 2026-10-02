@@ -559,7 +559,7 @@ window.submitScore=function(game,score,lowerBetter,cb,extra){
     if(ok)ok.disabled=false;
     if(kind==='ok'){if(st)st.textContent='';if(nm2)nm2.classList.remove('open');if(typeof inp!=='undefined'&&inp)cleanup();return;}
     var txt=String((e&&e.code)||'')+' '+String((e&&e.message)||'');
-    if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=/permission|unauthenticated/i.test(txt)?'Score not saved \u2014 sign in to mark the scrolls':'Score not saved \u2014 signal lost, try again';}
+    if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=/permission|unauthenticated/i.test(txt)?'Score not saved. Sign in to mark the scrolls':'Score not saved. Signal lost, try again';}
     if(nm2&&!nm2.classList.contains('open'))nm2.classList.add('open');}
   function doCancel(){nm.classList.remove('open');cleanup();if(cb)cb();}
   function doConfirm(){var n=inp.value.trim();if(!n){inp.focus();return;}lbSaveStatus('saving');doSave(n);}

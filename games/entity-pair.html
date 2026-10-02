@@ -710,7 +710,7 @@ function openLB(curScore){
     if(pb&&pb.score>0){
       pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(var(--gold-rgb,201,168,76),0.15)"><span style="color:rgba(var(--gold-rgb,201,168,76),0.55);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;display:block;margin-bottom:4px">Your Personal Best</span><span style="color:var(--gold,#c9a84c);font-size:0.9rem">\u2605 '+fmtScore(pb.score)+'</span></td>';
     } else {
-      pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(var(--gold-rgb,201,168,76),0.1);color:rgba(var(--gold-rgb,201,168,76),0.3);font-size:0.62rem;letter-spacing:0.06em;font-style:italic">No personal best yet — play to set one</td>';
+      pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(var(--gold-rgb,201,168,76),0.1);color:rgba(var(--gold-rgb,201,168,76),0.3);font-size:0.62rem;letter-spacing:0.06em;font-style:italic">No personal best yet. Play to set one</td>';
     }
   }
   tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">Consulting the stars...</td></tr>';
@@ -745,7 +745,7 @@ if(kind==='saving'){if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent=
 if(ns)ns.disabled=false;
 if(kind==='ok'){if(st)st.textContent='';if(_lbFromModal){_lbFromModal=false;if(nm)nm.classList.remove('lb-open');openLB(_score);}return;}
 var txt=String((e&&e.code)||'')+' '+String((e&&e.message)||'');
-var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED — SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED — SIGNAL LOST, TRY AGAIN';
+var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED. SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED. SIGNAL LOST, TRY AGAIN';
 if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=msg;}
 if(nm&&!nm.classList.contains('lb-open'))nm.classList.add('lb-open');
 }
