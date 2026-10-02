@@ -16,10 +16,12 @@
   if (window.jestaTrackAudio) return;
 
   var MANIFEST = 'https://pub-75f71ff978d340cfa0ee8e4b628e3ea4.r2.dev/manifest.json';
-  /* compilations: tracks live in their source albums. alias = compilation title -> file title */
+  /* compilations: tracks live in their source albums. alias = compilation title -> file title;
+     pick = file title -> source album, for titles that exist as two different recordings */
   var COMPILATIONS = {
     'revolution epilogue: 2k2123 & 2k2323': {
-      alias: { 'when to her lute corinna sings': 'when to her lute corinna sings bwv 5' }
+      alias: { 'when to her lute corinna sings': 'when to her lute corinna sings bwv 5' },
+      pick: { 'share your earth': 'you and the 7.5 evils of the world', 'evol': 'alissa orange', 'god song': 'the boston society of the temple of psychick youth' }
     }
   };
   /* a silent clip: played inside the tap when the manifest is still loading, so iOS lets the
@@ -80,7 +82,8 @@
     if (comp) {
       if (comp.alias[n]) n = comp.alias[n];
       var any = byTitle[n] || [];
-      return any.length === 1 ? any[0] : null;   /* two recordings share the title: no guess */
+      if (any.length > 1 && comp.pick && comp.pick[n]) any = any.filter(function (tr) { return akey(tr.album) === comp.pick[n]; });
+      return any.length === 1 ? any[0] : null;   /* two recordings share the title and none was picked: no guess */
     }
     return null;
   }
