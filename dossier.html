@@ -506,6 +506,7 @@ var NC = (function(){
     Uranus:  { glyph:'\u2645', color:'#80d0c0' },
     Neptune: { glyph:'\u2646', color:'#6080c0' },
     Pluto:   { glyph:'\u2647', color:'#906080' },
+    Chiron:  { glyph:'\u26B7', color:'#d0a870' },
     'Black Moon Lilith': { glyph:'\u26B8', color:'#c06080' },
     'North Node': { glyph:'\u260A', color:'var(--gold,#c9a84c)' },
     Ascendant: { glyph:'AC', color:'var(--gold,#c9a84c)' },
@@ -619,6 +620,9 @@ var NC = (function(){
       svg += '<circle cx="' + (pos.x) + '" cy="' + (pos.y) + '" r="3" fill="' + (pi.color) + '" opacity="0.9"/>';
       var gpos = polarToXY(ang, rp - 14);
       svg += '<text x="' + (gpos.x) + '" y="' + (gpos.y + 4) + '" text-anchor="middle" font-size="10" fill="' + (pi.color) + '" font-family="serif" opacity="0.95">' + (pi.glyph) + '</text>';
+      if(info.retrograde){
+        svg += '<text x="' + (gpos.x) + '" y="' + (gpos.y - 5) + '" text-anchor="middle" font-size="6" fill="#FB3838" font-family="serif" opacity="0.95" font-style="italic" font-weight="bold">R</text>';
+      }
     }
 
     if(houseCusps){
@@ -657,7 +661,7 @@ var NC = (function(){
       var pRows = [
         ['Sun','☉'],['Moon','☽'],['Mercury','☿'],['Venus','♀'],['Mars','♂'],
         ['Jupiter','♃'],['Saturn','♄'],['Uranus','♅'],['Neptune','♆'],['Pluto','♇'],
-        ['Black Moon Lilith','⚸'],['North Node','☊'],
+        ['Chiron','⚷'],['Black Moon Lilith','⚸'],['North Node','☊'],
       ];
       if(ascData) pRows.push(['Ascendant','AC']);
       if(mcData)  pRows.push(['MC','MC']);
@@ -666,7 +670,7 @@ var NC = (function(){
         var p = name === 'Ascendant' ? ascData : (name === 'MC' ? mcData : planets[name]);
         if(!p) continue;
         var pi = PLANET_INFO[name] || { color:'#fff' };
-        html += '<tr><td><span style="color:' + (pi.color) + ';font-size:1rem;">' + (sym) + '</span> ' + (name) + '</td><td><span class="sign-glyph">' + (p.glyph) + '</span>' + (p.sign) + '</td><td>' + (formatPos(p)) + '</td><td class="house-num-cell">' + (hasTime && p.house ? 'H' + p.house : '\u2014') + '</td></tr>';
+        html += '<tr><td><span style="color:' + (pi.color) + ';font-size:1rem;">' + (sym) + '</span> ' + (name) + '</td><td><span class="sign-glyph">' + (p.glyph) + '</span>' + (p.sign) + '</td><td>' + (formatPos(p)) + (p.retrograde ? ' <span style="color:#FB3838;font-size:0.95rem;font-weight:700;" title="Retrograde">\u211E</span>' : '') + '</td><td class="house-num-cell">' + (hasTime && p.house ? 'H' + p.house : '\u2014') + '</td></tr>';
       }
       container.planetsEl.innerHTML = html;
     }
