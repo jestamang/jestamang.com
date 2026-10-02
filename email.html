@@ -423,14 +423,14 @@ function goldRGB(){var n=Date.now();if(goldRGB._t&&n-goldRGB._t<500)return goldR
         console.error('EmailJS error:', error);
         btn.textContent = 'TRANSMIT';
         btn.disabled = false;
-        genErr.textContent = 'TRANSMISSION FAILED — ' + (error && error.text ? error.text : 'TRY AGAIN');
+        genErr.textContent = 'TRANSMISSION FAILED: ' + (error && error.text ? error.text : 'TRY AGAIN');
         genErr.style.display = 'block';
       });
     } catch(e) {
       console.error('EmailJS send error:', e);
       btn.textContent = 'TRANSMIT';
       btn.disabled = false;
-      genErr.textContent = 'TRANSMISSION FAILED — TRY AGAIN';
+      genErr.textContent = 'TRANSMISSION FAILED. TRY AGAIN';
       genErr.style.display = 'block';
     }
   });
