@@ -675,12 +675,12 @@ function animWave() {
 }
 function activateWave(durSec, freq) {
   wFreq = freq || 440; wActive = true; wDecay = 1;
+  setTimeout(function() { wActive = false; }, durSec * 1000);
+}
+/* The Hz readout is the answer in numbers: blank while the round is open, filled in only once it is answered */
+function setHz(text) {
   var hzEl = document.getElementById('hz-display');
-  if (hzEl) { hzEl.textContent = freq ? freq.toFixed(1) + ' Hz' : ''; hzEl.style.opacity = '1'; }
-  setTimeout(function() {
-    wActive = false;
-    if (hzEl) hzEl.style.opacity = '0.3';
-  }, durSec * 1000);
+  if (hzEl) hzEl.textContent = text || '';
 }
 
 /* ── Learning mode canvas ── */
@@ -894,6 +894,7 @@ function handleNoteAnswer(chosen) {
   var freq = state.correctFreq;
   var noteInfo = NOTE_INFO[state.correctNote] || {desc:''};
   showNoteReveal(state.correctNote + state.correctOctave + ' · ' + freq.toFixed(1) + ' Hz', correct);
+  setHz(freq.toFixed(1) + ' Hz');
   if (ALL_BTNS[state.correctNote]) ALL_BTNS[state.correctNote].className = 'note-btn nb-correct';
   if (!correct && ALL_BTNS[chosen]) ALL_BTNS[chosen].className = 'note-btn nb-wrong';
   if (correct) {
@@ -923,6 +924,7 @@ function handleIntervalAnswer(chosenName) {
   document.getElementById('po-replay').style.display = 'none';
   setIntervalEnabled(false);
   var correct = (chosenName === state.correctInterval.name);
+  setHz(replayData.freq1.toFixed(1) + ' Hz · ' + replayData.freq2.toFixed(1) + ' Hz');
   document.querySelectorAll('.interval-btn').forEach(function(btn) {
     if (btn.dataset.interval === state.correctInterval.name) btn.className = 'interval-btn nb-correct';
     else if (btn.dataset.interval === chosenName && !correct) btn.className = 'interval-btn nb-wrong';
@@ -974,6 +976,7 @@ function startRound() {
   roundSeq++;
   state.roundNum++;
   state.answered = false; state.replayLeft = 3;
+  setHz('');
   hideNoteReveal(); hideExplanation();
   updateHUD();
   var d = DIFFS[state.diff];
