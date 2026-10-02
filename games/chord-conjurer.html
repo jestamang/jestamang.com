@@ -276,7 +276,7 @@ if(pbRow){
   if(_pb&&_pb.score>0){
     pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.15);"><span style="color:rgba(201,168,76,0.55);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;display:block;margin-bottom:4px;">Your Personal Best</span><span style="color:#c9a84c;font-size:0.9rem;">\u2605 '+fmtS(_pb.score)+'</span></td>';
   } else {
-    pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.06em;">No personal best yet \u2014 play to set one</td>';
+    pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.06em;">No personal best yet. Play to set one</td>';
   }
 }
 tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr>';
@@ -318,7 +318,7 @@ if(kind==='saving'){if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent=
 if(ns)ns.disabled=false;
 if(kind==='ok'){if(st)st.textContent='';if(_lbFromModal){_lbFromModal=false;if(nm)nm.classList.remove('lb-open');openLB(_score);}return;}
 var txt=String((e&&e.code)||'')+' '+String((e&&e.message)||'');
-var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED — SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED — SIGNAL LOST, TRY AGAIN';
+var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED. SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED. SIGNAL LOST, TRY AGAIN';
 if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=msg;}
 if(nm&&!nm.classList.contains('lb-open'))nm.classList.add('lb-open');
 }
@@ -837,7 +837,7 @@ function showDiagram(noteNames,root,type,inv){
   // "1st inversion" means the 3rd is in the bass. Sus chords have no 3rd, and add9 puts its 9th there, so those just read "(inv)"
   var hasThirdInBass=INTERVALS[type][1]===3||INTERVALS[type][1]===4;
   var invLbl=inv===1?(hasThirdInBass?' \u00b7 1st inv':' (inv)'):inv===2?(hasSeventh?' \u00b7 3rd inv':' \u00b7 2nd inv'):'';
-  if(lbl)lbl.textContent=root+' '+type+invLbl+' \u2014 '+noteNames.map(function(n){return n.replace(/\d/,'');}).join(' \u00b7 ');
+  if(lbl)lbl.textContent=root+' '+type+invLbl+': '+noteNames.map(function(n){return n.replace(/\d/,'');}).join(' \u00b7 ');
   highlightMiniPiano(noteNames);
   wrap.style.display='block';
 }
@@ -910,7 +910,7 @@ function handleAnswer(chosen,opts){
     checkUnlock();
   } else {
     state.streak=0;
-    setFeedback('\u2014 '+state.currentChord.root+' '+state.currentChord.type+(state.currentChord.inv?' (inv)':''),'fb-wrong');
+    setFeedback(state.currentChord.root+' '+state.currentChord.type+(state.currentChord.inv?' (inv)':''),'fb-wrong');
   }
   updateHUD();
   showExplanation(state.currentChord.type);

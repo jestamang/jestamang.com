@@ -242,7 +242,7 @@ if(pbRow){
   if(_pb&&_pb.score>0){
     pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.15);"><span style="color:rgba(201,168,76,0.55);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;display:block;margin-bottom:4px;">Your Personal Best</span><span style="color:#c9a84c;font-size:0.9rem;">\u2605 '+fmtS(_pb.score)+'</span></td>';
   } else {
-    pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.06em;">No personal best yet — play to set one</td>';
+    pbRow.innerHTML='<td colspan="4" style="text-align:center;padding:10px 0 8px;border-bottom:1px solid rgba(201,168,76,0.1);color:rgba(201,168,76,0.3);font-style:italic;font-size:0.62rem;letter-spacing:0.06em;">No personal best yet. Play to set one</td>';
   }
 }
 tb.innerHTML='<tr class="lb-loading-row"><td colspan="4">CONSULTING THE STARS...</td></tr>';
@@ -283,7 +283,7 @@ if(kind==='saving'){if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent=
 if(ns)ns.disabled=false;
 if(kind==='ok'){if(st)st.textContent='';if(_lbFromModal){_lbFromModal=false;if(nm)nm.classList.remove('lb-open');openLB(_score);}return;}
 var txt=String((e&&e.code)||'')+' '+String((e&&e.message)||'');
-var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED — SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED — SIGNAL LOST, TRY AGAIN';
+var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED. SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED. SIGNAL LOST, TRY AGAIN';
 if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=msg;}
 if(nm&&!nm.classList.contains('lb-open'))nm.classList.add('lb-open');
 }
@@ -603,27 +603,27 @@ var C4=60, D4=62, E4=64, F4=65, G4=67, A4=69, B4=71, C5=72;
 // Level I: Consonance & Dissonance
 // Interval defined by semitone gap from a root
 var L1_INTERVALS = [
-  {name:'Unison',      semitones:0,  consonant:true,  desc:'Unison — two identical pitches. Perfect fusion, maximum consonance. The foundation of unison vocals.'},
-  {name:'Perfect 5th', semitones:7,  consonant:true,  desc:'Perfect 5th — the most stable harmonic interval. Every power chord is built on this. Pure, open, powerful.'},
-  {name:'Major 3rd',   semitones:4,  consonant:true,  desc:'Major 3rd — bright and joyful. The interval that defines a major chord. Think of the first two notes of "When the Saints Go Marching In."'},
-  {name:'Minor 3rd',   semitones:3,  consonant:true,  desc:'Minor 3rd — warm and slightly melancholic. The core of every minor chord. Hauntingly beautiful.'},
-  {name:'Octave',      semitones:12, consonant:true,  desc:'Octave — the same note doubled in frequency. Perfect equivalence. The most naturally consonant interval after unison.'},
-  {name:'Perfect 4th', semitones:5,  consonant:true,  desc:'Perfect 4th — strong and open. Slightly more ambiguous than the 5th. Heard in "Here Comes the Bride."'},
-  {name:'Minor 2nd',   semitones:1,  consonant:false, desc:'Minor 2nd — maximum dissonance. The sound of tension and suspense. Used deliberately in horror music and jazz.'},
-  {name:'Major 7th',   semitones:11, consonant:false, desc:'Major 7th — rich, tense, yearning. Wants desperately to resolve up a half step. The hallmark of jazz harmony.'},
-  {name:'Tritone',     semitones:6,  consonant:false, desc:'Tritone — the devil\'s interval. Exactly halfway through the octave. Medieval composers banned it. Still maximally dissonant.'},
-  {name:'Minor 9th',   semitones:13, consonant:false, desc:'Minor 9th — a minor 2nd stretched across an octave. Even more tense and dissonant. Cutting and harsh.'}
+  {name:'Unison',      semitones:0,  consonant:true,  desc:'Unison: two identical pitches. Perfect fusion, maximum consonance. The foundation of unison vocals.'},
+  {name:'Perfect 5th', semitones:7,  consonant:true,  desc:'Perfect 5th: the most stable harmonic interval. Every power chord is built on this. Pure, open, powerful.'},
+  {name:'Major 3rd',   semitones:4,  consonant:true,  desc:'Major 3rd: bright and joyful. The interval that defines a major chord. Think of the first two notes of "When the Saints Go Marching In."'},
+  {name:'Minor 3rd',   semitones:3,  consonant:true,  desc:'Minor 3rd: warm and slightly melancholic. The core of every minor chord. Hauntingly beautiful.'},
+  {name:'Octave',      semitones:12, consonant:true,  desc:'Octave: the same note doubled in frequency. Perfect equivalence. The most naturally consonant interval after unison.'},
+  {name:'Perfect 4th', semitones:5,  consonant:true,  desc:'Perfect 4th: strong and open. Slightly more ambiguous than the 5th. Heard in "Here Comes the Bride."'},
+  {name:'Minor 2nd',   semitones:1,  consonant:false, desc:'Minor 2nd: maximum dissonance. The sound of tension and suspense. Used deliberately in horror music and jazz.'},
+  {name:'Major 7th',   semitones:11, consonant:false, desc:'Major 7th: rich, tense, yearning. Wants desperately to resolve up a half step. The hallmark of jazz harmony.'},
+  {name:'Tritone',     semitones:6,  consonant:false, desc:'Tritone: the devil\'s interval. Exactly halfway through the octave. Medieval composers banned it. Still maximally dissonant.'},
+  {name:'Minor 9th',   semitones:13, consonant:false, desc:'Minor 9th: a minor 2nd stretched across an octave. Even more tense and dissonant. Cutting and harsh.'}
 ];
 
 // Level II: Modal tonality
 // Each mode defined as scale degrees (semitones from root)
 var MODES = {
-  major:     {name:'Major',      steps:[0,2,4,5,7,9,11], desc:'Major — bright, triumphant, resolved. The most common tonality in Western music. Music sounds "happy."'},
-  minor:     {name:'Minor',      steps:[0,2,3,5,7,8,10], desc:'Minor — dark, introspective, emotional. Shadows and depth. The tonality of minor keys — sadness and power.'},
-  dorian:    {name:'Dorian',     steps:[0,2,3,5,7,9,10], desc:'Dorian — minor but with a raised 6th. Groovy and soulful. Think "Oye Como Va," "So What" by Miles Davis.'},
-  phrygian:  {name:'Phrygian',   steps:[0,1,3,5,7,8,10], desc:'Phrygian — Spanish, dark, mysterious. The flamenco mode. Starts with a half step giving it an exotic, ancient feel.'},
-  lydian:    {name:'Lydian',     steps:[0,2,4,6,7,9,11], desc:'Lydian — dreamy and otherworldly. The raised 4th creates a floating, magical quality. John Williams uses it often.'},
-  mixolydian:{name:'Mixolydian', steps:[0,2,4,5,7,9,10], desc:'Mixolydian — major but with a flat 7th. Rock and blues dominant. "Sweet Home Chicago," countless folk songs.'}
+  major:     {name:'Major',      steps:[0,2,4,5,7,9,11], desc:'Major: bright, triumphant, resolved. The most common tonality in Western music. Music sounds "happy."'},
+  minor:     {name:'Minor',      steps:[0,2,3,5,7,8,10], desc:'Minor: dark, introspective, emotional. Shadows and depth. The tonality of minor keys: sadness and power.'},
+  dorian:    {name:'Dorian',     steps:[0,2,3,5,7,9,10], desc:'Dorian: minor but with a raised 6th. Groovy and soulful. Think "Oye Como Va," "So What" by Miles Davis.'},
+  phrygian:  {name:'Phrygian',   steps:[0,1,3,5,7,8,10], desc:'Phrygian: Spanish, dark, mysterious. The flamenco mode. Starts with a half step giving it an exotic, ancient feel.'},
+  lydian:    {name:'Lydian',     steps:[0,2,4,6,7,9,11], desc:'Lydian: dreamy and otherworldly. The raised 4th creates a floating, magical quality. John Williams uses it often.'},
+  mixolydian:{name:'Mixolydian', steps:[0,2,4,5,7,9,10], desc:'Mixolydian: major but with a flat 7th. Rock and blues dominant. "Sweet Home Chicago," countless folk songs.'}
 };
 
 // Level III: Chord progressions
@@ -633,31 +633,31 @@ var PROGRESSIONS = [
   {
     name:'I – IV – V – I',
     label:'I-IV-V-I',
-    desc:'I–IV–V–I — the bedrock of Western music. Three chords that make up thousands of blues, folk, and rock songs. "La Bamba," "Twist and Shout," "Johnny B. Goode."',
+    desc:'I–IV–V–I: the bedrock of Western music. Three chords that make up thousands of blues, folk, and rock songs. "La Bamba," "Twist and Shout," "Johnny B. Goode."',
     chords:[[0,4,7],[5,9,12],[7,11,14],[12,16,19]]
   },
   {
     name:'I – V – vi – IV',
     label:'I-V-vi-IV',
-    desc:'I–V–vi–IV — the most popular chord progression of the modern era. Used in thousands of pop songs: "Let It Be," "No Woman No Cry," "Don\'t Stop Believin\'."',
+    desc:'I–V–vi–IV: the most popular chord progression of the modern era. Used in thousands of pop songs: "Let It Be," "No Woman No Cry," "Don\'t Stop Believin\'."',
     chords:[[0,4,7],[7,11,14],[9,12,16],[5,9,12]]
   },
   {
     name:'ii – V – I',
     label:'ii-V-I',
-    desc:'ii–V–I — the foundation of jazz harmony. Every jazz standard contains this. The ii creates tension, the V heightens it, the I resolves it beautifully.',
+    desc:'ii–V–I: the foundation of jazz harmony. Every jazz standard contains this. The ii creates tension, the V heightens it, the I resolves it beautifully.',
     chords:[[2,5,9],[7,11,14],[0,4,7],[0,4,7]]
   },
   {
     name:'I – vi – IV – V',
     label:'I-vi-IV-V',
-    desc:'I–vi–IV–V — the "50s progression." "Earth Angel," "Stand By Me," "Every Breath You Take." Simple, cyclical, and deeply satisfying.',
+    desc:'I–vi–IV–V: the "50s progression." "Earth Angel," "Stand By Me," "Every Breath You Take." Simple, cyclical, and deeply satisfying.',
     chords:[[0,4,7],[9,12,16],[5,9,12],[7,11,14]]
   },
   {
     name:'I – IV – I – V',
     label:'I-IV-I-V',
-    desc:'I–IV–I–V — the basic blues turnaround. Direct and grounded. Found in 12-bar blues, country, and traditional folk music worldwide.',
+    desc:'I–IV–I–V: the basic blues turnaround. Direct and grounded. Found in 12-bar blues, country, and traditional folk music worldwide.',
     chords:[[0,4,7],[5,9,12],[0,4,7],[7,11,14]]
   }
 ];
@@ -671,72 +671,72 @@ var L4_ROUNDS = [
     modulates:false,
     mood:'Bright',
     chords:[[0,4,7],[5,9,12],[7,11,14],[0,4,7],[0,4,7],[5,9,12],[7,11,14],[0,4,7]],
-    desc:'Classic C Major cycle — tonic, subdominant, dominant repeated. Stable, bright, resolved. The textbook example of diatonic Western harmony.',
-    keyDesc:'The chords circle back to C and settle there — that bright, stable pull toward a single home chord is the sound of C major.',
-    modDesc:'It stays in one key throughout — the same home chord opens and closes the progression with no shift to new tonal ground.'
+    desc:'Classic C Major cycle: tonic, subdominant, dominant repeated. Stable, bright, resolved. The textbook example of diatonic Western harmony.',
+    keyDesc:'The chords circle back to C and settle there. That bright, stable pull toward a single home chord is the sound of C major.',
+    modDesc:'It stays in one key throughout. The same home chord opens and closes the progression with no shift to new tonal ground.'
   },
   {
     key:'A Minor',
     modulates:false,
     mood:'Dark',
     chords:[[9,12,16],[5,9,12],[7,11,14],[9,12,16],[9,12,16],[2,5,9],[7,11,14],[9,12,16]],
-    desc:'Natural minor progression — dark and introspective. The VI–VII–i movement is deeply expressive. Heard in countless classical and rock works.',
-    keyDesc:'The home chord here is a minor chord — that darker, shadowed color you hear comes directly from A minor as the tonal center.',
-    modDesc:'It stays in A minor throughout — the minor home never shifts, holding that consistent introspective shade from first chord to last.'
+    desc:'Natural minor progression: dark and introspective. The VI–VII–i movement is deeply expressive. Heard in countless classical and rock works.',
+    keyDesc:'The home chord here is a minor chord. That darker, shadowed color you hear comes directly from A minor as the tonal center.',
+    modDesc:'It stays in A minor throughout. The minor home never shifts, holding that consistent introspective shade from first chord to last.'
   },
   {
     key:'G Major',
     modulates:true,
     mood:'Tense',
     chords:[[7,11,14],[7,11,14],[2,6,9],[2,6,9],[0,4,7],[0,4,7],[5,9,12],[7,11,14]], // G G D D C C F G
-    desc:'This progression begins in G but pivots through D major and briefly touches C, suggesting a modulation to C Major before returning — a classic pivot chord modulation.',
-    keyDesc:'The progression opens and anchors on G major chords — that is where the tonal home begins.',
-    modDesc:'The key shifts mid-progression — it starts in G, pivots through D, briefly touches C, then returns; that sense of the ground moving under you is modulation.'
+    desc:'This progression begins in G but pivots through D major and briefly touches C, suggesting a modulation to C Major before returning, a classic pivot chord modulation.',
+    keyDesc:'The progression opens and anchors on G major chords. That is where the tonal home begins.',
+    modDesc:'The key shifts mid-progression. It starts in G, pivots through D, briefly touches C, then returns; that sense of the ground moving under you is modulation.'
   },
   {
     key:'D Minor',
     modulates:false,
     mood:'Resolved',
     chords:[[2,5,9],[5,9,12],[7,11,14],[2,5,9],[5,9,12],[9,12,16],[7,11,14],[2,5,9]],
-    desc:'D Minor circular progression — tension builds across the middle chords then releases cleanly back to the tonic. A sense of journey and return.',
-    keyDesc:'The tonal home is D minor — that searching, minor-flavored center the progression keeps returning to gives it its sense of journey and resolution.',
-    modDesc:'It stays in D minor throughout — the progression travels but always returns to the same home key, never truly departing.'
+    desc:'D Minor circular progression. Tension builds across the middle chords then releases cleanly back to the tonic. A sense of journey and return.',
+    keyDesc:'The tonal home is D minor. That searching, minor-flavored center the progression keeps returning to gives it its sense of journey and resolution.',
+    modDesc:'It stays in D minor throughout. The progression travels but always returns to the same home key, never truly departing.'
   },
   {
     key:'E Minor',
     modulates:true,
     mood:'Tense',
     chords:[[4,7,11],[4,7,11],[2,5,9],[7,11,14],[0,4,7],[5,9,12],[7,11,14],[0,4,7]], // Em Em Dm G C F G C
-    desc:'Opens in E minor unrest, then pivots toward C major — the tension of the minor home gives way as the progression resolves into a brighter key.',
-    keyDesc:'The opening chord is a minor chord that feels like the tonal home — an E minor anchor.',
-    modDesc:'The key shifts mid-progression — what begins minor and tense settles into a major resolution.'
+    desc:'Opens in E minor unrest, then pivots toward C major. The tension of the minor home gives way as the progression resolves into a brighter key.',
+    keyDesc:'The opening chord is a minor chord that feels like the tonal home, an E minor anchor.',
+    modDesc:'The key shifts mid-progression. What begins minor and tense settles into a major resolution.'
   },
   {
     key:'D Major',
     modulates:true,
     mood:'Bright',
     chords:[[2,6,9],[2,6,9],[7,11,14],[0,4,7],[5,9,12],[7,11,14],[0,4,7],[0,4,7]], // D D G C F G C C
-    desc:'Begins bright in D, then leans through G toward a C major resting place — an upward, opening shift.',
-    keyDesc:'The progression opens and anchors on a major chord — a D major home.',
-    modDesc:'The key moves mid-progression — it brightens as it settles into a new major center.'
+    desc:'Begins bright in D, then leans through G toward a C major resting place, an upward, opening shift.',
+    keyDesc:'The progression opens and anchors on a major chord, a D major home.',
+    modDesc:'The key moves mid-progression. It brightens as it settles into a new major center.'
   },
   {
     key:'A Minor',
     modulates:true,
     mood:'Dark',
     chords:[[9,12,16],[9,12,16],[5,9,12],[2,5,9],[9,12,16],[7,11,14],[0,4,7],[5,9,12]],
-    desc:'Sits in A minor darkness, then slips into a major key — the gloom lifts unexpectedly as it modulates.',
-    keyDesc:'The home chord is a minor chord — an A minor anchor, dark and low.',
-    modDesc:'The key shifts partway — the dark minor opening gives way to a major destination.'
+    desc:'Sits in A minor darkness, then slips into a major key. The gloom lifts unexpectedly as it modulates.',
+    keyDesc:'The home chord is a minor chord, an A minor anchor, dark and low.',
+    modDesc:'The key shifts partway. The dark minor opening gives way to a major destination.'
   },
   {
     key:'F Major',
     modulates:false,
     mood:'Resolved',
     chords:[[5,9,12],[10,14,17],[5,9,12],[0,4,7],[5,9,12],[10,14,17],[0,4,7],[5,9,12]], // F Bb F C F Bb C F, with the C chord below the tonic
-    desc:'A steady F major progression — tonic, subdominant, dominant, always returning home. Settled and complete.',
-    keyDesc:'The chords circle back to the same major home and rest there — an F major center.',
-    modDesc:'It stays in one key throughout — no shift, fully grounded.'
+    desc:'A steady F major progression: tonic, subdominant, dominant, always returning home. Settled and complete.',
+    keyDesc:'The chords circle back to the same major home and rest there, an F major center.',
+    modDesc:'It stays in one key throughout. No shift, fully grounded.'
   }
 ];
 
@@ -773,7 +773,7 @@ function saveUnlocks(){try{localStorage.setItem('hoUnlocked',JSON.stringify(stat
 
 var HTP_TEXT = {
   1:'Level I: Two notes play at once. Decide if they sound Consonant (stable, pleasant) or Dissonant (tense, clashing). Listen for smoothness vs. roughness. 10 pts per correct answer.',
-  2:'Level II: A full scale plays, root to octave, in a specific mode. Identify the tonality — Major, Minor, or one of four modes. Listen for the note that gives each mode away: the flat 7th of Mixolydian, the raised 6th of Dorian, the sharp 4th of Lydian, the flat 2nd of Phrygian. 20 pts per correct answer.',
+  2:'Level II: A full scale plays, root to octave, in a specific mode. Identify the tonality: Major, Minor, or one of four modes. Listen for the note that gives each mode away: the flat 7th of Mixolydian, the raised 6th of Dorian, the sharp 4th of Lydian, the flat 2nd of Phrygian. 20 pts per correct answer.',
   3:'Level III: A 4-chord progression plays. Identify the Roman numeral pattern. Listen for how the chords rise, fall, and resolve. 30 pts per correct answer.',
   4:'Level IV: An 8-chord progression plays. Answer three questions: the key, whether it modulates (changes key), and the overall mood. 50 pts for a complete correct analysis.'
 };
@@ -912,7 +912,7 @@ function startL1Round(){
   state.answering = false;
   state.replayCount = 0;
   updateReplayDots();
-  setMsg('THE ORACLE SPEAKS', 'LISTEN — CONSONANT OR DISSONANT?');
+  setMsg('THE ORACLE SPEAKS', 'LISTEN. CONSONANT OR DISSONANT?');
 
   // Pick random interval
   var interval = L1_INTERVALS[Math.floor(Math.random()*L1_INTERVALS.length)];
@@ -961,7 +961,7 @@ function handleL1Answer(chosen, btn){
   updateStreak();
   updateProgress();
 
-  showExplanation(round.interval.name + ' — ' + round.interval.desc);
+  showExplanation(round.interval.desc);
 
   later(function(){ startL1Round(); }, 2200);
 }
@@ -1288,9 +1288,9 @@ function showOver(){
   $('os').classList.remove('off');
   $('finalScore').textContent = state.score;
   var narr = '';
-  if(state.score < 50) narr = 'The harmonic path begins here.\nListen deeply — the oracle will reveal its secrets.';
+  if(state.score < 50) narr = 'The harmonic path begins here.\nListen deeply. The oracle will reveal its secrets.';
   else if(state.score < 150) narr = 'You are tuning in.\nThe intervals are becoming clear.';
-  else if(state.score < 300) narr = 'Your harmonic ear is awakening.\nPress on — deeper levels await.';
+  else if(state.score < 300) narr = 'Your harmonic ear is awakening.\nPress on. Deeper levels await.';
   else if(state.score < 500) narr = 'Strong harmonic intuition.\nYou hear the architecture beneath the sound.';
   else narr = 'Harmonic mastery.\nThe oracle recognizes one of its own.';
   $('os-narrator').textContent = narr;
