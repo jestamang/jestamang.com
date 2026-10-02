@@ -2302,8 +2302,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       cancelBtn.onclick = function () { window.cancelEditPost(); };
       document.getElementById('bp-publish-btn').parentNode.appendChild(cancelBtn);
     }
-    var sec = document.getElementById('sec-4');
-    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.admNavTo('sec-4');
   };
 
   window.cancelEditPost = function () {
@@ -3452,8 +3451,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       cancelBtn.onclick = function () { window.cancelEditUpdate(); };
       document.getElementById('mu-publish-btn').parentNode.appendChild(cancelBtn);
     }
-    var sec = document.getElementById('sec-31');
-    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.admNavTo('sec-31');
   };
 
   window.cancelEditUpdate = function () {
@@ -3964,7 +3962,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     _shEditId = id;
     document.getElementById('sh-add-btn').textContent = 'Update Conjuring';
     var c = document.getElementById('sh-cancel-btn'); if(c) c.style.display='';
-    document.getElementById('sh-venue').scrollIntoView({block:'center'});
+    window.admNavTo('sec-7');
   };
 
   function initShows() {
@@ -4280,7 +4278,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     document.getElementById('pm-featured').checked = !!d.featured;
     document.getElementById('pm-add-btn').textContent = 'Update Article';
     var cb=document.getElementById('pm-cancel-btn'); if(cb) cb.style.display='';
-    var sec=document.getElementById('sec-8'); if(sec) sec.scrollIntoView({behavior:'smooth',block:'start'});
+    window.admNavTo('sec-8');
   };
 
   window.toggleFeatured = function(id, current){
@@ -4745,7 +4743,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     document.getElementById('vm-url').value = d.youtubeUrl || ('https://www.youtube.com/watch?v=' + (d.youtubeId||''));
     document.getElementById('vm-add-btn').textContent = 'Update Video';
     var cb=document.getElementById('vm-cancel-btn'); if(cb) cb.style.display='';
-    var sec=document.getElementById('sec-14'); if(sec) sec.scrollIntoView({behavior:'smooth',block:'start'});
+    window.admNavTo('sec-14');
   };
   window.publishVideo = function(id, currentlyPublished){
     db.collection('videos').doc(id).update({ published: !currentlyPublished }).catch(function(e){ alert('Error: ' + e.message); });
@@ -5877,10 +5875,66 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </script>
 
 <script>(function(){
+  /* Scroll a section to just below the fixed bars.
+     One measurement at click time is not enough on this page: sections keep filling in, so the target can
+     move after the scroll starts. So: measure the bars now, scroll, then keep checking where the section
+     really is and correct it until the layout has held still for a moment. Any manual scroll cancels. */
+  var _navSeq = 0, _navUserMoved = false;
+  ['wheel', 'touchstart', 'keydown'].forEach(function (ev) {
+    window.addEventListener(ev, function (e) {
+      if (ev === 'keydown' && !/^(Arrow|Page|Home|End| $)/.test(e.key || '')) return;
+      _navUserMoved = true;
+    }, { passive: true });
+  });
+  function admBarsBottom() {
+    var nav = document.getElementById('jtnav'), tabs = document.getElementById('adm-mobtabs');
+    var b = nav ? nav.getBoundingClientRect().bottom : 52;
+    if (tabs && getComputedStyle(tabs).display !== 'none') b += tabs.getBoundingClientRect().height; // sticky tab bar (mobile)
+    return b + 16;
+  }
+  // Extra room at the end of the page, only as much as the last sections need to reach the top
+  function admMakeRoom(el, offset) {
+    var doc = document.documentElement;
+    var want = el.getBoundingClientRect().top + window.scrollY - offset;
+    var short = want - (doc.scrollHeight - window.innerHeight);
+    if (short <= 0) return;
+    var sp = document.getElementById('adm-nav-spacer');
+    if (!sp) {
+      var wrap = document.querySelector('.adm-wrap') || document.body;
+      sp = document.createElement('div'); sp.id = 'adm-nav-spacer'; sp.setAttribute('aria-hidden', 'true');
+      wrap.appendChild(sp);
+    }
+    sp.style.height = Math.ceil((parseFloat(sp.style.height) || 0) + short + 2) + 'px';
+  }
   window.admNavTo = function(id) {
     var el = document.getElementById(id);
     if (!el) return;
-    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 68, behavior: 'smooth' });
+    var seq = ++_navSeq, started = Date.now(), lastY = null, stillSince = 0, heldSince = 0, landedAbs = null;
+    _navUserMoved = false;
+    function go() {
+      var offset = admBarsBottom();
+      admMakeRoom(el, offset);
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+    }
+    go();
+    (function check() {
+      if (seq !== _navSeq || _navUserMoved) return;                 // a newer click, or the user scrolled by hand
+      var now = Date.now(), y = window.scrollY;
+      if (lastY === null || Math.abs(y - lastY) > 1) { stillSince = now; heldSince = 0; }   // still travelling
+      lastY = y;
+      if (now - stillSince >= 150) {                                // the scroll has stopped
+        var top = el.getBoundingClientRect().top, off = top - admBarsBottom(), abs = top + y;
+        if (Math.abs(off) > 2) {
+          // Off target. If the section has not moved in the document since we landed, the view moved
+          // instead (scrollbar drag, or anything else the listeners above cannot see): leave it alone.
+          if (landedAbs !== null && Math.abs(abs - landedAbs) <= 2) return;
+          heldSince = 0; landedAbs = null; go();                    // the layout moved: correct it
+        }
+        else if (!heldSince) { heldSince = now; landedAbs = abs; }
+        else if (now - heldSince >= 1500) return;                   // on target and steady for 1.5s: done
+      }
+      if (now - started < 10000) setTimeout(check, 100);            // hard stop
+    })();
   };
   function countUp(el, target, dur) {
     if (isNaN(target) || target <= 0) return;
