@@ -2267,7 +2267,7 @@ var NC = (function(){
   }
 
   function isRetrograde(name, jd){
-    if(name==='Sun'||name==='Moon'||name==='North Node'||name==='South Node'||name==='Chiron'||name==='Lilith') return false;
+    if(name==='Sun'||name==='Moon'||name==='North Node'||name==='South Node'||name==='Lilith') return false;
     var lon1 = getRawLon(name, jd - 0.5);
     var lon2 = getRawLon(name, jd + 0.5);
     if(lon1===null||lon2===null) return false;
@@ -2462,6 +2462,15 @@ var NC = (function(){
     return result;
   }
 
+  // Aspects between the ten core bodies and the Ascendant. Works from totalDeg alone, so a
+  // saved chart can rebuild its full list without the birth data.
+  function chartAspects(planets, ascData){
+    var core={};
+    ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'].forEach(function(n){ if(planets[n]) core[n]=planets[n]; });
+    if(ascData) core['Ascendant']=ascData;
+    return findAspects(core);
+  }
+
   function getDeltaT(year){
     var t = year - 2000;
     if(year >= 1986 && year <= 2005){
@@ -2552,10 +2561,7 @@ var NC = (function(){
       modes[MODE[planets[coreplanets[ci]].sign]]++;
     }
 
-    var corePlanObj={};
-    for(var cj=0;cj<coreplanets.length;cj++) corePlanObj[coreplanets[cj]]=planets[coreplanets[cj]];
-    if(ascData) corePlanObj['Ascendant']=ascData;
-    var aspects=findAspects(corePlanObj);
+    var aspects=chartAspects(planets,ascData);
 
     return {jd:jd,planets:planets,ascData:ascData,mcData:mcData,houseCusps:houseCusps,elements:elements,modes:modes,aspects:aspects,hasTime:hasTime,total:total,unavailable:unavailable,ephemRange:opRangeYears()};
   }
@@ -3077,7 +3083,7 @@ var NC = (function(){
   }
 
   return {
-    calculate:calculate,renderDossier:renderDossier,
+    calculate:calculate,renderDossier:renderDossier,chartAspects:chartAspects,
     ready:function(){ return JESTA_OP_PROMISE; },
     SIGNS:SIGNS,SIGN_GLYPHS:SIGN_GLYPHS,lonToSign:lonToSign,
     PLANET_INFO:PLANET_INFO,ROMAN_HOUSES:ROMAN_HOUSES,mod360:mod360,
@@ -4670,7 +4676,7 @@ document.addEventListener('DOMContentLoaded', function(){
           hasTime: result.hasTime,
           elements: result.elements,
           modes: result.modes,
-          aspects: result.aspects.slice(0, 20),
+          aspects: result.aspects,
           calculatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
         for(var pn in result.planets){
@@ -4678,6 +4684,7 @@ document.addEventListener('DOMContentLoaded', function(){
             sign: result.planets[pn].sign, glyph: result.planets[pn].glyph,
             deg: result.planets[pn].deg, min: result.planets[pn].min,
             totalDeg: result.planets[pn].totalDeg, house: result.planets[pn].house || null,
+            retrograde: !!result.planets[pn].retrograde,
           };
         }
         if(result.ascData){ chartSaveData.ascendant = { sign:result.ascData.sign,glyph:result.ascData.glyph,deg:result.ascData.deg,min:result.ascData.min,totalDeg:result.ascData.totalDeg }; }
@@ -4835,28 +4842,42 @@ document.addEventListener('DOMContentLoaded', function(){
       if(recallEl) recallEl.style.display = 'block';
     }
 
-    // If saved chart pre-dates Lilith/South Node/Fortune, recalculate them on the fly
-    var needsUpdate = !cd.planets['South Node'] || !cd.planets['Lilith'];
-    if(needsUpdate && cd.birthDate && cd.lat != null && cd.lng != null){
+    // Charts saved before a field existed are patched on the fly from the stored birth data:
+    // Lilith/South Node/Fortune (older still), the retrograde flags, and the aspect list that
+    // used to be cut at 20. The patch is written back so the share copy carries it too.
+    var pkeys = Object.keys(cd.planets);
+    var needsPoints = !cd.planets['South Node'] || !cd.planets['Lilith'];
+    var needsRetro = !pkeys.some(function(k){ return cd.planets[k] && typeof cd.planets[k].retrograde === 'boolean'; });
+    if((needsPoints || needsRetro) && cd.birthDate && cd.lat != null && cd.lng != null){
       try {
         var fresh = NC.calculate(cd.birthDate, cd.birthTime || '', cd.lat, cd.lng, null);
         var merged = {};
         for(var k in cd.planets) merged[k] = cd.planets[k];
-        if(fresh.planets['South Node']) merged['South Node'] = fresh.planets['South Node'];
-        if(fresh.planets['Lilith'])     merged['Lilith']     = fresh.planets['Lilith'];
-        if(fresh.planets['Fortune'])    merged['Fortune']    = fresh.planets['Fortune'];
-        // Re-save patched planets to Firestore silently
+        if(needsPoints){
+          if(fresh.planets['South Node']) merged['South Node'] = fresh.planets['South Node'];
+          if(fresh.planets['Lilith'])     merged['Lilith']     = fresh.planets['Lilith'];
+          if(fresh.planets['Fortune'])    merged['Fortune']    = fresh.planets['Fortune'];
+        }
+        var patch = {};
+        for(var pn in merged){
+          var mp = merged[pn];
+          var retro = (typeof mp.retrograde === 'boolean') ? mp.retrograde : !!(fresh.planets[pn] && fresh.planets[pn].retrograde);
+          patch[pn] = {sign:mp.sign,glyph:mp.glyph,deg:mp.deg,min:mp.min,totalDeg:mp.totalDeg,house:mp.house||null,retrograde:retro};
+        }
+        var upd = {planets: patch};
+        if(needsRetro && cd.aspects && cd.aspects.length === 20){
+          var fullAspects = NC.chartAspects(patch, cd.hasTime ? (cd.ascendant || null) : null);
+          if(fullAspects.length > 20) upd.aspects = fullAspects;
+        }
+        cd.planets = patch;
+        if(upd.aspects) cd.aspects = upd.aspects;
+        // Re-save the patched chart to Firestore silently
         if(db && currentUser){
-          var patch = {};
-          for(var pn in merged){
-            var mp = merged[pn];
-            patch[pn] = {sign:mp.sign,glyph:mp.glyph,deg:mp.deg,min:mp.min,totalDeg:mp.totalDeg,house:mp.house||null};
-          }
           db.collection('users').doc(currentUser.uid).collection('natalChart').doc('chart')
-            .update({planets: patch})
+            .update(upd)
             .catch(function(){});
         }
-        _render(merged);
+        _render(patch);
       } catch(e){
         console.warn('Could not patch saved chart with new points:', e);
         _render(cd.planets);
