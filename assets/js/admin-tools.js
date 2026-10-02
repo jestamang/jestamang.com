@@ -195,7 +195,7 @@ window.capEdit = function(idx){
   document.getElementById('cap-preview').textContent = c.text || '';
   document.getElementById('cap-save-btn').dataset.editIdx = idx;
   document.getElementById('cap-save-btn').textContent = 'Update Caption';
-  document.getElementById('sec-30').scrollIntoView({behavior:'smooth',block:'start'});
+  window.admNavTo('sec-30');
 };
 
 window.capDelete = function(idx){
@@ -356,7 +356,7 @@ function tsePopulateForm(rule){
   }
   tseUpdatePreview();
   var btn=document.getElementById('tse-add-btn');if(btn)btn.textContent='Save Rule';
-  document.getElementById('sec-28').scrollIntoView({behavior:'smooth',block:'start'});
+  window.admNavTo('sec-28');
 }
 
 function tseRenderRules(){
