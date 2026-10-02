@@ -507,7 +507,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="adm-sidenav-link" onclick="admNavTo('sec-17')">Maintenance</button>
 </nav>
 <div id="adm-mobtabs" role="navigation" aria-label="Section tabs">
-  <button class="adm-mobtab" onclick="admNavTo('sec-32')">Index</button><button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-29')">Lyrics</button><button class="adm-mobtab" onclick="admNavTo('sec-30')">Captions</button><button class="adm-mobtab" onclick="admNavTo('sec-36')">Profile</button><button class="adm-mobtab" onclick="admNavTo('sec-37')">Comix</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-31')">Updates</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-28')">TxtStyle</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
+  <button class="adm-mobtab" onclick="admNavTo('sec-32')">Index</button><button class="adm-mobtab" onclick="admNavTo('sec-34')">Radio</button><button class="adm-mobtab" onclick="admNavTo('sec-13')">Announce</button><button class="adm-mobtab" onclick="admNavTo('sec-4')">Blog</button><button class="adm-mobtab" onclick="admNavTo('sec-26')">Albums</button><button class="adm-mobtab" onclick="admNavTo('sec-27')">Entities</button><button class="adm-mobtab" onclick="admNavTo('sec-29')">Lyrics</button><button class="adm-mobtab" onclick="admNavTo('sec-30')">Captions</button><button class="adm-mobtab" onclick="admNavTo('sec-36')">Profile</button><button class="adm-mobtab" onclick="admNavTo('sec-37')">Comix</button><button class="adm-mobtab" onclick="admNavTo('sec-14')">Videos</button><button class="adm-mobtab" onclick="admNavTo('sec-15')">Artifacts</button><button class="adm-mobtab" onclick="admNavTo('sec-23')">Photos</button><button class="adm-mobtab" onclick="admNavTo('sec-7')">Shows</button><button class="adm-mobtab" onclick="admNavTo('sec-8')">Press</button><button class="adm-mobtab" onclick="admNavTo('sec-3')">Members</button><button class="adm-mobtab" onclick="admNavTo('sec-24')">Treats</button><button class="adm-mobtab" onclick="admNavTo('sec-31')">Updates</button><button class="adm-mobtab" onclick="admNavTo('sec-5')">Mod</button><button class="adm-mobtab" onclick="admNavTo('sec-6')">Inquiries</button><button class="adm-mobtab" onclick="admNavTo('sec-21')">Top</button><button class="adm-mobtab" onclick="admNavTo('sec-2')">Transmit</button><button class="adm-mobtab" onclick="admNavTo('sec-18')">Email</button><button class="adm-mobtab" onclick="admNavTo('sec-19')">Badges</button><button class="adm-mobtab" onclick="admNavTo('sec-35')">Arcade</button><button class="adm-mobtab" onclick="admNavTo('sec-11')">LB</button><button class="adm-mobtab" onclick="admNavTo('sec-22')">Sigil</button><button class="adm-mobtab" onclick="admNavTo('sec-33')">Meta</button><button class="adm-mobtab" onclick="admNavTo('sec-25')">Theme</button><button class="adm-mobtab" onclick="admNavTo('sec-28')">TxtStyle</button><button class="adm-mobtab" onclick="admNavTo('sec-1')">Stats</button><button class="adm-mobtab" onclick="admNavTo('sec-20')">Backup</button><button class="adm-mobtab" onclick="admNavTo('sec-17')">Maint</button>
 </div>
 
   <div class="adm-header">
@@ -5906,11 +5906,37 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     }
     sp.style.height = Math.ceil((parseFloat(sp.style.height) || 0) + short + 2) + 'px';
   }
+  /* Which sidebar entry (or mobile tab) is lit. Set at once by a click, and by the scroll spy below when
+     the page is scrolled by hand. The lit entry is kept in view by moving the sidebar's or tab bar's own
+     scroll position, never the page's. */
+  var _admActiveId = null, _navLockUntil = 0;
+  function admLinkTarget(l) { var m = (l.getAttribute('onclick') || '').match(/admNavTo\('([^']+)'\)/); return m ? m[1] : null; }
+  function admReveal(l) {
+    var box = l.parentNode;
+    if (!box || getComputedStyle(box).display === 'none') return;
+    var b = box.getBoundingClientRect(), r = l.getBoundingClientRect(), pad = 24;
+    if (r.top < b.top + pad) box.scrollTop -= (b.top + pad - r.top);
+    else if (r.bottom > b.bottom - pad) box.scrollTop += (r.bottom - (b.bottom - pad));
+    if (r.left < b.left + pad) box.scrollLeft -= (b.left + pad - r.left);
+    else if (r.right > b.right - pad) box.scrollLeft += (r.right - (b.right - pad));
+  }
+  function admSetActive(id) {
+    if (id === _admActiveId) return;
+    _admActiveId = id;
+    document.querySelectorAll('.adm-sidenav-link,.adm-mobtab').forEach(function (l) {
+      var on = admLinkTarget(l) === id;
+      l.classList.toggle('snav-active', on);
+      if (on) admReveal(l);
+    });
+  }
   window.admNavTo = function(id) {
     var el = document.getElementById(id);
     if (!el) return;
     var seq = ++_navSeq, started = Date.now(), lastY = null, stillSince = 0, heldSince = 0, landedAbs = null;
     _navUserMoved = false;
+    admSetActive(id);                       // light the clicked entry now, not when the scroll catches up
+    _navLockUntil = started + 10000;        // the spy leaves it alone while this click is travelling
+    function release() { if (seq === _navSeq) _navLockUntil = 0; }
     function go() {
       var offset = admBarsBottom();
       admMakeRoom(el, offset);
@@ -5918,7 +5944,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     }
     go();
     (function check() {
-      if (seq !== _navSeq || _navUserMoved) return;                 // a newer click, or the user scrolled by hand
+      if (seq !== _navSeq) return;                                  // a newer click owns the highlight now
+      if (_navUserMoved) return release();                          // the user scrolled by hand
       var now = Date.now(), y = window.scrollY;
       if (lastY === null || Math.abs(y - lastY) > 1) { stillSince = now; heldSince = 0; }   // still travelling
       lastY = y;
@@ -5927,13 +5954,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         if (Math.abs(off) > 2) {
           // Off target. If the section has not moved in the document since we landed, the view moved
           // instead (scrollbar drag, or anything else the listeners above cannot see): leave it alone.
-          if (landedAbs !== null && Math.abs(abs - landedAbs) <= 2) return;
+          if (landedAbs !== null && Math.abs(abs - landedAbs) <= 2) return release();
           heldSince = 0; landedAbs = null; go();                    // the layout moved: correct it
         }
         else if (!heldSince) { heldSince = now; landedAbs = abs; }
-        else if (now - heldSince >= 1500) return;                   // on target and steady for 1.5s: done
+        else if (now - heldSince >= 1500) return release();         // on target and steady for 1.5s: done
       }
-      if (now - started < 10000) setTimeout(check, 100);            // hard stop
+      if (now - started < 10000) setTimeout(check, 100); else release();   // hard stop
     })();
   };
   function countUp(el, target, dur) {
@@ -5956,19 +5983,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       obs.observe(el, { childList: true, characterData: true, subtree: true });
     });
   }
-  var SEC_IDS = ['sec-13','sec-4','sec-26','sec-27','sec-29','sec-30','sec-14','sec-15','sec-23','sec-7','sec-8','sec-3','sec-24','sec-5','sec-6','sec-21','sec-2','sec-18','sec-19','sec-11','sec-22','sec-25','sec-28','sec-1','sec-20','sec-17'];
+  /* Scroll spy. The list is read from the page (every .adm-section, in page order), so a section added
+     later is tracked without anyone remembering to register it. */
   function initScrollSpy() {
-    var secs = SEC_IDS.map(function(id){ return document.getElementById(id); }).filter(Boolean);
-    var links = document.querySelectorAll('.adm-sidenav-link,.adm-mobtab');
+    var secs = [].slice.call(document.querySelectorAll('.adm-section[id]'));
     function onScroll() {
-      var sy = window.scrollY + 100, active = secs[0];
-      for (var i = secs.length - 1; i >= 0; i--) {
-        if (secs[i] && secs[i].offsetTop <= sy) { active = secs[i]; break; }
+      if (Date.now() < _navLockUntil && !_navUserMoved) return;     // a sidebar click is still travelling
+      var line = admBarsBottom() + 40, active = secs[0];
+      for (var i = 0; i < secs.length; i++) {
+        if (secs[i].getBoundingClientRect().top <= line) active = secs[i]; else break;
       }
-      links.forEach(function(l){ l.classList.remove('snav-active'); });
-      if (active) links.forEach(function(l){
-        if ((l.getAttribute('onclick')||'').indexOf("'"+active.id+"'") !== -1) l.classList.add('snav-active');
-      });
+      if (active) admSetActive(active.id);
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
