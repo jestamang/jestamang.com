@@ -840,7 +840,9 @@ document.addEventListener('DOMContentLoaded', function(){
     /* Load Member Updates from Firestore */
     (function(){
       function escU(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-      db.collection('membersUpdates').orderBy('timestamp','desc').get()
+      /* published only: the rules let members read published writings alone, so the query
+         must say so (drafts stay admin-only). The client-side check below stays as a belt. */
+      db.collection('membersUpdates').where('published','==',true).orderBy('timestamp','desc').get()
         .then(function(snap){
           var list = document.getElementById('updates-list');
           if(!list) return;
@@ -1056,17 +1058,9 @@ document.addEventListener('DOMContentLoaded', function(){
       }).then(function(){
         sendBtn.disabled = false;
         if(chatStatusEl){ chatStatusEl.textContent = ''; }
-        /* Trim to 50 */
-        db.collection('innerCircleChat')
-          .orderBy('ts','asc')
-          .get()
-          .then(function(snap){
-            if(snap.size > 50){
-              var batch = db.batch();
-              snap.docs.slice(0, snap.size-50).forEach(function(d){ batch.delete(d.ref); });
-              batch.commit().catch(function(e){ console.error('innerCircleChat batch error:', e.message); });
-            }
-          });
+        /* No trimming here: the live listener already shows the last 50. The old post-send
+           read-and-delete fetched the whole history and was denied for other members'
+           messages anyway, so it never trimmed and only grew more expensive. */
       }).catch(function(e){
         console.error('innerCircleChat error:', e.message);
         sendBtn.disabled = false;
