@@ -1735,6 +1735,50 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   var ADMIN_EMAIL = 'thejestamang@gmail.com';
   var db;
 
+  /* ══════════════ LOAD GUARD ══════════════
+     Every manager below saves a whole document from what it holds in memory. If its read failed,
+     memory is empty or holds defaults, and a save would overwrite the live document. So a save is
+     only allowed once we know what Firestore holds:
+       'ok'      the document loaded, or Firestore confirmed it does not exist yet (first-time create)
+       'loading' still waiting
+       'failed'  the read failed or the database never became available
+     Same rule as the Sigil Card Editor (admin-games.js). */
+  window.jestaLoadGuard = function (hostId, key, label) {
+    var state = 'loading', retryFn = null, warnId = hostId + '-loadwarn-' + key;
+    function clear() { var n = document.getElementById(warnId); if (n && n.parentNode) n.parentNode.removeChild(n); }
+    function notice() {
+      clear();
+      var host = document.getElementById(hostId); if (!host || !host.parentNode) return;
+      var w = document.createElement('div');
+      w.id = warnId;
+      w.style.cssText = 'border:1px solid rgba(251,56,56,0.6);background:rgba(251,56,56,0.08);color:#FB3838;padding:14px 16px;margin:0 0 18px;font-size:0.72rem;letter-spacing:0.08em;line-height:1.6;';
+      w.appendChild(document.createTextNode('THE SAVED ' + label + ' DID NOT LOAD. What you see below is not what is saved. Saving is blocked until it loads. '));
+      var b = document.createElement('button');
+      b.className = 'btn-ghost btn-sm'; b.style.cssText = 'margin-left:8px;letter-spacing:0.2em;'; b.textContent = 'RETRY LOAD';
+      b.addEventListener('click', function () { if (retryFn) retryFn(); });
+      w.appendChild(b);
+      host.parentNode.insertBefore(w, host);
+    }
+    return {
+      loading: function () { state = 'loading'; clear(); },
+      ok: function () { state = 'ok'; clear(); },
+      // quiet: block saves without a second notice (used when one notice already covers the same failure)
+      failed: function (retry, quiet) { state = 'failed'; retryFn = retry || null; if (quiet) clear(); else notice(); },
+      state: function () { return state; },
+      // useClass: status elements styled by class (status-msg) instead of an inline colour
+      canSave: function (statusEl, useClass) {
+        if (state === 'ok') return true;
+        if (statusEl) {
+          statusEl.textContent = state === 'loading'
+            ? 'Still loading. Wait a moment and try again.'
+            : 'SAVE BLOCKED. The saved data did not load, so saving now would overwrite it. Press RETRY LOAD.';
+          if (useClass) statusEl.className = 'status-msg status-err'; else statusEl.style.color = 'rgba(251,56,56,0.9)';
+        }
+        return false;
+      }
+    };
+  };
+
   /* ══════════════ HELPERS ══════════════ */
   function fmtDate(ts) {
     if (!ts) return '—';
@@ -2421,12 +2465,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 'CARTOON ENTITY|You and the 7.5 Evils of the World':'Not all of the evils are enemies. Some are just misunderstood frequencies.'
   };
   var _eotdCapList = [], _eotdCapSaved = {}, _eotdCapEdit = {}, _eotdCapLoaded = false;
+  var _eotdCapGuard = window.jestaLoadGuard('ix-list', 'eotd', 'ENTITY CAPTIONS');
   function loadEotdCaps(cb){
     if (_eotdCapLoaded) { cb && cb(); return; }
+    function retry(){ _eotdCapLoaded = false; _eotdCapGuard.loading(); loadEotdCaps(cb); }
     function finish(){
       if (window.jestaDB) {
-        db.collection('siteConfig').doc('eotdCaptions').get().then(function(d){ _eotdCapSaved = (d.exists && d.data().captions) || {}; _eotdCapLoaded = true; cb && cb(); }).catch(function(){ _eotdCapLoaded = true; cb && cb(); });
-      } else { _eotdCapLoaded = true; cb && cb(); }
+        db.collection('siteConfig').doc('eotdCaptions').get().then(function(d){ _eotdCapSaved = (d.exists && d.data().captions) || {}; _eotdCapLoaded = true; _eotdCapGuard.ok(); cb && cb(); }).catch(function(){ _eotdCapLoaded = true; _eotdCapGuard.failed(retry); cb && cb(); });
+      } else { _eotdCapLoaded = true; _eotdCapGuard.failed(retry); cb && cb(); }
     }
     fetch('entities.html').then(function(r){return r.text();}).then(function(html){
       var doc = new DOMParser().parseFromString(html, 'text/html'), arr = [], seen = {};
@@ -2484,6 +2530,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       ]
     };
     var _gcSaved = {}, _gcDefaults = {}, _gcOpen = {}, _gcEdit = {};
+    var _amGuard = window.jestaLoadGuard('am-form', 'arcade', 'ARCADE TEXT'), _gcGuard = window.jestaLoadGuard('am-form', 'gamecontent', 'GAME PAGE TEXT'), _pnGuard = window.jestaLoadGuard('am-form', 'pitchnotes', 'PITCH NOTE TEXT');
     var NOTE_ORDER=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
     var NOTE_DESC_DEFAULTS={
       'C':'The tonic — foundation of Western harmony. C major is the first scale most students learn.',
@@ -2624,6 +2671,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       formEl.querySelectorAll('.am-pagesave').forEach(function(b){ b.addEventListener('click', function(){
         var href=this.getAttribute('data-href');
         var st=formEl.querySelector('.am-pagestatus[data-href="'+href+'"]');
+        if(!_gcGuard.canSave(st)) return;
         var entry={};
         if(PAGE_EDITABLE[href]){
           var ti=formEl.querySelector('.am-pf[data-href="'+href+'"][data-pk="title"]');
@@ -2645,6 +2693,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       formEl.querySelectorAll('.am-pagereset').forEach(function(b){ b.addEventListener('click', function(){
         var href=this.getAttribute('data-href');
         var st=formEl.querySelector('.am-pagestatus[data-href="'+href+'"]');
+        if(!_gcGuard.canSave(st)) return;
         delete _gcSaved[href]; delete _gcEdit[href];
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Reverting…';}
         db.collection('siteConfig').doc('gameContent').set({games:_gcSaved}).then(function(){ render(); }).catch(function(e){ var s2=formEl.querySelector('.am-pagestatus[data-href="'+href+'"]'); if(s2){s2.style.color='rgba(251,56,56,0.9)';s2.textContent='Error';} });
@@ -2654,18 +2703,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var notes={};
         formEl.querySelectorAll('.am-pn').forEach(function(el){ var nt=el.getAttribute('data-pn'); var v=el.value.replace(/^\s+|\s+$/g,''); if(v && v!==(NOTE_DESC_DEFAULTS[nt]||'')) notes[nt]=v; });
         var st=formEl.querySelector('.am-pnstatus');
+        if(!_pnGuard.canSave(st)) return;
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Saving…';}
         db.collection('siteConfig').doc('pitchNotes').set({notes:notes}).then(function(){ _pnSaved=notes; _pnEdit={}; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Saved ✦';} render(); }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error: '+((e&&e.message)||'failed');} });
       }); });
       formEl.querySelectorAll('.am-pnreset').forEach(function(b){ b.addEventListener('click', function(){
         if(!confirm('Reset all 12 note descriptions to the hardcoded defaults?')) return;
         var st=formEl.querySelector('.am-pnstatus');
+        if(!_pnGuard.canSave(st)) return;
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Resetting…';}
         db.collection('siteConfig').doc('pitchNotes').set({notes:{}}).then(function(){ _pnSaved={}; _pnEdit={}; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Reset ✦';} render(); }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error';} });
       }); });
       var sv=document.getElementById('am-save');
       if(sv) sv.addEventListener('click', function(){
-        var st=document.getElementById('arcm-status'); var cfg=collect();
+        var st=document.getElementById('arcm-status'); if(!_amGuard.canSave(st)) return; var cfg=collect();
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Saving…';}
         db.collection('siteConfig').doc('arcadeConfig').set(cfg).then(function(){
           _amSaved={header:cfg.header||{},games:cfg.games||{}};
@@ -2674,7 +2725,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       });
       var rs=document.getElementById('am-reset');
       if(rs) rs.addEventListener('click', function(){
-        var st=document.getElementById('arcm-status'); _amSaved={header:{},games:{}};
+        var st=document.getElementById('arcm-status'); if(!_amGuard.canSave(st)) return; _amSaved={header:{},games:{}};
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Resetting…';}
         db.collection('siteConfig').doc('arcadeConfig').set({header:{},games:{}}).then(function(){
           render(); var st2=document.getElementById('arcm-status'); if(st2){st2.style.color='rgba(2,225,39,0.85)';st2.textContent='Reset to defaults ✦';}
@@ -2682,17 +2733,26 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       });
     }
 
-    db.collection('siteConfig').doc('arcadeConfig').get().then(function(d){
-      var data=(d.exists&&d.data())||{};
-      _amSaved={header:data.header||{},games:data.games||{}};
-      db.collection('siteConfig').doc('gameContent').get().then(function(gd){
-        _gcSaved=(gd.exists&&gd.data().games)||{};
-        db.collection('siteConfig').doc('pitchNotes').get().then(function(pd){
-          _pnSaved=(pd.exists&&pd.data().notes)||{};
-          render();
-        }).catch(function(){ render(); });
-      }).catch(function(){ render(); });
-    }).catch(function(){ render(); });
+    // The three documents load in a chain. A failure blocks saves for that document and every one after it
+    // (they were never read); one notice names the first that failed, and RETRY LOAD re-runs the whole chain.
+    function amLoad(){
+      _amGuard.loading(); _gcGuard.loading(); _pnGuard.loading();
+      db.collection('siteConfig').doc('arcadeConfig').get().then(function(d){
+        var data=(d.exists&&d.data())||{};
+        _amSaved={header:data.header||{},games:data.games||{}};
+        _amGuard.ok();
+        db.collection('siteConfig').doc('gameContent').get().then(function(gd){
+          _gcSaved=(gd.exists&&gd.data().games)||{};
+          _gcGuard.ok();
+          db.collection('siteConfig').doc('pitchNotes').get().then(function(pd){
+            _pnSaved=(pd.exists&&pd.data().notes)||{};
+            _pnGuard.ok();
+            render();
+          }).catch(function(){ _pnGuard.failed(amLoad); render(); });
+        }).catch(function(){ _gcGuard.failed(amLoad); _pnGuard.failed(amLoad, true); render(); });
+      }).catch(function(){ _amGuard.failed(amLoad); _gcGuard.failed(amLoad, true); _pnGuard.failed(amLoad, true); render(); });
+    }
+    amLoad();
   }
 
   function initProfileManager() {
@@ -2745,6 +2805,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var formEl=document.getElementById('pf-form');
     if(!formEl) return;
     var _pfSaved={Sun:{},Moon:{},Rising:{}};
+    var _pfGuard = window.jestaLoadGuard('pf-form', 'profile', 'PROFILE READINGS');
     function pfDef(g,s){ return (INTERP_DEFAULTS[g]&&INTERP_DEFAULTS[g][s])||''; }
     function pfCur(g,s){
       if(_pfSaved[g]&&_pfSaved[g][s]!=null&&(''+_pfSaved[g][s]).trim()) return _pfSaved[g][s];
@@ -2776,6 +2837,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           if(v && v!==pfDef(g,s) && cfg[g]) cfg[g][s]=v;
         });
         var st=document.getElementById('pf-status');
+        if(!_pfGuard.canSave(st)) return;
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Saving…';}
         db.collection('siteConfig').doc('profileInterp').set(cfg).then(function(){
           _pfSaved={Sun:cfg.Sun||{},Moon:cfg.Moon||{},Rising:cfg.Rising||{}};
@@ -2787,6 +2849,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       if(rs) rs.addEventListener('click',function(){
         if(!confirm('Reset ALL Sun/Moon/Rising narratives to the hardcoded site defaults? This clears every override.')) return;
         var st=document.getElementById('pf-status');
+        if(!_pfGuard.canSave(st)) return;
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Resetting…';}
         db.collection('siteConfig').doc('profileInterp').set({Sun:{},Moon:{},Rising:{}}).then(function(){
           _pfSaved={Sun:{},Moon:{},Rising:{}};
@@ -2795,10 +2858,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error';} });
       });
     }
-    db.collection('siteConfig').doc('profileInterp').get().then(function(d){
-      if(d.exists){ var o=d.data()||{}; _pfSaved={Sun:o.Sun||{},Moon:o.Moon||{},Rising:o.Rising||{}}; }
-      render();
-    }).catch(function(){ render(); });
+    function pfLoad(){
+      _pfGuard.loading();
+      db.collection('siteConfig').doc('profileInterp').get().then(function(d){
+        if(d.exists){ var o=d.data()||{}; _pfSaved={Sun:o.Sun||{},Moon:o.Moon||{},Rising:o.Rising||{}}; }
+        _pfGuard.ok();
+        render();
+      }).catch(function(){ _pfGuard.failed(pfLoad); render(); });
+    }
+    pfLoad();
   }
 
   function initComixManager() {
@@ -2806,6 +2874,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var formEl=document.getElementById('cx-form');
     if(!formEl) return;
     var _cxSaved={};
+    var _cxGuard = window.jestaLoadGuard('cx-form', 'comix', 'COMIX TEXT');
     function cxDef(k){ return COMIX_DEFAULTS[k]||''; }
     function cxCur(k){ return (_cxSaved[k]!=null&&(''+_cxSaved[k]).trim())?_cxSaved[k]:cxDef(k); }
     function fldC(k,label){
@@ -2830,6 +2899,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           if(v && v!==cxDef(k)) cfg[k]=v;
         });
         var st=document.getElementById('cx-status');
+        if(!_cxGuard.canSave(st)) return;
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Saving…';}
         db.collection('siteConfig').doc('comixConfig').set(cfg).then(function(){
           _cxSaved=cfg; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Saved ✦';} render();
@@ -2838,16 +2908,22 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var rs=document.getElementById('cx-reset');
       if(rs) rs.addEventListener('click',function(){
         var st=document.getElementById('cx-status');
+        if(!_cxGuard.canSave(st)) return;
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Resetting…';}
         db.collection('siteConfig').doc('comixConfig').set({}).then(function(){
           _cxSaved={}; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Reset ✦';} render();
         }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error';} });
       });
     }
-    db.collection('siteConfig').doc('comixConfig').get().then(function(d){
-      if(d.exists) _cxSaved=d.data()||{};
-      render();
-    }).catch(function(){ render(); });
+    function cxLoad(){
+      _cxGuard.loading();
+      db.collection('siteConfig').doc('comixConfig').get().then(function(d){
+        if(d.exists) _cxSaved=d.data()||{};
+        _cxGuard.ok();
+        render();
+      }).catch(function(){ _cxGuard.failed(cxLoad); render(); });
+    }
+    cxLoad();
   }
 
   function initRadioManager() {
@@ -2868,6 +2944,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var formEl = document.getElementById('rm-form');
     if (!formEl) return;
     var _rmSaved = {}, _rmDefaults = {};
+    var _rmGuard = window.jestaLoadGuard('rm-form', 'radio', 'RADIO TEXT');
 
     function loadDefaults(cb){
       fetch('radio.html').then(function(r){return r.text();}).then(function(html){
@@ -2906,6 +2983,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var sv = document.getElementById('rm-save');
       if (sv) sv.addEventListener('click', function(){
         var st = document.getElementById('rm-status');
+        if (!_rmGuard.canSave(st)) return;
         var map = {};
         formEl.querySelectorAll('.rm-f').forEach(function(el){ var v=el.value.trim(); if(v) map[el.getAttribute('data-k')] = v; });
         if (st) { st.style.color='rgba(201,168,76,0.7)'; st.textContent='Saving…'; }
@@ -2917,6 +2995,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var rs = document.getElementById('rm-reset');
       if (rs) rs.addEventListener('click', function(){
         var st = document.getElementById('rm-status');
+        if (!_rmGuard.canSave(st)) return;
         _rmSaved = {};
         if (st) { st.style.color='rgba(201,168,76,0.7)'; st.textContent='Resetting…'; }
         db.collection('siteConfig').doc('radioConfig').set({ fields: {} }).then(function(){
@@ -2927,10 +3006,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       });
     }
 
-    db.collection('siteConfig').doc('radioConfig').get().then(function(d){
-      _rmSaved = (d.exists && d.data().fields) || {};
-      loadDefaults(render);
-    }).catch(function(){ loadDefaults(render); });
+    function rmLoad(){
+      _rmGuard.loading();
+      db.collection('siteConfig').doc('radioConfig').get().then(function(d){
+        _rmSaved = (d.exists && d.data().fields) || {};
+        _rmGuard.ok();
+        loadDefaults(render);
+      }).catch(function(){ _rmGuard.failed(rmLoad); loadDefaults(render); });
+    }
+    rmLoad();
   }
 
   function initPageMeta() {
@@ -2945,6 +3029,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var listEl = document.getElementById('pmeta-list');
     if (!listEl) return;
     var _pmSaved = {}, _pmCurrent = {}, _pmOpen = {}, _pmEdit = {};
+    var _pmGuard = window.jestaLoadGuard('pmeta-list', 'pagemeta', 'PAGE METADATA');
 
     function fetchCurrent(file, cb){
       if (_pmCurrent[file]) { cb(); return; }
@@ -3018,6 +3103,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       listEl.querySelectorAll('.pmeta-save').forEach(function(b){ b.addEventListener('click', function(){
         var f = this.getAttribute('data-f');
         var ti = sel('pmeta-title', f), de = sel('pmeta-desc', f), st = sel('pmeta-status', f);
+        if (!_pmGuard.canSave(st)) return;
         var t = ti ? ti.value.trim() : '', d = de ? de.value.trim() : '';
         var entry = {}; if (t) entry.title = t; if (d) entry.desc = d;
         if (t || d) _pmSaved[f] = entry; else delete _pmSaved[f];
@@ -3025,15 +3111,21 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       }); });
       listEl.querySelectorAll('.pmeta-revert').forEach(function(b){ b.addEventListener('click', function(){
         var f = this.getAttribute('data-f'); var st = sel('pmeta-status', f);
+        if (!_pmGuard.canSave(st)) return;
         delete _pmSaved[f]; delete _pmEdit[f];
         writeDoc(f, st, 'Reverted ✦');
       }); });
     }
 
-    db.collection('siteConfig').doc('pageMeta').get().then(function(d){
-      _pmSaved = (d.exists && d.data().pages) || {};
-      render();
-    }).catch(function(){ render(); });
+    function pmLoad(){
+      _pmGuard.loading();
+      db.collection('siteConfig').doc('pageMeta').get().then(function(d){
+        _pmSaved = (d.exists && d.data().pages) || {};
+        _pmGuard.ok();
+        render();
+      }).catch(function(){ _pmGuard.failed(pmLoad); render(); });
+    }
+    pmLoad();
   }
 
   function initIndexManager() {
@@ -3140,6 +3232,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       list.querySelectorAll('.eotd-cap').forEach(function(t){ t.addEventListener('input', function(){ _eotdCapEdit[this.getAttribute('data-key')] = this.value; }); });
       list.querySelectorAll('.eotd-cap-save').forEach(function(b){ b.addEventListener('click', function(){
         var stat = this.parentNode.querySelector('.eotd-cap-status');
+        if (!_eotdCapGuard.canSave(stat)) return;
         var map = {};
         list.querySelectorAll('.eotd-cap').forEach(function(t){ var v=t.value.trim(); if(v) map[t.getAttribute('data-key')] = v; });
         if (stat) { stat.style.color='rgba(201,168,76,0.7)'; stat.textContent='Saving…'; }
@@ -3150,8 +3243,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       }); });
     }
 
+    var _ixGuard = window.jestaLoadGuard('ix-list', 'index', 'HOMEPAGE LAYOUT');
     function load() {
       _ixState = defaultState();
+      _ixGuard.loading();
       if (window.jestaDB) {
         db.collection('siteConfig').doc('indexSections').get().then(function(doc){
           if (doc.exists && Array.isArray(doc.data().sections) && doc.data().sections.length) {
@@ -3161,14 +3256,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             IX_KEYS.forEach(function(k){ if(!seen[k]) ordered.push({key:k, visible:true, color:(IX_COLORS[k]||'green'), title:'', desc:'', extras:{}}); });
             _ixState = ordered;
           }
+          _ixGuard.ok();
           render();
-        }).catch(function(){ render(); });
-      } else { render(); }
+        }).catch(function(){ _ixGuard.failed(load); render(); });
+      } else { _ixGuard.failed(load); render(); }
     }
 
     var saveBtn = document.getElementById('ix-save-btn');
     if (saveBtn) saveBtn.addEventListener('click', function(){
       var statusEl = document.getElementById('ix-status');
+      if (!_ixGuard.canSave(statusEl, true)) return;
       var sections = _ixState.map(function(item, i){ var o = { key:item.key, order:i, visible: item.visible, color:(item.color||'green'), title:(item.title||'').trim(), desc:(item.desc||'').trim() }; var ex=item.extras||{}, clean={}, has=false; for(var fk in ex){ if(ex[fk] && String(ex[fk]).trim()){ clean[fk]=String(ex[fk]).trim(); has=true; } } if(has) o.extras=clean; return o; });
       saveBtn.disabled = true;
       db.collection('siteConfig').doc('indexSections').set({ sections: sections }, { merge: true }).then(function(){
