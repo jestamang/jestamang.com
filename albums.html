@@ -23,6 +23,16 @@
 .fav-btn{background:none;border:none;cursor:pointer;color:rgba(var(--gold-rgb,201,168,76),0.3);font-size:0.9rem;padding:0 4px 0 8px;transition:color 0.2s,transform 0.15s;flex-shrink:0;line-height:1;vertical-align:middle}
 .fav-btn:hover{color:rgba(var(--gold-rgb,201,168,76),0.7);transform:scale(1.2)}
 .fav-btn.saved{color:var(--gold,#c9a84c)}
+.fav-btn{min-width:28px;min-height:28px;padding:0 4px}
+.album-drawer{position:relative}
+.drawer-close{position:absolute;top:8px;right:10px;width:36px;height:36px;background:none;border:none;color:rgba(var(--gold-rgb,201,168,76),0.7);font-size:1.6rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:sans-serif;padding:0}
+.drawer-close:hover{color:var(--gold,#c9a84c)}
+.album-art:focus-visible,.drawer-close:focus-visible,.fav-btn:focus-visible,.dtrack-play:focus-visible,.dtrack-btn:focus-visible{outline:2px solid var(--gold,#c9a84c);outline-offset:2px}
+@media(max-width:767px){.drawer-close{width:44px;height:44px;top:4px;right:4px}.fav-btn{min-width:32px;min-height:44px}}
+.drawer-artist,.drawer-album-title{padding-right:40px}
+/* phones: the row now holds play, save and four platform icons, which no longer fit beside a long
+   title. Title takes its own line, the controls sit on a second line, right-aligned. */
+@media(max-width:480px){.drawer-tracklist li{flex-wrap:wrap;row-gap:0}.dtrack-title{flex:1 1 calc(100% - 40px);min-width:0;overflow-wrap:anywhere}.dtrack-play{margin-left:auto}}
 .fav-btn[title]:hover::after{content:attr(title);position:absolute;font-size:0.75rem;color:rgba(var(--gold-rgb,201,168,76),0.6);white-space:nowrap;left:0;bottom:110%;letter-spacing:0.1em}
 .dtrack-play{-webkit-appearance:none;appearance:none;background:transparent;background-image:none;border:none;cursor:pointer;color:var(--gold,#c9a84c);padding:0;width:28px;height:28px;min-height:0!important;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:2px;transition:background 0.15s}
 .dtrack-play:hover,.dtrack-play:active{background:rgba(var(--gold-rgb,201,168,76),0.1);box-shadow:none}
@@ -442,16 +452,28 @@ data-genre="Psychedelia"
 data-tracks="[&quot;Rottin' Hee Haw&quot;, &quot;Daemon&quot;, &quot;Davie&quot;, &quot;Hurricane Backbeat&quot;, &quot;Anatomy/Dexterity&quot;, &quot;Pensacola Buc&quot;, &quot;Solpunks&quot;, &quot;Prosthetic Horsey&quot;, &quot;Timed La's&quot;, &quot;Bottle O' Fluf&quot;, &quot;Scarboro&quot;, &quot;All Fours Pitt&quot;]"
 data-yt-urls='["https://www.youtube.com/watch?v=OcYaJHfSMtw&list=OLAK5uy_kQL36N2lN0464zhvY8DWrWtRkkBBhO3wc", "https://www.youtube.com/watch?v=0wvPBTU87TE&list=OLAK5uy_kQL36N2lN0464zhvY8DWrWtRkkBBhO3wc&index=2", "https://www.youtube.com/watch?v=KBd_typEB8A&list=OLAK5uy_kQL36N2lN0464zhvY8DWrWtRkkBBhO3wc&index=3", "https://www.youtube.com/watch?v=_NZLSN7KAfE&list=OLAK5uy_kQL36N2lN0464zhvY8DWrWtRkkBBhO3wc&index=4", "https://www.youtube.com/watch?v=6WbR31-BD0c&list=OLAK5uy_kQL36N2lN0464zhvY8DWrWtRkkBBhO3wc&index=5", "https://www.youtube.com/watch?v=ydmRxKKPu-U&list=OLAK5uy_kQL36N2lN0464zhvY8DWrWtRkkBBhO3wc&index=6", "https://www.youtube.com/watch?v=nN6WYZ10SNM&list=OLAK5uy_kQL36N2lN0464zhvY8DWrWtRkkBBhO3wc&index=7", "https://www.youtube.com/watch?v=lNU77YshObc&list=OLAK5uy_kQL36N2lN0464zhvY8DWrWtRkkBBhO3wc&index=8", "https://www.youtube.com/watch?v=FDSIF2AsfFY&list=OLAK5uy_kQL36N2lN0464zhvY8DWrWtRkkBBhO3wc&index=9", "https://www.youtube.com/watch?v=JynzML5ZxM0&list=OLAK5uy_kQL36N2lN0464zhvY8DWrWtRkkBBhO3wc&index=10", "https://www.youtube.com/watch?v=0mtxLSdvYPU&list=OLAK5uy_kQL36N2lN0464zhvY8DWrWtRkkBBhO3wc&index=11", "https://www.youtube.com/watch?v=lpqwWkphgxg&list=OLAK5uy_kQL36N2lN0464zhvY8DWrWtRkkBBhO3wc&index=12"]' data-sp-urls='["https://open.spotify.com/track/4MUwUYlae1mohY1FWTAdM4", "https://open.spotify.com/track/0AeIMVcxwBsSi4kd2eejr4", "https://open.spotify.com/track/1K0w3SHd3edZbU3mNVY4NY", "https://open.spotify.com/track/6a59GIu6JULzehVa4k0d7f", "https://open.spotify.com/track/3XAhERu9Uxk9YRDSj2yDHg", "https://open.spotify.com/track/4yaKtGgQJvvASt3xfrRg2x", "https://open.spotify.com/track/3eBqvDFuz8Qf8BHMal9NKB", "https://open.spotify.com/track/1uPIrfCB0mFNZZ5YZd89gF", "https://open.spotify.com/track/5cNUVNu2Ks5RgaacC88o0Q", "https://open.spotify.com/track/55Sshdz8cL5HAGNeena264", "https://open.spotify.com/track/2hes2B2ACMlk2yuV6p02nm", "https://open.spotify.com/track/5KBY5aLUliwzpkOUNmKU7F"]' data-am-urls='["https://music.apple.com/us/album/rottin-hee-haw/1707727208?i=1707727209", "https://music.apple.com/us/album/daemon/1707727208?i=1707727210", "https://music.apple.com/us/album/davie/1707727208?i=1707727211", "https://music.apple.com/us/album/hurricane-backbeat/1707727208?i=1707727212", "https://music.apple.com/us/album/anatomy-dexterity/1707727208?i=1707727213", "https://music.apple.com/us/album/pensacola-buc/1707727208?i=1707727214", "https://music.apple.com/us/album/solpunks/1707727208?i=1707727606", "https://music.apple.com/us/album/prosthetic-horsey/1707727208?i=1707727607", "https://music.apple.com/us/album/timed-las/1707727208?i=1707727608", "https://music.apple.com/us/album/bottle-o-fluf/1707727208?i=1707727609", "https://music.apple.com/us/album/scarboro/1707727208?i=1707727610", "https://music.apple.com/us/album/all-fours-pitt/1707727208?i=1707727611"]' data-bc-urls='["https://jestamang.bandcamp.com/track/rottin-hee-haw", "https://jestamang.bandcamp.com/track/daemon", "https://jestamang.bandcamp.com/track/davie", "https://jestamang.bandcamp.com/track/hurricane-backbeat", "https://jestamang.bandcamp.com/track/anatomy-dexterity", "https://jestamang.bandcamp.com/track/pensacola-buc", "https://jestamang.bandcamp.com/track/solpunks", "https://jestamang.bandcamp.com/track/prosthetic-horsey", "https://jestamang.bandcamp.com/track/timed-las", "https://jestamang.bandcamp.com/track/bottle-o-fluf", "https://jestamang.bandcamp.com/track/scarboro", "https://jestamang.bandcamp.com/track/all-fours-pitt"]' data-album-bc="https://jestamang.bandcamp.com/album/hit" data-album-yt="https://www.youtube.com/watch?v=LEyRwnTwFaU" data-album-sp="https://open.spotify.com/album/4s7m2vE3mjiQ4R0f9MlqBq" data-album-am="https://music.apple.com/us/album/hit-mutt-tour/1707727208"> <img src="assets/albums/NONS/mutt tour/non5.jpg" alt="Mutt Tour" class="album-art" onclick="toggleDrawer(this.parentElement)" loading="lazy" width="300" height="300"> <div class="album-title-label">Hit!</div> <div class="album-artist">Mutt Tour</div> <div class="album-season" style="background-color:#AA5907; color:#ffffff; padding:2px 8px; border-radius:3px;">June 21, 2020</div> </div> </div> </section>
 <script>var _activeDrawer=null;var _activeCard=null;var _toggleLock=false;function _removeDrawer(drawer){if(drawer&&drawer.parentNode)drawer.parentNode.removeChild(drawer);}
-function toggleDrawer(card){if(_toggleLock)return;_toggleLock=true;setTimeout(function(){_toggleLock=false;},300);if(_activeCard===card){var closing=_activeDrawer;_activeDrawer=null;_activeCard=null;closing.classList.add('closing');closing.classList.remove('open');closing.addEventListener('transitionend',function h(e){if(e.propertyName!=='opacity')return;closing.removeEventListener('transitionend',h);_removeDrawer(closing);});return;}
-if(_activeDrawer){_removeDrawer(_activeDrawer);_activeDrawer=null;_activeCard=null;}
+function _coverOf(card){return card?card.querySelector('img.album-art'):null;}
+function toggleDrawer(card,viaKeyboard){if(_toggleLock)return;_toggleLock=true;setTimeout(function(){_toggleLock=false;},300);if(_activeCard===card){var closing=_activeDrawer;_activeDrawer=null;_activeCard=null;var _cv=_coverOf(card);if(_cv){_cv.setAttribute('aria-expanded','false');if(closing.contains(document.activeElement))_cv.focus({preventScroll:true});}
+/* the open drawer has no height cap (see below); pin its real height so the close still animates */
+closing.style.maxHeight=closing.scrollHeight+'px';void closing.offsetHeight;closing.style.maxHeight='';closing.classList.add('closing');closing.classList.remove('open');closing.addEventListener('transitionend',function h(e){if(e.propertyName!=='opacity')return;closing.removeEventListener('transitionend',h);_removeDrawer(closing);});return;}
+if(_activeDrawer){var _pc=_coverOf(_activeCard);if(_pc)_pc.setAttribute('aria-expanded','false');_removeDrawer(_activeDrawer);_activeDrawer=null;_activeCard=null;}
 var tracks=JSON.parse(card.dataset.tracks.replace(/&quot;/g,'"'));var drawer=document.createElement('div');drawer.className='album-drawer';var artist=document.createElement('div');artist.className='drawer-artist';artist.textContent=card.dataset.artist;var title=document.createElement('div');title.className='drawer-album-title';title.textContent=card.dataset.album;var meta=document.createElement('div');meta.className='drawer-meta';meta.textContent=card.dataset.year+'  ·  '+card.dataset.genre;var rule=document.createElement('div');rule.className='drawer-rule';var ol=document.createElement('ol');ol.className='drawer-tracklist';if(tracks.length===0){ol.innerHTML='<li class="drawer-no-tracks">No tracklist available</li>';}else{var _yt=JSON.parse(card.getAttribute('data-yt-urls')||'[]'),_sp=JSON.parse(card.getAttribute('data-sp-urls')||'[]'),_am=JSON.parse(card.getAttribute('data-am-urls')||'[]'),_bc=JSON.parse(card.getAttribute('data-bc-urls')||'[]');tracks.forEach(function(t,i){var li=document.createElement('li');var num=document.createElement('span');num.className='dtrack-num';num.textContent=(i+1)+'.';var titleSpan=document.createElement('span');titleSpan.className='dtrack-title';titleSpan.textContent=t;var links=document.createElement('span');links.className='dtrack-links';var platforms=[{cls:'bandcamp',label:'Bandcamp',href:_bc[i]||'#',svg:'<svg viewBox="0 0 24 24"><path d="M0 18.75l7.437-13.5H24l-7.438 13.5z"/></svg>'},{cls:'youtube',label:'YouTube',href:_yt[i]||'#',svg:'<svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>'},{cls:'spotify',label:'Spotify',href:_sp[i]||'#',svg:'<svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>'},{cls:'apple',label:'Apple Music',href:_am[i]||'#',svg:'<svg viewBox="0 0 24 24"><path d="M23.994 6.124a9.23 9.23 0 0 0-.24-2.19c-.317-1.31-1.062-2.31-2.18-3.043a5.022 5.022 0 0 0-1.769-.73 7.967 7.967 0 0 0-1.304-.173H5.5a7.967 7.967 0 0 0-1.304.173 5.022 5.022 0 0 0-1.77.73C1.31 1.624.563 2.625.246 3.934A9.23 9.23 0 0 0 .006 6.124v11.75c0 .76.066 1.51.24 2.19.317 1.31 1.062 2.31 2.18 3.043a5.022 5.022 0 0 0 1.769.73 7.967 7.967 0 0 0 1.305.173h13.001a7.967 7.967 0 0 0 1.305-.173 5.022 5.022 0 0 0 1.769-.73c1.118-.734 1.863-1.734 2.18-3.043a9.23 9.23 0 0 0 .24-2.19V6.124zm-6.423 5.65c-.006.474-.286.903-.72 1.115l-6.5 3.383a1.247 1.247 0 0 1-1.22-.028 1.263 1.263 0 0 1-.63-1.09V9.01c0-.45.24-.867.634-1.09a1.247 1.247 0 0 1 1.22-.028l6.5 3.383c.435.21.714.64.716 1.499z"/></svg>'}];var activePlatforms=platforms;
-activePlatforms.forEach(function(p){var a=document.createElement('a');a.className='dtrack-btn '+p.cls;a.href=p.href;a.title=p.label;a.target='_blank';a.rel='noopener noreferrer';a.innerHTML=p.svg;links.appendChild(a);});var playBtn=document.createElement('button');playBtn.className='dtrack-play';playBtn.title='Preview';playBtn.setAttribute('aria-label','Preview');playBtn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:block"><polygon points="8,5 19,12 8,19"/></svg>';(function(btn,idx,c){btn.addEventListener('click',function(e){e.stopPropagation();window._albumPlayTrack(btn,idx,c);});})(playBtn,i,card);li.style.display='flex';li.style.alignItems='center';li.appendChild(num);li.appendChild(titleSpan);li.appendChild(playBtn);li.appendChild(links);ol.appendChild(li);});}
-drawer.appendChild(artist);drawer.appendChild(title);drawer.appendChild(meta);
+activePlatforms.forEach(function(p){var a=document.createElement('a');var dis=p.href==='#';a.className='dtrack-btn '+p.cls+(dis?' platform-disabled':'');if(dis){a.style.cssText='pointer-events:none;opacity:0.3;cursor:default;';a.title='Not available on '+p.label;a.setAttribute('aria-disabled','true');a.setAttribute('aria-label',p.label+' (not available)');a.tabIndex=-1;}else{a.href=p.href;a.title=p.label;a.setAttribute('aria-label',p.label);a.target='_blank';a.rel='noopener noreferrer';}a.innerHTML=p.svg;links.appendChild(a);});var playBtn=document.createElement('button');playBtn.className='dtrack-play';playBtn.title='Preview';playBtn.setAttribute('aria-label','Preview');playBtn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:block"><polygon points="8,5 19,12 8,19"/></svg>';(function(btn,idx,c){btn.addEventListener('click',function(e){e.stopPropagation();window._albumPlayTrack(btn,idx,c);});})(playBtn,i,card);var favBtn=document.createElement('button');favBtn.type='button';favBtn.className='fav-btn';favBtn.dataset.song=t;favBtn.dataset.artist=card.dataset.artist||'';favBtn.dataset.album=card.dataset.album||'';favBtn.textContent='\u2726';favBtn.setAttribute('aria-label','Save '+t+' to your transmissions');favBtn.setAttribute('aria-pressed','false');if(window._albumFavSync)window._albumFavSync(favBtn);li.style.display='flex';li.style.alignItems='center';li.appendChild(num);li.appendChild(titleSpan);li.appendChild(playBtn);li.appendChild(favBtn);li.appendChild(links);ol.appendChild(li);});}
+var closeBtn=document.createElement('button');closeBtn.type='button';closeBtn.className='drawer-close';closeBtn.setAttribute('aria-label','Close tracklist');closeBtn.innerHTML='&times;';closeBtn.addEventListener('click',function(e){e.stopPropagation();toggleDrawer(card);});
+drawer.setAttribute('role','region');drawer.setAttribute('aria-label',(card.dataset.album||'Album')+' tracklist');
+drawer.appendChild(closeBtn);drawer.appendChild(artist);drawer.appendChild(title);drawer.appendChild(meta);
 var _prow=document.createElement('div');_prow.className='drawer-platform-row';
 var _plinks=[{cls:'bandcamp',href:card.getAttribute('data-album-bc')||'#',label:'Bandcamp',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 18.75l7.437-12.5H24l-7.438 12.5z"/></svg>'},{cls:'youtube',href:card.getAttribute('data-album-yt')||'#',label:'YouTube',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>'},{cls:'spotify',href:card.getAttribute('data-album-sp')||'#',label:'Spotify',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>'},{cls:'apple',href:card.getAttribute('data-album-am')||'#',label:'Apple Music',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>'}];
 _plinks.forEach(function(pl){var _a=document.createElement('a');var _dis=pl.href==='#';_a.className='dtrack-btn '+pl.cls+(_dis?' platform-disabled':'');if(_dis){_a.href='#';_a.style.cssText='pointer-events:none;opacity:0.3;cursor:default;';_a.title='Not available on '+pl.label;}else{_a.href=pl.href;_a.target='_blank';_a.rel='noopener noreferrer';_a.title=pl.label;}_a.innerHTML=pl.svg;_prow.appendChild(_a);});
 drawer.appendChild(_prow);drawer.appendChild(rule);drawer.appendChild(ol);var cardTop=card.getBoundingClientRect().top;var grid=card.parentNode;var siblings=Array.from(grid.children).filter(function(el){return el.classList.contains('album-card');});var lastInRow=card;for(var i=0;i<siblings.length;i++){var t=siblings[i].getBoundingClientRect().top;if(Math.abs(t-cardTop)<4){lastInRow=siblings[i];}}
-grid.insertBefore(drawer,lastInRow.nextSibling);requestAnimationFrame(function(){requestAnimationFrame(function(){drawer.classList.add('open');});});_activeDrawer=drawer;_activeCard=card;var _navEl=document.getElementById('jtnav')||document.querySelector('nav');var _navH=_navEl?_navEl.offsetHeight:52;setTimeout(function(){var rect=drawer.getBoundingClientRect();var target=rect.top+window.scrollY-_navH-12;window.scrollTo({top:target,behavior:'smooth'});},560);}
+grid.insertBefore(drawer,lastInRow.nextSibling);requestAnimationFrame(function(){requestAnimationFrame(function(){drawer.classList.add('open');});});_activeDrawer=drawer;_activeCard=card;var _oc=_coverOf(card);if(_oc)_oc.setAttribute('aria-expanded','true');if(viaKeyboard)closeBtn.focus({preventScroll:true});var _navEl=document.getElementById('jtnav')||document.querySelector('nav');var _navH=_navEl?_navEl.offsetHeight:52;setTimeout(function(){
+/* open animation done: drop the 2000px cap so a long tracklist (or one with a preview open) is never cut off */
+if(_activeDrawer===drawer)drawer.style.maxHeight='none';var rect=drawer.getBoundingClientRect();var target=rect.top+window.scrollY-_navH-12;window.scrollTo({top:target,behavior:'smooth'});},560);}
+// ── Keyboard: Enter or Space on a cover opens its tracklist, Escape closes the open one ──
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'&&_activeCard){var c=_activeCard,cv=_coverOf(c);toggleDrawer(c);if(cv)cv.focus({preventScroll:true});return;}
+  if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.classList&&e.target.classList.contains('album-art')){e.preventDefault();toggleDrawer(e.target.closest('.album-card'),true);}
+});
 // ── Inline track preview ──────────────────────────────────────────
 window._albumActiveEmbed=null;
 window._albumActiveBtn=null;
@@ -501,6 +523,13 @@ function assignAlbumIds(){
     var m=bc.match(/\/album\/([^/?#]+)/);
     var slug=m&&m[1];
     if(slug&&slug!=='-')card.id='album-'+slug;
+    var cover=card.querySelector('img.album-art');
+    if(cover&&!cover.hasAttribute('tabindex')){
+      cover.tabIndex=0;
+      cover.setAttribute('role','button');
+      cover.setAttribute('aria-expanded','false');
+      cover.setAttribute('aria-label','Open tracklist: '+(card.dataset.album||'')+(card.dataset.artist?' by '+card.dataset.artist:''));
+    }
   });
 }
 function handleAlbumsHash(){
@@ -526,6 +555,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <script>
 (function(){
   var currentUser = null;
+  var authKnown = false;
   var savedSongs = new Set();
 
   function loadSaved(uid){
@@ -541,10 +571,15 @@ document.addEventListener('DOMContentLoaded',function(){
 
   function updateFavBtn(btn){
     var key = btn.dataset.song+'__'+btn.dataset.artist;
-    if(savedSongs.has(key)) btn.classList.add('saved'); else btn.classList.remove('saved');
+    var on = savedSongs.has(key);
+    if(on) btn.classList.add('saved'); else btn.classList.remove('saved');
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
   }
+  /* the drawer builds its buttons after the saved list has loaded; it calls this for each one */
+  window._albumFavSync = updateFavBtn;
 
   function toggleFav(btn){
+    if(!authKnown) return; /* sign-in state not resolved yet: do not bounce a member to login */
     if(!currentUser){ window.location.href='login.html'; return; }
     var key = btn.dataset.song+'__'+btn.dataset.artist;
     if(savedSongs.has(key)){
@@ -555,7 +590,7 @@ document.addEventListener('DOMContentLoaded',function(){
         .where('artist','==',btn.dataset.artist)
         .get()
         .then(function(snap){ snap.forEach(function(doc){ doc.ref.delete(); }); })
-        .then(function(){ savedSongs.delete(key); btn.classList.remove('saved'); })
+        .then(function(){ savedSongs.delete(key); updateFavBtn(btn); })
         .catch(function(e){ console.error('favorites error:', e.message); });
     } else {
       // Save
@@ -565,7 +600,7 @@ document.addEventListener('DOMContentLoaded',function(){
         artist: btn.dataset.artist,
         album: btn.dataset.album||'',
         savedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(function(){ savedSongs.add(key); btn.classList.add('saved'); })
+      }).then(function(){ savedSongs.add(key); updateFavBtn(btn); })
         .catch(function(e){ console.error('favorites error:', e.message); });
     }
   }
@@ -576,13 +611,20 @@ document.addEventListener('DOMContentLoaded',function(){
     if(btn) toggleFav(btn);
   });
 
-  if(window.jestaAuth){
-    window.jestaAuth.onAuthStateChanged(function(user){
-      if(user&&user.isAnonymous)user=null; // guests cannot save favorites
-      currentUser = user;
-      if(user) loadSaved(user.uid); else savedSongs.clear();
-    });
-  }
+  /* firebase-config.js is deferred, so window.jestaAuth does not exist yet when this inline
+     script runs. Wait for it (the old one-time check never registered, which left currentUser
+     null and sent signed-in members to the login page). */
+  var _ft = 0, _fiv = setInterval(function(){
+    if(window.jestaAuth){
+      clearInterval(_fiv);
+      window.jestaAuth.onAuthStateChanged(function(user){
+        if(user&&user.isAnonymous)user=null; // guests cannot save favorites
+        currentUser = user;
+        authKnown = true;
+        if(user) loadSaved(user.uid); else { savedSongs.clear(); document.querySelectorAll('.fav-btn').forEach(updateFavBtn); }
+      });
+    } else if(++_ft > 80){ clearInterval(_fiv); authKnown = true; }
+  }, 100);
 })();
 </script>
 <script>
@@ -678,6 +720,7 @@ document.addEventListener('DOMContentLoaded',function(){
           container.appendChild(groupEl);
         });
         section.style.display='block';
+        if(typeof assignAlbumIds==='function') assignAlbumIds(); /* ids + keyboard access for these cards too */
       })
       .catch(function(){
         if(loadingEl) loadingEl.style.display='none';
