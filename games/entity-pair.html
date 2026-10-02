@@ -382,6 +382,7 @@ var level1Pool=[], level2Pool=[];
 var LEVEL=1;
 var boardCards=[]; // [{el, pairId, type}]
 var firstCard=null, secondCard=null;
+var boardGen=0; // bumped by renderBoard(); a timer started on an older board must do nothing
 var locked=false, moves=0, matched=0, secs=0, started=false;
 var ticker=null;
 var finalScore=0, finalMoves=0, finalSecs=0;
@@ -420,6 +421,7 @@ function buildCards(entities, levelNum){
 }
 
 function renderBoard(cardDefs){
+  boardGen++;
   var grid=document.getElementById('ep-grid');
   grid.innerHTML='';
   boardCards=[];
@@ -511,27 +513,31 @@ function onCardClick(card,def,idx){
   document.getElementById('s-moves').textContent=moves;
   document.getElementById('s-score').textContent=computeScore().toLocaleString();
 
-  var isMatch=(firstCard.def.pairId===secondCard.def.pairId);
+  // Hold the two cards locally: a restart clears firstCard/secondCard while these timers are pending
+  var a=firstCard,b=secondCard,g=boardGen;
+  var isMatch=(a.def.pairId===b.def.pairId);
 
   setTimeout(function(){
+    if(g!==boardGen)return;
     if(isMatch){
-      boardCards[firstCard.idx].matched=true;
-      boardCards[secondCard.idx].matched=true;
-      firstCard.card.classList.add('matched','match-pulse');
-      secondCard.card.classList.add('matched','match-pulse');
-      firstCard.card.setAttribute('aria-label','Matched: '+(firstCard.def.entity.name||''));
-      secondCard.card.setAttribute('aria-label','Matched: '+(secondCard.def.entity.name||''));
+      boardCards[a.idx].matched=true;
+      boardCards[b.idx].matched=true;
+      a.card.classList.add('matched','match-pulse');
+      b.card.classList.add('matched','match-pulse');
+      a.card.setAttribute('aria-label','Matched: '+(a.def.entity.name||''));
+      b.card.setAttribute('aria-label','Matched: '+(b.def.entity.name||''));
       matched++;
       firstCard=null;secondCard=null;locked=false;
       if(matched===6){onWin();}
     } else {
-      firstCard.card.classList.add('mismatch-shake');
-      secondCard.card.classList.add('mismatch-shake');
+      a.card.classList.add('mismatch-shake');
+      b.card.classList.add('mismatch-shake');
       setTimeout(function(){
-        firstCard.card.classList.remove('flipped','mismatch-shake');
-        secondCard.card.classList.remove('flipped','mismatch-shake');
-        firstCard.card.setAttribute('aria-label','Face-down card');
-        secondCard.card.setAttribute('aria-label','Face-down card');
+        if(g!==boardGen)return;
+        a.card.classList.remove('flipped','mismatch-shake');
+        b.card.classList.remove('flipped','mismatch-shake');
+        a.card.setAttribute('aria-label','Face-down card');
+        b.card.setAttribute('aria-label','Face-down card');
         firstCard=null;secondCard=null;locked=false;
       },450);
     }
