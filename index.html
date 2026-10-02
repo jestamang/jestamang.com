@@ -575,7 +575,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     var ul=document.getElementById('hp-lyric-lines');
     ul.innerHTML='';
     entry.lines.forEach(function(l){var li=document.createElement('li');li.textContent=l;ul.appendChild(li);});
-    document.getElementById('hp-lyric-track').textContent='\u2014 '+entry.track;
+    document.getElementById('hp-lyric-track').textContent='from '+entry.track;
     document.getElementById('hp-lyric-meta').textContent=entry.artist+' \u00b7 '+entry.album;
   }
 
