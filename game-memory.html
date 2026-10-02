@@ -319,6 +319,7 @@ function playHintSound(){
 var moves=0,pairs=0,secs=0,started=false,locked=false,first=null,second=null,ticker=null;
 var mismatches=0,lives=3;
 var hintTimer=null,lastMatchTime=0,hintUsedThisInterval=false;
+var boardGen=0; // bumped by build(); a timer started on an older board must do nothing
 var BEST_KEY='memoryBestTime';
 
 function pad(n){return n<10?'0'+n:n}
@@ -351,13 +352,17 @@ function doHint(){
   hintUsedThisInterval=true;
   playHintSound();
   pairCards.forEach(function(c){c.classList.add('flipped','hint-flash');});
+  var g=boardGen;
   setTimeout(function(){
-    pairCards.forEach(function(c){c.classList.remove('flipped','hint-flash');});
+    if(g!==boardGen)return;
+    // A card the player is still holding stays face up, otherwise it could be clicked again and match itself
+    pairCards.forEach(function(c){c.classList.remove('hint-flash');if(c!==first)c.classList.remove('flipped');});
     resetHintTimer();
   },700);
 }
 
 function build(){
+  boardGen++;
   clearInterval(ticker);clearTimeout(hintTimer);
   moves=0;pairs=0;secs=0;started=false;locked=false;first=null;second=null;mismatches=0;lives=3;
   document.getElementById('s-time').textContent='0:00';
@@ -403,21 +408,25 @@ function flip(card){
   card.classList.add('flipped');
   if(!first){first=card;return;}
   second=card;locked=true;moves++;upd();
+  var g=boardGen;
   if(first.dataset.id===second.dataset.id){
     var a=first,b=second;first=null;second=null;
     setTimeout(function(){
+      if(g!==boardGen)return;
       a.classList.add('matched','match-pulse');b.classList.add('matched','match-pulse');
       setTimeout(function(){a.classList.remove('match-pulse');b.classList.remove('match-pulse');},350);
       playMatchSound();pairs++;upd();lastMatchTime=Date.now();resetHintTimer();locked=false;
-      if(pairs===DIFF_PAIRS[DIFF])setTimeout(win,600);
+      if(pairs===DIFF_PAIRS[DIFF])setTimeout(function(){if(g===boardGen)win();},600);
     },200);
   } else {
     mismatches++;var a=first,b=second;first=null;second=null;
     a.classList.add('lock-pulse');b.classList.add('lock-pulse');
     var _lg=document.getElementById('grid');if(_lg)_lg.classList.add('is-locked');
     setTimeout(function(){
+      if(g!==boardGen)return;
       a.classList.add('mismatch-shake');b.classList.add('mismatch-shake');playMismatchSound();
       setTimeout(function(){
+        if(g!==boardGen)return;
         a.classList.remove('mismatch-shake','flipped','lock-pulse');b.classList.remove('mismatch-shake','flipped','lock-pulse');
         var _lg2=document.getElementById('grid');if(_lg2)_lg2.classList.remove('is-locked');
         locked=false;
@@ -427,6 +436,8 @@ function flip(card){
 }
 
 function win(){
+  // Never record a win the board does not show: every pair found, and at least one move per pair
+  if(pairs!==DIFF_PAIRS[DIFF]||moves<pairs)return;
   clearInterval(ticker);clearTimeout(hintTimer);
   var m=Math.floor(secs/60),s=secs%60;var timeStr=m+':'+pad(s);
   var bestTxt='';
@@ -449,7 +460,8 @@ function win(){
 function showFlawless(){
   var fb=document.getElementById('flawless-banner');if(!fb)return;
   fb.textContent='FLAWLESS MEMORY \u2726';fb.style.display='block';
-  setTimeout(function(){fb.style.display='none';document.getElementById('win-overlay').classList.add('show');},2200);
+  var g=boardGen;
+  setTimeout(function(){if(g!==boardGen)return;fb.style.display='none';document.getElementById('win-overlay').classList.add('show');},2200);
 }
 
 document.addEventListener('DOMContentLoaded',function(){
