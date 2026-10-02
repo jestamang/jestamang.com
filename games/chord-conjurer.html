@@ -732,7 +732,7 @@ function generateOptions(correctRoot,correctType,correctInv,numChoices){
   var correctKey=pcsKey(correctRoot,correctType);
   var invRate=(d.inversions.length-1)/d.inversions.length;
   function mk(root,type,inv){return {root:root,type:type,inv:inv,label:root+' '+type+(inv?' (inv)':''),isCorrect:false};}
-  function foil(root,type){return mk(root,type,Math.random()<invRate?1:0);}
+  function foil(root,type){return mk(root,type,invIsAudible(type)&&Math.random()<invRate?1:0);}
   function typesFor(root){
     return shuffle(d.types.filter(function(t){
       return !(root===correctRoot&&t===correctType)&&pcsKey(root,t)!==correctKey;
@@ -834,7 +834,9 @@ function showDiagram(noteNames,root,type,inv){
   if(!wrap)return;
   // inv 2 puts the top chord tone in the bass: the 5th of a triad (2nd inversion), the 7th of a seventh chord (3rd inversion)
   var hasSeventh=INTERVALS[type].some(function(st){return st===10||st===11;});
-  var invLbl=inv===1?' \u00b7 1st inv':inv===2?(hasSeventh?' \u00b7 3rd inv':' \u00b7 2nd inv'):'';
+  // "1st inversion" means the 3rd is in the bass. Sus chords have no 3rd, and add9 puts its 9th there, so those just read "(inv)"
+  var hasThirdInBass=INTERVALS[type][1]===3||INTERVALS[type][1]===4;
+  var invLbl=inv===1?(hasThirdInBass?' \u00b7 1st inv':' (inv)'):inv===2?(hasSeventh?' \u00b7 3rd inv':' \u00b7 2nd inv'):'';
   if(lbl)lbl.textContent=root+' '+type+invLbl+' \u2014 '+noteNames.map(function(n){return n.replace(/\d/,'');}).join(' \u00b7 ');
   highlightMiniPiano(noteNames);
   wrap.style.display='block';
@@ -858,6 +860,8 @@ function newRound(){
   var root=d.roots[Math.floor(Math.random()*d.roots.length)];
   var type=d.types[Math.floor(Math.random()*d.types.length)];
   var inv=d.inversions[Math.floor(Math.random()*d.inversions.length)];
+  // Never ask what cannot be heard: an inverted augmented triad is a root-position one a third away
+  if(!invIsAudible(type))inv=0;
   var notes=getChordNotes(root,type,inv);
   state.currentChord={root:root,type:type,inv:inv,notes:notes};
   var opts=generateOptions(root,type,inv,d.choices);
