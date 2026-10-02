@@ -466,7 +466,6 @@ body::before{
 }
 .fav-play:hover{background:rgba(var(--gold-rgb,201,168,76),0.12);border-color:var(--gold,#c9a84c);}
 .fav-play.playing{color:#02E127;border-color:rgba(2,225,39,0.6);}
-.fav-play:disabled{opacity:0.25;cursor:default;}
 .fav-links{display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .fav-link{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;opacity:0.65;transition:opacity 0.2s;flex-shrink:0;}
 .fav-link:hover{opacity:1;}
@@ -495,8 +494,7 @@ body::before{
 }
 .fav-remove:hover{color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.35);}
 .fav-remove.confirm{color:#FB3838;border-color:#FB3838;}
-.fav-embed{margin:-4px 0 10px;background:#000;}
-.fav-embed iframe{display:block;width:100%;border:0;}
+.fav-item + .jta-bar{margin:-10px 0 10px;}
 .fav-pager{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px;}
 .fav-page-btn{
   background:none;border:1px solid rgba(var(--gold-rgb,201,168,76),0.35);color:var(--gold,#c9a84c);
@@ -2014,6 +2012,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
+<script src="assets/js/jesta-track-audio.js" defer></script>
 
 <!-- ═══════════════════════════════════════════════════
      NATAL CHART ENGINE — Meeus Algorithms + Full SVG Wheel
@@ -3678,10 +3677,9 @@ document.addEventListener('DOMContentLoaded', function(){
      removing is a small separate two-step control; the list is paged. Links are looked up in the
      public releases collection by album and track title, since a favorite stores only names. */
   var FAV_PER_PAGE = (window.matchMedia && matchMedia('(max-width:600px)').matches) ? 5 : 8; /* phone rows are two lines tall */
-  var _favDocs = [], _favPage = 0, _favLinks = {}, _favActive = null;
+  var _favDocs = [], _favPage = 0, _favLinks = {};
   var FAV_EMPTY = '<div class="empty-state">No transmissions saved yet. Explore the catalog and save what calls to you.<br><a class="btn-catalog-cta" href="albums.html">EXPLORE THE CATALOG →</a></div>';
   var FAV_PLAY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="8,5 19,12 8,19"/></svg>';
-  var FAV_PAUSE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
   var FAV_PLATFORMS = [
     {key:'bandcamp', label:'Bandcamp',    svg:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M0 18.75l7.437-12.5H24l-7.438 12.5z"/></svg>'},
     {key:'youtube',  label:'YouTube',     svg:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>'},
@@ -3696,10 +3694,12 @@ document.addEventListener('DOMContentLoaded', function(){
       var r = doc.data();
       var m = String(r.bandcampUrl||'').match(/\/album\/([^/?#]+)/);
       var href = (m && m[1] && m[1] !== '-') ? 'albums.html#album-' + m[1] : 'albums.html';
-      (r.tracks||[]).forEach(function(t){
+      var count = (r.tracks||[]).length;
+      (r.tracks||[]).forEach(function(t, i){
         if(!t) return;
         var o = (typeof t === 'object') ? t : {title:t};
         map[_favKey(r.title, o.title)] = {
+          index: i, count: count,
           youtube:  o.youtubeUrl  || o.youtube    || '',
           spotify:  o.spotifyUrl  || o.spotify    || '',
           apple:    o.appleUrl    || o.appleMusic || '',
@@ -3711,36 +3711,37 @@ document.addEventListener('DOMContentLoaded', function(){
     return map;
   }
 
-  function _favStopPreview(){
-    if(!_favActive) return;
-    if(_favActive.embed && _favActive.embed.parentNode) _favActive.embed.parentNode.removeChild(_favActive.embed);
-    if(_favActive.btn){ _favActive.btn.innerHTML = FAV_PLAY; _favActive.btn.classList.remove('playing'); _favActive.btn.setAttribute('aria-pressed','false'); }
-    _favActive = null;
-  }
-
-  function _favTogglePreview(btn, item, f, links){
-    var wasThis = _favActive && _favActive.btn === btn;
-    _favStopPreview();
-    if(wasThis) return;
-    var m = String(links.youtube||'').match(/[?&]v=([^&]+)/);
-    if(!m) return;
-    var wrap = document.createElement('div');
-    wrap.className = 'fav-embed';
-    var fr = document.createElement('iframe');
-    fr.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(m[1]) + '?autoplay=1&modestbranding=1&rel=0&iv_load_policy=3&controls=1';
-    fr.height = '80';
-    fr.title = 'Preview: ' + (f.songTitle||'track');
-    fr.setAttribute('allow','autoplay;clipboard-write;encrypted-media;picture-in-picture');
-    wrap.appendChild(fr);
-    item.parentNode.insertBefore(wrap, item.nextSibling);
-    btn.innerHTML = FAV_PAUSE; btn.classList.add('playing'); btn.setAttribute('aria-pressed','true');
-    _favActive = {btn:btn, embed:wrap};
+  /* Play uses the shared R2 player (assets/js/jesta-track-audio.js): the same files Radio plays.
+     The radio manifest is only fetched once this section is near the screen. Buttons start hidden;
+     a track with an audio file then shows its button, a track without one loses it. */
+  var _favAudioSeen = false, _favAudioIO = null;
+  function _favWireAudio(listEl){
+    var J = window.jestaTrackAudio;
+    var btns = [].slice.call(listEl.querySelectorAll('.fav-play'));
+    function drop(){ btns.forEach(function(b){ if(b.parentNode) b.parentNode.removeChild(b); }); }
+    if(!J){ drop(); return; }
+    function resolve(){
+      J.ready().then(function(ok){
+        if(!ok){ drop(); return; }
+        btns.forEach(function(b){
+          if(J.find(b._jta)) b.style.visibility = '';
+          else if(b.parentNode) b.parentNode.removeChild(b);
+        });
+      });
+    }
+    if(_favAudioSeen || !('IntersectionObserver' in window)){ _favAudioSeen = true; resolve(); return; }
+    if(_favAudioIO) _favAudioIO.disconnect();
+    _favAudioIO = new IntersectionObserver(function(entries){
+      if(!entries.some(function(e){ return e.isIntersecting; })) return;
+      _favAudioIO.disconnect(); _favAudioIO = null; _favAudioSeen = true; resolve();
+    }, {rootMargin:'300px 0px'});
+    _favAudioIO.observe(listEl);
   }
 
   function renderFavorites(){
     var listEl = document.getElementById('favorites-list');
     if(!listEl) return;
-    _favActive = null;
+    if(window.jestaTrackAudio) window.jestaTrackAudio.stop();
     if(!_favDocs.length){ listEl.innerHTML = FAV_EMPTY; return; }
     var pages = Math.ceil(_favDocs.length / FAV_PER_PAGE);
     if(_favPage > pages - 1) _favPage = pages - 1;
@@ -3766,16 +3767,20 @@ document.addEventListener('DOMContentLoaded', function(){
       play.type = 'button';
       play.className = 'fav-play';
       play.innerHTML = FAV_PLAY;
-      if(links.youtube){
-        play.setAttribute('aria-label','Play ' + (f.songTitle||'track'));
-        play.setAttribute('aria-pressed','false');
-        play.title = 'Play';
-        play.addEventListener('click', function(){ _favTogglePreview(play, item, f, links); });
-      } else {
-        play.disabled = true;
-        play.title = 'No preview available';
-        play.setAttribute('aria-label','No preview available for ' + (f.songTitle||'this track'));
-      }
+      play.title = 'Play';
+      play.setAttribute('aria-label','Play ' + (f.songTitle||'track'));
+      play.setAttribute('aria-pressed','false');
+      play.style.visibility = 'hidden';
+      play._jta = {
+        album: f.album, index: links.index, count: links.count, title: f.songTitle, artist: f.artist,
+        btn: play, anchor: item,
+        next: function(){   /* a saved track ended: carry on with the next playable one on this page */
+          var n = item.nextElementSibling;
+          while(n && !(n.querySelector && n.querySelector('.fav-play'))) n = n.nextElementSibling;
+          if(n) n.querySelector('.fav-play').click();
+        }
+      };
+      play.addEventListener('click', function(){ if(window.jestaTrackAudio) window.jestaTrackAudio.toggle(play._jta); });
 
       var row = document.createElement('div');
       row.className = 'fav-links';
@@ -3823,6 +3828,8 @@ document.addEventListener('DOMContentLoaded', function(){
       item.appendChild(info); item.appendChild(play); item.appendChild(row); item.appendChild(rm);
       listEl.appendChild(item);
     });
+
+    _favWireAudio(listEl);
 
     if(pages > 1){
       var pager = document.createElement('div');
