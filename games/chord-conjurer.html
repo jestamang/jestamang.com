@@ -584,6 +584,24 @@ function noteFreq(name){
   var midi=(oct+1)*12+idx;
   return 440*Math.pow(2,(midi-69)/12);
 }
+/* Chord notes go through one bus so a difficulty switch can silence what the previous round already scheduled */
+var noteBus=null;
+function getBus(){
+  var c=getACtx();
+  if(!noteBus){noteBus=c.createGain();noteBus.connect(c.destination);}
+  return noteBus;
+}
+function silenceNotes(){
+  if(!noteBus||!audioCtx)return;
+  noteBus.gain.setTargetAtTime(0,audioCtx.currentTime,0.015);
+  noteBus=null;
+}
+/* Round-scoped timer: newRound() bumps roundSeq, so a timer left over from an earlier round (or an earlier difficulty) does nothing */
+var roundSeq=0;
+function later(fn,ms){
+  var s=roundSeq;
+  return setTimeout(function(){if(s===roundSeq)fn();},ms);
+}
 function playNote(noteName,vol,startOffset){
   vol=vol||0.32;startOffset=startOffset||0;
   try{
@@ -596,7 +614,7 @@ function playNote(noteName,vol,startOffset){
       g.gain.linearRampToValueAtTime(pk,now+0.015);
       g.gain.setValueAtTime(pk,now+0.08);
       g.gain.exponentialRampToValueAtTime(0.001,now+1.5);
-      osc.connect(g);g.connect(c.destination);
+      osc.connect(g);g.connect(getBus());
       osc.start(now);osc.stop(now+1.6);
     });
   }catch(e){}
@@ -607,7 +625,7 @@ function playChordStrummed(noteNames,onDone){
   document.getElementById('cc-replay-btn').disabled=true;
   noteNames.forEach(function(n,i){playNote(n,0.32,i*0.03+0.05);});
   var dur=(noteNames.length-1)*30+50+1650;
-  setTimeout(function(){
+  later(function(){
     state.playing=false;
     setListenIndicator('');
     if(!state.answered)document.getElementById('cc-replay-btn').disabled=(state.replayLeft<=0);
@@ -819,6 +837,7 @@ function clearDiagram(){
 
 /* ── Round logic ── */
 function newRound(){
+  roundSeq++;
   state.roundNum++;
   if(state.roundNum>state.MAX_ROUNDS){endGame();return;}
   state.answered=false;state.replayLeft=3;
@@ -834,7 +853,7 @@ function newRound(){
   updateHUD();
   document.getElementById('cc-replay-btn').disabled=true;
   setAnswerButtonsLocked(true);
-  setTimeout(function(){
+  later(function(){
     playChordStrummed(notes,function(){setAnswerButtonsLocked(false);});
   },400);
 }
@@ -881,7 +900,7 @@ function handleAnswer(chosen,opts){
   showExplanation(state.currentChord.type);
   showDiagram(state.currentChord.notes,state.currentChord.root,state.currentChord.type,state.currentChord.inv);
   playChordStrummed(state.currentChord.notes);
-  setTimeout(function(){newRound();},2800);
+  later(function(){newRound();},2800);
 }
 
 function checkUnlock(){
@@ -900,6 +919,8 @@ function switchDiff(diff){
   if(diff===state.diff)return;
   if((state.score>0||state.roundNum>1)&&!window.confirm('Switching to '+DIFFS[diff].name+' will reset your current score and round. Continue?'))return;
   state.diff=diff;state.score=0;state.streak=0;state.correctCount=0;state.roundNum=0;
+  state.answered=false;state.playing=false;
+  silenceNotes();
   clearDiagram();hideExplanation();setFeedback('');
   updateDiffTabs();updateHUD();newRound();
 }
@@ -913,6 +934,7 @@ function show(id){
 function startGame(){
   state.score=0;state.streak=0;state.correctCount=0;state.roundNum=0;
   state.answered=false;state.playing=false;
+  silenceNotes();
   show('gs');
   buildMiniPiano();
   var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(buildMiniPiano,250);});
