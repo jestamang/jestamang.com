@@ -264,7 +264,10 @@ h1 {
 <script>
 (function(){
   try {
-    var charts = JSON.parse(localStorage.getItem('jestaCharts') || '[]');
+    // Sealed charts are stored per account; show only the signed-in account's archive.
+    var activeUid = localStorage.getItem('jestaChartsActive');
+    if (!activeUid) return;
+    var charts = JSON.parse(localStorage.getItem('jestaCharts:' + activeUid) || '[]');
     if (!charts || charts.length === 0) return;
 
     // Sort by savedAt descending to get most recent first
