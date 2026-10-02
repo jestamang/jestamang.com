@@ -344,6 +344,8 @@ C.addEventListener('touchcancel', function(e) {
 }, { passive: false });
 
 function spawnShape(sec) {
+  // Safety net only: normal play peaks at about 60 live shapes. Nothing may grow the list without limit again.
+  if (shapes.length >= 200) return;
   // Aggressive speed scaling: slow start, truly chaotic by 60s
   var spd = 1.8;
   if (sec < 15) spd = 1.8 + sec * 0.06;
@@ -469,19 +471,24 @@ function updateSpecialShapes(sec, dt) {
         s.x = cx + Math.cos(a) * s.orbitR;
         s.y = cy + Math.sin(a) * s.orbitR;
       } else {
-        // Fly toward center
-        var dx = W/2 - s.x, dy = H/2 - s.y;
-        var d = Math.hypot(dx,dy) || 1;
-        s.x += (dx/d) * s.baseSpd * dt * 60;
-        s.y += (dy/d) * s.baseSpd * dt * 60;
+        // Fly through the center and out the far side. The heading is taken once: re-aiming every
+        // frame parked the shape on the center forever, where it never left the screen to be removed.
+        if (s.hx === undefined) {
+          var dx = W/2 - s.x, dy = H/2 - s.y;
+          var d = Math.hypot(dx,dy) || 1;
+          s.hx = dx/d; s.hy = dy/d;
+        }
+        s.x += s.hx * s.baseSpd * dt * 60;
+        s.y += s.hy * s.baseSpd * dt * 60;
       }
     } else if (s.type === 'chaser') {
-      // Accelerates as it gets closer to center
+      // Accelerates as it gets closer to center, then carries on through it (heading taken once, as above)
       var dx = W/2 - s.x, dy = H/2 - s.y;
       var d = Math.hypot(dx,dy) || 1;
+      if (s.hx === undefined) { s.hx = dx/d; s.hy = dy/d; }
       var accel = Math.max(1, (H * 0.5 - d) / (H * 0.15));
-      s.x += (dx/d) * s.baseSpd * Math.min(accel, 3.5) * dt * 60;
-      s.y += (dy/d) * s.baseSpd * Math.min(accel, 3.5) * dt * 60;
+      s.x += s.hx * s.baseSpd * Math.min(accel, 3.5) * dt * 60;
+      s.y += s.hy * s.baseSpd * Math.min(accel, 3.5) * dt * 60;
     }
   }
 }
