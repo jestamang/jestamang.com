@@ -376,7 +376,8 @@ function spawnShape(sec) {
   // Spiral: orbits center before flying in
   if (type === 'spiral') {
     var orbitR = 120 + Math.random() * 80;
-    var orbitA = Math.random() * 6.283;
+    // Join the orbit at the point nearest the spawn edge, so the spiral travels in to its ring in plain sight
+    var orbitA = Math.atan2(y - H/2, x - W/2);
     shapes.push({
       type, x, y, vx: (tx-x)/d*spd*0.5, vy: (ty-y)/d*spd*0.5,
       sz: 14 + Math.random() * 14, rot: Math.random() * 6.28,
@@ -463,7 +464,15 @@ function drawShape(s) {
 function updateSpecialShapes(sec, dt) {
   for (var s of shapes) {
     if (s.type === 'spiral') {
-      if (s.orbitPhase < s.orbitMax) {
+      if (!s.onRing) {
+        // Approach: fly from the spawn edge to the ring. It used to jump there on its first frame,
+        // appearing on top of a player who had no way to see it coming.
+        var ex = W/2 + Math.cos(s.orbitA) * s.orbitR, ey = H/2 + Math.sin(s.orbitA) * s.orbitR;
+        var ax = ex - s.x, ay = ey - s.y;
+        var ad = Math.hypot(ax, ay), step = s.baseSpd * dt * 60;
+        if (ad <= step) { s.x = ex; s.y = ey; s.onRing = true; }
+        else { s.x += (ax/ad) * step; s.y += (ay/ad) * step; }
+      } else if (s.orbitPhase < s.orbitMax) {
         // Orbit then fly in
         s.orbitPhase += dt * 60;
         var a = s.orbitA + s.orbitPhase * 0.12;
