@@ -85,13 +85,19 @@
     return null;
   }
 
-  /* For lists that know the artist but not the album (homepage). Exactly one file, or nothing. */
+  /* For lists that know the artist but not the album (homepage). Exactly one file, or nothing.
+     Members of the Children collective are credited as "Children" on R2; "Chapter N (Title)"
+     entries are filed under the bare title. */
+  var ARTIST_ALIAS = { austinich: 'children', israel: 'children', porphigen: 'children' };
   function findByArtist(artist, title) {
     if (!byTitle) return null;
-    var a = akey(artist);
-    var hits = (byTitle[norm(title)] || []).filter(function (tr) { return akey(tr.artist) === a; });
+    var a = akey(artist); a = ARTIST_ALIAS[a] || a;
+    var n = norm(title);
+    var hits = (byTitle[n] || []).filter(function (tr) { return akey(tr.artist) === a; });
+    if (!hits.length && /^chapter \d+ /.test(n)) hits = (byTitle[n.replace(/^chapter \d+ /, '')] || []).filter(function (tr) { return akey(tr.artist) === a; });
     return hits.length === 1 ? hits[0] : null;
   }
+  function lookup(spec) { return spec.track || (spec.album ? find(spec) : findByArtist(spec.artist, spec.title)); }
 
   function fmt(s) {
     if (!isFinite(s) || s < 0) return '0:00';
@@ -118,9 +124,10 @@
     document.head.appendChild(st);
   }
 
-  function setBtn(btn, state, title) {
+  function setBtn(spec, state) {
+    var btn = spec && spec.btn, title = spec && spec.title;
     if (!btn) return;
-    btn.innerHTML = state === 'pause' ? PAUSE : PLAY;
+    btn.innerHTML = state === 'pause' ? (spec.pauseHtml || PAUSE) : (spec.playHtml || PLAY);
     if (state === 'play') btn.classList.remove('playing'); else btn.classList.add('playing');
     btn.setAttribute('aria-pressed', state === 'play' ? 'false' : 'true');
     btn.setAttribute('aria-label', (state === 'pause' ? 'Pause ' : 'Play ') + (title || 'track'));
@@ -141,8 +148,8 @@
       cur.dEl.textContent = fmt(audio.duration);
       cur.seek.disabled = false;
     });
-    audio.addEventListener('play',  function () { if (cur && cur.real) setBtn(cur.spec.btn, 'pause', cur.spec.title); });
-    audio.addEventListener('pause', function () { if (cur && cur.real && !audio.ended) setBtn(cur.spec.btn, 'play', cur.spec.title); });
+    audio.addEventListener('play',  function () { if (cur && cur.real) setBtn(cur.spec, 'pause'); });
+    audio.addEventListener('pause', function () { if (cur && cur.real && !audio.ended) setBtn(cur.spec, 'play'); });
     audio.addEventListener('ended', function () {
       if (!cur || !cur.real) return;
       var next = cur.spec.next;
@@ -152,7 +159,7 @@
     audio.addEventListener('error', function () {
       if (!cur || !cur.real) return;
       message('This track could not be loaded.');
-      setBtn(cur.spec.btn, 'play', cur.spec.title);
+      setBtn(cur.spec, 'play');
     });
     return audio;
   }
@@ -196,7 +203,7 @@
     cur.real = true;
     audio.src = track.url;
     var p = audio.play();
-    if (p && typeof p.catch === 'function') p.catch(function () { if (cur) setBtn(cur.spec.btn, 'play', cur.spec.title); });
+    if (p && typeof p.catch === 'function') p.catch(function () { if (cur) setBtn(cur.spec, 'play'); });
     if ('mediaSession' in navigator && window.MediaMetadata) {
       try {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -212,11 +219,12 @@
     if (audio) { try { audio.pause(); } catch (e) {} }
     if (!cur) return;
     if (cur.bar && cur.bar.parentNode) cur.bar.parentNode.removeChild(cur.bar);
-    setBtn(cur.spec.btn, 'play', cur.spec.title);
+    setBtn(cur.spec, 'play');
     cur = null;
   }
 
-  /* spec = { album, index, count, title, artist, btn, anchor, next?, track? }
+  /* spec = { album, index, count, title, artist, btn, anchor, next?, track?, playHtml?, pauseHtml? }
+     Without an album the track is looked up by artist and title (homepage lists).
      Same button again pauses or resumes; another button switches to that track. */
   function toggle(spec) {
     ensureAudio();
@@ -228,8 +236,8 @@
     }
     stop();
     cur = buildBar(spec);
-    setBtn(spec.btn, 'pause', spec.title);
-    var known = spec.track || find(spec);
+    setBtn(spec, 'pause');
+    var known = lookup(spec);
     if (known) { start(known); return; }
     if (byAlbum) { stop(); return; }           /* manifest is in and has no file for this track */
     /* manifest still loading: unlock audio inside this tap, start when it arrives */
@@ -237,9 +245,9 @@
     var mine = cur;
     load().then(function (ok) {
       if (cur !== mine) return;
-      var tr = ok ? find(spec) : null;
+      var tr = ok ? lookup(spec) : null;
       if (tr) start(tr);
-      else { message(ok ? 'No audio file for this track.' : 'Audio is unavailable right now.'); setBtn(spec.btn, 'play', spec.title); }
+      else { message(ok ? 'No audio file for this track.' : 'Audio is unavailable right now.'); setBtn(spec, 'play'); }
     });
   }
 
