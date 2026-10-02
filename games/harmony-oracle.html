@@ -771,7 +771,7 @@ function saveUnlocks(){try{localStorage.setItem('hoUnlocked',JSON.stringify(stat
 
 var HTP_TEXT = {
   1:'Level I: Two notes play at once. Decide if they sound Consonant (stable, pleasant) or Dissonant (tense, clashing). Listen for smoothness vs. roughness. 10 pts per correct answer.',
-  2:'Level II: A short 4-note phrase plays in a specific mode. Identify the tonality — Major, Minor, or one of four modes. Listen for the overall emotional color. 20 pts per correct answer.',
+  2:'Level II: A full scale plays, root to octave, in a specific mode. Identify the tonality — Major, Minor, or one of four modes. Listen for the note that gives each mode away: the flat 7th of Mixolydian, the raised 6th of Dorian, the sharp 4th of Lydian, the flat 2nd of Phrygian. 20 pts per correct answer.',
   3:'Level III: A 4-chord progression plays. Identify the Roman numeral pattern. Listen for how the chords rise, fall, and resolve. 30 pts per correct answer.',
   4:'Level IV: An 8-chord progression plays. Answer three questions: the key, whether it modulates (changes key), and the overall mood. 50 pts for a complete correct analysis.'
 };
@@ -988,17 +988,21 @@ function startL2Round(){
   var mode = MODES[modeKey];
   // Random root midi 55-65
   var root = 55 + Math.floor(Math.random()*10);
-  // Build 4-note phrase from mode steps
-  var phrase = mode.steps.slice(0,4).map(function(s){ return root+s; });
+  // Play the whole scale, root to octave. The first four notes are not enough: Major and Mixolydian
+  // only part at the 7th, Minor and Dorian only at the 6th, so a 4-note phrase had two right answers.
+  var phrase = mode.steps.concat([12]).map(function(s){ return root+s; });
 
   state.currentRound = {modeKey:modeKey, mode:mode, root:root, phrase:phrase};
 
+  // An 8-note scale can outlast an early answer: drop whatever the previous scale still has scheduled
+  silenceNotes();
   later(function(){ playPhrase(phrase); }, 120);
 
   $('ho-replay').onclick = function(){
     if(state.replayCount >= state.maxReplays) return;
     state.replayCount++;
     updateReplayDots();
+    silenceNotes();
     playPhrase(phrase);
   };
 
