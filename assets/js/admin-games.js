@@ -326,29 +326,29 @@
   // Starting list only: replaced by the saved Firestore cards as soon as they load.
   // Kept identical to the fallback deck in game-oracle.html.
   var _sigilCards = [
-    {arcana:'I \u00b7 The Jesta', name:'The Jesta', glyph:'\u03a8', reading:'What is given freely multiplies. What is hoarded rots. The Jesta sees your open hands and grins. This is the correct posture.'},
+    {arcana:'I \u00b7 The Jesta', name:'The Jesta', glyph:'\u03a8', reading:'What is given freely multiplies. What is hoarded rots. The Jesta sees your open hands and grins... this is the correct posture.'},
     {arcana:'II \u00b7 Origin', name:'The Prickly Being', glyph:'\u2736', reading:'A small divine presence has left its marks on your chest. Do not wash them. They are proof of something most will never receive.'},
-    {arcana:'III \u00b7 Motion', name:'The Parade', glyph:'\u21af', reading:'Movement is the ritual. The direction matters less than the act of beginning. Set your feet in motion. The path reveals itself under moving feet.'},
+    {arcana:'III \u00b7 Motion', name:'The Parade', glyph:'\u21af', reading:'Movement is the ritual. The direction matters less than the act of beginning. Set your feet in motion... the path reveals itself under moving feet.'},
     {arcana:'IV \u00b7 Season', name:'The New \u00c6on', glyph:'\u00c6', reading:'The old season does not argue with the new one. It simply yields. Something in you is ready to yield. Let it.'},
     {arcana:'V \u00b7 Signal', name:'The Metropolis', glyph:'\u2318', reading:'The city speaks to those who have learned its dialect. What sounds like noise to others is transmission to you. Listen deeper.'},
-    {arcana:'VI \u00b7 Whole', name:'The 600', glyph:'\u229b', reading:'The number is not large. It is complete. One contains the whole. You already hold everything required for this moment.'},
+    {arcana:'VI \u00b7 Whole', name:'The 600', glyph:'\u229b', reading:'The number is not large... it is complete. One contains the whole. You already hold everything required for this moment.'},
     {arcana:'VII \u00b7 Freedom', name:'The Circus', glyph:'\u03a9', reading:'Your cage was assembled from your own hesitation. The door was never locked. You simply forgot to check.'},
     {arcana:'VIII \u00b7 Sleep', name:'The Dream', glyph:'\u224b', reading:'What visited you while you slept was not imaginary. The frenzied realm of dreams is where the real work is done.'},
-    {arcana:'IX \u00b7 Depth', name:'The Swamp', glyph:'\u223f', reading:'From the murk rise the most vivid creatures. The clarity you seek is not found in clean water. It is found in depth.'},
+    {arcana:'IX \u00b7 Depth', name:'The Swamp', glyph:'\u223f', reading:'From the murk rise the most vivid creatures. The clarity you seek is not found in clean water... it is found in depth.'},
     {arcana:'X \u00b7 Wheel', name:'The Solstice', glyph:'\u273a', reading:'The calendar is not neutral. Whoever controls the seasons controls the energy. Reclaim your place on the wheel.'},
-    {arcana:'XI \u00b7 Recognition', name:'The Chosen Few', glyph:'\u2042', reading:'To be chosen is not to be selected. It is to have always been. You were not called. You were recognized.'},
+    {arcana:'XI \u00b7 Recognition', name:'The Chosen Few', glyph:'\u2042', reading:'To be chosen is not to be selected. It is to have always been. You were not called... you were recognized.'},
     {arcana:'XII \u00b7 Threshold', name:'The Portal', glyph:'\u2295', reading:'A door appears only to those already standing before it. You would not sense the threshold if you were not meant to cross it.'},
-    {arcana:'XIII \u00b7 Time', name:'The Rhythm', glyph:'\u2341', reading:'Every soul moves in time whether it hears the music or not. The question is not whether you are dancing. It is whether you know it.'},
+    {arcana:'XIII \u00b7 Time', name:'The Rhythm', glyph:'\u2341', reading:'Every soul moves in time whether it hears the music or not. The question is not whether you are dancing... it is whether you know it.'},
     {arcana:'XIV \u00b7 Light', name:'The Gold', glyph:'\u25ca', reading:'Not all that shines asks to be spent. Some things are kept luminous simply by being witnessed. Bear witness today.'},
-    {arcana:'XV \u00b7 Mark', name:'The Claws', glyph:'\u2357', reading:'The small marks on your chest are not wounds. They are signatures. Something vast has signed its name into your skin.'},
+    {arcana:'XV \u00b7 Mark', name:'The Claws', glyph:'\u2357', reading:'The small marks on your chest are not wounds... they are signatures. Something vast has signed its name into your skin.'},
     {arcana:'XVI \u00b7 Unseen', name:'The Veil', glyph:'\u2240', reading:'What you cannot see is watching with tremendous interest. This is not threat. This is the most affectionate form of attention there is.'},
     {arcana:'XVII \u00b7 Rite', name:'The Pagan', glyph:'\u2297', reading:'No institution owns your ceremony. No government holds the patent on your reverence. The rite you build yourself is the only holy one.'},
     {arcana:'XVIII \u00b7 Memory', name:'The Blood', glyph:'\u2347', reading:'The wound remembers what the mind chooses to forget. What pulses in you is older than your name and wiser than your fear.'},
-    {arcana:'XIX \u00b7 Mirror', name:'The Fat Head', glyph:'\u2299', reading:'The jesting being grins when you call it deity. But you are right to call it so. Feed it no further flattery. It has quite enough already.'},
-    {arcana:'XX \u00b7 Witness', name:'The Children', glyph:'\u2055', reading:'Core 6. Chosen few. Born from the dew of a swampy imagination. They do not ask to be understood, only witnessed. Are you watching?'},
-    {arcana:'XXI \u00b7 Fire', name:'The Circus Spits', glyph:'\u2051', reading:'Free, free, FREE! Marvelous, miraculous, meticulous creations beyond the limits of those fussy gods. Today you are one of them. Create without a single shred of doubt.'},
-    {arcana:'XXII \u00b7 Void', name:'The Drift', glyph:'\u25cb', reading:'There is no floor here and that is the point. Stop searching for solid ground in a place that was never meant to hold weight. Float. The drift is not failure. It is the oldest form of navigation.'},
-    {arcana:'XXIII \u00b7 Return', name:'The Coming Back', glyph:'\u21ba', reading:'You have left this place before and returned changed. You will do it again. The leaving is not abandonment. It is how the self collects what it needs before walking back through the door.'}
+    {arcana:'XIX \u00b7 Mirror', name:'The Fat Head', glyph:'\u2299', reading:'The jesting being grins when you call it deity. But you are right to call it so. Feed it no further flattery... it has quite enough already.'},
+    {arcana:'XX \u00b7 Witness', name:'The Children', glyph:'\u2055', reading:'Core 6. Chosen few. Born from the dew of a swampy imagination. They do not ask to be understood... only witnessed. Are you watching?'},
+    {arcana:'XXI \u00b7 Fire', name:'The Circus Spits', glyph:'\u2051', reading:'Free, free, FREE! Marvelous... miraculous, meticulous creations beyond the limits of those fussy gods. Today you are one of them. Create without a single shred of doubt.'},
+    {arcana:'XXII \u00b7 Void', name:'The Drift', glyph:'\u25cb', reading:'There is no floor here and that is the point. Stop searching for solid ground in a place that was never meant to hold weight. Float. The drift is not failure... it is the oldest form of navigation.'},
+    {arcana:'XXIII \u00b7 Return', name:'The Coming Back', glyph:'\u21ba', reading:'You have left this place before and returned changed. You will do it again. The leaving is not abandonment... it is how the self collects what it needs before walking back through the door.'}
   ];
 
   function initSigilCardEditor() {
