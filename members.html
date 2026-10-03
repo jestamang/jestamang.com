@@ -616,7 +616,12 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .tx-title{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .tx-subtitle,.ic-recognize{text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 4px rgba(0,0,0,1),0 0 40px rgba(0,0,0,0.9),1px 1px 3px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 /* ── UPDATES EMPTY STATE ── */
-#updates-empty-state{text-align:center;padding:48px 24px 40px;border:1px solid rgba(var(--gold-rgb,201,168,76),0.25);background:rgba(0,0,0,0.75);border-radius:12px;}
+/* lightbox controls: 44px targets on phones (inline sizes are overridden here) */
+@media(max-width:767px){#tpl-prev,#tpl-next,#tpl-close,#treat-vid-close{min-width:44px!important;min-height:44px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;}
+  .catalog-pending,.catalog-info-meta{font-size:0.7rem!important;}}
+#tpl-prev:focus-visible,#tpl-next:focus-visible,#tpl-close:focus-visible,#treat-vid-close:focus-visible,.treat-card:focus-visible{outline:2px solid var(--gold,#c9a84c);outline-offset:2px;}
+.treat-card .jta-bar{margin:0;}
+#updates-empty-state,#treats-empty-state{text-align:center;padding:48px 24px 40px;border:1px solid rgba(var(--gold-rgb,201,168,76),0.25);background:rgba(0,0,0,0.75);border-radius:12px;}
 .ues-glyph{font-size:1.4rem;color:rgba(var(--gold-rgb,201,168,76),0.35);margin-bottom:18px;letter-spacing:0.3em;}
 .ues-title{font-size:0.72rem;letter-spacing:0.55em;text-transform:uppercase;color:rgba(var(--gold-rgb,201,168,76),0.6);margin-bottom:10px;}
 .ues-sub{font-style:italic;font-size:0.78rem;color:rgba(240,230,210,0.55);letter-spacing:0.08em;}
@@ -679,7 +684,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script>(function(){var nav=document.getElementById('jtnav');if(nav){window.addEventListener('scroll',function(){if(window.scrollY>50){nav.classList.add('jtnav-scrolled');}else{nav.classList.remove('jtnav-scrolled');}},{passive:true});}})();</script>
 
 <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
-<div id="page-content">
+<main id="page-content">
 
   <!-- ── HERO ─────────────────────────────────────────── -->
   <div class="ic-hero">
@@ -719,10 +724,14 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   </div>
   <div class="gold-rule-sm"></div>
 
-  <audio id="treat-audio" preload="none" style="position:fixed;top:-9999px;left:-9999px;"></audio>
+  <div id="treats-empty-state">
+    <div class="ues-glyph">&#10022; &nbsp; &#10022; &nbsp; &#10022;</div>
+    <div class="ues-title">Treats Are Being Prepared</div>
+    <p class="ues-sub">The hidden catalog is still forming. Return when the frequency clears.</p>
+  </div>
   <div id="treat-photo-lb" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;">
     <button id="tpl-prev" style="position:absolute;left:16px;font-size:2.5rem;background:none;border:none;color:var(--gold,#c9a84c);cursor:pointer;line-height:1;font-family:sans-serif;">&#8249;</button>
-    <img id="treat-photo-img" alt="" style="max-width:90vw;max-height:85vh;border-radius:4px;display:block;">
+    <img id="treat-photo-img" alt="Treat photo" style="max-width:90vw;max-height:85vh;border-radius:4px;display:block;">
     <button id="tpl-next" style="position:absolute;right:16px;font-size:2.5rem;background:none;border:none;color:var(--gold,#c9a84c);cursor:pointer;line-height:1;font-family:sans-serif;">&#8250;</button>
     <button id="tpl-close" style="position:absolute;top:16px;right:20px;font-size:1.6rem;background:none;border:none;color:var(--gold,#c9a84c);cursor:pointer;line-height:1;font-family:sans-serif;">&#10005;</button>
   </div>
@@ -764,7 +773,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     <div class="ns-grid" id="ns-grid"></div>
   </div>
 
-</div><!-- /#page-content -->
+</main><!-- /#page-content -->
 
 <!-- ── FIREBASE ─────────────────────────────────────────── -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
@@ -772,12 +781,21 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js" defer></script>
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/js/jesta-auth.js" defer></script>
-<script src="https://www.youtube.com/iframe_api"></script>
+<script src="assets/js/jesta-track-audio.js" defer></script>
 <script>
-var _ytReady = false, _ytPending = null;
+/* The YouTube player script is loaded only when a video treat is opened, not on every visit. */
+var _ytReady = false, _ytPending = null, _ytLoading = false;
+function loadYouTubeApi() {
+  if (_ytReady || _ytLoading) return;
+  _ytLoading = true;
+  var s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; s.async = true;
+  s.onerror = function(){ _ytLoading = false; var lb = document.getElementById('treat-vid-lb'); if (lb) lb.style.display = 'none'; };
+  document.head.appendChild(s);
+}
 function onYouTubeIframeAPIReady() {
   _ytReady = true;
-  if (_ytPending) { var id = _ytPending; _ytPending = null; openVideo(id); }
+  /* openVideo lives inside the treats loader; it registers itself on window */
+  if (_ytPending && window._treatOpenVideo) { var id = _ytPending; _ytPending = null; window._treatOpenVideo(id); }
 }
 </script>
 
@@ -869,9 +887,10 @@ document.addEventListener('DOMContentLoaded', function(){
     })();
 
     /* Load Treats from Firestore */
+    var treatsEmpty = document.getElementById('treats-empty-state');
     db.collection('treats').orderBy('order','asc').get()
       .then(function(snap){
-        if(snap.empty) return; // keep hardcoded defaults
+        if(snap.empty) return; /* the empty state stays */
         var grid = document.getElementById('treats-grid');
         if(!grid) return;
         var blurMap = {1:'catalog-blur-1',2:'catalog-blur-2',3:'catalog-blur-3'};
@@ -912,14 +931,7 @@ document.addEventListener('DOMContentLoaded', function(){
           }
         });
         grid.innerHTML = html;
-
-        // Shared helpers
-        var exAudio = document.getElementById('treat-audio');
-        var nowCard = null;
-        function setGlyph(card, g) {
-          var s = card.querySelector('.treat-glyph');
-          if (s) { s.textContent = g; }
-        }
+        if(html && treatsEmpty) treatsEmpty.style.display = 'none';
         function ytId(u) {
           if (!u) return '';
           var m = String(u).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([\w-]{11})/);
@@ -931,9 +943,10 @@ document.addEventListener('DOMContentLoaded', function(){
         var tplSet = [], tplIdx = 0;
         var tplLb  = document.getElementById('treat-photo-lb');
         var tplImg = document.getElementById('treat-photo-img');
-        function tplShow() { if (tplSet.length) { tplImg.src = tplSet[tplIdx]; } }
-        function openPhotos(arr, i) { tplSet = arr || []; tplIdx = i || 0; if (!tplSet.length) return; tplShow(); tplLb.style.display = 'flex'; }
-        function tplClose() { tplLb.style.display = 'none'; tplImg.src = ''; tplSet = []; }
+        var tplTitle = '', tplOpener = null;
+        function tplShow() { if (tplSet.length) { tplImg.src = tplSet[tplIdx]; tplImg.alt = (tplTitle || 'Treat') + ', photo ' + (tplIdx + 1) + ' of ' + tplSet.length; } }
+        function openPhotos(arr, i, title, opener) { tplSet = arr || []; tplIdx = i || 0; tplTitle = title || ''; tplOpener = opener || null; if (!tplSet.length) return; tplShow(); tplLb.style.display = 'flex'; document.getElementById('tpl-close').focus({preventScroll:true}); }
+        function tplClose() { tplLb.style.display = 'none'; tplImg.src = ''; tplSet = []; if (tplOpener && tplOpener.focus) tplOpener.focus({preventScroll:true}); tplOpener = null; }
         document.getElementById('tpl-prev').addEventListener('click', function(e){ e.stopPropagation(); tplIdx = (tplIdx - 1 + tplSet.length) % tplSet.length; tplShow(); });
         document.getElementById('tpl-next').addEventListener('click', function(e){ e.stopPropagation(); tplIdx = (tplIdx + 1) % tplSet.length; tplShow(); });
         document.getElementById('tpl-close').addEventListener('click', tplClose);
@@ -942,9 +955,11 @@ document.addEventListener('DOMContentLoaded', function(){
         // Video lightbox
         var vidLb = document.getElementById('treat-vid-lb');
         var _vidPlayer = null;
-        function openVideo(id) {
+        var vidOpener = null;
+        function openVideo(id, opener) {
           if (!id) return;
-          if (!_ytReady) { _ytPending = id; vidLb.style.display = 'flex'; return; }
+          if (opener) vidOpener = opener;
+          if (!_ytReady) { _ytPending = id; vidLb.style.display = 'flex'; loadYouTubeApi(); document.getElementById('treat-vid-close').focus({preventScroll:true}); return; }
           vidLb.style.display = 'flex';
           if (_vidPlayer && _vidPlayer.destroy) { _vidPlayer.destroy(); _vidPlayer = null; }
           document.getElementById('treat-vid-player').innerHTML = '';
@@ -953,10 +968,27 @@ document.addEventListener('DOMContentLoaded', function(){
             playerVars: { autoplay: 1, rel: 0, modestbranding: 1, origin: 'https://jestamang.com' }
           });
         }
+        window._treatOpenVideo = openVideo;
         function closeVideo() {
-          vidLb.style.display = 'none';
+          vidLb.style.display = 'none'; _ytPending = null;
           if (_vidPlayer && _vidPlayer.destroy) { _vidPlayer.destroy(); _vidPlayer = null; }
+          if (vidOpener && vidOpener.focus) vidOpener.focus({preventScroll:true}); vidOpener = null;
         }
+        /* Escape closes whichever lightbox is open; arrows step through photos */
+        document.addEventListener('keydown', function(e){
+          if (e.key === 'Escape') { if (tplLb.style.display === 'flex') tplClose(); if (vidLb.style.display === 'flex') closeVideo(); return; }
+          if (tplLb.style.display === 'flex' && tplSet.length > 1) {
+            if (e.key === 'ArrowLeft') { tplIdx = (tplIdx - 1 + tplSet.length) % tplSet.length; tplShow(); }
+            if (e.key === 'ArrowRight') { tplIdx = (tplIdx + 1) % tplSet.length; tplShow(); }
+          }
+        });
+        /* Enter or Space opens a card from the keyboard (they are announced as buttons) */
+        grid.addEventListener('keydown', function(e){
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          var card = e.target.closest ? e.target.closest('.treat-card') : null;
+          if (!card || card.tagName === 'A') return;
+          e.preventDefault(); card.click();
+        });
         document.getElementById('treat-vid-close').addEventListener('click', closeVideo);
         vidLb.addEventListener('click', function(e) { if (e.target === vidLb) closeVideo(); });
 
@@ -964,30 +996,23 @@ document.addEventListener('DOMContentLoaded', function(){
         grid.addEventListener('click', function(e) {
           // Photo card
           var pc = e.target.closest ? e.target.closest('.treat-photo-card') : null;
-          if (pc) { e.preventDefault(); openPhotos(_treatPhotos[pc.getAttribute('data-pset')] || [], 0); return; }
+          if (pc) { e.preventDefault(); openPhotos(_treatPhotos[pc.getAttribute('data-pset')] || [], 0, (pc.querySelector('.catalog-info-title')||{}).textContent, pc); return; }
           // Video card
           var vc = e.target.closest ? e.target.closest('.treat-video-card') : null;
-          if (vc) { e.preventDefault(); openVideo(vc.getAttribute('data-ytid')); return; }
-          // Audio card
+          if (vc) { e.preventDefault(); openVideo(vc.getAttribute('data-ytid'), vc); return; }
+          // Audio card: the shared R2 player (assets/js/jesta-track-audio.js) with its seek bar
           var card = e.target.closest ? e.target.closest('.treat-audio-card') : null;
           if (!card) { return; }
           e.preventDefault();
-          if (nowCard === card) {
-            exAudio.pause(); setGlyph(card, card.getAttribute('data-orig-glyph') || '◎'); nowCard = null; return;
+          var J = window.jestaTrackAudio;
+          if (!J) { return; }
+          if (!card._jta) {
+            var g = card.querySelector('.treat-glyph'), orig = g ? g.textContent : '\u25CE';
+            var t = (card.querySelector('.catalog-info-title')||{}).textContent || 'Treat';
+            card._jta = { track:{url:card.getAttribute('data-url'), title:t, artist:'Jestamang', album:'Treats'}, title:t, artist:'Jestamang', album:'Treats',
+                          btn:g, anchor:card.querySelector('.catalog-info'), playHtml:esc(orig), pauseHtml:'\u23F8' };
           }
-          if (nowCard) { setGlyph(nowCard, nowCard.getAttribute('data-orig-glyph') || '◎'); }
-          card.setAttribute('data-orig-glyph', card.querySelector('.treat-glyph') ? card.querySelector('.treat-glyph').textContent : '◎');
-          exAudio.src = card.getAttribute('data-url');
-          exAudio.load();
-          var p = exAudio.play();
-          nowCard = card;
-          setGlyph(card, '⏸');
-          if (p && p.then) {
-            p.catch(function() { setGlyph(card, card.getAttribute('data-orig-glyph') || '◎'); nowCard = null; });
-          }
-        });
-        exAudio.addEventListener('ended', function() {
-          if (nowCard) { setGlyph(nowCard, nowCard.getAttribute('data-orig-glyph') || '◎'); nowCard = null; }
+          J.toggle(card._jta);
         });
       })
       .catch(function(){}); // silently keep hardcoded on error
