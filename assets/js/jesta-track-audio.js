@@ -76,6 +76,8 @@
     if (list) {
       if (list.positional && typeof q.index === 'number' && q.index >= 0 && q.count === list.length) return list[q.index] || null;
       var hits = list.filter(function (tr) { return norm(tr.title) === n; });
+      /* "Chapter N (Title)" entries (lyrics copies of Babylon's Final Hours) are filed under the bare title */
+      if (!hits.length && /^chapter \d+ /.test(n)) { var bare = n.replace(/^chapter \d+ /, ''); hits = list.filter(function (tr) { return norm(tr.title) === bare; }); }
       return hits.length === 1 ? hits[0] : null;
     }
     var comp = COMPILATIONS[akey(q.album)];
