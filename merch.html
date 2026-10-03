@@ -884,11 +884,11 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     <form id="inquiry-form" novalidate>
       <div class="form-group">
         <label class="form-label" for="inq-name">Your Name</label>
-        <input class="form-input" type="text" id="inq-name" name="name" autocomplete="name" required placeholder="Enter your name" />
+        <input class="form-input" type="text" id="inq-name" name="name" autocomplete="name" required maxlength="100" placeholder="Enter your name" />
       </div>
       <div class="form-group">
         <label class="form-label" for="inq-email">Your Signal</label>
-        <input class="form-input" type="email" id="inq-email" name="email" autocomplete="email" required placeholder="your@email.com" />
+        <input class="form-input" type="email" id="inq-email" name="email" autocomplete="email" required maxlength="254" placeholder="your@email.com" />
       </div>
       <div class="form-group">
         <label class="form-label" for="inq-item">Artifact</label>
@@ -896,7 +896,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
       </div>
       <div class="form-group">
         <label class="form-label" for="inq-message">Your Transmission</label>
-        <textarea class="form-textarea" id="inq-message" name="message" rows="5" required placeholder="Write your inquiry here..."></textarea>
+        <textarea class="form-textarea" id="inq-message" name="message" rows="5" required maxlength="2000" placeholder="Write your inquiry here..."></textarea>
       </div>
 
       <div id="modal-msg" class="modal-msg"></div>
