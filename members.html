@@ -512,6 +512,7 @@ body::before{
   color:rgba(240,230,210,0.85);
 }
 
+.chat-empty.chat-error{color:rgba(251,56,56,0.85);font-style:normal;}
 .chat-empty{
   text-align:center;
   padding:60px 24px;
@@ -1025,6 +1026,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var messagesEl = document.getElementById('chat-messages');
     var input      = document.getElementById('chat-input');
     var sendBtn    = document.getElementById('chat-send');
+    var chatStatusEl = document.getElementById('chat-status');
     /* Real-time listener ordered ascending, last 50 */
     unsubChat = db.collection('innerCircleChat')
       .orderBy('ts','asc')
@@ -1033,11 +1035,16 @@ document.addEventListener('DOMContentLoaded', function(){
         renderMessages(snap, messagesEl);
       }, function(err){
         console.error('Chat error:', err);
-        console.error('Chat signal disrupted');
+        var emptyEl = document.getElementById('chat-empty');
+        if(emptyEl){
+          emptyEl.textContent = 'The chat could not be loaded. Reload the page to try again.';
+          emptyEl.classList.add('chat-error');
+          emptyEl.style.display = 'block';
+        }
+        if(chatStatusEl){ chatStatusEl.textContent = 'Chat signal disrupted.'; chatStatusEl.className = 'status-err'; }
       });
 
     /* Send */
-    var chatStatusEl = document.getElementById('chat-status');
     function doSend(){
       var text = input.value.trim();
       if(!currentUser) return;
@@ -1047,8 +1054,7 @@ document.addEventListener('DOMContentLoaded', function(){
       }
       sendBtn.disabled = true;
       if(chatStatusEl){ chatStatusEl.textContent = 'Sending...'; chatStatusEl.className = 'status-msg'; }
-      input.value = '';
-      autoResize();
+      /* the box is cleared only once the write has succeeded, so a failed send keeps the message */
       db.collection('innerCircleChat').add({
         uid:  currentUser.uid,
         name: currentName,
@@ -1058,6 +1064,7 @@ document.addEventListener('DOMContentLoaded', function(){
       }).then(function(){
         sendBtn.disabled = false;
         if(chatStatusEl){ chatStatusEl.textContent = ''; }
+        if(input.value.trim() === text){ input.value = ''; autoResize(); }
         /* No trimming here: the live listener already shows the last 50. The old post-send
            read-and-delete fetched the whole history and was denied for other members'
            messages anyway, so it never trimmed and only grew more expensive. */
@@ -1196,30 +1203,35 @@ document.addEventListener('DOMContentLoaded', function(){
       if(subText) subText.textContent = results.length+' new signal'+(results.length!==1?'s':'')+' '+sinceStr+'.';
       section.style.display = 'block';
     }
+    /* blogPosts and shows carry `timestamp`; releases carry no date at all, so new albums cannot
+       be detected and members-only writings take that slot (published ones only, as the rules
+       require; the published + timestamp index exists for that query). */
     db.collection('blogPosts')
-      .where('publishedAt','>',lastVisitTs).orderBy('publishedAt','desc').limit(5).get()
+      .where('timestamp','>',lastVisitTs).orderBy('timestamp','desc').limit(5).get()
       .then(function(snap){
         snap.forEach(function(doc){
           var d=doc.data();
-          results.push({type:'Blog',title:d.title||'New Post',meta:d.publishedAt?new Date(d.publishedAt.toMillis()).toLocaleDateString():'',url:'blog.html',ts:d.publishedAt?d.publishedAt.toMillis():0});
+          if(d.published===false) return;
+          results.push({type:'Blog',title:d.title||'New Post',meta:d.dateFormatted||d.date||'',url:'blog.html',ts:d.timestamp?d.timestamp.toMillis():0});
         });
         checkDone();
       }).catch(function(){checkDone();});
-    db.collection('albums')
-      .where('createdAt','>',lastVisitTs).orderBy('createdAt','desc').limit(5).get()
+    db.collection('membersUpdates')
+      .where('published','==',true).where('timestamp','>',lastVisitTs).orderBy('timestamp','desc').limit(5).get()
       .then(function(snap){
         snap.forEach(function(doc){
           var d=doc.data();
-          results.push({type:'Album',title:d.title||'New Album',meta:d.artist||'',url:'albums.html',ts:d.createdAt?d.createdAt.toMillis():0});
+          results.push({type:'Update',title:d.title||'New Update',meta:d.dateFormatted||d.date||'',url:'#updates-section-header',ts:d.timestamp?d.timestamp.toMillis():0});
         });
         checkDone();
       }).catch(function(){checkDone();});
     db.collection('shows')
-      .where('createdAt','>',lastVisitTs).orderBy('createdAt','desc').limit(5).get()
+      .where('timestamp','>',lastVisitTs).orderBy('timestamp','desc').limit(5).get()
       .then(function(snap){
         snap.forEach(function(doc){
           var d=doc.data();
-          results.push({type:'Show',title:d.venue||d.title||'New Show',meta:d.city||'',url:'shows.html',ts:d.createdAt?d.createdAt.toMillis():0});
+          if(d.active===false) return;
+          results.push({type:'Show',title:d.venue||d.title||'New Show',meta:[d.city,d.date].filter(Boolean).join(' \u00b7 '),url:'shows.html',ts:d.timestamp?d.timestamp.toMillis():0});
         });
         checkDone();
       }).catch(function(){checkDone();});
