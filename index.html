@@ -1137,7 +1137,9 @@ document.addEventListener('DOMContentLoaded',eotdInit);
           }
           if (item.key === 'shows' && item.extras) {
             var _sx = item.extras, _ssec = rec.section;
-            var _setS = function(sel, v){ var el = _ssec.querySelector(sel); if (el && typeof v === 'string' && v.trim()) el.textContent = v; };
+            // date, venue, lineup and location come from the next `shows` document (featured show script below);
+            // the extras only fill them when that lookup has not answered.
+            var _setS = function(sel, v){ if (window._hpShowFromShows) return; var el = _ssec.querySelector(sel); if (el && typeof v === 'string' && v.trim()) el.textContent = v; };
             _setS('.hp-show-date-ritual', _sx.date);
             _setS('.hp-show-venue-name', _sx.venue);
             _setS('.hp-show-lineup', _sx.lineup);
@@ -1264,6 +1266,46 @@ document.addEventListener('DOMContentLoaded',eotdInit);
       }
     }).catch(function(){ /* offline / error → hardcoded order stays */ });
   }
+})();
+</script>
+<script>
+/* Featured show card: the next upcoming document in `shows` (same clock as shows.html: upcoming until
+   06:00 Eastern the morning after the date). When nothing is upcoming the card says so instead of
+   keeping a past show on the homepage. The static markup is the no-JS copy; drift-check compares it. */
+(function(){
+  var MON=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  function ritual(d){ var p=d.split('-'); return MON[+p[1]-1]+' '+(+p[2])+' · \''+p[0].slice(2); }
+  function apply(show){
+    var card=document.querySelector('.hp-show-card'); if(!card) return;
+    var q=function(sel){return card.querySelector(sel);};
+    var set=function(sel,v){ var el=q(sel); if(el) el.textContent=v; };
+    window._hpShowFromShows=true;
+    if(show){
+      set('.hp-show-date-ritual',ritual(show.date));
+      set('.hp-show-venue-name',show.venue||'');
+      var ln=q('.hp-show-lineup'); if(ln){ ln.style.display=''; if(show.lineup&&String(show.lineup).trim()) ln.textContent=show.lineup; } // no lineup on the doc: keep the static/extras line
+      set('.hp-show-location',show.city||'');
+      var old=q('.hp-show-empty'); if(old) old.parentNode.removeChild(old);
+      return;
+    }
+    set('.hp-show-date-ritual','NOTHING BOOKED YET');
+    set('.hp-show-venue-name','The next conjuring is not on the calendar.');
+    var ln2=q('.hp-show-lineup'); if(ln2) ln2.style.display='none';
+    var loc=q('.hp-show-location'); if(loc) loc.style.display='none';
+    var btn=q('.hp-show-btn-c'); if(btn) btn.style.display='none';
+    if(!q('.hp-show-empty')){ var pEl=document.createElement('p'); pEl.className='hp-show-empty'; pEl.textContent='Join the list and you will hear first.'; card.appendChild(pEl); }
+  }
+  var tries=0, iv=setInterval(function(){
+    if(window.jestaDB&&window.jestaShowsClock){
+      clearInterval(iv);
+      window.jestaDB.collection('shows').orderBy('date','asc').get().then(function(snap){
+        if(snap.empty) return; // offline answers an empty snapshot: keep the static card
+        var next=null;
+        snap.forEach(function(doc){ var d=doc.data(); if(d.active===false||next) return; if(window.jestaShowsClock.isUpcoming(d)) next=d; });
+        apply(next);
+      }).catch(function(){ /* static card stays */ });
+    } else if(++tries>80){ clearInterval(iv); }
+  },100);
 })();
 </script>
 <script src="assets/js/jesta-search.js" defer></script>
