@@ -1763,6 +1763,46 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
        'loading' still waiting
        'failed'  the read failed or the database never became available
      Same rule as the Sigil Card Editor (admin-games.js). */
+  /* Verified saves. A green confirm must mean "the server has it": after the write, the document
+     is read back from the server (never the cache) and every field the form sent is compared with
+     the server copy. Green only on a match; otherwise a red message that names the fields. The
+     promise rejects only if the write itself fails, so existing catch blocks keep working.
+       jestaVerifiedSave(ref, data, mode)  mode: 'merge' (default), 'set', 'update'
+         resolves { ok, mismatches, server, snap, ref }
+       jestaVerifyStatus(el, result, okText)  writes the status line, returns result.ok */
+  window.jestaVerifiedSave = function (ref, data, mode) {
+    var FV = (window.firebase && firebase.firestore) ? firebase.firestore.FieldValue : null;
+    function isSentinel(v) { return !!(FV && v && typeof v === 'object' && v instanceof FV); }
+    function norm(v) {
+      if (v === undefined) return null;
+      if (v && typeof v.toDate === 'function') return v.toDate().toISOString();
+      if (v && typeof v === 'object' && !Array.isArray(v)) { var o = {}; Object.keys(v).sort().forEach(function (k) { if (v[k] !== undefined) o[k] = norm(v[k]); }); return o; }
+      if (Array.isArray(v)) return v.map(norm);
+      return v;
+    }
+    var write = mode === 'update' ? ref.update(data) : (mode === 'set' ? ref.set(data) : ref.set(data, { merge: true }));
+    return write.then(function () {
+      return ref.get({ source: 'server' }).then(function (snap) {
+        if (!snap.exists) return { ok: false, mismatches: ['(document missing after save)'], server: null, snap: snap, ref: ref };
+        var server = snap.data() || {}, mismatches = [];
+        Object.keys(data).forEach(function (k) {
+          if (isSentinel(data[k])) return;
+          if (JSON.stringify(norm(data[k])) !== JSON.stringify(norm(server[k]))) mismatches.push(k);
+        });
+        return { ok: mismatches.length === 0, mismatches: mismatches, server: server, snap: snap, ref: ref };
+      }, function (e) {
+        return { ok: false, mismatches: ['(could not read the server copy: ' + (e && e.message || e) + ')'], server: null, snap: null, ref: ref };
+      });
+    });
+  };
+  window.jestaVerifyStatus = function (el, result, okText) {
+    if (!el) return result.ok;
+    var t = new Date(), hh = ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2) + ':' + ('0' + t.getSeconds()).slice(-2);
+    if (result.ok) { el.textContent = (okText || 'Saved') + ' · verified ' + hh; el.className = (el.className || '').replace(/status-err|status-ok/g, '').trim() + ' status-ok'; }
+    else { el.textContent = 'Saved, but the server copy does not match (' + result.mismatches.join(', ') + '). Reload and check.'; el.className = (el.className || '').replace(/status-err|status-ok/g, '').trim() + ' status-err'; }
+    return result.ok;
+  };
+
   window.jestaLoadGuard = function (hostId, key, label) {
     var state = 'loading', retryFn = null, warnId = hostId + '-loadwarn-' + key;
     function clear() { var n = document.getElementById(warnId); if (n && n.parentNode) n.parentNode.removeChild(n); }
@@ -2157,11 +2197,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     // New posts default featured:false; edits leave it untouched (update() only writes provided fields)
     if (!window._bpEditId) payload.featured = false;
     var op = window._bpEditId
-      ? db.collection('blogPosts').doc(window._bpEditId).update(payload)
-      : db.collection('blogPosts').add(payload);
-    op.then(function () {
-      statusEl.textContent = publish ? 'PUBLISHED \u2726' : 'DRAFT SAVED \u2726';
-      statusEl.className   = 'status-msg status-ok';
+      ? window.jestaVerifiedSave(db.collection('blogPosts').doc(window._bpEditId), payload, 'update')
+      : window.jestaVerifiedSave(db.collection('blogPosts').doc(), payload, 'set');
+    op.then(function (res) {
+      statusEl.className = 'status-msg';
+      window.jestaVerifyStatus(statusEl, res, publish ? 'PUBLISHED \u2726' : 'DRAFT SAVED \u2726');
       document.getElementById('bp-title').value    = '';
       document.getElementById('bp-category').value = '';
       document.getElementById('bp-subtitle').value = '';
@@ -3336,11 +3376,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       published:     publish
     };
     var op = window._muEditId
-      ? db.collection('membersUpdates').doc(window._muEditId).update(payload)
-      : db.collection('membersUpdates').add(payload);
-    op.then(function () {
-      statusEl.textContent = publish ? 'PUBLISHED ✦' : 'DRAFT SAVED ✦';
-      statusEl.className   = 'status-msg status-ok';
+      ? window.jestaVerifiedSave(db.collection('membersUpdates').doc(window._muEditId), payload, 'update')
+      : window.jestaVerifiedSave(db.collection('membersUpdates').doc(), payload, 'set');
+    op.then(function (res) {
+      statusEl.className = 'status-msg';
+      window.jestaVerifyStatus(statusEl, res, publish ? 'PUBLISHED ✦' : 'DRAFT SAVED ✦');
       document.getElementById('mu-title').value   = '';
       document.getElementById('mu-content').value = '';
       document.getElementById('mu-date').value    = new Date().toISOString().slice(0,10);
@@ -3608,11 +3648,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
     msg.textContent = 'Saving…';
     var ref = editId ? db.collection('treats').doc(editId) : db.collection('treats').doc();
-    (editId ? ref.update(data) : ref.set(data))
-      .then(function () {
-        msg.textContent = editId ? 'Updated.' : 'Treat added.';
+    window.jestaVerifiedSave(ref, data, editId ? 'update' : 'set')
+      .then(function (res) {
+        msg.className = 'status-msg';
+        var ok = window.jestaVerifyStatus(msg, res, editId ? 'Updated' : 'Treat added');
         treatCancelEdit();
-        setTimeout(function () { msg.textContent = ''; }, 2000);
+        if (ok) setTimeout(function () { msg.textContent = ''; }, 4000);
       })
       .catch(function (e) { msg.textContent = 'Error: ' + esc(e.message); });
   }
@@ -3998,9 +4039,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
       // EDIT: update only editable keys; preserve timestamp + active; never notify on edit
       if(_shEditId){
-        db.collection('shows').doc(_shEditId).update(fields).then(function(){
-          statusEl.textContent='CONJURING UPDATED ✦';
-          statusEl.className='status-msg status-ok';
+        window.jestaVerifiedSave(db.collection('shows').doc(_shEditId), fields, 'update').then(function(res){
+          statusEl.className='status-msg';
+          window.jestaVerifyStatus(statusEl, res, 'CONJURING UPDATED ✦');
           shClearForm();
           self.disabled=false;
         }).catch(function(e){
@@ -4013,7 +4054,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
       // ADD: new doc gets timestamp + optional notify fan-out
       fields.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-      db.collection('shows').add(fields).then(function(){
+      var _shVerified = null;
+      window.jestaVerifiedSave(db.collection('shows').doc(), fields, 'set').then(function(res){
+        _shVerified = res;
         var chain = Promise.resolve();
         if(autoNotify){
           chain = db.collection('notifications').add({
@@ -4026,8 +4069,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         }
         return chain;
       }).then(function(){
-        statusEl.textContent = autoNotify ? 'CONJURING ADDED + MEMBERS NOTIFIED \u2726' : 'CONJURING ADDED \u2726';
-        statusEl.className='status-msg status-ok';
+        statusEl.className='status-msg';
+        window.jestaVerifyStatus(statusEl, _shVerified || {ok:true, mismatches:[]}, autoNotify ? 'CONJURING ADDED + MEMBERS NOTIFIED \u2726' : 'CONJURING ADDED \u2726');
         shClearForm();
         self.disabled=false;
       }).catch(function(e){
@@ -4184,18 +4227,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       };
       var op;
       if (_pmEditId) {
-        op = db.collection('pressArticles').doc(_pmEditId).update(fields); // preserves order + timestamp
+        op = window.jestaVerifiedSave(db.collection('pressArticles').doc(_pmEditId), fields, 'update'); // preserves order + timestamp
       } else {
         op = db.collection('pressArticles').get().then(function(snap){
           fields.order = snap.size + 1;
           fields.timestamp = firebase.firestore.FieldValue.serverTimestamp();
           fields.published = true; // new articles publish by default
-          return db.collection('pressArticles').add(fields);
+          return window.jestaVerifiedSave(db.collection('pressArticles').doc(), fields, 'set');
         });
       }
-      op.then(function(){
-        statusEl.textContent = _pmEditId ? 'ARTICLE UPDATED \u2726' : 'ARTICLE ADDED \u2726';
-        statusEl.className='status-msg status-ok';
+      op.then(function(res){
+        statusEl.className='status-msg';
+        window.jestaVerifyStatus(statusEl, res, _pmEditId ? 'ARTICLE UPDATED \u2726' : 'ARTICLE ADDED \u2726');
         pmClearForm();
         self.disabled=false;
       }).catch(function(e){
@@ -4627,16 +4670,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var self = this;
       var op;
       if (_vmEditId) {
-        op = db.collection('videos').doc(_vmEditId).update({ title: title, youtubeId: id, youtubeUrl: url }); // order/published/timestamp preserved
+        op = window.jestaVerifiedSave(db.collection('videos').doc(_vmEditId), { title: title, youtubeId: id, youtubeUrl: url }, 'update'); // order/published/timestamp preserved
       } else {
-        op = db.collection('videos').add({
+        op = window.jestaVerifiedSave(db.collection('videos').doc(), {
           title: title, youtubeId: id, youtubeUrl: url,
           published: true, order: (_vmSorted.length ? _vmSorted.length + 1 : 1), timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        }, 'set');
       }
-      op.then(function () {
-        document.getElementById('vm-status').textContent = _vmEditId ? 'Updated \u2713' : 'VIDEO ADDED \u2726';
-        document.getElementById('vm-status').className = 'status-msg status-ok';
+      op.then(function (res) {
+        document.getElementById('vm-status').className = 'status-msg';
+        window.jestaVerifyStatus(document.getElementById('vm-status'), res, _vmEditId ? 'Updated \u2713' : 'VIDEO ADDED \u2726');
         vmClearForm();
         document.getElementById('vm-preview').style.display = 'none';
         self.disabled = false;
@@ -4863,6 +4906,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       });
     }
     window._merchReload = merchLoad;
+    window._merchApplyServer = function (docId, server) {
+      for (var i = 0; i < _merchSorted.length; i++) { if (_merchSorted[i].id === docId) { _merchSorted[i].data = server; break; } }
+      _merchSorted.sort(function(a,b){ var oa=(a.data.order!=null?a.data.order:9e15), ob=(b.data.order!=null?b.data.order:9e15); return oa-ob; });
+    };
     merchLoad();
 
     var _merchPrev = document.getElementById('merch-prev'); if (_merchPrev) _merchPrev.addEventListener('click', function(){ if (merchPage > 1) { merchPage--; renderMerchPage(); } });
@@ -4898,10 +4945,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     if (!data.gumroadUrl) { statusEl.textContent='Gumroad URL required'; statusEl.className='merch-card-status status-msg status-err'; return; }
     btn.disabled = true;
     var ref = (docId && docId.length) ? db.collection('merch').doc(docId) : db.collection('merch').doc();
-    ref.set(data, { merge: true }).then(function () {
-      statusEl.textContent = 'ARTIFACT UPDATED \u2726';
-      statusEl.className = 'merch-card-status status-msg status-ok';
+    window.jestaVerifiedSave(ref, data).then(function (res) {
       btn.disabled = false;
+      statusEl.className = 'merch-card-status status-msg';
+      if (!window.jestaVerifyStatus(statusEl, res, 'ARTIFACT UPDATED \u2726')) return;
+      /* refresh the in-memory copy from the server so paging away and back shows the saved text */
+      if (docId && docId.length && window._merchApplyServer) window._merchApplyServer(docId, res.server);
       // If it was a new doc, update the card's ID and wire remove button
       if (!docId || !docId.length) {
         card.id = 'merch-card-' + ref.id;
@@ -4917,7 +4966,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         merchPage = 9e15;                          // v293: jump to the new product (appended last)
         if (window._merchReload) window._merchReload();
       }
-      setTimeout(function () { if(statusEl.textContent.indexOf('UPDATED')!==-1){statusEl.textContent='';} }, 3000);
+      setTimeout(function () { if(statusEl.textContent.indexOf('UPDATED')!==-1){statusEl.textContent='';} }, 6000);
     }).catch(function (e) {
       statusEl.textContent = 'Error: ' + e.message;
       statusEl.className = 'merch-card-status status-msg status-err';
@@ -5400,8 +5449,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
     function pmSaveGroup(groupId, data, statusEl) {
       if (statusEl) { statusEl.className = 'status-msg'; statusEl.textContent = 'Saving…'; }
-      db.collection('photos').doc(groupId).update(data).then(function() {
-        if (statusEl) { statusEl.className = 'status-msg status-ok'; statusEl.textContent = 'Saved ✦'; setTimeout(function(){ statusEl.textContent = ''; }, 2500); }
+      window.jestaVerifiedSave(db.collection('photos').doc(groupId), data, 'update').then(function(res) {
+        if (statusEl) { statusEl.className = 'status-msg'; if (window.jestaVerifyStatus(statusEl, res, 'Saved ✦')) setTimeout(function(){ statusEl.textContent = ''; }, 4000); }
       }).catch(function(err) {
         if (statusEl) { statusEl.className = 'status-msg status-err'; statusEl.textContent = err.message; }
       });
