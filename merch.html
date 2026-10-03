@@ -334,6 +334,7 @@ body {
 }
 
 /* ── PRODUCT CARD ── */
+.product-card{scroll-margin-top:72px}.product-card.merch-target{box-shadow:0 0 0 2px var(--gold,#c9a84c),0 0 24px rgba(var(--gold-rgb,201,168,76),0.35)}
 .product-card {
   display: flex;
   flex-direction: column;
@@ -942,6 +943,22 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <script>
 var _mGrid = document.getElementById('merch-grid');
 
+// Card ids match the site search index (tools/search-index/build.js uses the same slug rule).
+function _mSlug(s) {
+  return String(s || '').toLowerCase().replace(/[àáâ]/g, 'a').replace(/[èéê]/g, 'e').replace(/[ìíî]/g, 'i').replace(/[òóô]/g, 'o').replace(/[ùúû]/g, 'u').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+// Deep link #merch-<slug>: scroll to the card and glow it for a moment. Also answers hashchange.
+function _mRevealFromHash() {
+  var h = window.location.hash || '';
+  if (h.indexOf('#merch-') !== 0) return;
+  var card = document.getElementById(h.slice(1));
+  if (!card) return;
+  card.classList.add('merch-target');
+  setTimeout(function() { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+  setTimeout(function() { card.classList.remove('merch-target'); }, 2600);
+}
+window.addEventListener('hashchange', _mRevealFromHash);
+
 function _mEsc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -953,6 +970,7 @@ function renderMerchCards(docs) {
     var priceStr = d.price !== undefined ? 'Offering: $' + d.price : '';
     var card = document.createElement('div');
     card.className = 'product-card';
+    card.id = 'merch-' + _mSlug(d.name);
     var _imgHtml = (d.name === 'Quarter Days Cassette Bundle')
       ? '<div class="bundle-collage">' +
           '<img src="assets/merch/zodiac-cassette.png" alt="Zodiac" loading="lazy" width="710" height="458">' +
@@ -983,6 +1001,7 @@ function renderMerchCards(docs) {
     _mGrid.appendChild(card);
   });
   requestAnimationFrame(initReadMore);
+  _mRevealFromHash();
 }
 
 function initReadMore() {

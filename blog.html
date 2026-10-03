@@ -186,7 +186,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
 <style>
 .inner-circle-divider{display:flex;align-items:center;justify-content:center;gap:16px;color:var(--gold,#c9a84c);font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;margin:64px 0 2px}.inner-circle-divider::before,.inner-circle-divider::after{content:'';flex:1;max-width:160px;height:1px;background:linear-gradient(to right,transparent,rgba(var(--gold-rgb,201,168,76),0.35))}.inner-circle-divider::after{background:linear-gradient(to left,transparent,rgba(var(--gold-rgb,201,168,76),0.35))}
-#inner-expand-btn{margin-bottom:2rem;}#inner-overflow{overflow:hidden;max-height:0;transition:max-height .6s ease;margin-top:0;}
+article.post{scroll-margin-top:72px}#inner-expand-btn{margin-bottom:2rem;}#inner-overflow{overflow:hidden;max-height:0;transition:max-height .6s ease;margin-top:0;}
 .post-compact{cursor:pointer;padding:22px 30px 20px!important;}
 .post-compact .post-body,.post-compact .post-closing,.post-compact .post-comments,.post-compact .post-rule{display:none!important;}
 .post-compact:hover{border-color:rgba(var(--gold-rgb,201,168,76),0.5);box-shadow:0 0 20px rgba(0,0,0,0.5),0 0 12px rgba(var(--gold-rgb,201,168,76),0.04);transform:translateY(-1px);}
@@ -716,6 +716,24 @@ function pressSectionToggle(){
     if (ov) ov.style.maxHeight = 'none';
   }
 
+  // Deep link #post-<document id> (site search results): reveal the overflow list if the post
+  // sits in it, expand a compact card, and scroll to it. Also answers hashchange for same-page results.
+  function revealPostFromHash() {
+    var h = window.location.hash || '';
+    if (h.indexOf('#post-') !== 0) return;
+    var article = document.getElementById(h.slice(1));
+    if (!article) return;
+    var overflow = document.getElementById('inner-overflow');
+    if (overflow && overflow.contains(article)) {
+      overflow.style.maxHeight = 'none';
+      var eb = document.getElementById('inner-expand-btn');
+      if (eb) eb.style.display = 'none';
+    }
+    if (article.classList.contains('post-compact')) expandCompact(article, article.getAttribute('data-postid'));
+    setTimeout(function() { article.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+  }
+  window.addEventListener('hashchange', revealPostFromHash);
+
   // Collapse an expanded post back to its compact card (own post only)
   function collapseExpanded(article, docId) {
     if (article._compactHTML == null) return;
@@ -785,6 +803,7 @@ function pressSectionToggle(){
         var heroPostId = 'admin-' + hero.id;
         var heroArticle = document.createElement('article');
         heroArticle.className = 'post ' + _CYCLE_CLASSES[0] + ' visible';
+        heroArticle.id = 'post-' + hero.id;
         heroArticle.style.background = _bgC[0];
         heroArticle.innerHTML = buildFullPostHtml(hero.data, heroPostId);
         container.appendChild(heroArticle);
@@ -803,6 +822,7 @@ function pressSectionToggle(){
             compactArticle.className = 'post ' + _CYCLE_CLASSES[idx % 3] + ' post-compact';
             compactArticle.style.background = _bgC[idx % 3];
             compactArticle.setAttribute('data-postid', item.id);
+            compactArticle.id = 'post-' + item.id;
             compactArticle.innerHTML =
               (d.category ? '<span class="post-tag">' + escHtml(d.category) + '</span>' : '')
               + (date ? '<p class="post-date">' + escHtml(date) + '</p>' : '')
@@ -817,6 +837,7 @@ function pressSectionToggle(){
 
         // Show See-all only if there are compact posts
         if (expandBtn) expandBtn.style.display = compacts.length > 0 ? 'block' : 'none';
+        revealPostFromHash();
 
       }, function(err){
         console.error('Admin posts:', err);
