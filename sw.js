@@ -4,7 +4,7 @@
 // UPDATE CACHE_VERSION DATE ON EVERY PUSH
 // ════════════════════════════════════════════════════════════════
 
-var CACHE_NAME = 'jestamang-v468';
+var CACHE_NAME = 'jestamang-v469';
 var BADGE      = '/assets/icons/icon-192.png';
 
 var PRECACHE_URLS = [
@@ -45,6 +45,8 @@ var PRECACHE_URLS = [
   '/assets/js/jesta-track-audio.js',
   '/assets/js/jesta-leaderboard.js',
   '/assets/js/jesta-search-index.js',
+  '/assets/js/jesta-search.js',
+  '/assets/css/jesta-search.css',
   '/assets/data/jesta-outer-planets.json'
 ];
 
