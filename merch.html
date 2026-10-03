@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Merch · Jestamang · Tarot, Apparel & Collectibles</title>
-<meta name="description" content="Jestamang merch: tarot decks, apparel, cassettes, and collectibles tied to the cosmology. Physical objects from the universe delivered worldwide.">
+<title>Merch · Jestamang · Cassettes, Apparel & Collectibles</title>
+<meta name="description" content="Jestamang merch: cassettes, apparel, comix, a card deck and collectibles tied to the cosmology. Physical objects from the universe, each one limited.">
 <meta name="keywords" content="Jestamang, psychedelic music, experimental, indie collective, Quarter Days, NONS, 2K2123, Jestamang universe, psychedelic rock, merch, merchandise, t-shirts, prints, psychedelic art, shop">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://jestamang.com/merch.html">
 <meta property="og:site_name" content="Jestamang">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Merch · Jestamang · Tarot, Apparel & Collectibles">
-<meta property="og:description" content="Jestamang merch: tarot decks, apparel, cassettes, and collectibles tied to the cosmology. Physical objects from the universe delivered worldwide.">
+<meta property="og:title" content="Merch · Jestamang · Cassettes, Apparel & Collectibles">
+<meta property="og:description" content="Jestamang merch: cassettes, apparel, comix, a card deck and collectibles tied to the cosmology. Physical objects from the universe, each one limited.">
 <meta property="og:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 <meta property="og:url" content="https://jestamang.com/merch.html">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Merch · Jestamang · Tarot, Apparel & Collectibles">
-<meta name="twitter:description" content="Jestamang merch: tarot decks, apparel, cassettes, and collectibles tied to the cosmology. Physical objects from the universe delivered worldwide.">
+<meta name="twitter:title" content="Merch · Jestamang · Cassettes, Apparel & Collectibles">
+<meta name="twitter:description" content="Jestamang merch: cassettes, apparel, comix, a card deck and collectibles tied to the cosmology. Physical objects from the universe, each one limited.">
 <meta name="twitter:image" content="https://jestamang.com/assets/homepage/logo%20png.png">
 
 
@@ -979,7 +979,7 @@ function renderMerchCards(docs) {
     var _imgHtml = (d.name === 'Quarter Days Cassette Bundle')
       ? '<div class="bundle-collage">' +
           '<img src="assets/merch/zodiac-cassette.png" alt="Zodiac" loading="lazy" width="710" height="458">' +
-          '<img src="assets/merch/new-aeon-cassette.png" alt="New Aeon" loading="lazy" width="703" height="443">' +
+          '<img src="assets/merch/new-aeon-cassette.png" alt="New Æon" loading="lazy" width="703" height="443">' +
           '<img src="assets/merch/niga-denots-cassette.png" alt="Niga Denots" loading="lazy" width="817" height="506">' +
           '<img src="assets/merch/jestress-melody-cassette.png" alt="Jestress Melody" loading="lazy" width="700" height="446">' +
         '</div>'
@@ -1130,23 +1130,12 @@ var _inquiryForm=document.getElementById('inquiry-form');if(_inquiryForm)_inquir
   msgBox.className = 'modal-msg';
   msgBox.textContent = 'Transmitting...';
 
-  // ── FIRESTORE SAVE (if available) ──
-  var savePromise;
-  if (typeof firebase !== 'undefined' && firebase.firestore) {
-    savePromise = firebase.firestore().collection('inquiries').add({
-      name: name,
-      email: email,
-      item: item,
-      message: message,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      status: 'new'
-    });
-  } else {
-    savePromise = Promise.resolve();
-  }
-
-  savePromise
-  .then(function () {
+  /* The saved inquiry is the record (it appears in the admin list); the email is a notification.
+     So: a failed save is a failure the buyer should see, a failed email after a successful save is
+     not. Provider error text is logged, never shown. */
+  var FRIENDLY_FAIL = 'YOUR TRANSMISSION COULD NOT BE SENT. Please try again in a moment, or write to thejestamang@gmail.com.';
+  var canSave = (typeof firebase !== 'undefined' && firebase.firestore);
+  function sendEmail() {
     return emailjs.send('jestamang', 'template_5l4a1lk', {
       from_name:  name,
       from_email: email,
@@ -1154,21 +1143,40 @@ var _inquiryForm=document.getElementById('inquiry-form');if(_inquiryForm)_inquir
       message:    (item ? ('[Artifact: ' + item + ']\n\n') : '') + message,
       to_email:   'thejestamang@gmail.com'
     });
-  })
-  .then(function () {
+  }
+  function showSuccess() {
     msgBox.textContent = 'YOUR TRANSMISSION HAS BEEN RECEIVED. We will respond when the time is right.';
     msgBox.className = 'modal-msg success';
     document.getElementById('inquiry-form').reset();
     inqItem.value = item;
     setTimeout(closeModal, 3000);
-  })
-  .catch(function (error) {
-    console.error('EmailJS/merch inquiry error:', error);
-    var detail = (error && error.text) ? error.text : (error && error.message ? error.message : 'unknown error');
-    msgBox.textContent = 'THE TRANSMISSION FAILED: ' + detail;
+  }
+  function showFailure(error) {
+    console.error('merch inquiry error:', error);
+    msgBox.textContent = FRIENDLY_FAIL;
     msgBox.className = 'modal-msg error';
     submitBtn.disabled = false;
-  });
+  }
+
+  if (canSave) {
+    firebase.firestore().collection('inquiries').add({
+      name: name,
+      email: email,
+      item: item,
+      message: message,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      status: 'new'
+    })
+    .then(function () {
+      /* saved: the inquiry is in the admin list whatever the email does */
+      return sendEmail().catch(function (e) { console.error('merch inquiry email failed (inquiry was saved):', e); });
+    })
+    .then(showSuccess)
+    .catch(showFailure);
+  } else {
+    /* no Firestore on the page: the email is the only record, so its failure is a failure */
+    sendEmail().then(showSuccess).catch(showFailure);
+  }
 });
 </script>
 
