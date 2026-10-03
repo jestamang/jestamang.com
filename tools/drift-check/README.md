@@ -26,6 +26,11 @@ What it compares
 - sitemap.xml: every entry has a file; every indexable page is listed; lastmod not older than last commit
 - `siteConfig/pageMeta` overrides vs the static title/description they replace
 - pre-push guard: uncommitted HTML/JS/CSS changes without a `CACHE_NAME` bump in sw.js
+- search index: `assets/js/jesta-search-index.js` equals a fresh build by `tools/search-index/build.js` (releases, lyrics, entities, merch, blogPosts)
 
 Known intentional differences it does not flag: radio counts (35 albums / 24 artists) vs
 catalog counts (37 releases / 27 entities); Revolution Epilogue and Sleep Cycle absent from R2.
+
+## Search index
+
+The check `search index` rebuilds the sitewide search data with `tools/search-index/build.js` from the same Firestore reads and compares it to the committed `assets/js/jesta-search-index.js`. Any difference is an ERROR (the push is blocked); run `node tools/search-index/build.js` and commit the result.

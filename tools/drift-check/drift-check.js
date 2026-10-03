@@ -242,6 +242,25 @@ function checkSitemap() {
   } catch (e) { INFO(area, 'git not available; lastmod freshness skipped'); }
   if (!findings.some((f) => f.area === area && f.level !== 'INFO')) INFO(area, `${entries.length} entries, all files exist, all indexable pages listed`);
 }
+function checkSearchIndex(data) {
+  // The sitewide search index is generated from Firestore by tools/search-index/build.js; the committed
+  // file must equal a fresh build (same sources this script already fetched), or every search result
+  // that depends on a renamed, added or removed document silently goes stale.
+  const area = 'search index';
+  let gen;
+  try { gen = require(path.join(__dirname, '..', 'search-index', 'build.js')); } catch (e) { WARN(area, 'tools/search-index/build.js could not be loaded; check skipped: ' + e.message); return; }
+  let built;
+  try { built = gen.buildIndex(data, REPO); } catch (e) { ERR(area, 'build failed: ' + e.message); return; }
+  for (const w of built.warnings) WARN(area, w);
+  const fresh = gen.serialize(built.entries);
+  const committed = exists(gen.INDEX_REL) ? read(gen.INDEX_REL) : '';
+  if (fresh === committed) { INFO(area, `${gen.INDEX_REL} matches a fresh build (${built.entries.length} entries)`); return; }
+  const d = gen.diffSummary(gen.parseIndex(committed), built.entries);
+  const sample = (list) => list.slice(0, 5).join('; ') + (list.length > 5 ? '; ...' : '');
+  ERR(area, `${gen.INDEX_REL} is stale vs a fresh build: +${d.added.length} new, -${d.removed.length} gone, ${d.retargeted.length} retargeted` +
+    (d.added.length ? ` | new: ${sample(d.added)}` : '') + (d.removed.length ? ` | gone: ${sample(d.removed)}` : '') + (d.retargeted.length ? ` | retargeted: ${sample(d.retargeted)}` : '') +
+    '. Run: node tools/search-index/build.js and commit the result.');
+}
 function checkSwBump() {
   const area = 'service worker';
   try {
@@ -272,8 +291,8 @@ function checkPageMeta(pageMeta) {
   const t0 = Date.now();
   if (!exists('index.html') || !exists('sw.js')) { console.error('repo not found at ' + REPO + ' (use --repo)'); process.exit(2); }
   const cfg = firebaseConfig();
-  const [shows, releases, entities, lyrics, photos, indexSections, pageMeta, manifest] = await Promise.all([
-    fsList(cfg, 'shows'), fsList(cfg, 'releases'), fsList(cfg, 'entities'), fsList(cfg, 'lyrics'), fsList(cfg, 'photos'),
+  const [shows, releases, entities, lyrics, photos, merch, blogPosts, indexSections, pageMeta, manifest] = await Promise.all([
+    fsList(cfg, 'shows'), fsList(cfg, 'releases'), fsList(cfg, 'entities'), fsList(cfg, 'lyrics'), fsList(cfg, 'photos'), fsList(cfg, 'merch'), fsList(cfg, 'blogPosts'),
     fsDoc(cfg, 'siteConfig/indexSections'), fsDoc(cfg, 'siteConfig/pageMeta'), fetch(MANIFEST_URL).then((r) => r.json()),
   ]);
   const extras = ((indexSections && indexSections.sections) || []).find((s) => s.key === 'shows');
@@ -289,6 +308,7 @@ function checkPageMeta(pageMeta) {
   checkPhotos(photos);
   checkSitemap();
   checkPageMeta(pageMeta);
+  checkSearchIndex({ releases, lyrics, entities, merch, blogPosts });
   checkSwBump();
 
   const order = { ERROR: 0, WARN: 1, INFO: 2 };
