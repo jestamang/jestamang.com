@@ -131,10 +131,14 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .ml-signup-box .ml-form-embedContent,.ml-signup-box .ml-form-embedContentDefault{display:none!important}
 .ml-signup-box input[type="email"],
 .ml-signup-box input[type="text"]{background:transparent!important;border:none!important;border-bottom:1px solid rgba(var(--gold-rgb,201,168,76),0.3)!important;border-radius:0!important;color:#e8e0d0!important;font-family:'Luminari',serif!important;font-size:16px!important;letter-spacing:0.12em!important;padding:8px 4px!important;outline:none!important;width:100%!important;max-width:320px!important;box-shadow:none!important;text-align:center!important;caret-color:var(--gold,#c9a84c)!important;-webkit-appearance:none!important;appearance:none!important}
-.ml-signup-box input[type="email"]::placeholder,
+.ml-signup-box #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-fieldRow input,
+.ml-signup-box #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-fieldRow input:focus{background:transparent!important;border:none!important;border-bottom:1px solid rgba(var(--gold-rgb,201,168,76),0.3)!important;border-radius:0!important;color:#e8e0d0!important;font-family:'Luminari',serif!important;font-size:16px!important;letter-spacing:0.12em!important;padding:8px 4px!important;outline:none!important;width:100%!important;max-width:320px!important;box-shadow:none!important;text-align:center!important;caret-color:var(--gold,#c9a84c)!important;height:auto!important;line-height:1.4!important}
+.ml-signup-box #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-fieldRow input:focus{border-bottom-color:var(--gold,#c9a84c)!important}
+.ml-signup-box #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-fieldRow input::placeholder{color:rgba(var(--gold-rgb,201,168,76),0.22)!important;font-style:italic!important}
+\1
 .ml-signup-box input[type="text"]::placeholder{color:rgba(var(--gold-rgb,201,168,76),0.22)!important;font-style:italic!important}
 .ml-signup-box .ml-subscribe-button,.ml-signup-box button[type="button"]{display:none!important;}
-.ml-signup-box #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit button[type="submit"],.ml-signup-box .ml-form-embedSubmit button[type="submit"]{background:var(--gold,#c9a84c)!important;color:#08060a!important;font-family:'Luminari',serif!important;font-size:0.6rem!important;font-weight:normal!important;line-height:normal!important;letter-spacing:0.45em!important;text-transform:uppercase!important;text-align:center!important;border:none!important;border-radius:0!important;padding:0!important;width:auto!important;min-width:200px!important;min-height:46px!important;cursor:pointer!important;margin-top:18px!important;transition:box-shadow 0.2s!important;display:block!important;margin-left:auto!important;margin-right:auto!important;box-shadow:none!important}
+.ml-signup-box #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit button[type="submit"],.ml-signup-box .ml-form-embedSubmit button[type="submit"]{background:var(--gold,#c9a84c)!important;color:#08060a!important;font-family:'Luminari',serif!important;font-size:0.72rem!important;font-weight:normal!important;line-height:normal!important;letter-spacing:0.45em!important;text-transform:uppercase!important;text-align:center!important;border:none!important;border-radius:0!important;padding:0!important;width:auto!important;min-width:200px!important;min-height:46px!important;cursor:pointer!important;margin-top:18px!important;transition:box-shadow 0.2s!important;display:block!important;margin-left:auto!important;margin-right:auto!important;box-shadow:none!important}
 .ml-signup-box #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit,.ml-signup-box .ml-form-embedSubmit{float:none!important;text-align:center!important}
 .ml-signup-box #mlb2-39458675.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit button[type="submit"]:hover,.ml-signup-box .ml-form-embedSubmit button[type="submit"]:hover{background:var(--gold,#c9a84c)!important;box-shadow:0 0 24px rgba(var(--gold-rgb,201,168,76),0.35)!important}
 .ml-signup-box .ml-form-successBody,.ml-signup-box .ml-form-successContent{background:transparent!important;border:none!important;box-shadow:none!important}
@@ -238,7 +242,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <section class="ml-signup-sect">
   <div class="ml-signup-box">
     <p class="ml-signup-title">JOIN THE JESTAGANG</p>
-    <div class="ml-embedded" data-form="8EZtSf"></div>
+    <div class="ml-embedded" data-form="8EZtSf" aria-live="polite"></div>
   </div>
 </section>
 </div>
@@ -413,14 +417,24 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     if (!pager) return;
     if (totalPages <= 1) { pager.innerHTML = ''; pager.style.display = 'none'; return; }
     pager.style.display = '';
-    pager.innerHTML =
-      '<button type="button" class="shows-pager-btn" id="shows-past-prev"' + (pastPage <= 1 ? ' disabled' : '') + ' aria-label="Previous page">\u2190</button>' +
-      '<span class="shows-pager-label">Page ' + pastPage + ' / ' + totalPages + '</span>' +
-      '<button type="button" class="shows-pager-btn" id="shows-past-next"' + (pastPage >= totalPages ? ' disabled' : '') + ' aria-label="Next page">\u2192</button>';
+    // Built once and updated in place, so keyboard focus survives a page change and the
+    // label (a live region) announces "Page 2 / 2".
+    if (!document.getElementById('shows-past-prev')) {
+      pager.innerHTML =
+        '<button type="button" class="shows-pager-btn" id="shows-past-prev" aria-label="Previous page">\u2190</button>' +
+        '<span class="shows-pager-label" role="status" aria-live="polite"></span>' +
+        '<button type="button" class="shows-pager-btn" id="shows-past-next" aria-label="Next page">\u2192</button>';
+      document.getElementById('shows-past-prev').addEventListener('click', function () { if (pastPage > 1) { pastPage--; renderPastPage(); } });
+      document.getElementById('shows-past-next').addEventListener('click', function () { if (pastPage < totalPages) { pastPage++; renderPastPage(); } });
+    }
     var prev = document.getElementById('shows-past-prev');
     var next = document.getElementById('shows-past-next');
-    if (prev) prev.addEventListener('click', function () { if (pastPage > 1) { pastPage--; renderPastPage(); } });
-    if (next) next.addEventListener('click', function () { if (pastPage < totalPages) { pastPage++; renderPastPage(); } });
+    pager.querySelector('.shows-pager-label').textContent = 'Page ' + pastPage + ' / ' + totalPages;
+    prev.disabled = pastPage <= 1;
+    next.disabled = pastPage >= totalPages;
+    // a button that just became disabled drops focus: hand it to the other one
+    if (document.activeElement === prev && prev.disabled) next.focus();
+    if (document.activeElement === next && next.disabled) prev.focus();
   }
 
   function renderPast(past) {
@@ -597,7 +611,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
 <style>.hp-footer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;gap:0!important;background:rgba(0,0,0,0.7);padding:16px 24px 20px;font-family:'Luminari',serif;font-size:0.7rem;letter-spacing:0.1em;color:rgba(var(--gold-rgb,201,168,76),0.8);text-shadow:0 1px 4px rgba(0,0,0,0.8);position:relative;z-index:10;}}.hp-footer a{color:var(--gold,#c9a84c)!important;text-decoration:none;white-space:nowrap!important;}.hp-footer a:hover{color:var(--gold,#c9a84c)!important;}.hp-footer a:visited{color:var(--gold,#c9a84c)!important;}.hp-footer-mark{margin:0 10px;color:rgba(var(--gold-rgb,201,168,76),0.4);white-space:nowrap!important;}@media(max-width:768px){.hp-footer{padding:8px 12px 20px!important;font-size:0.7rem!important;flex-direction:row!important;flex-wrap:nowrap!important;}}</style>
 <style>@media(max-width:768px){#jt-bg{position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important}body{min-height:100vh!important;overflow-x:hidden!important}}</style>
-<style>/* reserve space before Firestore shows load */@media(max-width:768px){#shows-upcoming{min-height:500px}}</style>
 <style>@media(max-width:768px){body{background-attachment:scroll!important}}</style>
 <!-- shows-mobile-fills --><style>@media(max-width:768px){.past-entry{background:rgba(0,0,0,0.65)!important;border-bottom:1px solid rgba(var(--gold-rgb,201,168,76),0.1)!important}.past-entry:nth-child(3n+1){border-left:4px solid #02E127!important}.past-entry:nth-child(3n+2){border-left:4px solid #7800DE!important}.past-entry:nth-child(3n+3){border-left:4px solid #FB3838!important}.show-card--tba{background:rgba(0,0,0,0.7)!important}.ml-signup-sect{background:rgba(0,0,0,0.7)!important;padding-top:28px!important;padding-bottom:28px!important}}</style>
 </body> </html>
