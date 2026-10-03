@@ -384,7 +384,7 @@ var IDX = [
 {n:'Ocean Piano',u:'/lyrics.html#lp-venus-and-the-flytrap-venus-and-the-flytrap-7',c:'Track – Venus and the Flytrap',i:'♁',t:'ocean piano venus and the flytrap song music'},
 {n:'Hard Candy',u:'/lyrics.html#lp-venus-and-the-flytrap-venus-and-the-flytrap-8',c:'Track – Venus and the Flytrap',i:'♁',t:'hard candy venus and the flytrap song music'},
 {n:'Living Our Shameful Lives',u:'/lyrics.html#lp-venus-and-the-flytrap-venus-and-the-flytrap-9',c:'Track – Venus and the Flytrap',i:'♁',t:'living our shameful lives venus and the flytrap song music'},
-{n:'Who In Here Wants To Get Hypnotized?',u:'/lyrics.html#lp-perfect-trip-covers-the-greats-1',c:'Track – Covers the Greats',i:'♁',t:'who in here wants to get hypnotized? covers the greats song music'},
+{n:'Who In Here Wants to Get Hypnotized?',u:'/lyrics.html#lp-perfect-trip-covers-the-greats-1',c:'Track – Covers the Greats',i:'♁',t:'who in here wants to get hypnotized? covers the greats song music'},
 {n:'The Duke',u:'/lyrics.html#lp-perfect-trip-covers-the-greats-2',c:'Track – Covers the Greats',i:'♁',t:'the duke covers the greats song music'},
 {n:'Lady Day',u:'/lyrics.html#lp-perfect-trip-covers-the-greats-3',c:'Track – Covers the Greats',i:'♁',t:'lady day covers the greats song music'},
 {n:'Evol',u:'/lyrics.html#lp-perfect-trip-covers-the-greats-4',c:'Track – Covers the Greats',i:'♁',t:'evol covers the greats song music'},
