@@ -28,14 +28,6 @@
     '#jtnav-mob-login{display:none!important}',
     '@media(max-width:767px){#jtnav-mob-login{display:flex!important;align-items:center;font-family:\'Luminari\',serif!important;color:#c9a84c!important;font-size:0.62rem!important;letter-spacing:0.16em!important;text-transform:uppercase!important;transition:opacity 0.2s!important}}',
     '#jtnav-mob-login:hover{opacity:0.75}',
-    /* Fix 2: normalize search result font sizes sitewide */
-    '.jsearch-item-name{font-size:0.88rem!important;font-family:\'Luminari\',serif!important}',
-    '.jsearch-item-name mark{font-size:inherit!important}',
-    /* Fix 1: mobile close button inside .jsearch-hint — hidden on desktop */
-    '#jsearch-mob-close-btn{display:none!important}',
-    '@media(max-width:768px){#jsearch-mob-close-btn{display:flex!important;align-items:center;justify-content:center;background:none;border:none;color:rgba(201,168,76,0.8);font-family:\'Luminari\',Georgia,serif;font-size:1rem;cursor:pointer;min-width:44px;min-height:44px;flex-shrink:0;padding:0;line-height:1}}',
-    '@media(max-width:768px){.jsearch-hint{display:flex!important;align-items:center;text-align:left;gap:0}}',
-    'input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;display:none}',
     /* Shrink tier 860–1200: keep links+auth+search, compact link sizing, drop socials+divider */
     '@media(min-width:860px) and (max-width:1200px){#jtnav-divider,#jtnav-platforms{display:none!important}.jtnav-link{font-size:0.62rem!important;letter-spacing:0.06em!important;padding:0 5px!important}.jtnav-dot{padding:0 1px!important}}',
     /* Menu tier 768–859: hamburger (same layout as old block, narrowed upper bound) */
@@ -423,92 +415,6 @@
         else localStorage.removeItem('jestaChartsActive');
       } catch (e) {}
     });
-  }
-
-  // ── Search overlay close button ───────────────────────────────
-  function initSearchClose() {
-    var inner = document.getElementById('jsearch-inner');
-    if (!inner || document.getElementById('jsearch-close-btn')) return;
-    var input = document.getElementById('jsearch-input');
-
-    // Wrap the input in a stable-height flex row so the close button is
-    // vertically centered relative to the input height only — not the
-    // results area below it (whose growth caused top:50% to shift).
-    var row = document.createElement('div');
-    row.id = 'jsearch-input-row';
-    row.style.cssText = 'display:flex;align-items:center;gap:4px;';
-    if (input) {
-      inner.insertBefore(row, input);
-      row.appendChild(input);
-      input.style.flex = '1';
-      input.style.minWidth = '0';
-    } else {
-      inner.appendChild(row);
-    }
-    // The original padding-right:40px was reserved for the absolute button; reduce now.
-    inner.style.paddingRight = '8px';
-
-    var btn = document.createElement('button');
-    btn.id = 'jsearch-close-btn';
-    btn.setAttribute('aria-label', 'Close search');
-    btn.textContent = '\u2716';
-    btn.style.cssText = [
-      'background:none',
-      'border:none',
-      'color:#c9a84c',
-      'font-size:1.2rem',
-      'cursor:pointer',
-      'width:44px',
-      'height:44px',
-      'min-width:44px',
-      'min-height:44px',
-      'flex-shrink:0',
-      'display:flex',
-      'align-items:center',
-      'justify-content:center',
-      'font-family:\'Luminari\',serif',
-      'transition:color 0.2s',
-      'padding:0',
-      'line-height:1'
-    ].join(';');
-    btn.addEventListener('click', function () {
-      if (typeof window.jSearchClose === 'function') window.jSearchClose();
-    });
-    btn.addEventListener('mouseenter', function () { btn.style.color = '#fff'; });
-    btn.addEventListener('mouseleave', function () { btn.style.color = '#c9a84c'; });
-    row.appendChild(btn);
-
-    // Mobile: ✕ button prepended inside .jsearch-hint, visible only on mobile via CSS
-    function createMobCloseBtn() {
-      var mob = document.createElement('button');
-      mob.id = 'jsearch-mob-close-btn';
-      mob.setAttribute('aria-label', 'Close search');
-      mob.textContent = '\u2715';
-      mob.addEventListener('click', function () {
-        if (typeof window.jSearchClose === 'function') window.jSearchClose();
-      });
-      return mob;
-    }
-
-    function injectMobClose() {
-      var hint = document.querySelector('.jsearch-hint');
-      if (hint && !document.getElementById('jsearch-mob-close-btn')) {
-        hint.insertBefore(createMobCloseBtn(), hint.firstChild);
-      }
-    }
-
-    var results = document.getElementById('jsearch-results');
-    if (results) {
-      injectMobClose();
-      var obs = new MutationObserver(function () { injectMobClose(); });
-      obs.observe(results, { childList: true, subtree: false });
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSearchClose);
-  } else {
-    initSearchClose();
   }
 
   // ── Sitewide theme loader ─────────────────────────────────────
