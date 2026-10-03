@@ -101,10 +101,15 @@ function checkHomepageShowCard(index, extras) {
   for (const [k, sv] of pairs) { const fv = norm(extras[k]); if (fv !== sv) ERR(area, `${k}: static ${JSON.stringify(sv)} vs Firestore ${JSON.stringify(fv)}`); }
   if (!hasErr(area)) INFO(area, 'matches Firestore indexSections.shows.extras (6/6)');
 }
+// Same rule as window.jestaShowsClock in assets/js/jesta-auth.js: a show is upcoming until 06:00 Eastern
+// the morning after its date (shows are in US Eastern time).
+const nthSunday = (y, m, n) => 1 + ((7 - new Date(Date.UTC(y, m, 1)).getUTCDay()) % 7) + (n - 1) * 7;
+const easternOffset = (ds) => { const [y, m, d] = String(ds).split('-').map(Number); const dst = (m > 3 && m < 11) || (m === 3 && d >= nthSunday(y, 2, 2)) || (m === 11 && d < nthSunday(y, 10, 1)); return dst ? '-04:00' : '-05:00'; };
+const showEnded = (s) => { if (!/^\d{4}-\d{2}-\d{2}$/.test(String(s.date || ''))) return true; const n = new Date(s.date + 'T12:00:00Z'); n.setUTCDate(n.getUTCDate() + 1); const ns = n.toISOString().slice(0, 10); return Date.now() >= Date.parse(ns + 'T06:00:00' + easternOffset(ns)); };
+const isUpcomingShow = (s) => s.upcoming === true || (s.upcoming !== false && !showEnded(s));
 function splitShows(shows) {
-  const t = today();
-  const upcoming = shows.filter((s) => s.date && s.date >= t && s.active !== false).sort((a, b) => a.date.localeCompare(b.date));
-  const past = shows.filter((s) => s.date && s.date < t).sort((a, b) => b.date.localeCompare(a.date));
+  const upcoming = shows.filter((s) => s.date && s.active !== false && isUpcomingShow(s)).sort((a, b) => a.date.localeCompare(b.date));
+  const past = shows.filter((s) => s.date && !isUpcomingShow(s)).sort((a, b) => b.date.localeCompare(a.date));
   return { next: upcoming[0] || null, upcoming, past };
 }
 function checkEventLd(html, file, next) {
@@ -299,6 +304,10 @@ function checkPageMeta(pageMeta) {
   const index = read('index.html');
   const split = splitShows(shows);
   checkHomepageShowCard(index, extras && extras.extras);
+  if (extras && extras.extras && split.next) {
+    const ex = extras.extras;
+    if (norm(ex.venue) !== norm(split.next.venue) || norm(ex.location) !== norm(split.next.city)) WARN('index.html show card', `indexSections shows extras (${ex.venue}, ${ex.location}) differ from the next shows doc (${split.next.venue}, ${split.next.city}); the page shows the shows doc`);
+  }
   checkEventLd(index, 'index.html', split.next);
   checkShowsPage(split);
   checkAlbums(releases, entities);

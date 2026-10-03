@@ -743,3 +743,31 @@ window.openSocial = function(platform) {
     } else if (++t > 80) { clearInterval(iv); }
   }, 100);
 })();
+
+// ── Shows clock ───────────────────────────────────────────────
+// Shows are in US Eastern time. A show stays "upcoming" until 06:00 Eastern the morning after its
+// date, so a 5pm-to-1am night is on the page until it is really over, whatever the visitor's zone.
+// Used by shows.html and index.html; tools/drift-check mirrors the same rule.
+(function () {
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function nthSunday(y, m, n) { var first = new Date(Date.UTC(y, m, 1)).getUTCDay(); return 1 + ((7 - first) % 7) + (n - 1) * 7; }
+  function easternOffset(dateStr) {
+    var p = String(dateStr || '').split('-'); var y = +p[0], m = +p[1], d = +p[2];
+    if (!y || !m || !d) return '-05:00';
+    var dst = (m > 3 && m < 11) || (m === 3 && d >= nthSunday(y, 2, 2)) || (m === 11 && d < nthSunday(y, 10, 1));
+    return dst ? '-04:00' : '-05:00';
+  }
+  function endMs(show) {
+    if (!show || !/^\d{4}-\d{2}-\d{2}$/.test(String(show.date || ''))) return NaN;
+    var next = new Date(show.date + 'T12:00:00Z'); next.setUTCDate(next.getUTCDate() + 1);
+    var ns = next.getUTCFullYear() + '-' + pad(next.getUTCMonth() + 1) + '-' + pad(next.getUTCDate());
+    return Date.parse(ns + 'T06:00:00' + easternOffset(ns));
+  }
+  function isUpcoming(show, nowMs) {
+    if (!show) return false;
+    if (show.upcoming === true) return true;
+    if (show.upcoming === false) return false;
+    var e = endMs(show); return isFinite(e) && (nowMs || Date.now()) < e;
+  }
+  window.jestaShowsClock = { easternOffset: easternOffset, endMs: endMs, isUpcoming: isUpcoming };
+})();
