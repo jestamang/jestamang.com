@@ -269,8 +269,11 @@ window.almSave = function(docId) {
   var statusEl = document.getElementById('alm-edit-status-'+docId);
   var saveBtn = document.querySelector('#alm-edit-'+docId+' .btn-gold');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
-  window.jestaDB.collection('releases').doc(docId).set(data, {merge:true})
-    .then(function(){
+  window.jestaVerifiedSave(window.jestaDB.collection('releases').doc(docId), data)
+    .then(function(res){
+      if (!window.jestaVerifyStatus(statusEl, res, 'Saved')) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save'; } return; }
+      /* the server copy is what the editor now holds and shows */
+      data = res.server || data;
       _almDocs[docId] = data;
       /* Re-render this row */
       var rowEl = document.getElementById('alm-row-'+docId);
@@ -284,7 +287,8 @@ window.almSave = function(docId) {
           window.jestaDB.collection('releases').doc(docId).update({visible: newChk.checked}).catch(function(){});
         });
       }
-      if (statusEl) { statusEl.textContent = 'Saved.'; statusEl.className='status-msg status-ok'; }
+      var st2 = document.getElementById('alm-edit-status-'+docId);
+      if (st2) window.jestaVerifyStatus(st2, res, 'Saved');
     })
     .catch(function(e){
       if (statusEl) { statusEl.textContent = 'Save failed: '+(e.message||e); statusEl.className='status-msg status-err'; }
@@ -454,10 +458,12 @@ window.asmSaveEdit = function(slug){
   var name=v('name'), caption=v('caption'), grid=v('grid');
   var statusEl=document.getElementById('asm-edit-status-'+slug);
   if (!name){ if(statusEl){statusEl.textContent='Name is required.';statusEl.className='status-msg status-err';} return; }
-  window.jestaDB.collection('albumSections').doc(slug).set({name:name, caption:caption, gridClass:grid}, {merge:true})
-    .then(function(){
-      var s=_asmFind(slug); if(s){ s.name=name; s.caption=caption; s.gridClass=grid; }
+  window.jestaVerifiedSave(window.jestaDB.collection('albumSections').doc(slug), {name:name, caption:caption, gridClass:grid})
+    .then(function(res){
+      if (!window.jestaVerifyStatus(statusEl, res, 'Saved')) return;
+      var sv=res.server||{}; var s=_asmFind(slug); if(s){ s.name=sv.name; s.caption=sv.caption; s.gridClass=sv.gridClass; }
       asmRenderList();
+      var st2=document.getElementById('asm-edit-status-'+slug); if(st2) window.jestaVerifyStatus(st2, res, 'Saved');
     })
     .catch(function(e){ if(statusEl){statusEl.textContent='Save failed: '+(e.message||e);statusEl.className='status-msg status-err';} });
 };
@@ -738,12 +744,14 @@ window.entDoDelete=function(docId){
 window.entSave=function(docId){
   var data=entReadForm('ent-e-'+docId);
   if(!data.name){var s=document.getElementById('ent-save-status-'+docId);if(s){s.textContent='Name required.';s.className='status-msg status-err';}return;}
-  window.jestaDB.collection('entities').doc(docId).set(data,{merge:true})
-    .then(function(){
+  window.jestaVerifiedSave(window.jestaDB.collection('entities').doc(docId), data)
+    .then(function(res){
+      var s=document.getElementById('ent-status');
+      if(!window.jestaVerifyStatus(s, res, 'Saved')){ var s2=document.getElementById('ent-save-status-'+docId); if(s2) window.jestaVerifyStatus(s2, res, 'Saved'); return; }
+      data=res.server||data;
       _entDocs[docId]=data;
       var row=document.getElementById('ent-row-'+docId);
       if(row)row.outerHTML=entRowHtml(docId,data);
-      var s=document.getElementById('ent-status');if(s){s.textContent='Saved.';s.className='status-msg status-ok';}
     })
     .catch(function(e){
       var s=document.getElementById('ent-save-status-'+docId);if(s){s.textContent='Error: '+e.message;s.className='status-msg status-err';}
@@ -1023,8 +1031,8 @@ window.lymDoDelete=function(docId){
 window.lymSave=function(docId){
   var data=lymReadForm('lym-e-'+docId);
   if(!data.albumTitle){var s=document.getElementById('lym-save-status-'+docId);if(s){s.textContent='Album title required.';s.className='status-msg status-err';}return;}
-  window.jestaDB.collection('lyrics').doc(docId).set(data,{merge:true})
-    .then(function(){_lymDocs[docId]=data;var row=document.getElementById('lym-row-'+docId);if(row)row.outerHTML=lymRowHtml(docId,data);var s=document.getElementById('lym-status');if(s){s.textContent='Saved.';s.className='status-msg status-ok';}})
+  window.jestaVerifiedSave(window.jestaDB.collection('lyrics').doc(docId), data)
+    .then(function(res){var s=document.getElementById('lym-status');if(!window.jestaVerifyStatus(s,res,'Saved')){var s2=document.getElementById('lym-save-status-'+docId);if(s2)window.jestaVerifyStatus(s2,res,'Saved');return;}data=res.server||data;_lymDocs[docId]=data;var row=document.getElementById('lym-row-'+docId);if(row)row.outerHTML=lymRowHtml(docId,data);})
     .catch(function(e){var s=document.getElementById('lym-save-status-'+docId);if(s){s.textContent='Error: '+e.message;s.className='status-msg status-err';}});
 };
 
