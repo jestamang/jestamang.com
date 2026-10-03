@@ -752,7 +752,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   <div class="gold-rule-sm"></div>
 
   <div class="chat-wrap">
-    <div id="chat-messages">
+    <div id="chat-messages" role="log" aria-live="polite" aria-relevant="additions" aria-label="Chat messages">
       <div class="chat-empty" id="chat-empty">No transmissions yet. Be the first to speak.</div>
     </div>
     <div class="chat-input-row">
@@ -1113,6 +1113,19 @@ document.addEventListener('DOMContentLoaded', function(){
     input.addEventListener('input', autoResize);
   }
 
+  /* Today: clock only. Yesterday: "Yesterday, 7:22 PM". Older: "Sep 28, 7:22 PM" (with the year once it differs). */
+  function chatTimeLabel(ts){
+    var time = ts.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    var now = new Date();
+    var day = function(d){ return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate(); };
+    if(day(ts) === day(now)) return time;
+    var y = new Date(now); y.setDate(now.getDate()-1);
+    if(day(ts) === day(y)) return 'Yesterday, '+time;
+    var opts = {month:'short',day:'numeric'};
+    if(ts.getFullYear() !== now.getFullYear()) opts.year = 'numeric';
+    return ts.toLocaleDateString([],opts)+', '+time;
+  }
+
   function renderMessages(snap, container){
     var atBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 24;
     var emptyEl  = document.getElementById('chat-empty');
@@ -1139,7 +1152,7 @@ document.addEventListener('DOMContentLoaded', function(){
       var isMe= currentUser && d.uid === currentUser.uid;
       var canDel = isMe || isAdmin;
       var ts  = d.ts ? new Date(d.ts.toMillis()) : new Date();
-      var timeStr = ts.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      var timeStr = chatTimeLabel(ts);
 
       var wrap = document.createElement('div');
       wrap.className  = 'chat-msg'+(isMe?' chat-msg--me':'');
