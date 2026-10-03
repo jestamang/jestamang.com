@@ -627,7 +627,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="adm-ornament">✦</div>
     <div class="adm-section" id="sec-35"> <div class="adm-section-title">✦ Arcade</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Edit the Arcade's curated text — the header (title + subtitle) and each game's name, description, tag, and glyph. Blank = the hardcoded default stays (fallback-first). Leaderboards and play links are not editable here.</div> <div id="am-form"></div> </div>
 <div class="adm-section" id="sec-36"> <div class="adm-section-title">✦ Profile — Cosmic Signature</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Edit the shared Sun / Moon / Rising narrative templates shown on the natal chart. These are the same for every visitor with that sign — per-user birth data is not editable here. Blank a field (or restore it to the default text) to fall back to the hardcoded site default. Save writes a full snapshot; only genuine edits are stored.</div> <div id="pf-form"></div> </div>
-<div class="adm-section" id="sec-37"> <div class="adm-section-title">✦ Comix</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Edit the Comix cover's title and subtitle. Blank a field (or restore the default text) to fall back to the hardcoded site default. The comic's pages, count, and order are positional (assets/comix/N.jpg) and are not editable here — changing those is a code change.</div> <div id="cx-form"></div> </div>
+<div class="adm-section" id="sec-37"> <div class="adm-section-title">✦ Comix</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Edit the Comix cover's title and subtitle. Blank a field (or restore the default text) to fall back to the hardcoded site default. The comic's pages, count, and order are positional (assets/comix/N.jpg) and are not editable here. Changing those is a code change.</div> <div id="cx-form"></div> </div>
 <div class="adm-section" id="sec-34"> <div class="adm-section-title">✦ Radio</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Edit the Listening Chamber's curated text — heading, subtitle, and the Station / Frequency / Albums / Entities / Shows panels. Blank = the hardcoded default stays (fallback-first). The music, Elsewhere links, email signup, and live Shows data are managed elsewhere.</div> <div id="rm-form"></div> </div>
 <div class="adm-section" id="sec-33"> <div class="adm-section-title">✦ Page Metadata</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Override the browser-tab title and meta description per page. Blank = the hardcoded default stays (fallback-first). The tab title updates instantly; the description is picked up by Google when it re-renders. Social-share link previews (OG tags) are NOT affected by this — those need a code push.</div> <div id="pmeta-list"></div> </div>
 <div class="adm-section" id="sec-32">
@@ -2940,8 +2940,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var st=document.getElementById('cx-status');
         if(!_cxGuard.canSave(st)) return;
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Saving…';}
-        db.collection('siteConfig').doc('comixConfig').set(cfg).then(function(){
-          _cxSaved=cfg; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Saved ✦';} render();
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('comixConfig'), cfg, 'set').then(function(res){
+          if(res.ok){ _cxSaved=cfg; render(); st=document.getElementById('cx-status'); }
+          if(st){ st.style.color=res.ok?'rgba(2,225,39,0.85)':'rgba(251,56,56,0.9)'; }
+          window.jestaVerifyStatus(st, res, 'Saved ✦');
         }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error: '+((e&&e.message)||'failed');} });
       });
       var rs=document.getElementById('cx-reset');
@@ -2949,8 +2951,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var st=document.getElementById('cx-status');
         if(!_cxGuard.canSave(st)) return;
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Resetting…';}
-        db.collection('siteConfig').doc('comixConfig').set({}).then(function(){
-          _cxSaved={}; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Reset ✦';} render();
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('comixConfig'), {}, 'set').then(function(res){
+          if(res.ok){ _cxSaved={}; render(); st=document.getElementById('cx-status'); }
+          if(st){ st.style.color=res.ok?'rgba(2,225,39,0.85)':'rgba(251,56,56,0.9)'; }
+          window.jestaVerifyStatus(st, res, 'Reset ✦');
         }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error';} });
       });
     }
