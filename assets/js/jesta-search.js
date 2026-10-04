@@ -136,7 +136,7 @@
       btn.innerHTML = SVG;
       // Game pages have a header row (back link, title, a button on the right): the search sits in that row
       // instead of floating over it. Pages with no header keep the fixed top-right icon.
-      var head = document.getElementById('game-header');
+      var head = document.getElementById('game-header') || document.getElementById('ep-header');
       if (head) { btn.classList.add('jsearch-inhead'); head.appendChild(btn); }
       else document.body.appendChild(btn);
     }
