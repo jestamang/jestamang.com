@@ -104,10 +104,23 @@
       document.body.classList.add('jsearch-nonav');
       btn = el('button', { type: 'button', 'class': 'jsearch-float-btn', 'aria-label': 'Search' });
       btn.innerHTML = SVG;
-      document.body.appendChild(btn);
+      // Game pages have a header row (back link, title, a button on the right): the search sits in that row
+      // instead of floating over it. Pages with no header keep the fixed top-right icon.
+      var head = document.getElementById('game-header');
+      if (head) { btn.classList.add('jsearch-inhead'); head.appendChild(btn); }
+      else document.body.appendChild(btn);
     }
-    if (!btn.hasAttribute('onclick')) btn.addEventListener('click', function (e) { e.preventDefault(); toggle(btn); });
-    btn.addEventListener('pointerenter', loadIndex); btn.addEventListener('focus', loadIndex);
+    // Pages may carry their own triggers marked data-jsearch (the homepage nav item and grid tile). They all
+    // open the overlay; the page's CSS decides which one shows at a given width (the float hides on the
+    // homepage desktop, where the nav column item is visible).
+    var extra = [].slice.call(document.querySelectorAll('[data-jsearch]'));
+    if (extra.length) document.body.classList.add('jsearch-hastrigger');
+    [btn].concat(extra).forEach(function (b) {
+      if (b.__jsearchWired) return; b.__jsearchWired = true;
+      if (!b.hasAttribute('onclick')) b.addEventListener('click', function (e) { e.preventDefault(); toggle(b); });
+      b.addEventListener('pointerenter', loadIndex); b.addEventListener('focus', loadIndex);
+      b.addEventListener('keydown', function (e) { if (b.tagName === 'A' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggle(b); } });
+    });
     // the hamburger menu tier hides the nav button: give the menu a Search entry
     var menu = $('jtnav-mobile-overlay');
     if (menu && !$('jtnav-mob-search')) {
@@ -118,7 +131,7 @@
     }
     return btn;
   }
-  function buttons() { return [].slice.call(document.querySelectorAll('#jsearch-btn,.jsearch-float-btn')); }
+  function buttons() { return [].slice.call(document.querySelectorAll('#jsearch-btn,.jsearch-float-btn,[data-jsearch]')); }
   function isOpen() { var o = $('jsearch-overlay'); return !!o && o.classList.contains('jsearch-open'); }
 
   // ---- index loading (on demand, cached by the service worker) ----
