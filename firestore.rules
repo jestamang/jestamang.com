@@ -114,7 +114,8 @@ service cloud.firestore {
                     && (!('flawless' in request.resource.data)
                         || request.resource.data.flawless is bool);
       allow update: if false;
-      allow delete: if isAdmin();
+      // A player may delete their own rows (account deletion on profile.html); admin may delete any.
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
     }
 
     match /scores/{entryId} {
