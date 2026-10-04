@@ -49,7 +49,19 @@
 h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.8),2px 2px 4px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .page-header p,.video-title,.lightbox-title{text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 4px rgba(0,0,0,1),0 0 40px rgba(0,0,0,0.9),1px 1px 3px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 
-.skip-link{position:fixed;top:-100px;left:0;background:var(--gold,#c9a84c);color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid var(--gold,#c9a84c)}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}</style>
+.skip-link{position:fixed;top:-100px;left:0;background:var(--gold,#c9a84c);color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid var(--gold,#c9a84c)}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}
+/* ── Videos pass: focus ring, touch play cue, dialog close, state cards, permanent YouTube link ── */
+.video-card:focus-visible{outline:2px solid var(--gold,#c9a84c);outline-offset:3px}
+@media(hover:none){.play-icon{opacity:1!important}}
+.lightbox-close{width:44px;height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;top:-48px;right:-8px}
+.lightbox-close:focus-visible{outline:2px solid var(--gold,#c9a84c);outline-offset:2px;border-radius:50%}
+.lb-links{text-align:center;padding:10px 0 0}
+.lb-links a{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(var(--gold-rgb,201,168,76),0.85);text-decoration:none;border:1px solid rgba(var(--gold-rgb,201,168,76),0.35);border-radius:999px}
+.lb-links a:hover,.lb-links a:focus-visible{color:var(--gold,#c9a84c);border-color:var(--gold,#c9a84c);outline:none}
+.v-state{grid-column:1/-1;text-align:center;color:rgba(240,230,211,0.8);font-family:'Luminari',serif;font-size:0.9rem;letter-spacing:0.06em;padding:48px 20px}
+.v-state p{margin-bottom:18px}
+.v-state button{background:transparent;border:1px solid rgba(var(--gold-rgb,201,168,76),0.6);color:var(--gold,#c9a84c);font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;padding:12px 32px;min-height:44px;cursor:pointer}
+</style>
 <style>
 /* ── Jestamang gold border treatment ── */
 .video-card{
@@ -144,11 +156,14 @@ function renderVideos(items){
   items.forEach(function(v){
     var card=document.createElement('div');
     card.className='video-card';
-    card.onclick=(function(id,title){return function(){openLightbox(id,title);};})(v.id,v.title);
+    card.setAttribute('role','button');card.setAttribute('tabindex','0');card.setAttribute('aria-label','Play '+v.title);
+    card.onclick=(function(id,title,el){return function(){openLightbox(id,title,el);};})(v.id,v.title,card);
+    card.addEventListener('keydown',(function(id,title,el){return function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openLightbox(id,title,el);}};})(v.id,v.title,card));
     var thumb=document.createElement('div');
     thumb.className='video-thumb';
     var img=document.createElement('img');
-    img.src='https://img.youtube.com/vi/'+v.id+'/hqdefault.jpg';
+    img.src='https://img.youtube.com/vi/'+v.id+'/mqdefault.jpg'; /* true 16:9, no pillars, about half the bytes of hqdefault */
+    img.width=320;img.height=180;
     img.alt=v.title;
     img.loading='lazy';
     img.onerror=function(){_vThumbErr(this);};
@@ -167,15 +182,25 @@ function renderVideos(items){
 }
 
 // v282: no hardcoded fallback render — Firestore is canonical; graceful empty/error instead of a stale list.
-function _vEmptyState(msg){ _vGrid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:rgba(var(--gold-rgb,201,168,76),0.4);font-size:0.8rem;letter-spacing:0.15em;padding:48px 0;">'+msg+'</div>'; }
-
-var _jt=0,_jiv=setInterval(function(){
-  if(window.jestaDB){
-    clearInterval(_jiv);
+function _vEmptyState(msg){ _vGrid.style.opacity='1'; _vGrid.innerHTML='<div class="v-state" role="status"><p>'+msg+'</p></div>'; }
+function _vErrorState(){
+  _vGrid.style.opacity='1';
+  _vGrid.innerHTML='<div class="v-state" role="alert"><p>The videos could not be loaded. Check your connection.</p><button type="button" id="v-retry">Try again</button></div>';
+  var b=document.getElementById('v-retry');
+  b.addEventListener('click',function(){
+    b.disabled=true;b.textContent='Retrying\u2026';
+    var db=window.jestaDB;
+    var bounce=(db&&db.disableNetwork&&db.enableNetwork)?db.disableNetwork().then(function(){return db.enableNetwork();}):Promise.resolve();
+    bounce.catch(function(){}).then(function(){loadVideos();});
+  });
+}
+function loadVideos(){
     window.jestaDB.collection('videos')
       .where('published','==',true)
       .get()
       .then(function(snap){
+        /* offline, the SDK answers an empty snapshot from cache instead of failing: a failed read, not an empty archive */
+        if(snap.empty&&snap.metadata&&snap.metadata.fromCache){_vErrorState();return;}
         if(snap.empty){_vEmptyState('No videos yet.');return;}
         var docs=[];
         snap.forEach(function(doc){docs.push({id:doc.id,data:doc.data()});});
@@ -192,18 +217,21 @@ var _jt=0,_jiv=setInterval(function(){
         _vGrid.style.opacity='0';
         setTimeout(function(){renderVideos(items);_vGrid.style.opacity='1';},300);
       })
-      .catch(function(){_vEmptyState('Could not load videos.');});
-  }else if(++_jt>80){clearInterval(_jiv);_vEmptyState('Could not load videos.');}
+      .catch(function(){_vErrorState();});
+}
+var _jt=0,_jiv=setInterval(function(){
+  if(window.jestaDB){clearInterval(_jiv);loadVideos();}
+  else if(++_jt>80){clearInterval(_jiv);_vErrorState();}
 },100);
 </script>
-<div id="lightbox" class="lightbox" onclick="if(event.target===this)closeLightbox()"> <div class="lightbox-inner"> <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close">&#x2715;</button> <div class="lightbox-frame" id="lb-frame"> <div id="lb-player"></div> </div> <div class="lb-error" id="lb-error"> <p>This video can't be played here</p> <a id="lb-yt-link" href="#" target="_blank" rel="noopener noreferrer">Watch on YouTube</a> </div> <div class="lightbox-title" id="lb-title"></div> </div> </div>
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-labelledby="lb-title" onclick="if(event.target===this)closeLightbox()"> <div class="lightbox-inner"> <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close">&#x2715;</button> <div class="lightbox-frame" id="lb-frame"> <div id="lb-player"></div> </div> <div class="lb-error" id="lb-error"> <p>This video can't be played here</p> <a id="lb-yt-link" href="#" target="_blank" rel="noopener noreferrer">Watch on YouTube</a> </div> <div class="lightbox-title" id="lb-title"></div> <div class="lb-links"><a id="lb-watch" href="#" target="_blank" rel="noopener noreferrer">Watch on YouTube</a></div> </div> </div>
 <script src="https://www.youtube.com/iframe_api" defer></script>
 <script>var _ytReady=false;var _pendingId=null;var _pendingTitle=null;var _ytPlayer=null;var _currentVideoId=null;function onYouTubeIframeAPIReady(){_ytReady=true;if(_pendingId)_createPlayer(_pendingId,_pendingTitle);}
 function _showError(){document.getElementById('lb-frame').style.display='none';document.getElementById('lb-error').classList.add('show');document.getElementById('lb-yt-link').href='https://www.youtube.com/watch?v='+_currentVideoId;}
 function _createPlayer(id,title){_currentVideoId=id;document.getElementById('lb-frame').style.display='';document.getElementById('lb-error').classList.remove('show');if(_ytPlayer){try{_ytPlayer.destroy();}catch(e){}_ytPlayer=null;}
 document.getElementById('lb-player').innerHTML='';_ytPlayer=new YT.Player('lb-player',{host:'https://www.youtube-nocookie.com',videoId:id,playerVars:{autoplay:1,rel:0,modestbranding:1,origin:'https://jestamang.com'},events:{onError:function(){_showError();}}});}
-function openLightbox(id,title){document.getElementById('lb-title').textContent=title;document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden';if(_ytReady){_createPlayer(id,title);}else{_pendingId=id;_pendingTitle=title;}}
-function closeLightbox(){document.getElementById('lightbox').classList.remove('active');document.body.style.overflow='';if(_ytPlayer){try{_ytPlayer.stopVideo();}catch(e){}}}
+var _lbOpener=null;function openLightbox(id,title,opener){_lbOpener=opener||document.activeElement;document.getElementById('lb-title').textContent=title;var w=document.getElementById('lb-watch');if(w)w.href='https://www.youtube.com/watch?v='+id;document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden';var cb=document.querySelector('#lightbox .lightbox-close');if(cb)cb.focus({preventScroll:true});if(_ytReady){_createPlayer(id,title);}else{_pendingId=id;_pendingTitle=title;}}
+function closeLightbox(){var lb=document.getElementById('lightbox');if(!lb.classList.contains('active'))return;lb.classList.remove('active');document.body.style.overflow='';if(_ytPlayer){try{_ytPlayer.stopVideo();}catch(e){}}if(_lbOpener&&document.body.contains(_lbOpener)&&_lbOpener.focus){_lbOpener.focus({preventScroll:true});}_lbOpener=null;}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLightbox();});</script>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
@@ -259,11 +287,11 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLightbo
     background:rgba(10,8,5,0.98);
     border:1px solid rgba(var(--gold-rgb,201,168,76),0.35);
     border-radius:8px;
-    padding:44px 12px 16px;
+    padding:60px 12px 16px; /* room for the 44px close button above the player */
   }
   .lightbox-close{
-    top:10px;
-    right:12px;
+    top:8px;
+    right:8px;
   }
 }
 </style>
