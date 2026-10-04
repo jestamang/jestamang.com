@@ -48,10 +48,8 @@ body.jsearch-nonav #jsearch-overlay{top:0;max-height:min(460px,100dvh)}
   #jtnav #jtnav-platforms{margin-right:0}
   #jtnav #jtnav-auth{order:2}
 }
-/* Homepage triggers: a nav column item on desktop, a grid tile on phones; the float hides where the column item shows. */
-.jsearch-navicon,.jsearch-gridicon{display:flex;align-items:center;justify-content:center;color:var(--gold,#c9a84c);filter:drop-shadow(0 2px 10px rgba(0,0,0,1)) drop-shadow(0 0 6px rgba(var(--gold-rgb,201,168,76),0.35));transition:filter 0.4s ease}
-.nav-item:hover .jsearch-navicon{filter:drop-shadow(0 0 10px rgba(var(--gold-rgb,201,168,76),0.85)) drop-shadow(0 0 22px rgba(var(--gold-rgb,201,168,76),0.4))}
-.nav-item.jsearch-active .jsearch-navicon,.mob-nav-item.jsearch-active .jsearch-gridicon{color:rgba(var(--gold-rgb,201,168,76),0.5)}
+/* Homepage triggers: a nav column item on desktop, a grid tile on phones (both use the brass loupe image); the float hides where the column item shows. */
+#hp-search.jsearch-active .nav-icon,#hp-search-mob.jsearch-active .mob-nav-icon{opacity:0.55}
 #hp-search:focus-visible,#hp-search-mob:focus-visible{outline:2px solid var(--gold,#c9a84c);outline-offset:4px}
 @media(min-width:769px){body.jsearch-hastrigger .jsearch-float-btn{display:none}}
 /* Game pages: the icon lives in the header row, pinned to its right edge so the title and its button keep their layout. */
