@@ -81,9 +81,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 @keyframes lb-spin{to{transform:rotate(360deg)}}
 .photo-item:focus-visible{outline:2px solid var(--gold,#c9a84c);outline-offset:2px}
 .lightbox-arrow:focus-visible,.lightbox-close:focus-visible{outline:2px solid var(--gold,#c9a84c);outline-offset:2px}
-.ph-state{text-align:center;color:rgba(240,230,211,0.8);font-family:'Luminari',serif;font-size:0.9rem;letter-spacing:0.06em;padding:50px 20px}
-.ph-state p{margin-bottom:18px}
-.ph-state button{background:transparent;border:1px solid rgba(var(--gold-rgb,201,168,76),0.6);color:var(--gold,#c9a84c);font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;padding:12px 32px;min-height:44px;cursor:pointer}
 @media(max-width:600px){
   .lightbox{padding:calc(112px + env(safe-area-inset-top)) 12px calc(96px + env(safe-area-inset-bottom));align-items:center}
   .lightbox-img{max-height:100%;max-width:100%}
@@ -184,12 +181,21 @@ var _tabsEl=document.getElementById('tabs');if(_tabsEl)_tabsEl.addEventListener(
   window._lbZoom.reset(false);
   /* swipe between photos at Fit comes from the controller's onSwipe (pointer events, the same path as pinch and pan); while zoomed a drag pans instead */
 })();
-document.addEventListener('keydown',function(e) {if(!document.getElementById('lightbox').classList.contains('open'))return;var z=window._lbZoom;if(e.key==='Escape'){if(z&&z.isZoomed())z.reset(true);else closeLightbox();return;}if(e.key==='ArrowLeft')lightboxPrev();if(e.key==='ArrowRight')lightboxNext();if(z){if(e.key==='+'||e.key==='='){e.preventDefault();z.zoomBy(1.3,true);}if(e.key==='-'||e.key==='_'){e.preventDefault();z.zoomBy(1/1.3,true);}if(e.key==='0'){e.preventDefault();z.reset(true);}}});function buildTabs(){var tabsEl=document.getElementById('tabs');tabsEl.innerHTML='<button class="tab active" data-group="all">All</button>';groups.forEach(function(g){var btn=document.createElement('button');btn.className='tab';btn.setAttribute('data-group',g.id);btn.textContent=g.label;tabsEl.appendChild(btn);});tabsEl.removeAttribute('aria-busy');}function _phState(msg,retry){var g=document.getElementById('gallery');if(!g)return;g.innerHTML='<div class="ph-state" role="'+(retry?'alert':'status')+'"><p>'+msg+'</p>'+(retry?'<button type="button" id="ph-retry">Try again</button>':'')+'</div>';g.style.opacity='1';var t=document.getElementById('tabs');if(t){t.removeAttribute('aria-busy');}if(retry){var b=document.getElementById('ph-retry');b.addEventListener('click',function(){b.disabled=true;b.textContent='Retrying\u2026';var db=window.jestaDB;var bounce=(db&&db.disableNetwork&&db.enableNetwork)?db.disableNetwork().then(function(){return db.enableNetwork();}):Promise.resolve();bounce.catch(function(){}).then(function(){loadPhotos();});});}}
-function loadPhotos(){window.jestaDB.collection('photos').get().then(function(snap){
-    /* offline, the SDK answers an empty snapshot from cache instead of failing: that is a failed read, not an empty archive */
-    if(snap.empty&&snap.metadata&&snap.metadata.fromCache){_phState('The archive could not be loaded. Check your connection.',true);return;}
-    if(snap.empty){_phState('No photos yet.');return;}var fs=[];snap.forEach(function(doc){var d=doc.data();if(d.visible===false)return;var photos=(d.photos||[]).filter(function(p){return p.visible!==false;}).sort(function(a,b){return(a.order||0)-(b.order||0);}).map(function(p){return{filename:p.filename||'',url:p.url||'',caption:p.caption||''};});if(!photos.length)return;fs.push({id:d.id||doc.id,label:d.label,photos:photos,order:typeof d.order==='number'?d.order:999});});if(!fs.length){_phState('No photos yet.');return;}fs.sort(function(a,b){return a.order-b.order;});var gallery=document.getElementById('gallery');gallery.style.transition='opacity 0.3s ease';gallery.style.opacity='0';setTimeout(function(){groups=fs;buildAllPhotos();buildTabs();buildGallery('all');gallery.style.opacity='1';},300);}).catch(function(){_phState('The archive could not be loaded. Check your connection.',true);});}
-(function(){var _jt=0,_jiv=setInterval(function(){_jt++;if(window.jestaDB){clearInterval(_jiv);loadPhotos();}else if(_jt>80){clearInterval(_jiv);_phState('The archive could not be loaded. Check your connection.',true);}},100);})();</script>
+document.addEventListener('keydown',function(e) {if(!document.getElementById('lightbox').classList.contains('open'))return;var z=window._lbZoom;if(e.key==='Escape'){if(z&&z.isZoomed())z.reset(true);else closeLightbox();return;}if(e.key==='ArrowLeft')lightboxPrev();if(e.key==='ArrowRight')lightboxNext();if(z){if(e.key==='+'||e.key==='='){e.preventDefault();z.zoomBy(1.3,true);}if(e.key==='-'||e.key==='_'){e.preventDefault();z.zoomBy(1/1.3,true);}if(e.key==='0'){e.preventDefault();z.reset(true);}}});function buildTabs(){var tabsEl=document.getElementById('tabs');tabsEl.innerHTML='<button class="tab active" data-group="all">All</button>';groups.forEach(function(g){var btn=document.createElement('button');btn.className='tab';btn.setAttribute('data-group',g.id);btn.textContent=g.label;tabsEl.appendChild(btn);});tabsEl.removeAttribute('aria-busy');}/* The archive loads through the shared jestaLoad (assets/js/jesta-auth.js): it owns the wait for the database, the read,
+   the offline detection, the error card with Try again and the empty card. Groups and photos marked hidden in admin are
+   dropped here before the empty check, so an archive of only hidden groups reads as empty rather than as a blank page. */
+function groupsFrom(docs){var fs=[];docs.forEach(function(doc){var d=doc.data;if(d.visible===false)return;var photos=(d.photos||[]).filter(function(p){return p.visible!==false;}).sort(function(a,b){return(a.order||0)-(b.order||0);}).map(function(p){return{filename:p.filename||'',url:p.url||'',caption:p.caption||''};});if(!photos.length)return;fs.push({id:d.id||doc.id,label:d.label,photos:photos,order:typeof d.order==='number'?d.order:999});});fs.sort(function(a,b){return a.order-b.order;});return fs;}
+function loadPhotos(){window.jestaLoad({
+  container:'#gallery',
+  query:function(db){return db.collection('photos');},
+  isEmpty:function(docs){return !groupsFrom(docs).length;},
+  emptyText:'No photos yet.',
+  errorText:'The archive could not be loaded. Check your connection.',
+  onState:function(st){if(st==='ready')return;var g=document.getElementById('gallery');if(g)g.style.opacity='1';var t=document.getElementById('tabs');if(t)t.removeAttribute('aria-busy');},
+  render:function(docs){var fs=groupsFrom(docs);var gallery=document.getElementById('gallery');gallery.style.transition='opacity 0.3s ease';gallery.style.opacity='0';setTimeout(function(){groups=fs;buildAllPhotos();buildTabs();buildGallery('all');gallery.style.opacity='1';},300);}
+});}
+/* the helper arrives with the deferred jesta-auth.js, after this inline script */
+(function(){var _jt=0,_jiv=setInterval(function(){_jt++;if(window.jestaLoad){clearInterval(_jiv);loadPhotos();}else if(_jt>100){clearInterval(_jiv);var g=document.getElementById('gallery');if(g){g.style.opacity='1';g.innerHTML='<p role="alert" style="text-align:center;padding:50px 20px">The archive could not be loaded. Check your connection.</p>';}}},100);})();</script>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js" defer></script>
