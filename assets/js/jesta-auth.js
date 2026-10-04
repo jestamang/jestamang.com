@@ -804,6 +804,23 @@ window.openSocial = function(platform) {
   }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
+  // Video categories, shared by videos.html (grouping and filter row) and the admin Video Manager (dropdown).
+  // Page order is this order. A video with no category, or an unknown one, lands in Other, except that a title
+  // containing "Circus Speaks" lands in The Circus Speaks so the series stays together before the owner tags it.
+  window.jestaVideoCategories = [
+    { key: 'live', label: 'Live' },
+    { key: 'music', label: 'Music Videos' },
+    { key: 'circus', label: 'The Circus Speaks' },
+    { key: 'film', label: 'Short Films' },
+    { key: 'other', label: 'Other' }
+  ];
+  window.jestaVideoCategoryOf = function (d) {
+    var c = d && d.category;
+    for (var i = 0; i < window.jestaVideoCategories.length; i++) { if (window.jestaVideoCategories[i].key === c) return c; }
+    if (/circus speaks/i.test((d && d.title) || '')) return 'circus';
+    return 'other';
+  };
+
   window.jestaLoad = function (opts) {
     opts = opts || {};
     var box = typeof opts.container === 'string' ? document.querySelector(opts.container) : opts.container;

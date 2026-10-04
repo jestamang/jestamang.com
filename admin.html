@@ -887,6 +887,22 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <label class="field-label" for="vm-url">YouTube URL</label>
       <input class="field-input" id="vm-url" type="text" placeholder="youtube.com/watch?v=... or youtu.be/..." maxlength="500">
 
+      <label class="field-label" for="vm-category">Category</label>
+      <select class="field-select" id="vm-category">
+        <option value="">Not set (Circus Speaks titles group themselves, everything else goes to Other)</option>
+        <option value="live">Live</option>
+        <option value="music">Music Videos</option>
+        <option value="circus">The Circus Speaks</option>
+        <option value="film">Short Films</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label class="field-label" for="vm-date">Date (optional)</label>
+      <input class="field-input" id="vm-date" type="date">
+
+      <label class="field-label" for="vm-desc">Description (optional)</label>
+      <textarea class="field-input field-textarea" id="vm-desc" rows="3" maxlength="1000" placeholder="Shown under the video when it plays"></textarea>
+
       <div id="vm-preview" style="margin:16px 0;display:none;">
         <img id="vm-thumb" src="" alt="Thumbnail preview" width="160" height="90" style="width:160px;border:1px solid rgba(201,168,76,0.2);border-radius:2px;display:block;" loading="lazy">
         <div id="vm-ytid" style="font-size:0.62rem;color:rgba(201,168,76,0.4);margin-top:6px;letter-spacing:0.1em;"></div>
@@ -4648,16 +4664,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var url      = (urlInput.value || '').trim();
       var id       = extractYtId(url);
       var statusEl = document.getElementById('vm-status');
+      var category = (document.getElementById('vm-category').value || '').trim();
+      var date     = (document.getElementById('vm-date').value || '').trim();
+      var desc     = (document.getElementById('vm-desc').value || '').trim();
       if (!title) { statusEl.textContent='Title required'; statusEl.className='status-msg status-err'; return; }
       if (!id)    { statusEl.textContent='Invalid YouTube URL'; statusEl.className='status-msg status-err'; return; }
+      if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) { statusEl.textContent='Date must be a full calendar date'; statusEl.className='status-msg status-err'; return; }
       this.disabled = true;
       var self = this;
       var op;
       if (_vmEditId) {
-        op = window.jestaVerifiedSave(db.collection('videos').doc(_vmEditId), { title: title, youtubeId: id, youtubeUrl: url }, 'update'); // order/published/timestamp preserved
+        op = window.jestaVerifiedSave(db.collection('videos').doc(_vmEditId), { title: title, youtubeId: id, youtubeUrl: url, category: category, date: date, description: desc }, 'update'); // order/published/timestamp preserved
       } else {
         op = window.jestaVerifiedSave(db.collection('videos').doc(), {
-          title: title, youtubeId: id, youtubeUrl: url,
+          title: title, youtubeId: id, youtubeUrl: url, category: category, date: date, description: desc,
           published: true, order: (_vmSorted.length ? _vmSorted.length + 1 : 1), timestamp: firebase.firestore.FieldValue.serverTimestamp()
         }, 'set');
       }
@@ -4711,7 +4731,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         + '<img src="https://img.youtube.com/vi/' + esc(d.youtubeId) + '/default.jpg" alt="Video thumbnail" width="120" height="90" style="width:80px;flex-shrink:0;border-radius:2px;border:1px solid rgba(201,168,76,0.15);" loading="lazy">'
         + '<div class="entry-body" style="flex:1;">'
         + '<div class="entry-name">' + esc(d.title) + '</div>'
-        + '<div class="entry-meta">' + esc(d.youtubeId) + ' &nbsp;\u00b7&nbsp; ' + fmtDate(d.timestamp) + (d.published===false ? ' <span class="badge" style="color:#FB3838;border:1px solid rgba(251,56,56,0.4);padding:1px 6px;border-radius:4px;font-size:0.6rem;">UNPUBLISHED</span>' : '') + '</div>'
+        + '<div class="entry-meta">' + esc(d.youtubeId) + ' &nbsp;\u00b7&nbsp; ' + fmtDate(d.timestamp) + ' &nbsp;\u00b7&nbsp; ' + esc(vmCatLabel(d)) + (d.published===false ? ' <span class="badge" style="color:#FB3838;border:1px solid rgba(251,56,56,0.4);padding:1px 6px;border-radius:4px;font-size:0.6rem;">UNPUBLISHED</span>' : '') + '</div>'
         + '<div class="entry-actions">'
         + '<button class="btn-ghost btn-sm" aria-label="Move up" onclick="moveVideo(\'' + doc_id + '\',-1)"' + upDis + '>\u2191</button>'
         + '<button class="btn-ghost btn-sm" aria-label="Move down" onclick="moveVideo(\'' + doc_id + '\',1)"' + dnDis + '>\u2193</button>'
@@ -4753,11 +4773,24 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   };
 
   // v284: edit-into-form + publish toggle (Press pattern; no notifications)
+  // Category label for the list row, read from the dropdown so the two never drift; untagged rows show where the page puts them.
+  function vmCatLabel(d){
+    var key = (d.category && window.jestaVideoCategoryOf) ? window.jestaVideoCategoryOf(d) : '';
+    var sel = document.getElementById('vm-category'); var label = '';
+    if (key && sel) { for (var k = 0; k < sel.options.length; k++) { if (sel.options[k].value === key) label = sel.options[k].text; } }
+    if (label) return label;
+    var auto = window.jestaVideoCategoryOf ? window.jestaVideoCategoryOf(d) : 'other';
+    var autoLabel = 'Other'; if (sel) { for (var j = 0; j < sel.options.length; j++) { if (sel.options[j].value === auto) autoLabel = sel.options[j].text; } }
+    return 'Not set (' + autoLabel + ')';
+  }
   function _vmFind(id){ for(var k=0;k<_vmSorted.length;k++){ if(_vmSorted[k].id===id) return _vmSorted[k].data; } return null; }
   function vmClearForm(){
     _vmEditId = null;
     document.getElementById('vm-title').value = '';
     document.getElementById('vm-url').value = '';
+    document.getElementById('vm-category').value = '';
+    document.getElementById('vm-date').value = '';
+    document.getElementById('vm-desc').value = '';
     var pv=document.getElementById('vm-preview'); if(pv) pv.style.display='none';
     document.getElementById('vm-add-btn').textContent = 'ADD VIDEO \u2726';
     var cb=document.getElementById('vm-cancel-btn'); if(cb) cb.style.display='none';
@@ -4768,6 +4801,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     _vmEditId = id;
     document.getElementById('vm-title').value = d.title || '';
     document.getElementById('vm-url').value = d.youtubeUrl || ('https://www.youtube.com/watch?v=' + (d.youtubeId||''));
+    document.getElementById('vm-category').value = d.category || '';
+    document.getElementById('vm-date').value = d.date || '';
+    document.getElementById('vm-desc').value = d.description || '';
     document.getElementById('vm-add-btn').textContent = 'Update Video';
     var cb=document.getElementById('vm-cancel-btn'); if(cb) cb.style.display='';
     window.admNavTo('sec-14');
