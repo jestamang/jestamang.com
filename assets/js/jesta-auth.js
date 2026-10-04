@@ -785,6 +785,7 @@ window.openSocial = function(platform) {
 //     emptyText: 'No videos yet.',                // optional, default below
 //     errorText: 'Could not load. Check your connection.',   // optional
 //     isEmpty: function (docs) { return ...; },  // optional, decide emptiness after the page's own filtering
+//     renderEmpty: function () { ... },         // optional: show the page's own empty block instead of the card
 //     live: false,                                // true subscribes with onSnapshot instead of one get()
 //     onState: function (state) { }               // optional: 'loading' | 'ready' | 'empty' | 'error'
 //   });
@@ -826,7 +827,7 @@ window.openSocial = function(platform) {
       if (snap.empty && snap.metadata && snap.metadata.fromCache) { fail(new Error('empty snapshot from cache')); return; }
       var docs = []; snap.forEach(function (d) { docs.push({ id: d.id, data: d.data() }); });
       var empty = typeof opts.isEmpty === 'function' ? opts.isEmpty(docs) : docs.length === 0;
-      if (empty) { setState('empty'); card('status', emptyText, false); return; }
+      if (empty) { setState('empty'); if (typeof opts.renderEmpty === 'function') { if (box) box.innerHTML = ''; opts.renderEmpty(); } else { card('status', emptyText, false); } return; }
       if (box) { var old = box.querySelectorAll('.jesta-state'); for (var i = 0; i < old.length; i++) old[i].parentNode.removeChild(old[i]); }
       try { opts.render(docs, snap); setState('ready'); } catch (e) { fail(e); }
     }
