@@ -4,7 +4,7 @@
 // UPDATE CACHE_VERSION DATE ON EVERY PUSH
 // ════════════════════════════════════════════════════════════════
 
-var CACHE_NAME = 'jestamang-v509';
+var CACHE_NAME = 'jestamang-v510';
 var BADGE      = '/assets/icons/icon-192.png';
 
 var PRECACHE_URLS = [
@@ -24,11 +24,16 @@ var PRECACHE_URLS = [
   '/profile.html',
   '/members.html',
   '/dossier.html',
-  '/listen.html',
   '/radio.html',
   '/game-oracle.html',
   '/game-memory.html',
   '/games/entity-pair.html',
+  '/games/void.html',
+  '/games/cosmic-conductor.html',
+  '/games/pitch-oracle.html',
+  '/games/rhythm-architect.html',
+  '/games/chord-conjurer.html',
+  '/games/harmony-oracle.html',
   '/privacy.html',
   '/refund.html',
   '/404.html',

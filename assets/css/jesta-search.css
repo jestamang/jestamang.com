@@ -81,8 +81,13 @@ body.jsearch-nonav #jsearch-overlay{top:0;max-height:min(640px,100dvh)}
 /* Game pages: the icon lives in the header row, pinned to its right edge so the title and its button keep their layout. */
 .jsearch-float-btn.jsearch-inhead{position:absolute;top:50%;right:16px;transform:translateY(-50%);filter:none}
 .jsearch-float-btn.jsearch-inhead svg{width:20px;height:20px}
-#game-header:has(.jsearch-inhead){padding-right:72px}
+#game-header:has(.jsearch-inhead),#ep-header:has(.jsearch-inhead){padding-right:72px}
 @media(max-width:1024px){.jsearch-float-btn.jsearch-inhead{top:50%;right:calc(8px + env(safe-area-inset-right))}}
 /* Phones: when the row also holds the leaderboard button, the right side is full (centered title plus button), so
    the icon moves next to the back link; without that button it stays on the right. */
-@media(max-width:600px){#game-header:has(.jsearch-inhead):has(#lb-btn-hud){padding-right:20px}#game-header:has(#lb-btn-hud) #back{order:-2}#game-header:has(#lb-btn-hud) .jsearch-float-btn.jsearch-inhead{position:static;transform:none;margin:0 auto 0 0;order:-1;width:38px}}
+@media(max-width:600px){#game-header:has(.jsearch-inhead):has(#lb-btn-hud),#ep-header:has(.jsearch-inhead):has(#ep-lb-hud){padding-right:20px}
+/* With the icon in the row on phones, the centered title leaves the absolute layer and shares the row, so wide titles (Cosmic Conductor, Entity Pair) wrap instead of running under the icon or the leaderboard button. */
+#game-header:has(.jsearch-inhead):has(#lb-btn-hud) #game-title,#ep-header:has(.jsearch-inhead):has(#ep-lb-hud) #ep-title{position:static;left:auto;top:auto;transform:none;flex:1 1 0;min-width:0;text-align:center;margin:0 4px;text-indent:0;white-space:normal;line-height:1.2}
+#game-header:has(.jsearch-inhead):has(#lb-btn-hud) #back,#ep-header:has(.jsearch-inhead):has(#ep-lb-hud) #back-link{padding:7px 8px;letter-spacing:0.15em;flex-shrink:0}
+#game-header:has(.jsearch-inhead) #lb-btn-hud,#ep-header:has(.jsearch-inhead) #ep-lb-hud{flex-shrink:0}
+#game-header:has(#lb-btn-hud) .jsearch-float-btn.jsearch-inhead,#ep-header:has(#ep-lb-hud) .jsearch-float-btn.jsearch-inhead{margin:0 2px 0 0}#game-header:has(#lb-btn-hud) #back,#ep-header:has(#ep-lb-hud) #back-link{order:-2}#game-header:has(#lb-btn-hud) .jsearch-float-btn.jsearch-inhead,#ep-header:has(#ep-lb-hud) .jsearch-float-btn.jsearch-inhead{position:static;transform:none;margin:0 auto 0 0;order:-1;width:38px}}
