@@ -2,7 +2,7 @@
 /**
  * build.js: generates assets/js/jesta-search-index.js, the data behind the sitewide search
  * overlay, from the same sources the pages render at runtime: Firestore releases, lyrics,
- * entities, merch and blogPosts (public REST reads, same web key the site ships), plus the
+ * entities, merch, blogPosts and videos (public REST reads, same web key the site ships), plus the
  * short static lists of pages and games kept in this file.
  *
  * Usage:  node tools/search-index/build.js            write the file and print what changed
@@ -20,6 +20,7 @@
  *   entity / child         -> /entities.html#entity-<slug> or #child-<slug> (ENT_SLUG map read from entities.html)
  *   merch item             -> /merch.html#merch-<slug of the name>
  *   blog post              -> /blog.html#post-<Firestore document id>
+ *   video                  -> /videos.html#video-<YouTube id> (videos.html opens that video's player on load)
  * Members, Dossier and Profile are not indexed (they need a signed-in account); Login is.
  */
 'use strict';
@@ -54,7 +55,10 @@ const PAGES = [
 ];
 // Game pages; the display name and tagline come from each page's <title> ("Name · Jestamang Games · Tagline").
 const GAME_FILES = ['game-memory.html', 'game-oracle.html', 'games/void.html', 'games/cosmic-conductor.html', 'games/pitch-oracle.html', 'games/rhythm-architect.html', 'games/chord-conjurer.html', 'games/entity-pair.html', 'games/harmony-oracle.html'];
-const ICON = { page: '◉', game: '✦', series: '◈', album: '◈', entity: '✶', child: '◉', track: '♁', merch: '◉', blog: '◇' };
+const ICON = { page: '◉', game: '✦', series: '◈', album: '◈', entity: '✶', child: '◉', track: '♁', merch: '◉', blog: '◇', video: '▷' };
+// Video categories as videos.html groups them (mirror of window.jestaVideoCategories in assets/js/jesta-auth.js).
+const VIDEO_CATEGORIES = { live: 'Live', music: 'Music Videos', circus: 'The Circus Speaks', film: 'Short Films', other: 'Other' };
+const videoCategory = (v) => VIDEO_CATEGORIES[v.category] || (/circus speaks/i.test(String(v.title || '')) ? VIDEO_CATEGORIES.circus : VIDEO_CATEGORIES.other);
 
 // ---------- helpers ----------
 const read = (repo, rel) => fs.readFileSync(path.join(repo, rel), 'utf8');
@@ -99,8 +103,8 @@ async function fsList(cfg, coll) {
 }
 async function fetchSources(repo) {
   const cfg = firebaseConfig(repo);
-  const [releases, lyrics, entities, merch, blogPosts] = await Promise.all(['releases', 'lyrics', 'entities', 'merch', 'blogPosts'].map((c) => fsList(cfg, c)));
-  return { releases, lyrics, entities, merch, blogPosts };
+  const [releases, lyrics, entities, merch, blogPosts, videos] = await Promise.all(['releases', 'lyrics', 'entities', 'merch', 'blogPosts', 'videos'].map((c) => fsList(cfg, c)));
+  return { releases, lyrics, entities, merch, blogPosts, videos };
 }
 
 // ---------- the build ----------
@@ -186,11 +190,15 @@ function buildIndex(data, repo) {
   const posts = (data.blogPosts || []).filter((p) => isOn(p.published) && p.title).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || String(a.title).localeCompare(String(b.title)));
   for (const p of posts) add(p.title, `/blog.html#post-${p.id}`, 'Blog Post', ICON.blog, words(p.title, p.subtitle, p.category, 'blog post writing'));
 
+  // videos: published, in the page's order (order ascending, missing last), linked to the player on videos.html
+  const videos = (data.videos || []).filter((v) => isOn(v.published) && v.title && v.youtubeId).sort((a, b) => (a.order != null ? num(a.order) : 9e15) - (b.order != null ? num(b.order) : 9e15) || String(a.title).localeCompare(String(b.title)));
+  for (const v of videos) add(v.title, `/videos.html#video-${encodeURIComponent(String(v.youtubeId))}`, 'Video', ICON.video, words(v.title, videoCategory(v), v.description, 'video youtube watch film'));
+
   return { entries, warnings };
 }
 
 function serialize(entries) {
-  return '/* GENERATED FILE. Built by tools/search-index/build.js from Firestore (releases, lyrics, entities, merch, blogPosts)\n' +
+  return '/* GENERATED FILE. Built by tools/search-index/build.js from Firestore (releases, lyrics, entities, merch, blogPosts, videos)\n' +
     '   plus the page and game lists in that script. Do not edit by hand: run  node tools/search-index/build.js  and commit.\n' +
     `   ${entries.length} entries. Shape: n name, u link, c category, i icon, t extra keywords. */\n` +
     'var IDX=[\n' + entries.map((e) => JSON.stringify(e)).join(',\n') + '\n];\n';
