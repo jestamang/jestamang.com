@@ -190,9 +190,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 article.post{scroll-margin-top:72px}#inner-expand-btn{margin-bottom:2rem;}#inner-overflow{overflow:hidden;max-height:0;transition:max-height .45s ease;margin-top:0;}
 .post-compact{cursor:pointer;padding:22px 30px 20px!important;}
 .post-compact:focus-visible{outline:2px solid var(--gold,#c9a84c);outline-offset:3px}
-.blog-state{text-align:center;padding:40px 20px;border:1px solid rgba(var(--gold-rgb,201,168,76),0.22);border-radius:8px;background:rgba(0,0,0,0.6);margin-bottom:38px}
-.blog-state p{font-family:'Luminari',serif;font-style:italic;font-size:0.95rem;color:rgba(240,230,211,0.8);letter-spacing:0.03em;margin-bottom:18px}
-.blog-state .post-collapse-btn{margin:0 auto}
 .post-compact .post-body,.post-compact .post-closing,.post-compact .post-comments,.post-compact .post-rule{display:none!important;}
 .post-compact:hover{border-color:rgba(var(--gold-rgb,201,168,76),0.5);box-shadow:0 0 20px rgba(0,0,0,0.5),0 0 12px rgba(var(--gold-rgb,201,168,76),0.04);transform:translateY(-1px);}
 .post-compact-excerpt{font-family:sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.6);font-style:italic;margin-top:8px;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.5;}
@@ -726,24 +723,32 @@ function pressSectionToggle(){
   // Edit 5: rewritten loadAdminPosts
   var _bgC=['rgba(74,124,89,0.5)','rgba(107,74,124,0.5)','rgba(124,74,74,0.5)'];
 
+  /* Posts load through the shared jestaLoad in live mode (assets/js/jesta-auth.js): it owns the subscription,
+     the offline detection, the error card with Try again and the empty state; a re-init cancels the previous
+     subscription so a sign-in never doubles it. Rendering stays here. */
+  var _postsLoader = null;
   function loadAdminPosts(user){
     var container = document.getElementById('admin-posts');
     var overflow  = document.getElementById('inner-overflow');
     var expandBtn = document.getElementById('inner-expand-btn');
-    if (!container || !window.jestaDB) return;
-    _unsubs.push(window.jestaDB.collection('blogPosts')
-      .where('authorRole','==','admin')
-      .onSnapshot(function(snap){
-        // Offline, the SDK answers an empty cached snapshot instead of failing: treat it as a failed read.
-        if (snap.empty && snap.metadata && snap.metadata.fromCache) { showPostsState('error'); return; }
+    if (!container || !window.jestaLoad) return;
+    if (_postsLoader) { _postsLoader.cancel(); _postsLoader = null; }
+    _postsLoader = window.jestaLoad({
+      container: container,
+      live: true,
+      query: function(db){ return db.collection('blogPosts').where('authorRole','==','admin'); },
+      isEmpty: function(docs){ return !docs.some(function(doc){ return !!doc.data.published; }); },
+      emptyText: 'No transmissions yet. The first dispatch from the inner world is still being written.',
+      errorText: 'Transmissions could not be loaded. Check your connection.',
+      onState: function(st){ if (st !== 'ready') { if (overflow) overflow.innerHTML = ''; if (expandBtn) expandBtn.style.display = 'none'; } },
+      render: function(docs){
         container.innerHTML = '';
         if (overflow) overflow.innerHTML = '';
         _postCache = {};
-        // sort by date desc
         // date desc, then timestamp desc, then title: same-date posts keep one order between loads
         var tms = function(d){ var t = d.timestamp; return t && t.toMillis ? t.toMillis() : 0; };
-        var sorted = snap.docs.slice().sort(function(a, b){
-          var A = a.data(), B = b.data();
+        var sorted = docs.slice().sort(function(a, b){
+          var A = a.data, B = b.data;
           var da = A.date || '', db_ = B.date || '';
           if (da > db_) return -1; if (da < db_) return 1;
           var ta = tms(A), tb = tms(B);
@@ -753,17 +758,11 @@ function pressSectionToggle(){
         // collect published
         var posts = [];
         sorted.forEach(function(doc){
-          var d = doc.data();
+          var d = doc.data;
           if (!d.published) return;
           _postCache[doc.id] = d;
           posts.push({ id: doc.id, data: d });
         });
-
-        if (posts.length === 0) {
-          if (expandBtn) expandBtn.style.display = 'none';
-          showPostsState('empty');
-          return;
-        }
 
         // HERO: featured post if any, else newest by date
         var hero = posts.filter(function(p){ return p.data.featured === true; })[0] || posts[0];
@@ -807,33 +806,7 @@ function pressSectionToggle(){
         // Show See-all only if there are compact posts
         if (expandBtn) expandBtn.style.display = compacts.length > 0 ? 'block' : 'none';
         revealPostFromHash();
-
-      }, function(err){
-        console.error('Admin posts:', err);
-        showPostsState('error');
-      }));
-  }
-
-  // Posts area states: 'error' (read failed, with a retry that bounces the connection) and 'empty' (no published posts).
-  function showPostsState(kind) {
-    var container = document.getElementById('admin-posts');
-    var overflow = document.getElementById('inner-overflow');
-    var expandBtn = document.getElementById('inner-expand-btn');
-    if (!container) return;
-    if (overflow) overflow.innerHTML = '';
-    if (expandBtn) expandBtn.style.display = 'none';
-    if (kind === 'empty') {
-      container.innerHTML = '<div class="blog-state" role="status"><p>No transmissions yet. The first dispatch from the inner world is still being written.</p></div>';
-      return;
-    }
-    container.innerHTML = '<div class="blog-state" role="alert"><p>Transmissions could not be loaded. Check your connection.</p><button type="button" class="post-collapse-btn" id="blog-retry">Try again</button></div>';
-    var btn = document.getElementById('blog-retry');
-    btn.addEventListener('click', function () {
-      btn.disabled = true; btn.textContent = 'Retrying\u2026';
-      _dropListeners();
-      var db = window.jestaDB;
-      var bounce = (db.disableNetwork && db.enableNetwork) ? db.disableNetwork().then(function(){ return db.enableNetwork(); }) : Promise.resolve();
-      bounce.catch(function(){}).then(function(){ loadAdminPosts(_currentUser); });
+      }
     });
   }
 
