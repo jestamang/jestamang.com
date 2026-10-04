@@ -5,7 +5,7 @@
 // ════════════════════════════════════════════════════════════════
 
 <<<<<<< HEAD
-var CACHE_NAME = 'jestamang-v504';
+var CACHE_NAME = 'jestamang-v505';
 =======
 >>>>>>> origin/main
 var BADGE      = '/assets/icons/icon-192.png';
