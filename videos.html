@@ -58,9 +58,6 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .lb-links{text-align:center;padding:10px 0 0}
 .lb-links a{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(var(--gold-rgb,201,168,76),0.85);text-decoration:none;border:1px solid rgba(var(--gold-rgb,201,168,76),0.35);border-radius:999px}
 .lb-links a:hover,.lb-links a:focus-visible{color:var(--gold,#c9a84c);border-color:var(--gold,#c9a84c);outline:none}
-.v-state{grid-column:1/-1;text-align:center;color:rgba(240,230,211,0.8);font-family:'Luminari',serif;font-size:0.9rem;letter-spacing:0.06em;padding:48px 20px}
-.v-state p{margin-bottom:18px}
-.v-state button{background:transparent;border:1px solid rgba(var(--gold-rgb,201,168,76),0.6);color:var(--gold,#c9a84c);font-family:'Luminari',serif;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;padding:12px 32px;min-height:44px;cursor:pointer}
 </style>
 <style>
 /* ── Jestamang gold border treatment ── */
@@ -181,47 +178,37 @@ function renderVideos(items){
   });
 }
 
-// v282: no hardcoded fallback render — Firestore is canonical; graceful empty/error instead of a stale list.
-function _vEmptyState(msg){ _vGrid.style.opacity='1'; _vGrid.innerHTML='<div class="v-state" role="status"><p>'+msg+'</p></div>'; }
-function _vErrorState(){
-  _vGrid.style.opacity='1';
-  _vGrid.innerHTML='<div class="v-state" role="alert"><p>The videos could not be loaded. Check your connection.</p><button type="button" id="v-retry">Try again</button></div>';
-  var b=document.getElementById('v-retry');
-  b.addEventListener('click',function(){
-    b.disabled=true;b.textContent='Retrying\u2026';
-    var db=window.jestaDB;
-    var bounce=(db&&db.disableNetwork&&db.enableNetwork)?db.disableNetwork().then(function(){return db.enableNetwork();}):Promise.resolve();
-    bounce.catch(function(){}).then(function(){loadVideos();});
+// v282: no hardcoded fallback render. Firestore is canonical; graceful empty/error instead of a stale list.
+// The read goes through the shared jestaLoad (assets/js/jesta-auth.js): it owns the wait for the database, the read,
+// the offline detection, the error card with Try again and the empty card. The grid starts transparent for the fade-in,
+// so every non-ready state makes it visible before the helper draws its card.
+function loadVideos(){
+  window.jestaLoad({
+    container:_vGrid,
+    query:function(db){return db.collection('videos').where('published','==',true);},
+    emptyText:'No videos yet.',
+    errorText:'The videos could not be loaded. Check your connection.',
+    onState:function(st){if(st!=='ready')_vGrid.style.opacity='1';},
+    render:function(docs){
+      var sorted=docs.slice().sort(function(a,b){
+        var oa=(a.data.order!=null?a.data.order:9e15);
+        var ob=(b.data.order!=null?b.data.order:9e15);
+        if(oa!==ob)return oa-ob;                 // order ASC (missing last)
+        var ta=a.data.timestamp?a.data.timestamp.seconds:0;
+        var tb=b.data.timestamp?b.data.timestamp.seconds:0;
+        return tb-ta;                            // timestamp DESC tiebreak
+      });
+      var items=sorted.map(function(d){return{id:d.data.youtubeId,title:d.data.title};});
+      _vGrid.style.transition='opacity 0.3s ease';
+      _vGrid.style.opacity='0';
+      setTimeout(function(){renderVideos(items);_vGrid.style.opacity='1';},300);
+    }
   });
 }
-function loadVideos(){
-    window.jestaDB.collection('videos')
-      .where('published','==',true)
-      .get()
-      .then(function(snap){
-        /* offline, the SDK answers an empty snapshot from cache instead of failing: a failed read, not an empty archive */
-        if(snap.empty&&snap.metadata&&snap.metadata.fromCache){_vErrorState();return;}
-        if(snap.empty){_vEmptyState('No videos yet.');return;}
-        var docs=[];
-        snap.forEach(function(doc){docs.push({id:doc.id,data:doc.data()});});
-        docs.sort(function(a,b){
-          var oa=(a.data.order!=null?a.data.order:9e15);
-          var ob=(b.data.order!=null?b.data.order:9e15);
-          if(oa!==ob)return oa-ob;                 // order ASC (missing → last)
-          var ta=a.data.timestamp?a.data.timestamp.seconds:0;
-          var tb=b.data.timestamp?b.data.timestamp.seconds:0;
-          return tb-ta;                            // timestamp DESC tiebreak
-        });
-        var items=docs.map(function(d){return{id:d.data.youtubeId,title:d.data.title};});
-        _vGrid.style.transition='opacity 0.3s ease';
-        _vGrid.style.opacity='0';
-        setTimeout(function(){renderVideos(items);_vGrid.style.opacity='1';},300);
-      })
-      .catch(function(){_vErrorState();});
-}
+// The helper arrives with the deferred jesta-auth.js, after this inline script.
 var _jt=0,_jiv=setInterval(function(){
-  if(window.jestaDB){clearInterval(_jiv);loadVideos();}
-  else if(++_jt>80){clearInterval(_jiv);_vErrorState();}
+  if(window.jestaLoad){clearInterval(_jiv);loadVideos();}
+  else if(++_jt>100){clearInterval(_jiv);_vGrid.style.opacity='1';_vGrid.innerHTML='<p role="alert" style="grid-column:1/-1;text-align:center;padding:48px 20px">The videos could not be loaded. Check your connection.</p>';}
 },100);
 </script>
 <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-labelledby="lb-title" onclick="if(event.target===this)closeLightbox()"> <div class="lightbox-inner"> <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close">&#x2715;</button> <div class="lightbox-frame" id="lb-frame"> <div id="lb-player"></div> </div> <div class="lb-error" id="lb-error"> <p>This video can't be played here</p> <a id="lb-yt-link" href="#" target="_blank" rel="noopener noreferrer">Watch on YouTube</a> </div> <div class="lightbox-title" id="lb-title"></div> <div class="lb-links"><a id="lb-watch" href="#" target="_blank" rel="noopener noreferrer">Watch on YouTube</a></div> </div> </div>
