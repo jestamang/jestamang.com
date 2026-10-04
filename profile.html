@@ -1526,7 +1526,18 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 .profile-name{color:var(--gold,#c9a84c)!important;text-shadow:0 0 30px rgba(var(--gold-rgb,201,168,76),0.6),0 0 60px rgba(var(--gold-rgb,201,168,76),0.3),0 2px 8px rgba(0,0,0,0.9),2px 2px 4px rgba(0,0,0,0.8)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .profile-subtitle{text-shadow:0 0 20px rgba(0,0,0,0.95),0 2px 4px rgba(0,0,0,1),0 0 40px rgba(0,0,0,0.9),1px 1px 3px rgba(0,0,0,1)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 
-.skip-link{position:fixed;top:-100px;left:0;background:var(--gold,#c9a84c);color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid var(--gold,#c9a84c)}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}</style>
+.skip-link{position:fixed;top:-100px;left:0;background:var(--gold,#c9a84c);color:#000;padding:8px 16px;font-family:'Luminari',Georgia,serif;font-size:13px;text-decoration:none;z-index:9999;transition:top 0.2s ease}.skip-link:focus{top:0;outline:2px solid var(--gold,#c9a84c)}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}body::before,body::after{display:none!important}#jtnav,.home-btn,.jsearch-float-btn,#jsearch-overlay,#jtnav-mobile-overlay,.left-nav,.right-nav,.mob-nav,.mob-nav-grid,.hp-scroll-hint{display:none!important}h1,h2,h3,h4,h5,h6{page-break-after:avoid}img,.album-card,.merch-card,.photo-row,.entity-card,.blog-card{page-break-inside:avoid}}
+/* Account deletion panel */
+.del-panel{margin-top:18px;padding:20px 22px;border:1px solid rgba(251,56,56,0.35);background:rgba(0,0,0,0.55);max-width:560px;text-align:left}
+.del-text{font-family:'Luminari',serif;font-size:0.82rem;line-height:1.65;color:rgba(240,230,211,0.85);margin:0 0 16px}
+.del-actions{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:14px}
+.del-actions .btn-danger{min-height:44px}
+.del-cancel{background:transparent;border:1px solid rgba(201,168,76,0.45);color:rgba(201,168,76,0.85);font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;padding:0 18px;min-height:44px;cursor:pointer}
+.del-cancel:hover,.del-cancel:focus-visible{border-color:#c9a84c;color:#c9a84c;outline:none}
+.del-status{font-family:'Luminari',serif;font-size:0.78rem;line-height:1.6;color:rgba(240,230,211,0.8);margin:14px 0 0;min-height:1.2em}
+.del-status.err{color:#FB3838}
+#del-pw-wrap{margin:0 0 4px}
+</style>
   <link rel="preload" as="font" href="assets/fonts/Luminari.woff2" type="font/woff2" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="dns-prefetch" href="https://apis.google.com">
@@ -1976,7 +1987,19 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
     </div>
     <div style="margin-top:24px;">
-      <button class="btn-danger" id="delete-account-btn">Delete Account</button>
+      <button class="btn-danger" id="delete-account-btn" aria-expanded="false" aria-controls="del-panel">Delete Account</button>
+      <div id="del-panel" class="del-panel" hidden>
+        <p class="del-text">Deleting your account removes your profile and birth data, your natal chart, your shared dossier, your favorites, and your comments, chat messages and game scores from this site. Your login is removed last. This cannot be undone.</p>
+        <div id="del-pw-wrap" class="cp-field-wrap" hidden>
+          <label class="dossier-field-label" for="del-pw">Confirm with your password</label>
+          <input class="form-input" type="password" id="del-pw" autocomplete="current-password" placeholder="············">
+        </div>
+        <div class="del-actions">
+          <button class="btn-danger" id="del-confirm-btn" type="button">Delete everything</button>
+          <button class="del-cancel" id="del-cancel-btn" type="button">Cancel</button>
+        </div>
+        <p class="del-status" id="del-status" role="status" aria-live="polite"></p>
+      </div>
     </div>
   </div>
 
@@ -3190,6 +3213,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var loadingTimer = null;
 
   firebase.auth().onAuthStateChanged(function(user){
+    if(window._jestaDeleting) return; // the deletion flow redirects home itself once the login is gone
     if(!user||user.isAnonymous){ window.location.href = 'login.html'; return; }
     currentUser = user;
     claimLegacyCharts();
@@ -4111,20 +4135,141 @@ document.addEventListener('DOMContentLoaded', function(){
     firebase.auth().signOut().then(function(){ window.location.href = 'index.html'; });
   });
 
-  var _deleteAccountBtn=document.getElementById('delete-account-btn');if(_deleteAccountBtn)_deleteAccountBtn.addEventListener('click', function(){
-    var confirmed = window.confirm('Are you certain you wish to dissolve your presence from the inner circle? This cannot be undone.');
-    if(!confirmed) return;
-    var goneKey = chartsKey();
-    currentUser.delete()
-      .then(function(){
-        try{ if(goneKey) localStorage.removeItem(goneKey); localStorage.removeItem(JESTA_CHARTS_ACTIVE); }catch(e){}
-        window.location.href = 'index.html';
-      })
-      .catch(function(e){
-        console.error('Delete error:', e);
-        alert('The mythology holds your record. You may need to sign in again before deleting your account.');
+  // ── ACCOUNT DELETION ──
+  // Removes the member's own data before the login, in this order: shared dossier, comments, chat
+  // messages, game scores, favorites, natal chart, then the profile document last and right before
+  // the Auth delete (jesta-auth.js recreates a missing profile on the next auth state change, so the
+  // two must be back to back). Re-authentication comes first so the final Auth delete cannot fail
+  // for a stale sign-in after the data is already gone. Any failed step stops the flow before the
+  // login is touched and offers Retry from that step; every step is safe to repeat.
+  (function(){
+    var openBtn   = document.getElementById('delete-account-btn');
+    var panel     = document.getElementById('del-panel');
+    var pwWrap    = document.getElementById('del-pw-wrap');
+    var pwInp     = document.getElementById('del-pw');
+    var goBtn     = document.getElementById('del-confirm-btn');
+    var cancelBtn = document.getElementById('del-cancel-btn');
+    var statusEl  = document.getElementById('del-status');
+    if(!openBtn || !panel || !goBtn) return;
+    var BATCH = 400;
+    var RECENT_MS = 4 * 60 * 1000; // Firebase treats a sign-in as recent for about five minutes
+    var resumeAt = 0;              // step index to resume from after a failure
+    var authOnly = false;          // data is gone, only the Auth delete is left
+
+    var STEPS = [
+      { label: 'shared dossier', run: function(uid){ return db.collection('publicCharts').doc(uid).delete(); } },
+      { label: 'comments',       run: function(uid){ return deleteAll(db.collection('comments').where('userId','==',uid)); } },
+      { label: 'chat messages',  run: function(uid){ return deleteAll(db.collection('innerCircleChat').where('uid','==',uid)); } },
+      { label: 'game scores',    run: function(uid){ return deleteAll(db.collection('leaderboards').where('uid','==',uid)); } },
+      { label: 'favorites',      run: function(uid){ return deleteAll(db.collection('favorites').where('userId','==',uid)); } },
+      { label: 'natal chart',    run: function(uid){ return deleteAll(db.collection('users').doc(uid).collection('natalChart')); } },
+      { label: 'profile',        run: function(uid){ return db.collection('users').doc(uid).delete(); } }
+    ];
+
+    // Deletes every document a query returns, in batches, until the query comes back empty.
+    function deleteAll(query){
+      return query.limit(BATCH).get({ source: 'server' }).then(function(snap){
+        if(snap.empty) return;
+        var batch = db.batch();
+        snap.forEach(function(d){ batch.delete(d.ref); });
+        return batch.commit().then(function(){ return snap.size === BATCH ? deleteAll(query) : undefined; });
       });
-  });
+    }
+
+    function providers(){ return (currentUser.providerData || []).map(function(p){ return p.providerId; }); }
+    function hasPassword(){ return providers().indexOf('password') !== -1; }
+    function signInIsRecent(){
+      var t = currentUser.metadata && currentUser.metadata.lastSignInTime ? Date.parse(currentUser.metadata.lastSignInTime) : 0;
+      return !!t && (Date.now() - t) < RECENT_MS;
+    }
+    function reauth(){
+      if(signInIsRecent()) return Promise.resolve();
+      if(hasPassword()){
+        var pw = pwInp ? pwInp.value : '';
+        if(!pw){ var e = new Error('password'); e.code = 'del/password-required'; return Promise.reject(e); }
+        return currentUser.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(currentUser.email, pw));
+      }
+      if(providers().indexOf('google.com') !== -1){
+        return currentUser.reauthenticateWithPopup(new firebase.auth.GoogleAuthProvider());
+      }
+      var err = new Error('provider'); err.code = 'del/no-provider'; return Promise.reject(err);
+    }
+    function runSteps(uid, from){
+      var i = from;
+      function next(){
+        if(i >= STEPS.length) return Promise.resolve();
+        var step = STEPS[i];
+        setStatus('Removing your ' + step.label + '\u2026');
+        return step.run(uid).then(function(){ i++; return next(); }, function(e){
+          var err = new Error((e && e.message) || String(e)); err.step = i; err.label = step.label; err.code = e && e.code; throw err;
+        });
+      }
+      return next();
+    }
+    function releaseToken(){
+      if(window.jestaMessaging && window.jestaMessaging.deleteToken){ return window.jestaMessaging.deleteToken().catch(function(){}); }
+      return Promise.resolve();
+    }
+    function clearBrowser(uid){
+      ['jestaCharts:' + uid, 'jestaCharts', JESTA_CHARTS_ACTIVE, 'jesta_uname_' + uid, 'jesta_photo_' + uid, 'jesta_av_' + uid, 'notificationsEnabled', 'lastMembersVisit']
+        .forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    }
+    function setStatus(text, isError){ if(statusEl){ statusEl.textContent = text; statusEl.className = 'del-status' + (isError ? ' err' : ''); } }
+    function friendly(e){
+      var c = (e && e.code) || '';
+      if(c === 'del/password-required') return 'Enter your password to confirm.';
+      if(c === 'auth/wrong-password' || c === 'auth/invalid-credential' || c === 'auth/invalid-login-credentials') return 'That password is not right.';
+      if(c === 'auth/too-many-requests') return 'Too many attempts. Wait a little and try again.';
+      if(c === 'auth/popup-blocked' || c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request') return 'The Google sign-in window was closed before it finished. Try again.';
+      if(c === 'auth/network-request-failed' || c === 'unavailable') return 'No connection. Check your network and try again.';
+      if(c === 'permission-denied') return 'The server refused the request.';
+      if(c === 'auth/requires-recent-login') return 'Your sign-in is too old. Sign out, sign back in, and try again.';
+      return (e && e.message) ? e.message : 'Something went wrong.';
+    }
+    function setBusy(b){ goBtn.disabled = b; cancelBtn.disabled = b; if(pwInp) pwInp.disabled = b; }
+
+    openBtn.addEventListener('click', function(){
+      var open = panel.hasAttribute('hidden');
+      if(open){ panel.removeAttribute('hidden'); openBtn.setAttribute('aria-expanded','true'); if(pwWrap){ pwWrap.hidden = !(currentUser && hasPassword() && !signInIsRecent()); } setStatus(''); goBtn.textContent = 'Delete everything'; resumeAt = 0; authOnly = false; (pwWrap && !pwWrap.hidden ? pwInp : goBtn).focus(); }
+      else { panel.setAttribute('hidden',''); openBtn.setAttribute('aria-expanded','false'); }
+    });
+    cancelBtn.addEventListener('click', function(){ panel.setAttribute('hidden',''); openBtn.setAttribute('aria-expanded','false'); if(pwInp) pwInp.value = ''; setStatus(''); openBtn.focus(); });
+
+    goBtn.addEventListener('click', function(){
+      if(!currentUser) return;
+      var uid = currentUser.uid;
+      setBusy(true);
+      var chain = authOnly ? Promise.resolve() : reauth().then(function(){ return runSteps(uid, resumeAt); });
+      chain.then(function(){
+        authOnly = true;
+        setStatus('Releasing notifications\u2026');
+        return releaseToken();
+      }).then(function(){
+        setStatus('Removing your login\u2026');
+        window._jestaDeleting = true;
+        return currentUser.delete();
+      }).then(function(){
+        clearBrowser(uid);
+        setStatus('Your account and data have been removed.');
+        window.location.href = 'index.html';
+      }).catch(function(e){
+        window._jestaDeleting = false;
+        setBusy(false);
+        goBtn.textContent = 'Retry';
+        if(e && e.step !== undefined){
+          resumeAt = e.step;
+          var done = e.step === 0 ? 'Nothing has been removed yet' : 'Everything before that was removed';
+          setStatus('Could not remove your ' + e.label + ' (' + friendly(e) + '). ' + done + ' and your login is still here. Retry to continue from this step.', true);
+        } else if(authOnly){
+          setStatus('Your data has been removed but the login could not be deleted (' + friendly(e) + '). Retry, or sign out and sign back in first.', true);
+        } else {
+          goBtn.textContent = 'Delete everything';
+          setStatus(friendly(e), true);
+          if(e && e.code === 'del/password-required' && pwInp) pwInp.focus();
+        }
+      });
+    });
+  })();
 
   // ── NATAL CHART CALCULATOR ──
 
