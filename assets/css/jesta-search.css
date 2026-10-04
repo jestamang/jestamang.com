@@ -4,8 +4,8 @@
 #jsearch-btn:hover,#jsearch-btn:focus-visible{color:var(--gold,#c9a84c)}
 #jsearch-btn.jsearch-active{color:rgba(var(--gold-rgb,201,168,76),0.45)}
 #jsearch-btn svg{display:block;pointer-events:none}
-.jsearch-float-btn{position:fixed;top:14px;right:14px;z-index:9000;background:rgba(0,0,0,0.55);border:1px solid rgba(var(--gold-rgb,201,168,76),0.35);color:rgba(var(--gold-rgb,201,168,76),0.75);cursor:pointer;width:44px;height:44px;padding:0;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s}
-.jsearch-float-btn:hover,.jsearch-float-btn:focus-visible{border-color:rgba(var(--gold-rgb,201,168,76),0.75);color:var(--gold,#c9a84c)}
+.jsearch-float-btn{position:fixed;top:14px;right:14px;z-index:9000;background:none;border:none;color:var(--gold,#c9a84c);cursor:pointer;width:44px;height:44px;padding:0;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 1px 6px rgba(0,0,0,1)) drop-shadow(0 0 8px rgba(0,0,0,0.8));transition:color 0.2s,filter 0.2s}
+.jsearch-float-btn:hover{color:#dfc060;filter:drop-shadow(0 1px 6px rgba(0,0,0,1)) drop-shadow(0 0 10px rgba(var(--gold-rgb,201,168,76),0.6))}.jsearch-float-btn:focus-visible{outline:2px solid var(--gold,#c9a84c);outline-offset:2px;border-radius:50%}.jsearch-float-btn svg{width:22px;height:22px}
 .jsearch-float-btn.jsearch-active{color:rgba(var(--gold-rgb,201,168,76),0.45)}
 .jsearch-float-btn svg{pointer-events:none}
 @media(max-width:1024px){.jsearch-float-btn{top:calc(14px + env(safe-area-inset-top));right:calc(14px + env(safe-area-inset-right))}}
@@ -35,3 +35,30 @@ body.jsearch-nonav #jsearch-overlay{top:0;max-height:min(460px,100dvh)}
 #jtnav-mob-search{cursor:pointer}
 @media(max-width:767px){#jsearch-inner{padding:12px 16px 12px}#jsearch-input{font-size:16px}.jsearch-hint{letter-spacing:0.08em;font-size:0.6rem;padding:12px 0}.jsearch-more{letter-spacing:0.1em;font-size:0.6rem}}
 @media(max-width:600px){.jsearch-item{flex-wrap:wrap;row-gap:2px;padding:9px 14px}.jsearch-item-name{flex:1 1 calc(100% - 30px);width:calc(100% - 30px)}.jsearch-item-cat{flex:0 0 100%;width:100%;margin-left:30px;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box;padding-right:30px}}
+
+/* Nav bar, desktop tier: the magnifier sits inside the platform icon cluster (after Apple Music, before the
+   LOG IN separator) by flex order, sized and dimmed like the platform icons. Under 768px the bar keeps its
+   current layout with the icon beside MENU. */
+@media(min-width:768px){
+  #jtnav #jsearch-btn{order:1;padding:0 7px;margin-right:16px;min-width:0;color:#fff}
+  #jtnav #jsearch-btn svg{width:16px;height:16px;stroke-width:2.2;opacity:0.8;transition:opacity 0.2s}
+  #jtnav #jsearch-btn:hover svg,#jtnav #jsearch-btn:focus-visible svg{opacity:1}
+  #jtnav #jsearch-btn:hover,#jtnav #jsearch-btn:focus-visible{color:#fff}
+  #jtnav #jsearch-btn.jsearch-active svg{opacity:0.45}
+  #jtnav #jtnav-platforms{margin-right:0}
+  #jtnav #jtnav-auth{order:2}
+}
+/* Homepage triggers: a nav column item on desktop, a grid tile on phones; the float hides where the column item shows. */
+.jsearch-navicon,.jsearch-gridicon{display:flex;align-items:center;justify-content:center;color:var(--gold,#c9a84c);filter:drop-shadow(0 2px 10px rgba(0,0,0,1)) drop-shadow(0 0 6px rgba(var(--gold-rgb,201,168,76),0.35));transition:filter 0.4s ease}
+.nav-item:hover .jsearch-navicon{filter:drop-shadow(0 0 10px rgba(var(--gold-rgb,201,168,76),0.85)) drop-shadow(0 0 22px rgba(var(--gold-rgb,201,168,76),0.4))}
+.nav-item.jsearch-active .jsearch-navicon,.mob-nav-item.jsearch-active .jsearch-gridicon{color:rgba(var(--gold-rgb,201,168,76),0.5)}
+#hp-search:focus-visible,#hp-search-mob:focus-visible{outline:2px solid var(--gold,#c9a84c);outline-offset:4px}
+@media(min-width:769px){body.jsearch-hastrigger .jsearch-float-btn{display:none}}
+/* Game pages: the icon lives in the header row, pinned to its right edge so the title and its button keep their layout. */
+.jsearch-float-btn.jsearch-inhead{position:absolute;top:50%;right:16px;transform:translateY(-50%);filter:none}
+.jsearch-float-btn.jsearch-inhead svg{width:20px;height:20px}
+#game-header:has(.jsearch-inhead){padding-right:72px}
+@media(max-width:1024px){.jsearch-float-btn.jsearch-inhead{top:50%;right:calc(8px + env(safe-area-inset-right))}}
+/* Phones: when the row also holds the leaderboard button, the right side is full (centered title plus button), so
+   the icon moves next to the back link; without that button it stays on the right. */
+@media(max-width:600px){#game-header:has(.jsearch-inhead):has(#lb-btn-hud){padding-right:20px}#game-header:has(#lb-btn-hud) #back{order:-2}#game-header:has(#lb-btn-hud) .jsearch-float-btn.jsearch-inhead{position:static;transform:none;margin:0 auto 0 0;order:-1;width:38px}}
