@@ -771,3 +771,90 @@ window.openSocial = function(platform) {
   }
   window.jestaShowsClock = { easternOffset: easternOffset, endMs: endMs, isUpcoming: isUpcoming };
 })();
+
+// ── Shared Firestore loader ───────────────────────────────────
+// One loader for every page that reads a collection: waits for the database handle, runs the read,
+// treats the SDK's offline answer (an empty snapshot served from cache) as a failed read, shows an
+// error card with a Try again button that bounces the connection, shows a distinct empty state, and
+// hands real data to the page's render function. Pages keep their own rendering and their own copy.
+//
+//   var h = window.jestaLoad({
+//     container: '#videoGrid' | element,          // where the error and empty cards render
+//     query: function (db) { return db.collection('videos').where('published', '==', true); },
+//     render: function (docs, snap) { ... },      // docs: [{ id, data }], only called with real data
+//     emptyText: 'No videos yet.',                // optional, default below
+//     errorText: 'Could not load. Check your connection.',   // optional
+//     isEmpty: function (docs) { return ...; },  // optional, decide emptiness after the page's own filtering
+//     live: false,                                // true subscribes with onSnapshot instead of one get()
+//     onState: function (state) { }               // optional: 'loading' | 'ready' | 'empty' | 'error'
+//   });
+//   h.reload()  runs the read again (bounces the connection first); h.cancel() stops a live listener.
+(function () {
+  var STYLE_ID = 'jesta-load-styles';
+  function ensureStyles() {
+    if (document.getElementById(STYLE_ID)) return;
+    var st = document.createElement('style'); st.id = STYLE_ID;
+    st.textContent = '.jesta-state{grid-column:1/-1;text-align:center;font-family:\'Luminari\',serif;font-size:0.9rem;letter-spacing:0.06em;color:rgba(240,230,211,0.8);padding:48px 20px}'
+      + '.jesta-state p{margin:0 0 18px}'
+      + '.jesta-state button{background:transparent;border:1px solid rgba(var(--gold-rgb,201,168,76),0.6);color:var(--gold,#c9a84c);font-family:\'Luminari\',serif;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;padding:12px 32px;min-height:44px;cursor:pointer}'
+      + '.jesta-state button:disabled{opacity:0.5;cursor:default}';
+    document.head.appendChild(st);
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  window.jestaLoad = function (opts) {
+    opts = opts || {};
+    var box = typeof opts.container === 'string' ? document.querySelector(opts.container) : opts.container;
+    var emptyText = opts.emptyText || 'Nothing here yet.';
+    var errorText = opts.errorText || 'This could not be loaded. Check your connection.';
+    var retryText = opts.retryText || 'Try again';
+    var maxWait = opts.maxWaitMs || 8000;
+    var unsub = null, cancelled = false;
+    function setState(s) { if (typeof opts.onState === 'function') { try { opts.onState(s); } catch (e) {} } }
+    function card(kind, text, withRetry) {
+      if (!box) return;
+      ensureStyles();
+      box.style.opacity = '1';
+      box.innerHTML = '<div class="jesta-state" role="' + (kind === 'error' ? 'alert' : 'status') + '"><p>' + esc(text) + '</p>'
+        + (withRetry ? '<button type="button" class="jesta-retry">' + esc(retryText) + '</button>' : '') + '</div>';
+      var b = box.querySelector('.jesta-retry');
+      if (b) b.addEventListener('click', function () { b.disabled = true; b.textContent = retryText + '…'; handle.reload(); });
+    }
+    function fail(err) { if (err && window.console) console.warn('[jestaLoad]', err && err.message || err); setState('error'); card('error', errorText, true); }
+    function deliver(snap) {
+      // Offline, the SDK resolves with an empty snapshot from cache instead of rejecting: that is a failed read.
+      if (snap.empty && snap.metadata && snap.metadata.fromCache) { fail(new Error('empty snapshot from cache')); return; }
+      var docs = []; snap.forEach(function (d) { docs.push({ id: d.id, data: d.data() }); });
+      var empty = typeof opts.isEmpty === 'function' ? opts.isEmpty(docs) : docs.length === 0;
+      if (empty) { setState('empty'); card('status', emptyText, false); return; }
+      if (box) { var old = box.querySelectorAll('.jesta-state'); for (var i = 0; i < old.length; i++) old[i].parentNode.removeChild(old[i]); }
+      try { opts.render(docs, snap); setState('ready'); } catch (e) { fail(e); }
+    }
+    function run(db) {
+      if (cancelled) return;
+      var q;
+      try { q = opts.query(db); } catch (e) { fail(e); return; }
+      setState('loading');
+      if (unsub) { try { unsub(); } catch (e) {} unsub = null; }
+      if (opts.live) { unsub = q.onSnapshot(deliver, fail); }
+      else { q.get().then(deliver, fail); }
+    }
+    function waitForDb(cb) {
+      var waited = 0, iv = setInterval(function () {
+        if (window.jestaDB) { clearInterval(iv); cb(window.jestaDB); }
+        else if ((waited += 100) >= maxWait) { clearInterval(iv); fail(new Error('database handle never arrived')); }
+      }, 100);
+    }
+    var handle = {
+      reload: function () {
+        var db = window.jestaDB;
+        if (!db) { waitForDb(run); return; }
+        var bounce = (db.disableNetwork && db.enableNetwork) ? db.disableNetwork().then(function () { return db.enableNetwork(); }) : Promise.resolve();
+        bounce.catch(function () {}).then(function () { run(db); });
+      },
+      cancel: function () { cancelled = true; if (unsub) { try { unsub(); } catch (e) {} unsub = null; } }
+    };
+    waitForDb(run);
+    return handle;
+  };
+})();
