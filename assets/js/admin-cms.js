@@ -572,14 +572,15 @@ var _almAddBtn=document.getElementById('alm-add-btn');if(_almAddBtn)_almAddBtn.a
   if (!data.title) { var s2=document.getElementById('alm-add-status'); if(s2){s2.textContent='Title is required.';s2.className='status-msg status-err';} return; }
   var btn = document.getElementById('alm-add-btn');
   btn.disabled = true; btn.textContent = 'Adding…';
-  window.jestaDB.collection('releases').add(data)
-    .then(function(ref){
+  var ref = window.jestaDB.collection('releases').doc();
+  window.jestaVerifiedSave(ref, data, 'set')
+    .then(function(res){
       _almDocs[ref.id] = data;
       /* switch to list and refresh */
       document.getElementById('alm-tab-list').click();
       almRefreshList();
       almInitAddForm(); /* clear the form */
-      var s3=document.getElementById('alm-add-status'); if(s3){s3.textContent='Album added.';s3.className='status-msg status-ok';}
+      var s3=document.getElementById('alm-add-status'); if(s3){ window.jestaVerifyStatus(s3, res, 'Album added'); }
       btn.disabled = false; btn.textContent = 'Add Album';
     })
     .catch(function(e){
@@ -853,13 +854,14 @@ function entLoad(){
     var data=entReadForm('ent-new');
     if(!data.name){var s=document.getElementById('ent-add-status');if(s){s.textContent='Name required.';s.className='status-msg status-err';}return;}
     addBtn.disabled=true;addBtn.textContent='Adding\u2026';
-    window.jestaDB.collection('entities').add(data)
-      .then(function(ref){
+    var ref=window.jestaDB.collection('entities').doc();
+    window.jestaVerifiedSave(ref, data, 'set')
+      .then(function(res){
         _entDocs[ref.id]=data;
         document.getElementById('ent-tab-list').click();
         entRenderList(_entDocs);
         entInitAddForm();
-        var s=document.getElementById('ent-add-status');if(s){s.textContent='Entity added.';s.className='status-msg status-ok';}
+        var s=document.getElementById('ent-add-status');if(s){ window.jestaVerifyStatus(s, res, 'Entity added'); }
         addBtn.disabled=false;addBtn.textContent='Add Entity';
       })
       .catch(function(e){
@@ -1145,8 +1147,9 @@ function lymLoad(){
     var data=lymReadForm('lym-new');
     if(!data.albumTitle){var s=document.getElementById('lym-add-status');if(s){s.textContent='Album title required.';s.className='status-msg status-err';}return;}
     addBtn.disabled=true;addBtn.textContent='Adding\u2026';
-    window.jestaDB.collection('lyrics').add(data)
-      .then(function(ref){_lymDocs[ref.id]=data;document.getElementById('lym-tab-list').click();lymRenderList(_lymDocs);lymInitAddForm();var s=document.getElementById('lym-add-status');if(s){s.textContent='Album added.';s.className='status-msg status-ok';}addBtn.disabled=false;addBtn.textContent='Add Album';})
+    var ref=window.jestaDB.collection('lyrics').doc();
+    window.jestaVerifiedSave(ref, data, 'set')
+      .then(function(res){_lymDocs[ref.id]=data;document.getElementById('lym-tab-list').click();lymRenderList(_lymDocs);lymInitAddForm();var s=document.getElementById('lym-add-status');if(s){ window.jestaVerifyStatus(s, res, 'Album added'); }addBtn.disabled=false;addBtn.textContent='Add Album';})
       .catch(function(e){var s=document.getElementById('lym-add-status');if(s){s.textContent='Error: '+e.message;s.className='status-msg status-err';}addBtn.disabled=false;addBtn.textContent='Add Album';});
   });
   var clearBtn=document.getElementById('lym-add-clear-btn');

@@ -2759,7 +2759,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         }
         if(Object.keys(entry).length)_gcSaved[href]=entry; else delete _gcSaved[href];
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Saving…';}
-        db.collection('siteConfig').doc('gameContent').set({games:_gcSaved}).then(function(){ if(_gcEdit[href])delete _gcEdit[href]; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Saved ✦';} }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error: '+((e&&e.message)||'failed');} });
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('gameContent'), {games:_gcSaved}, 'set').then(function(res){ if(!res.ok){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';} return; }  if(_gcEdit[href])delete _gcEdit[href]; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Saved ✦';} }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error: '+((e&&e.message)||'failed');} });
       }); });
       formEl.querySelectorAll('.am-pagereset').forEach(function(b){ b.addEventListener('click', function(){
         var href=this.getAttribute('data-href');
@@ -2767,7 +2767,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         if(!_gcGuard.canSave(st)) return;
         delete _gcSaved[href]; delete _gcEdit[href];
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Reverting…';}
-        db.collection('siteConfig').doc('gameContent').set({games:_gcSaved}).then(function(){ render(); }).catch(function(e){ var s2=formEl.querySelector('.am-pagestatus[data-href="'+href+'"]'); if(s2){s2.style.color='rgba(251,56,56,0.9)';s2.textContent='Error';} });
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('gameContent'), {games:_gcSaved}, 'set').then(function(res){ if(!res.ok){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';} return; }  render(); }).catch(function(e){ var s2=formEl.querySelector('.am-pagestatus[data-href="'+href+'"]'); if(s2){s2.style.color='rgba(251,56,56,0.9)';s2.textContent='Error';} });
       }); });
       formEl.querySelectorAll('.am-pn').forEach(function(el){ el.addEventListener('input', function(){ _pnEdit[this.getAttribute('data-pn')]=this.value; }); });
       formEl.querySelectorAll('.am-pnsave').forEach(function(b){ b.addEventListener('click', function(){
@@ -2776,20 +2776,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var st=formEl.querySelector('.am-pnstatus');
         if(!_pnGuard.canSave(st)) return;
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Saving…';}
-        db.collection('siteConfig').doc('pitchNotes').set({notes:notes}).then(function(){ _pnSaved=notes; _pnEdit={}; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Saved ✦';} render(); }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error: '+((e&&e.message)||'failed');} });
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('pitchNotes'), {notes:notes}, 'set').then(function(res){ if(!res.ok){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';} return; }  _pnSaved=notes; _pnEdit={}; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Saved ✦';} render(); }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error: '+((e&&e.message)||'failed');} });
       }); });
       formEl.querySelectorAll('.am-pnreset').forEach(function(b){ b.addEventListener('click', function(){
         if(!confirm('Reset all 12 note descriptions to the hardcoded defaults?')) return;
         var st=formEl.querySelector('.am-pnstatus');
         if(!_pnGuard.canSave(st)) return;
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Resetting…';}
-        db.collection('siteConfig').doc('pitchNotes').set({notes:{}}).then(function(){ _pnSaved={}; _pnEdit={}; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Reset ✦';} render(); }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error';} });
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('pitchNotes'), {notes:{}}, 'set').then(function(res){ if(!res.ok){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';} return; }  _pnSaved={}; _pnEdit={}; if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Reset ✦';} render(); }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error';} });
       }); });
       var sv=document.getElementById('am-save');
       if(sv) sv.addEventListener('click', function(){
         var st=document.getElementById('arcm-status'); if(!_amGuard.canSave(st)) return; var cfg=collect();
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Saving…';}
-        db.collection('siteConfig').doc('arcadeConfig').set(cfg).then(function(){
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('arcadeConfig'), cfg, 'set').then(function(res){ if(!res.ok){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';} return; } 
           _amSaved={header:cfg.header||{},games:cfg.games||{}};
           if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Saved ✦';}
         }).catch(function(e){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Error: '+((e&&e.message)||'failed');} });
@@ -2798,7 +2798,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       if(rs) rs.addEventListener('click', function(){
         var st=document.getElementById('arcm-status'); if(!_amGuard.canSave(st)) return; _amSaved={header:{},games:{}};
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Resetting…';}
-        db.collection('siteConfig').doc('arcadeConfig').set({header:{},games:{}}).then(function(){
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('arcadeConfig'), {header:{},games:{}}, 'set').then(function(res){ if(!res.ok){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';} return; } 
           render(); var st2=document.getElementById('arcm-status'); if(st2){st2.style.color='rgba(2,225,39,0.85)';st2.textContent='Reset to defaults ✦';}
         }).catch(function(e){ var st3=document.getElementById('arcm-status'); if(st3){st3.style.color='rgba(251,56,56,0.9)';st3.textContent='Error';} });
       });
@@ -2910,7 +2910,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var st=document.getElementById('pf-status');
         if(!_pfGuard.canSave(st)) return;
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Saving…';}
-        db.collection('siteConfig').doc('profileInterp').set(cfg).then(function(){
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('profileInterp'), cfg, 'set').then(function(res){ if(!res.ok){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';} return; } 
           _pfSaved={Sun:cfg.Sun||{},Moon:cfg.Moon||{},Rising:cfg.Rising||{}};
           if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Saved ✦';}
           render();
@@ -2922,7 +2922,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var st=document.getElementById('pf-status');
         if(!_pfGuard.canSave(st)) return;
         if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Resetting…';}
-        db.collection('siteConfig').doc('profileInterp').set({Sun:{},Moon:{},Rising:{}}).then(function(){
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('profileInterp'), {Sun:{},Moon:{},Rising:{}}, 'set').then(function(res){ if(!res.ok){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';} return; } 
           _pfSaved={Sun:{},Moon:{},Rising:{}};
           if(st){st.style.color='rgba(2,225,39,0.85)';st.textContent='Reset ✦';}
           render();
@@ -3062,7 +3062,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var map = {};
         formEl.querySelectorAll('.rm-f').forEach(function(el){ var v=el.value.trim(); if(v) map[el.getAttribute('data-k')] = v; });
         if (st) { st.style.color='rgba(201,168,76,0.7)'; st.textContent='Saving…'; }
-        db.collection('siteConfig').doc('radioConfig').set({ fields: map }).then(function(){
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('radioConfig'), { fields: map }, 'set').then(function(res){ if(!res.ok){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';} return; } 
           _rmSaved = {}; for (var k in map) { if (map.hasOwnProperty(k)) _rmSaved[k]=map[k]; }
           if (st) { st.style.color='rgba(2,225,39,0.85)'; st.textContent='Saved ✦'; }
         }).catch(function(e){ if (st) { st.style.color='rgba(251,56,56,0.9)'; st.textContent='Error: '+((e&&e.message)||'failed'); } });
@@ -3073,7 +3073,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         if (!_rmGuard.canSave(st)) return;
         _rmSaved = {};
         if (st) { st.style.color='rgba(201,168,76,0.7)'; st.textContent='Resetting…'; }
-        db.collection('siteConfig').doc('radioConfig').set({ fields: {} }).then(function(){
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('radioConfig'), { fields: {} }, 'set').then(function(res){ if(!res.ok){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';} return; } 
           render();
           var st2 = document.getElementById('rm-status');
           if (st2) { st2.style.color='rgba(2,225,39,0.85)'; st2.textContent='Reset to defaults ✦'; }
@@ -3159,7 +3159,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
     function writeDoc(f, st, doneMsg){
       if (st) { st.style.color = 'rgba(201,168,76,0.7)'; st.textContent = 'Saving…'; }
-      db.collection('siteConfig').doc('pageMeta').set({ pages: _pmSaved }).then(function(){
+      window.jestaVerifiedSave(db.collection('siteConfig').doc('pageMeta'), { pages: _pmSaved }, 'set').then(function(res){ if(!res.ok){ if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';} return; } 
         if (_pmEdit[f]) delete _pmEdit[f];
         render();
         var st2 = sel('pmeta-status', f);
@@ -3311,7 +3311,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var map = {};
         list.querySelectorAll('.eotd-cap').forEach(function(t){ var v=t.value.trim(); if(v) map[t.getAttribute('data-key')] = v; });
         if (stat) { stat.style.color='rgba(201,168,76,0.7)'; stat.textContent='Saving…'; }
-        db.collection('siteConfig').doc('eotdCaptions').set({captions:map}).then(function(){
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('eotdCaptions'), {captions:map}, 'set').then(function(res){ if(!res.ok){ if(stat){stat.style.color='rgba(251,56,56,0.9)';stat.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';} return; } 
           _eotdCapSaved = map; _eotdCapEdit = {};
           if (stat) { stat.style.color='rgba(2,225,39,0.85)'; stat.textContent='Captions saved ✦'; }
         }).catch(function(e){ if (stat) { stat.style.color='rgba(251,56,56,0.9)'; stat.textContent='Error: '+((e&&e.message)||'failed'); } });
@@ -3343,7 +3343,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       if (!_ixGuard.canSave(statusEl, true)) return;
       var sections = _ixState.map(function(item, i){ var o = { key:item.key, order:i, visible: item.visible, color:(item.color||'green'), title:(item.title||'').trim(), desc:(item.desc||'').trim() }; var ex=item.extras||{}, clean={}, has=false; for(var fk in ex){ if(ex[fk] && String(ex[fk]).trim()){ clean[fk]=String(ex[fk]).trim(); has=true; } } if(has) o.extras=clean; return o; });
       saveBtn.disabled = true;
-      db.collection('siteConfig').doc('indexSections').set({ sections: sections }, { merge: true }).then(function(){
+      window.jestaVerifiedSave(db.collection('siteConfig').doc('indexSections'), { sections: sections }).then(function(res){ if(!res.ok){ saveBtn.disabled = false; if(statusEl){statusEl.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';statusEl.className='status-msg status-err';} return; } 
         if (statusEl) { statusEl.textContent = 'HOMEPAGE LAYOUT SAVED ✦'; statusEl.className = 'status-msg status-ok'; }
         saveBtn.disabled = false;
       }).catch(function(e){
@@ -5164,7 +5164,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var data = newState
         ? { active: true, message: msg, timestamp: firebase.firestore.FieldValue.serverTimestamp() }
         : { active: false, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
-      db.collection('siteConfig').doc('maintenance').set(data, { merge: true }).then(function () {
+      window.jestaVerifiedSave(db.collection('siteConfig').doc('maintenance'), data).then(function(res){ if(!res.ok){ if(statusEl){statusEl.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';statusEl.className='status-msg status-err';} return; } 
         setMaintUI(newState, newState ? msg : '');
         statusEl.textContent = newState ? 'MAINTENANCE MODE ON \u2726' : 'SITE RESTORED \u2726';
         statusEl.className = 'status-msg ' + (newState ? 'status-err' : 'status-ok');

@@ -479,14 +479,13 @@
           var statusEl = document.getElementById('sc-card-' + idx).querySelector('.sc-card-status');
           if (!scCanSave(statusEl, 'sc-card-status status-msg')) return;
           btn.disabled = true;
-          window.jestaDB.collection('sigilCards').doc('cards').set({
+          window.jestaVerifiedSave(window.jestaDB.collection('sigilCards').doc('cards'), {
             cards: _sigilCards,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-          }).then(function() {
-            statusEl.textContent = 'SAVED \u2726';
-            statusEl.className = 'sc-card-status status-msg status-ok';
+          }, 'set').then(function(res) {
+            window.jestaVerifyStatus(statusEl, res, 'SAVED \u2726');
             btn.disabled = false;
-            setTimeout(function(){ statusEl.textContent=''; }, 2500);
+            if (res.ok) setTimeout(function(){ statusEl.textContent=''; }, 2500);
           }).catch(function(e) {
             statusEl.textContent = 'Error: ' + e.message;
             statusEl.className = 'sc-card-status status-msg status-err';
@@ -502,12 +501,11 @@
       this.disabled = true;
       allStatus.textContent = 'Saving all cards...';
       allStatus.className = 'status-msg';
-      window.jestaDB.collection('sigilCards').doc('cards').set({
+      window.jestaVerifiedSave(window.jestaDB.collection('sigilCards').doc('cards'), {
         cards: _sigilCards,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(function() {
-        allStatus.textContent = 'ALL CARDS SAVED \u2726';
-        allStatus.className = 'status-msg status-ok';
+      }, 'set').then(function(res) {
+        window.jestaVerifyStatus(allStatus, res, 'ALL CARDS SAVED \u2726');
         document.getElementById('sc-save-all-btn').disabled = false;
       }).catch(function(e) {
         allStatus.textContent = 'Error: ' + e.message;
