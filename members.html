@@ -838,13 +838,20 @@ document.addEventListener('DOMContentLoaded', function(){
       function escU(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
       /* published only: the rules let members read published writings alone, so the query
          must say so (drafts stay admin-only). The client-side check below stays as a belt. */
-      db.collection('membersUpdates').where('published','==',true).orderBy('timestamp','desc').get()
-        .then(function(snap){
+      var updEmpty = document.getElementById('updates-empty-state');
+      window.jestaLoad({
+        container: '#updates-list',
+        query: function(db){ return db.collection('membersUpdates').where('published','==',true).orderBy('timestamp','desc'); },
+        errorText: 'Member updates could not be loaded. Check your connection.',
+        isEmpty: function(docs){ return !docs.some(function(doc){ return doc.data.published === true; }); },
+        renderEmpty: function(){ if(updEmpty) updEmpty.style.display = ''; },
+        onState: function(st){ if(st === 'error' && updEmpty) updEmpty.style.display = 'none'; },
+        render: function(docs){
           var list = document.getElementById('updates-list');
           if(!list) return;
           var html = '';
-          snap.forEach(function(doc){
-            var d = doc.data();
+          docs.forEach(function(doc){
+            var d = doc.data;
             if(d.published !== true) return;
             var dateStr = d.dateFormatted || d.date || '';
             var body = escU(d.content||'').replace(/\r\n|\r|\n/g,'<br>');
@@ -854,27 +861,30 @@ document.addEventListener('DOMContentLoaded', function(){
               + '<div class="mu-entry-body">'+body+'</div>'
               + '</div>';
           });
-          if(html){
-            list.innerHTML = html;
-            var empty = document.getElementById('updates-empty-state');
-            if(empty) empty.style.display = 'none';
-          }
-        })
-        .catch(function(e){ /* leave placeholder on error */ });
+          list.innerHTML = html;
+          if(updEmpty) updEmpty.style.display = 'none';
+        }
+      });
     })();
 
     /* Load Treats from Firestore */
     var treatsEmpty = document.getElementById('treats-empty-state');
-    db.collection('treats').orderBy('order','asc').get()
-      .then(function(snap){
-        if(snap.empty) return; /* the empty state stays */
+    var _treatPhotos = {}, _tpN = 0;
+    window.jestaLoad({
+      container: '#treats-grid',
+      query: function(db){ return db.collection('treats').orderBy('order','asc'); },
+      errorText: 'The treats could not be loaded. Check your connection.',
+      isEmpty: function(docs){ return !docs.some(function(doc){ return doc.data.active !== false; }); },
+      renderEmpty: function(){ if(treatsEmpty) treatsEmpty.style.display = ''; },
+      onState: function(st){ if(st === 'error' && treatsEmpty) treatsEmpty.style.display = 'none'; },
+      render: function(docs){
         var grid = document.getElementById('treats-grid');
         if(!grid) return;
         var blurMap = {1:'catalog-blur-1',2:'catalog-blur-2',3:'catalog-blur-3'};
-        var _treatPhotos = {}, _tpN = 0;
+        _treatPhotos = {}; _tpN = 0;
         var html = '';
-        snap.forEach(function(doc){
-          var d = doc.data();
+        docs.forEach(function(doc){
+          var d = doc.data;
           if (d.active === false) return;
           var blurCls = blurMap[d.blur] || 'catalog-blur-1';
           var lines = (d.overlayTitle||d.title||'').replace(/<br>/g,'\n').split('\n');
@@ -908,7 +918,9 @@ document.addEventListener('DOMContentLoaded', function(){
           }
         });
         grid.innerHTML = html;
-        if(html && treatsEmpty) treatsEmpty.style.display = 'none';
+        if(treatsEmpty) treatsEmpty.style.display = 'none';
+        if (grid._wired) return; /* lightboxes and click handling are wired once; a retry only re-fills the grid */
+        grid._wired = true;
         function ytId(u) {
           if (!u) return '';
           var m = String(u).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([\w-]{11})/);
@@ -991,8 +1003,8 @@ document.addEventListener('DOMContentLoaded', function(){
           }
           J.toggle(card._jta);
         });
-      })
-      .catch(function(){}); // silently keep hardcoded on error
+      }
+    });
 
     function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
