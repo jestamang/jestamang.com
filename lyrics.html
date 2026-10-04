@@ -41,8 +41,6 @@
 .lyr-play.playing{color:#02E127;border-color:rgba(2,225,39,0.5)}
 .lyr-play:focus-visible,.acc-hdr:focus-visible{outline:2px solid var(--gold,#c9a84c);outline-offset:2px}
 .accordion .jta-bar{margin:0 0 2px}
-.lyr-load-err{color:rgba(251,56,56,0.85);padding:24px 8px 8px;font-size:1rem;letter-spacing:0.04em}
-.lyr-retry-btn{display:inline-block;margin:0 8px 24px;padding:10px 22px;min-height:44px;background:none;border:1px solid var(--gold,#c9a84c);color:var(--gold,#c9a84c);font-family:'Luminari',serif;font-size:0.72rem;letter-spacing:0.25em;text-transform:uppercase;cursor:pointer}
 .acc-body{display:none;padding:18px 20px;background:rgba(0,0,0,0.55);border:1px solid rgba(var(--gold-rgb,201,168,76),0.08);border-top:none}.acc-body.open{display:block}.sub-song{font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(var(--gold-rgb,201,168,76),0.6);margin:18px 0 8px}.lyr-text{white-space:pre-wrap;font-family:'Luminari',serif;font-size:0.9rem;line-height:1.9;letter-spacing:0.03em;color:rgba(232,220,200,0.88)}.lyr-prose{font-family:Georgia,serif;font-size:0.9rem;line-height:1.85;color:rgba(232,220,200,0.82);margin-bottom:1.2em}.lyr-prose:last-child{margin-bottom:0}.lyr-empty{font-style:italic;font-size:0.8rem;color:rgba(232,220,200,0.35)}@media (max-width:768px){body,.layout,.main,.sidebar{overflow-x:hidden;width:100%;max-width:100%;box-sizing:border-box}.layout{display:block}.sidebar{width:100%;border-right:none;border-bottom:none;padding:0}.sidebar-scroll{height:auto;max-height:none;overflow:visible;display:block}.sidebar-head{display:block}.art-btn{display:block;width:100%;padding:14px 20px;font-size:0.95rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(240,230,210,0.8);border-bottom:1px solid rgba(var(--gold-rgb,201,168,76),0.15);background:none;text-align:left;box-sizing:border-box}.art-btn.active,.art-btn:hover{color:var(--gold,#c9a84c)}.main{width:100%;padding:0}.album-panel,.lyr-panel{width:100%;max-width:100%;box-sizing:border-box}.mob-fade-out{opacity:0;transition:opacity 0.2s ease}.mob-fade-in{opacity:0;animation:mobFadeIn 0.3s ease forwards}@keyframes mobFadeIn{to{opacity:1}}.mob-back-btn{display:block;font-family:'Luminari',serif;color:var(--gold,#c9a84c);background:rgba(5,3,1,0.9);border:none;border-bottom:1px solid rgba(var(--gold-rgb,201,168,76),0.2);font-size:0.78rem;letter-spacing:0.16em;text-transform:uppercase;cursor:pointer;padding:14px 20px;width:100%;text-align:left;position:sticky;top:52px;z-index:100;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}.album-panel.visible{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:16px;align-items:start}.al-card{text-align:center}.al-cover{width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px;border:none;display:block}.al-card:hover .al-cover{border-color:var(--gold,#c9a84c)}.al-label{font-size:0.75rem;color:rgba(240,230,210,0.8);text-align:center;line-height:1.3;padding:0}.al-card{width:100%;border:none;border-radius:6px}.al-cover{border-radius:4px 4px 0 0}.al-label{font-size:0.7rem;padding:10px 8px;letter-spacing:0.08em}.lyr-panel.visible{padding:0 16px 24px;font-size:0.875rem;line-height:1.8;max-height:none;overflow-y:visible}.acc-hdr{min-height:44px;display:flex;align-items:center;padding:0 16px;box-sizing:border-box;width:100%}.breadcrumb{display:none}.content-area{padding:0;overflow:visible;height:auto}.sidebar.mob-hidden{display:none}#mob-prompt{display:block;text-align:center;font-family:'Luminari',serif;font-style:italic;color:rgba(var(--gold-rgb,201,168,76),0.65);font-size:1rem;margin-top:0;margin-bottom:0;background:rgba(0,0,0,0.5);padding:16px 20px}}#mob-lyr-heading{display:none}@media(max-width:768px){#mob-lyr-heading{display:block;text-align:center;font-family:'Luminari',serif;font-size:clamp(1.8rem,7vw,2.8rem);letter-spacing:0.35em;text-transform:uppercase;color:var(--gold,#c9a84c);text-shadow:0 0 30px rgba(var(--gold-rgb,201,168,76),0.45),0 2px 16px rgba(0,0,0,0.9);margin-top:76px;padding:24px 20px 16px;line-height:1.2}.landing-msg h1,.landing-msg p{display:none!important}}/* jt-mobile-global-base */
 @media (max-width: 768px) {
   /* Prevent iOS input zoom */
@@ -293,26 +291,27 @@ function lyrSearch(q){
   inp.addEventListener('keydown',function(e){if(e.key==='Escape'){inp.value='';render('');inp.blur();}if(e.key==='Enter'){var first=box.querySelector('.lyr-sr');if(first)first.click();}});
 })();
 window._lyrLoadState='loading';
-function lyrShowLoadError(){
+/* The lyrics list loads through the shared jestaLoad (assets/js/jesta-auth.js): it waits for the database,
+   treats the SDK's offline answer as a failed read, draws the error card with Retry (bounce, then a server
+   read) into #lyr-loading-msg, and hands the documents to the builder below. An empty answer is a failure
+   here: there are no lyrics in the static markup to fall back to. */
+/* jesta-auth.js is deferred, so this inline script may run before window.jestaLoad exists: wait for it */
+function whenJestaLoad(fn){ if(window.jestaLoad){fn();return;} var t=0,iv=setInterval(function(){ if(window.jestaLoad){clearInterval(iv);fn();} else if(++t>100){clearInterval(iv);} },50); }
+whenJestaLoad(function(){
   var ca=document.getElementById('contentArea'); if(!ca) return;
-  var m=document.getElementById('lyr-loading-msg');
-  if(!m){m=document.createElement('div');m.id='lyr-loading-msg';m.className='lyr-panel';ca.appendChild(m);}
-  m.innerHTML='<p class="lyr-load-err">The lyrics could not be loaded.</p><button type="button" class="lyr-retry-btn" id="lyr-retry-btn">Retry</button>';
-  m.classList.add('visible');
-  var rb=document.getElementById('lyr-retry-btn'); if(rb) rb.addEventListener('click',function(){ rb.disabled=true; rb.textContent='Retrying...'; window._lyrLoadState='loading'; /* bounce the connection so the SDK reconnects now instead of after its backoff */ var db=window.jestaDB; var bounce=(db&&db.disableNetwork)?db.disableNetwork().then(function(){return db.enableNetwork();}):Promise.resolve(); bounce.catch(function(){}).then(function(){ loadLyrics(true); }); });
-}
-window.lyrShowLoadError=lyrShowLoadError;
-function loadLyrics(fromServer){
-  /* a retry asks the server directly: after a failed read the SDK answers from its empty cache for a while */
-  window.jestaDB.collection('lyrics').orderBy('order').get(fromServer?{source:'server'}:undefined)
-    .then(function(snap){
-      window._lyrLoadState='ok';
-      var em=document.getElementById('lyr-loading-msg'); if(em&&em.parentNode) em.parentNode.removeChild(em);
+  var host=document.getElementById('lyr-loading-msg');
+  if(!host){host=document.createElement('div');host.id='lyr-loading-msg';host.className='lyr-panel';ca.appendChild(host);}
+  var loader=window.jestaLoad({
+    container: host,
+    query: function(db){ return db.collection('lyrics').orderBy('order'); },
+    errorText: 'The lyrics could not be loaded.',
+    retryText: 'Retry',
+    isEmpty: function(){ return false; },
+    onState: function(st){ window._lyrLoadState = st==='ready' ? 'ok' : (st==='loading' ? 'loading' : 'failed'); host.classList.toggle('visible', st==='error'); },
+    render: function(items){
       var docs=[];
-      snap.forEach(function(doc){var d=doc.data();d._id=doc.id;if(d.visible===false)return;docs.push(d);});
-      /* nothing came back (offline, the SDK answers from an empty cache, or the collection is empty):
-         there are no lyrics in the static markup to fall back to, so say so and offer a retry */
-      if(!docs.length){window._lyrLoadState='failed';lyrShowLoadError();return;}
+      items.forEach(function(doc){var d=doc.data;d._id=doc.id;if(d.visible===false)return;docs.push(d);});
+      if(!docs.length) throw new Error('no lyrics came back');
       var sbScroll=document.querySelector('.sidebar-scroll');
       var ca=document.getElementById('contentArea');
       if(!sbScroll||!ca)return;
@@ -361,14 +360,11 @@ function loadLyrics(fromServer){
       wireLyricsUI();                               /* rich wiring (mobile back-buttons + breadcrumb) */
       buildSearchIndex();                           /* song search over titles and lyric text */
       handleLyricsHash();                           /* re-open deep-linked album or song */
-    })
-    .catch(function(e){ console.error('[lyrics] load failed:',e); window._lyrLoadState='failed'; lyrShowLoadError(); });
-}
-
-var _jt=0,_jiv=setInterval(function(){
-  if(window.jestaDB){clearInterval(_jiv);loadLyrics();}
-  else if(++_jt>80){clearInterval(_jiv);window._lyrLoadState='failed';lyrShowLoadError();}
-},100);
+    }
+  });
+  /* the artist buttons call this when a click lands while the list has failed: show the card, or load again if it is gone */
+  window.lyrShowLoadError=function(){ host.classList.add('visible'); if(!host.querySelector('.jesta-state')) loader.reload(); };
+});
 })();</script>
 <footer class="hp-footer"><a href="privacy.html">Privacy Policy</a><span class="hp-footer-mark">·</span>©<span class="jcyr">2026</span>&nbsp;Jestamang LLC<span class="hp-footer-mark">·</span><a href="terms.html">Terms of Service</a></footer>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
