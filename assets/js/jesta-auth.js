@@ -522,7 +522,7 @@
     banner.setAttribute('role', 'dialog');
     banner.setAttribute('aria-label', 'Cookie consent');
     banner.innerHTML =
-      '<p id="ck-text">This site sets no cookies of its own. Sign-in is kept in your browser's storage, and traffic is measured with cookie-free Cloudflare Web Analytics, which Decline turns off. Embedded YouTube players set their own cookies when played.</p>' +
+      '<p id="ck-text">This site sets no cookies of its own. Sign-in is kept in your browser storage, and traffic is measured with cookie-free Cloudflare Web Analytics, which Decline turns off. Embedded YouTube players set their own cookies when played.</p>' +
       '<div id="ck-btns">' +
       '<button id="ck-accept" type="button">Accept</button>' +
       '<button id="ck-decline" type="button">Decline</button>' +
