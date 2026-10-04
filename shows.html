@@ -552,17 +552,23 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
     );
   }
 
+  // Shows load through the shared jestaLoad (assets/js/jesta-auth.js): it waits for the database, reads once
+  // and tells a failed or offline read from a real answer. This page has static copies of the schedule for
+  // crawlers and no-JS visitors, and those copies stay up when the read fails or comes back empty, so the
+  // loader's own cards go into the hidden #shows-loading box and nothing is drawn over the static markup.
   function loadShows() {
     var todayStr = new Date().toISOString().slice(0, 10);
     var clock = window.jestaShowsClock;
     try { localStorage.removeItem('jesta-notif-enabled'); } catch (e) {} // flag left by the removed notifications button
-    window.jestaDB.collection('shows').orderBy('date', 'asc').get()
-      .then(function (snap) {
-        // An empty snapshot is what the SDK answers when it is offline (no rejection): keep the static copies.
-        if (snap.empty) { initCardObservers(); return; }
+    window.jestaLoad({
+      container: '#shows-loading',
+      query: function (db) { return db.collection('shows').orderBy('date', 'asc'); },
+      renderEmpty: function () { initCardObservers(); },
+      onState: function (st) { if (st === 'error') initCardObservers(); },
+      render: function (docs) {
         var upcoming = [], past = [];
-        snap.forEach(function (doc) {
-          var d = doc.data();
+        docs.forEach(function (doc) {
+          var d = doc.data;
           if (d.active === false) return;
           d.id = doc.id;
           // upcoming:true forces upcoming, false forces past, absent uses the clock:
@@ -579,15 +585,13 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         renderPast(past);
         injectEventSchema(upcoming);
         initCardObservers();
-      })
-      .catch(function () {
-        /* fallback already shown */
-        initCardObservers();
-      });
+      }
+    });
   }
 
+  // The helper arrives with the deferred jesta-auth.js, after this inline script runs.
   var _jt = 0, _jiv = setInterval(function () {
-    if (window.jestaDB) {
+    if (window.jestaLoad) {
       clearInterval(_jiv);
       loadShows();
     } else if (++_jt > 80) {
