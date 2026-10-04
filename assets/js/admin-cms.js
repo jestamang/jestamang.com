@@ -904,7 +904,9 @@ function _artSrc(val){
 
 function lymSongRowHtml(pfx,i,song){
   song=song||{};
-  return '<div class="lym-song-row" data-song-row draggable="true">'
+  // Not draggable by default: a row only becomes draggable while the grip is pressed (lymWireDragDrop),
+  // so selecting text in the title, URL or lyrics fields never starts a drag.
+  return '<div class="lym-song-row" data-song-row>'
     +'<div class="lym-song-row-head">'
     +'<span class="lym-drag-handle" title="Drag to reorder">⠿</span>'
     +'<span class="lym-song-num">'+(i+1)+'.</span>'
@@ -974,9 +976,25 @@ window.lymRemoveSong=function(btn){
 
 function lymWireDragDrop(list){
   var dragged=null;
+  var armed=null; // the row whose grip is currently pressed
+  function disarm(){ if(armed){ armed.draggable=false; armed=null; } }
+  // Arm the row only from the grip. Pointer presses anywhere else (inputs, textarea, buttons) leave
+  // draggable off, so the browser does normal text selection and never shows a row ghost.
+  list.addEventListener('pointerdown',function(e){
+    var handle=e.target.closest('.lym-drag-handle');
+    if(!handle){ disarm(); return; }
+    var row=handle.closest('[data-song-row]');
+    if(!row) return;
+    armed=row; row.draggable=true;
+  });
+  document.addEventListener('pointerup',disarm);
+  document.addEventListener('pointercancel',disarm);
   list.addEventListener('dragstart',function(e){
-    dragged=e.target.closest('[data-song-row]');
-    if(dragged)e.dataTransfer.effectAllowed='move';
+    var row=e.target.closest('[data-song-row]');
+    if(!row||row!==armed){ e.preventDefault(); return; } // nothing but a grip press may start a drag
+    dragged=row;
+    e.dataTransfer.effectAllowed='move';
+    if(e.dataTransfer.setDragImage) e.dataTransfer.setDragImage(row,20,20);
   });
   list.addEventListener('dragover',function(e){
     e.preventDefault();
@@ -1002,6 +1020,7 @@ function lymWireDragDrop(list){
   list.addEventListener('dragend',function(){
     list.querySelectorAll('[data-song-row]').forEach(function(r){r.classList.remove('lym-drag-over');});
     dragged=null;
+    disarm();
   });
 }
 
