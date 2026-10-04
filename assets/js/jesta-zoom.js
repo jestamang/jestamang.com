@@ -3,7 +3,8 @@
    scale 1 is "fit". The pan is clamped so the picture never leaves the frame; smaller than the frame it
    stays centred. Zoom is capped near 1.6 times the source resolution.
    opts: wheel (bool), touchOnly (ignore mouse gestures except a plain click), onTap(x, y, pointerType),
-   onChange(scale), tapScale (default 2.5).
+   onChange(scale), tapScale (default 2.5), onSwipe(dir) called for a single-finger horizontal swipe at Fit
+   (dir 1 = swiped left, toward the next item; -1 = swiped right), never while zoomed or with two fingers.
    Returns { reset(anim), isZoomed(), zoomTo(scale, cx, cy, anim), zoomBy(factor, anim), scale() }.
    Pages must give the picture the class "zoomable" styles: touch-action none, transform-origin 0 0. */
 (function () {
@@ -26,16 +27,18 @@ function makeZoom(el,frame,opts){
   var mouseDown=null;
   el.addEventListener('pointerdown',function(e){if(!(opts.touchOnly&&e.pointerType==='mouse')||e.button!==0)return;mouseDown={x:e.clientX,y:e.clientY,t:Date.now()};});
   el.addEventListener('pointerup',function(e){if(!(opts.touchOnly&&e.pointerType==='mouse')||!mouseDown)return;var d=Math.hypot(e.clientX-mouseDown.x,e.clientY-mouseDown.y),dt=Date.now()-mouseDown.t;mouseDown=null;if(d<6&&dt<600&&opts.onTap)opts.onTap(e.clientX,e.clientY,'mouse');});
-  el.addEventListener('pointerdown',function(e){if(!wants(e))return;if(e.pointerType==='mouse'&&e.button!==0)return;try{el.setPointerCapture(e.pointerId);}catch(x){}pts.set(e.pointerId,{x:e.clientX,y:e.clientY});moved=false;downAt=Date.now();
+  el.addEventListener('pointerdown',function(e){if(!wants(e))return;if(e.pointerType==='mouse'&&e.button!==0)return;try{el.setPointerCapture(e.pointerId);}catch(x){}pts.set(e.pointerId,{x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY});moved=false;downAt=Date.now();
     if(pts.size===2){var a=[].concat.apply([],[Array.from(pts.values())]);pinch={d:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y),s0:scale,mx:(a[0].x+a[1].x)/2,my:(a[0].y+a[1].y)/2};drag=null;}
     else if(pts.size===1){drag={x:e.clientX,y:e.clientY,tx0:tx,ty0:ty};}
     if(scale>1.001)e.preventDefault();});
-  el.addEventListener('pointermove',function(e){if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  el.addEventListener('pointermove',function(e){if(!pts.has(e.pointerId))return;var p0=pts.get(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY,sx:p0.sx,sy:p0.sy});
     if(pinch&&pts.size>=2){var a=Array.from(pts.values());var d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y),mx=(a[0].x+a[1].x)/2,my=(a[0].y+a[1].y)/2;tx+=mx-pinch.mx;ty+=my-pinch.my;pinch.mx=mx;pinch.my=my;moved=true;zoomTo(pinch.s0*(d/(pinch.d||1)),mx,my,false);el.classList.add('dragging');return;}
     if(drag&&pts.size===1){var dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)>4||Math.abs(dy)>4)moved=true;if(scale>1.001){tx=drag.tx0+dx;ty=drag.ty0+dy;clamp();apply(false);el.classList.add('dragging');e.preventDefault();}}});
   function up(e){if(!pts.has(e.pointerId))return;var p=pts.get(e.pointerId);pts.delete(e.pointerId);el.classList.remove('dragging');
     if(pinch){if(pts.size<2){pinch=null;var rest=Array.from(pts.values())[0];drag=rest?{x:rest.x,y:rest.y,tx0:tx,ty0:ty}:null;}return;}
-    drag=null;if(e.type!=='pointerup'||moved||Date.now()-downAt>350)return;
+    drag=null;
+    if(e.type==='pointerup'&&opts.onSwipe&&e.pointerType!=='mouse'&&pts.size===0&&scale<=1.001&&p.sx!=null){var sdx=e.clientX-p.sx,sdy=e.clientY-p.sy;if(Math.abs(sdx)>45&&Math.abs(sdx)>Math.abs(sdy)*1.5){opts.onSwipe(sdx<0?1:-1,e);return;}}
+    if(e.type!=='pointerup'||moved||Date.now()-downAt>350)return;
     var now=Date.now(),x=p.x,y=p.y;
     if(e.pointerType==='mouse'){if(opts.onTap)opts.onTap(x,y,'mouse');return;}
     if(now-lastTap<320&&Math.hypot(x-lastTapX,y-lastTapY)<40){clearTimeout(tapTimer);tapTimer=null;lastTap=0;if(scale>1.001)reset(true);else zoomTo(opts.tapScale||2.5,x,y,true);return;}
