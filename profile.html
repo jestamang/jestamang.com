@@ -1707,7 +1707,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         <div class="nc-tz-manual-warn">&#9888; TIMEZONE COULD NOT BE DETECTED AUTOMATICALLY</div>
         <span class="nc-tz-manual-prompt">Enter UTC offset manually:</span>
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-          <select id="nc-tz-offset" class="form-input"></select>
+          <select id="nc-tz-offset" class="form-input" aria-label="UTC offset"></select>
           <button id="nc-tz-confirm" class="btn-gold nc-tz-confirm-btn">CONFIRM OFFSET</button>
         </div>
       </div>
@@ -4988,7 +4988,7 @@ document.addEventListener('DOMContentLoaded', function(){
         }
 
         var userName = (dossierData && dossierData.username) ||
-                       (currentUser && (currentUser.displayName || currentUser.email.split('@')[0])) ||
+                       (currentUser && currentUser.displayName) || /* never the email prefix: this name is published with a shared dossier */
                        'Member';
 
         NC.renderDossier(result, userName, {
@@ -5164,7 +5164,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if(!cd || !cd.planets) return;
 
     var userName = (dossierData && dossierData.username) ||
-                   (user && (user.displayName || user.email.split('@')[0])) ||
+                   (user && user.displayName) ||
                    'Member';
 
     var containers = {
