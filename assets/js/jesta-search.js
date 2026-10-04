@@ -22,6 +22,17 @@
   function applyCopy(o) { if (!o) return; ['placeholder', 'title', 'line', 'empty'].forEach(function (k) { if (typeof o[k] === 'string' && o[k].trim()) COPY[k] = o[k].trim(); }); if (Array.isArray(o.suggestions) && o.suggestions.length) COPY.suggestions = o.suggestions.map(String).filter(Boolean); var inp = $('jsearch-input'); if (inp) inp.placeholder = COPY.placeholder; if (isOpen() && !lastQuery.trim()) render(''); }
   applyCopy(window.jestaSearchCopy);
   window.jSearchSetCopy = applyCopy;
+  // Admin > Search Copy saves siteConfig/searchCopy; read it once the page's Firestore handle exists (public read),
+  // without delaying the overlay, which opens with the built-in text until the document arrives.
+  var copyLoaded = false;
+  function loadCopy() {
+    if (copyLoaded) return; copyLoaded = true;
+    var tries = 0, iv = setInterval(function () {
+      var db = window.jestaDB;
+      if (db) { clearInterval(iv); try { db.collection('siteConfig').doc('searchCopy').get().then(function (d) { if (d && d.exists) applyCopy(d.data()); }, function () {}); } catch (e) {} }
+      else if (++tries > 80) clearInterval(iv);
+    }, 100);
+  }
   // Result kinds for the group headings and the filter chips; the index category maps onto one of these.
   var KINDS = ['Entities', 'Albums', 'Tracks', 'Videos', 'Games', 'Pages', 'Merch', 'Blog'];
   var CHIP_KINDS = ['Albums', 'Tracks', 'Entities', 'Games', 'Pages'];
@@ -319,6 +330,7 @@
       var ms = $('jtnav-mob-search'); if (ms && ms.contains(e.target)) return;
       close();
     });
+    loadCopy();
     var idle = window.requestIdleCallback || function (f) { setTimeout(f, 2500); };
     idle(function () { loadIndex(); }, { timeout: 5000 });
   }
