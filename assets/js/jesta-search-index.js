@@ -1,6 +1,6 @@
-/* GENERATED FILE. Built by tools/search-index/build.js from Firestore (releases, lyrics, entities, merch, blogPosts)
+/* GENERATED FILE. Built by tools/search-index/build.js from Firestore (releases, lyrics, entities, merch, blogPosts, videos)
    plus the page and game lists in that script. Do not edit by hand: run  node tools/search-index/build.js  and commit.
-   534 entries. Shape: n name, u link, c category, i icon, t extra keywords. */
+   566 entries. Shape: n name, u link, c category, i icon, t extra keywords. */
 var IDX=[
 {"n":"Home","u":"/index.html","c":"Page","i":"⌂","t":"homepage start jestamang main collective"},
 {"n":"Entities","u":"/entities.html","c":"Page","i":"✶","t":"characters cartoons children cosmos"},
@@ -535,5 +535,37 @@ var IDX=[
 {"n":"The Great Dagma","u":"/blog.html#post-dFSBJIKFIuJ7LyFQg1VY","c":"Blog Post","i":"◇","t":"the great dagma kek buh poem blog post writing"},
 {"n":"To the Shining Father and Eternal Mother","u":"/blog.html#post-6yoNBrRGf7ELrMORvTUX","c":"Blog Post","i":"◇","t":"to the shining father and eternal mother kek buh poem blog post writing"},
 {"n":"The Prickly Being","u":"/blog.html#post-NrnZIQZpsLMxCQCKl80I","c":"Blog Post","i":"◇","t":"the prickly being jestamang origin blog post writing"},
-{"n":"Two Musicians","u":"/blog.html#post-hiuwEuYqVrlHJ01lH9YK","c":"Blog Post","i":"◇","t":"two musicians porphigen poem blog post writing"}
+{"n":"Two Musicians","u":"/blog.html#post-hiuwEuYqVrlHJ01lH9YK","c":"Blog Post","i":"◇","t":"two musicians porphigen poem blog post writing"},
+{"n":"Kek-Būh Alasol Live at Summer Solstice Jubilee","u":"/videos.html#video-4B-oL1Tr2ms","c":"Video","i":"▷","t":"kek buh alasol live at summer solstice jubilee other video youtube watch film"},
+{"n":"Jestamang Live at Prison Break","u":"/videos.html#video-31DacId6G1E","c":"Video","i":"▷","t":"jestamang live at prison break other video youtube watch film"},
+{"n":"Jestamang Live at 529","u":"/videos.html#video-Ty0YL3Twaak","c":"Video","i":"▷","t":"jestamang live at 529 other video youtube watch film"},
+{"n":"The Circus Speaks (I)","u":"/videos.html#video-mGBYMgb4-VU","c":"Video","i":"▷","t":"the circus speaks i video youtube watch film"},
+{"n":"The Circus Speaks (II)","u":"/videos.html#video-LcOpNRK_3-Q","c":"Video","i":"▷","t":"the circus speaks ii video youtube watch film"},
+{"n":"The Circus Speaks (III)","u":"/videos.html#video-yQugxfPBo68","c":"Video","i":"▷","t":"the circus speaks iii video youtube watch film"},
+{"n":"The Circus Speaks (IV)","u":"/videos.html#video-xNhFnwtR9ww","c":"Video","i":"▷","t":"the circus speaks iv video youtube watch film"},
+{"n":"The Circus Speaks (V)","u":"/videos.html#video-bxE-B8783H0","c":"Video","i":"▷","t":"the circus speaks v video youtube watch film"},
+{"n":"Meet Aliens Today","u":"/videos.html#video-Y-FqtXAQjk8","c":"Video","i":"▷","t":"meet aliens today other video youtube watch film"},
+{"n":"1 & 2 & 1","u":"/videos.html#video-u5lvabHpj-E","c":"Video","i":"▷","t":"1 2 other video youtube watch film"},
+{"n":"Don't ID Jesus","u":"/videos.html#video-pfq7quk0X68","c":"Video","i":"▷","t":"don t id jesus other video youtube watch film"},
+{"n":"A Girl Once Told Me","u":"/videos.html#video-p31-N6OsQLI","c":"Video","i":"▷","t":"a girl once told me other video youtube watch film"},
+{"n":"Jesta Joint","u":"/videos.html#video-FFaJSmvSTVI","c":"Video","i":"▷","t":"jesta joint other video youtube watch film"},
+{"n":"The Perfect Trip","u":"/videos.html#video-vU-fmBbFODM","c":"Video","i":"▷","t":"the perfect trip other video youtube watch film"},
+{"n":"Zoo","u":"/videos.html#video-yFK3HfDBtJ8","c":"Video","i":"▷","t":"zoo other video youtube watch film"},
+{"n":"Ode to the Pig","u":"/videos.html#video-pK6lQ2QU1kI","c":"Video","i":"▷","t":"ode to the pig other video youtube watch film"},
+{"n":"Bloodhouse","u":"/videos.html#video-K6VuiospEL4","c":"Video","i":"▷","t":"bloodhouse other video youtube watch film"},
+{"n":"Red Shaydez","u":"/videos.html#video-Abhh7bmFzFM","c":"Video","i":"▷","t":"red shaydez other video youtube watch film"},
+{"n":"Daemon","u":"/videos.html#video-Bi0J0ymQQ98","c":"Video","i":"▷","t":"daemon other video youtube watch film"},
+{"n":"Underworld","u":"/videos.html#video-FxI4OktsWoI","c":"Video","i":"▷","t":"underworld other video youtube watch film"},
+{"n":"ATTENCHUN!","u":"/videos.html#video-F25D2ZOVgsE","c":"Video","i":"▷","t":"attenchun other video youtube watch film"},
+{"n":"Who In Here Wants To Get Hypnotized?/Baby's Head Will Roll","u":"/videos.html#video-AOrjSnkqeTI","c":"Video","i":"▷","t":"who in here wants to get hypnotized baby s head will roll other video youtube watch film"},
+{"n":"Donovan","u":"/videos.html#video-5ypwaWPuVls","c":"Video","i":"▷","t":"donovan other video youtube watch film"},
+{"n":"Covers the Greats","u":"/videos.html#video-CpqSfxoDac8","c":"Video","i":"▷","t":"covers the greats other video youtube watch film"},
+{"n":"Sahr Ngaujah & the Genre Transcendence Movement","u":"/videos.html#video-XunvkvSRcsQ","c":"Video","i":"▷","t":"sahr ngaujah the genre transcendence movement other video youtube watch film"},
+{"n":"Davie","u":"/videos.html#video-LjLHwPrN0Hg","c":"Video","i":"▷","t":"davie other video youtube watch film"},
+{"n":"Caterpillar Rider","u":"/videos.html#video-EmEQVPSw-pU","c":"Video","i":"▷","t":"caterpillar rider other video youtube watch film"},
+{"n":"Magician's Trick (Flashback)","u":"/videos.html#video-H0EoIEza8hA","c":"Video","i":"▷","t":"magician s trick flashback other video youtube watch film"},
+{"n":"Xmas 23","u":"/videos.html#video-Rd6Gd_6aufQ","c":"Video","i":"▷","t":"xmas 23 other video youtube watch film"},
+{"n":"∞","u":"/videos.html#video-OUgXzy58J_4","c":"Video","i":"▷","t":"other video youtube watch film"},
+{"n":"A Short Film About Murder","u":"/videos.html#video-6E5RwAPYRwE","c":"Video","i":"▷","t":"a short film about murder other video youtube watch"},
+{"n":"Cell Life","u":"/videos.html#video-8Q817bJ6qvk","c":"Video","i":"▷","t":"cell life other video youtube watch film"}
 ];

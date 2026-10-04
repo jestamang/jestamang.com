@@ -165,6 +165,7 @@ function fmtVDate(str){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(str||'');if(!m)ret
 function makeCard(v){
   var card=document.createElement('div');
   card.className='video-card';
+  card.id='video-'+String(v.id).replace(/[^\w-]/g,''); /* deep link target: /videos.html#video-<YouTube id>, used by the sitewide search */
   card.setAttribute('role','button');card.setAttribute('tabindex','0');card.setAttribute('aria-label','Play '+v.title);
   card.onclick=function(){openLightbox(v.id,v.title,card,v);};
   card.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openLightbox(v.id,v.title,card,v);}});
@@ -226,6 +227,15 @@ function renderVideos(items){
   });
 }
 
+// A link of the form #video-<YouTube id> (the sitewide search uses it) scrolls to that card and opens its player.
+function openFromHash(){
+  var m=/^#video-([\w-]+)$/.exec(location.hash||''); if(!m) return;
+  var card=document.getElementById('video-'+m[1]); if(!card) return;
+  var sec=card.closest('.v-group'); if(sec&&sec.hidden) vFilter('all');
+  card.scrollIntoView({block:'center'});
+  setTimeout(function(){ card.click(); },150);
+}
+window.addEventListener('hashchange',openFromHash);
 // v282: no hardcoded fallback render. Firestore is canonical; graceful empty/error instead of a stale list.
 // The read goes through the shared jestaLoad (assets/js/jesta-auth.js): it owns the wait for the database, the read,
 // the offline detection, the error card with Try again and the empty card. The grid starts transparent for the fade-in,
@@ -249,7 +259,7 @@ function loadVideos(){
       var items=sorted.map(function(d){return{id:d.data.youtubeId,title:d.data.title,date:d.data.date||'',description:d.data.description||'',category:window.jestaVideoCategoryOf(d.data)};});
       _vGrid.style.transition='opacity 0.3s ease';
       _vGrid.style.opacity='0';
-      setTimeout(function(){renderVideos(items);_vGrid.style.opacity='1';},300);
+      setTimeout(function(){renderVideos(items);_vGrid.style.opacity='1';openFromHash();},300);
     }
   });
 }
