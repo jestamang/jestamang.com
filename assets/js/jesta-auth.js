@@ -787,6 +787,7 @@ window.openSocial = function(platform) {
 //     isEmpty: function (docs) { return ...; },  // optional, decide emptiness after the page's own filtering
 //     renderEmpty: function () { ... },         // optional: show the page's own empty block instead of the card
 //     live: false,                                // true subscribes with onSnapshot instead of one get()
+//     serverOnRetry: true,                        // a retry reads with {source:'server'} so a stale empty cache cannot answer again
 //     onState: function (state) { }               // optional: 'loading' | 'ready' | 'empty' | 'error'
 //   });
 //   h.reload()  runs the read again (bounces the connection first); h.cancel() stops a live listener.
@@ -831,14 +832,14 @@ window.openSocial = function(platform) {
       if (box) { var old = box.querySelectorAll('.jesta-state'); for (var i = 0; i < old.length; i++) old[i].parentNode.removeChild(old[i]); }
       try { opts.render(docs, snap); setState('ready'); } catch (e) { fail(e); }
     }
-    function run(db) {
+    function run(db, fromServer) {
       if (cancelled) return;
       var q;
       try { q = opts.query(db); } catch (e) { fail(e); return; }
       setState('loading');
       if (unsub) { try { unsub(); } catch (e) {} unsub = null; }
       if (opts.live) { unsub = q.onSnapshot(deliver, fail); }
-      else { q.get().then(deliver, fail); }
+      else { q.get(fromServer && opts.serverOnRetry !== false ? { source: 'server' } : undefined).then(deliver, fail); }
     }
     function waitForDb(cb) {
       var waited = 0, iv = setInterval(function () {
@@ -851,7 +852,7 @@ window.openSocial = function(platform) {
         var db = window.jestaDB;
         if (!db) { waitForDb(run); return; }
         var bounce = (db.disableNetwork && db.enableNetwork) ? db.disableNetwork().then(function () { return db.enableNetwork(); }) : Promise.resolve();
-        bounce.catch(function () {}).then(function () { run(db); });
+        bounce.catch(function () {}).then(function () { run(db, true); });
       },
       cancel: function () { cancelled = true; if (unsub) { try { unsub(); } catch (e) {} unsub = null; } }
     };
