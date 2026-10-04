@@ -4,7 +4,10 @@
 // UPDATE CACHE_VERSION DATE ON EVERY PUSH
 // ════════════════════════════════════════════════════════════════
 
+<<<<<<< HEAD
 var CACHE_NAME = 'jestamang-v504';
+=======
+>>>>>>> origin/main
 var BADGE      = '/assets/icons/icon-192.png';
 
 var PRECACHE_URLS = [
