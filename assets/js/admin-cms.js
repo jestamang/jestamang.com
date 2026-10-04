@@ -617,7 +617,12 @@ function entBuildForm(d,pfx){
   var html='<div class="ent-form-grid">'
     +'<div><label class="field-label">Name</label><input class="field-input" id="'+pfx+'-name" value="'+entEsc(d.name||'')+'" maxlength="120"></div>'
     +'<div><label class="field-label">Type</label><select class="field-input" id="'+pfx+'-type">'+typeOpts+'</select></div>'
-    +'<div><label class="field-label">Image Path</label><input class="field-input" id="'+pfx+'-image" value="'+entEsc(d.image||'')+'" placeholder="assets/entities/..." onchange="entPreviewArt(\''+pfx+'\')"><div class="ent-compress-placeholder" data-compress-pfx="'+pfx+'"></div></div>'
+    +'<div><label class="field-label">Image Path</label><input class="field-input" id="'+pfx+'-image" value="'+entEsc(d.image||'')+'" placeholder="assets/entities/... or https://" onchange="entPreviewArt(\''+pfx+'\')">'
+      +'<div class="ent-upload-row" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;"><label class="field-label" style="width:100%;margin:0;">Replace portrait (upload)</label>'
+      +'<input type="file" accept="image/*" id="'+pfx+'-upload" style="font-size:0.7rem;color:rgba(201,168,76,0.7);max-width:100%;">'
+      +'<button type="button" class="btn-ghost btn-sm" onclick="entUploadPortrait(\''+pfx+'\')">UPLOAD \u2726</button>'
+      +'<span class="status-msg" id="'+pfx+'-upload-status" style="font-size:0.62rem;"></span></div>'
+      +'<div class="ent-compress-placeholder" data-compress-pfx="'+pfx+'"></div></div>'
     +'<div><label class="field-label">Art Preview</label><img class="ent-art-preview" id="'+pfx+'-art-preview" src="'+entEsc(d.image||'')+'" onerror="this.src=\'\'"></div>'
     +'<div><label class="field-label">Bg Color</label><input class="field-input" id="'+pfx+'-bgColor" value="'+entEsc(d.bgColor||'')+'" placeholder="rgba(15,50,25,0.25)"></div>'
     +'<div><label class="field-label">Albums</label><input class="field-input" id="'+pfx+'-albums" value="'+entEsc(d.albums||'')+'" placeholder="Album (year) · Album (year)"></div>'
@@ -663,6 +668,30 @@ window.entPreviewArt=function(pfx){
   var img=document.getElementById(pfx+'-art-preview');
   var inp=document.getElementById(pfx+'-image');
   if(img&&inp)img.src=inp.value.trim();
+};
+
+/* Replace an entity's portrait without a code push: compress the chosen file (800px, JPEG), upload it to
+   Firebase Storage under the same photos/ prefix the Photos manager uses, and put the download URL in the
+   Image Path field. Save (verified) then writes it to the entity; entities.html shows it on the next load.
+   The static fallback markup in entities.html keeps the old file for no-JS visitors until the next code push. */
+window.entUploadPortrait=function(pfx){
+  var inp=document.getElementById(pfx+'-upload'), st=document.getElementById(pfx+'-upload-status'), path=document.getElementById(pfx+'-image');
+  var say=function(msg,cls){ if(st){ st.textContent=msg; st.className='status-msg '+(cls||''); } };
+  var file=inp&&inp.files&&inp.files[0];
+  if(!file){ say('Choose an image first.','status-err'); return; }
+  if(!(window.firebase&&firebase.storage)){ say('Storage SDK not loaded.','status-err'); return; }
+  var nameEl=document.getElementById(pfx+'-name');
+  var slug=String(nameEl?nameEl.value:'entity').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'entity';
+  var fn='entity-'+slug+'-'+Date.now()+'.jpg';
+  say('Compressing\u2026');
+  var compress=(window.__adminUtils&&window.__adminUtils.compressImage)?window.__adminUtils.compressImage(file,800,0.85):Promise.resolve(file);
+  compress.then(function(blob){
+    say('Uploading\u2026');
+    var task=firebase.storage().ref('photos/'+fn).put(blob,{contentType:'image/jpeg'});
+    task.on('state_changed',function(snap){ if(snap.totalBytes) say('Uploading '+Math.round(snap.bytesTransferred/snap.totalBytes*100)+'%'); },
+      function(err){ say('Upload failed: '+(err&&err.message||err),'status-err'); },
+      function(){ task.snapshot.ref.getDownloadURL().then(function(url){ if(path){ path.value=url; window.entPreviewArt(pfx); } if(inp) inp.value=''; say('Uploaded. Press Save to apply it to the entity.','status-ok'); }).catch(function(e){ say('Uploaded, but no URL: '+e.message,'status-err'); }); });
+  }).catch(function(e){ say('Could not read that image: '+(e&&e.message||e),'status-err'); });
 };
 
 function entRowHtml(docId,d){
