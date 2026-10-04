@@ -16,7 +16,8 @@
     placeholder: 'Search the Jestamang universe',
     title: 'Ask the universe',
     line: 'A name, a song, an album, a game. The archive answers as you type.',
-    suggestions: ['Kek-B\u016bh', 'Zodiac', 'The Circus Speaks', 'Memory Vault'],
+    // Curated from the index (2026-10-04): four show at a time and the set rotates. Admin > Search Copy overrides it.
+    suggestions: ['Kek-Buh', 'Zodiac', 'The Circus Speaks', 'The Void', 'Quarter Days', 'Children', 'New \u00c6on', 'Comix'],
     empty: 'Nothing in the archive answers to that yet.'
   };
   function applyCopy(o) { if (!o) return; ['placeholder', 'title', 'line', 'empty'].forEach(function (k) { if (typeof o[k] === 'string' && o[k].trim()) COPY[k] = o[k].trim(); }); if (Array.isArray(o.suggestions) && o.suggestions.length) COPY.suggestions = o.suggestions.map(String).filter(Boolean); var inp = $('jsearch-input'); if (inp) inp.placeholder = COPY.placeholder; if (isOpen() && !lastQuery.trim()) render(''); }
@@ -34,8 +35,8 @@
     }, 100);
   }
   // Result kinds for the group headings and the filter chips; the index category maps onto one of these.
-  var KINDS = ['Entities', 'Albums', 'Tracks', 'Videos', 'Games', 'Pages', 'Merch', 'Blog'];
-  var CHIP_KINDS = ['Albums', 'Tracks', 'Entities', 'Games', 'Pages'];
+  // Chip order follows the nav bar; the row is the same for every query and a kind with no results dims instead of vanishing.
+  var KINDS = ['Entities', 'Albums', 'Tracks', 'Videos', 'Games', 'Merch', 'Blog', 'Pages'];
   function kindOf(cat) { if (/^Track/.test(cat)) return 'Tracks'; if (/Album/.test(cat)) return 'Albums'; if (/Entity|Children/.test(cat)) return 'Entities'; if (cat === 'Video') return 'Videos'; if (cat === 'Game') return 'Games'; if (cat === 'Page') return 'Pages'; if (cat === 'Merch') return 'Merch'; return 'Blog'; }
   var PER_KIND = 6, kindFilter = 'All', suggestOffset = 0, rotateTimer = null;
 
@@ -204,17 +205,23 @@
     }
     box.appendChild(w);
   }
-  function renderChips(kinds) {
+  // counts: { kind: n } for the current query (empty object hides the row)
+  function renderChips(counts) {
     var bar = $('jsearch-chips'); if (!bar) return;
     bar.textContent = '';
-    if (!kinds.length) { bar.hidden = true; return; }
+    var total = 0; KINDS.forEach(function (k) { total += counts[k] || 0; });
+    if (!total) { bar.hidden = true; return; }
     bar.hidden = false;
-    var set = ['All'].concat(CHIP_KINDS.filter(function (k) { return kinds.indexOf(k) !== -1; })).concat(kinds.filter(function (k) { return CHIP_KINDS.indexOf(k) === -1; }));
-    set.forEach(function (k) {
-      var b = el('button', { type: 'button', 'class': 'jsearch-chip', 'aria-pressed': kindFilter === k ? 'true' : 'false' }, k);
-      b.addEventListener('click', function () { kindFilter = k; render(lastQuery); var inp = $('jsearch-input'); if (inp) inp.focus(); });
+    [{ k: 'All', n: total }].concat(KINDS.map(function (k) { return { k: k, n: counts[k] || 0 }; })).forEach(function (c) {
+      var on = kindFilter === c.k, dead = c.n === 0;
+      var b = el('button', { type: 'button', 'class': 'jsearch-chip', 'aria-pressed': on ? 'true' : 'false' });
+      if (dead) { b.setAttribute('aria-disabled', 'true'); b.setAttribute('tabindex', '-1'); }
+      b.appendChild(document.createTextNode(c.k));
+      if (c.n) b.appendChild(el('span', { 'class': 'jsearch-chip-n', 'aria-label': c.n + (c.n === 1 ? ' result' : ' results') }, String(c.n)));
+      if (!dead) b.addEventListener('click', function () { kindFilter = c.k; render(lastQuery); var inp = $('jsearch-input'); if (inp) inp.focus(); });
       bar.appendChild(b);
     });
+    var onChip = bar.querySelector('[aria-pressed=true]'); if (onChip && onChip.scrollIntoView) { try { onChip.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (e) {} }
   }
   function render(q) {
     var box = $('jsearch-results'), input = $('jsearch-input'); if (!box) return;
@@ -222,21 +229,21 @@
     lastQuery = q; active = -1; shown = [];
     if (input) { input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); }
     box.textContent = '';
-    if (!q.trim()) { kindFilter = 'All'; renderChips([]); renderWelcome(box); setStatus(''); return; }
+    if (!q.trim()) { kindFilter = 'All'; renderChips({}); renderWelcome(box); setStatus(''); return; }
     stopRotate();
     if (!prepared) {
-      renderChips([]);
+      renderChips({});
       box.appendChild(el('div', { 'class': 'jsearch-hint' }, failed ? 'THE SEARCH INDEX COULD NOT BE LOADED. CHECK YOUR CONNECTION AND TRY AGAIN.' : 'LOADING THE INDEX\u2026'));
       if (!failed) loadIndex(function () { if (lastQuery === q) render(q); }); else { failed = false; loadIndex(function () { if (lastQuery === q) render(q); }); }
       return;
     }
     var results = search(q);
-    if (!results.length) { kindFilter = 'All'; renderChips([]); box.appendChild(el('div', { 'class': 'jsearch-empty' }, COPY.empty)); setStatus('No results'); return; }
+    if (!results.length) { kindFilter = 'All'; renderChips({}); box.appendChild(el('div', { 'class': 'jsearch-empty' }, COPY.empty)); setStatus('No results'); return; }
     // group by kind, groups in the order their best result scored, a cap per kind when several kinds answer
-    var groups = {}, order = [];
-    results.forEach(function (r) { var k = kindOf(r.p.cat); if (!groups[k]) { groups[k] = []; order.push(k); } groups[k].push(r); });
-    renderChips(order);
-    if (kindFilter !== 'All' && !groups[kindFilter]) { kindFilter = 'All'; renderChips(order); }
+    var groups = {}, order = [], counts = {};
+    results.forEach(function (r) { var k = kindOf(r.p.cat); if (!groups[k]) { groups[k] = []; order.push(k); } groups[k].push(r); counts[k] = groups[k].length; });
+    if (kindFilter !== 'All' && !groups[kindFilter]) kindFilter = 'All'; // the chosen kind has nothing for this query
+    renderChips(counts);
     var toks = tokens(q), total = 0, hidden = 0, multi = order.length > 1 && kindFilter === 'All';
     order.forEach(function (k) {
       if (kindFilter !== 'All' && k !== kindFilter) { hidden += groups[k].length; return; }
