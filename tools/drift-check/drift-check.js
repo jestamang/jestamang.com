@@ -225,6 +225,14 @@ function checkPhotos(galleries) {
     else if (!thumbs.has(fn)) ERR(area, `no thumbnail (case-sensitive) for: ${fn} (gallery ${g.id})`);
   }
   if (!hasErr(area)) INFO(area, `${n} gallery photos all exist with thumbnails`);
+  // assets/data/photo-sizes.json (tools/photo-sizes/build.py) gives photos.html each thumbnail's size for the justified rows
+  const rel = 'assets/data/photo-sizes.json';
+  if (!exists(rel)) { WARN(area, rel + ' is missing. Run: python3 tools/photo-sizes/build.py'); return; }
+  let sizes; try { sizes = (JSON.parse(read(rel)).photos) || {}; } catch (e) { WARN(area, rel + ' could not be parsed: ' + e.message); return; }
+  const used = new Set(); const missing = [];
+  for (const g of galleries) for (const p of g.photos || []) { const fn = typeof p === 'string' ? p : p.filename; used.add(fn); if (!sizes[fn]) missing.push(fn); }
+  if (missing.length) WARN(area, `${missing.length} gallery photo(s) have no size entry (${missing.slice(0, 3).join(', ')}${missing.length > 3 ? ', ...' : ''}), their rows are guessed until the image loads. Run: python3 tools/photo-sizes/build.py`);
+  else INFO(area, `${used.size} gallery photos all have size entries (${Object.keys(sizes).length} files measured)`);
 }
 function checkSitemap() {
   const area = 'sitemap.xml'; const xml = read('sitemap.xml');

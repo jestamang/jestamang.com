@@ -4,7 +4,7 @@
 // UPDATE CACHE_VERSION DATE ON EVERY PUSH
 // ════════════════════════════════════════════════════════════════
 
-var CACHE_NAME = 'jestamang-v512';
+var CACHE_NAME = 'jestamang-v513';
 var BADGE      = '/assets/icons/icon-192.png';
 
 var PRECACHE_URLS = [
@@ -54,7 +54,8 @@ var PRECACHE_URLS = [
   '/assets/js/jesta-zoom.js',
   '/assets/css/jesta-search.css',
   '/assets/data/jesta-outer-planets.json',
-  '/assets/data/video-thumb-crops.json'
+  '/assets/data/video-thumb-crops.json',
+  '/assets/data/photo-sizes.json'
 ];
 
 // ── Install: precache core assets ────────────────────────────
