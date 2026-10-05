@@ -18,3 +18,6 @@ skills-lock.json
 # hook/tool outputs
 tools/games-check/last-*.json
 tools/games-check/*.png
+
+# the crop tool is part of the build (the *.py rule above is for one-off scripts)
+!tools/video-thumbs/build.py
