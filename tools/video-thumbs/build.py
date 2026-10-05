@@ -31,6 +31,7 @@ OVERRIDES = {
     '31DacId6G1E': 'ambient',   # Jestamang Live at Prison Break: vertical phone video, shown whole over its own blur
     'yQugxfPBo68': 'ambient',   # The Circus Speaks (III): near-square frame with captions above and below
     'H0EoIEza8hA': 'ambient',   # Magician's Trick (Flashback): 4:3 frame with a wide right bar
+    'Rd6Gd_6aufQ': 'ambient',   # Xmas 23: 4:3 title card, the zoom clipped the first and last letters of the arch
 }
 MIN_BAR = 0.02     # bars thinner than 2 percent of the frame are ignored
 AMBIENT_AT = 2.0   # zoom factor at which the page switches to the ambient fill
