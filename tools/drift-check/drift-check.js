@@ -291,6 +291,27 @@ function checkPageMeta(pageMeta) {
   }
 }
 
+// ---------- video thumbnail crops ----------
+// assets/data/video-thumb-crops.json (tools/video-thumbs/build.py) records the black bars baked into each published
+// video's YouTube thumbnail. A published video with no entry renders on videos.html with whatever bars it carries.
+function checkVideoThumbCrops(videos) {
+  const area = 'video thumbnails';
+  const rel = 'assets/data/video-thumb-crops.json';
+  if (!exists(rel)) { WARN(area, rel + ' is missing. Run: python3 tools/video-thumbs/build.py'); return; }
+  let data; try { data = JSON.parse(read(rel)); } catch (e) { WARN(area, rel + ' could not be parsed: ' + e.message); return; }
+  const entries = (data && data.videos) || {};
+  const isOn = (v) => v === true || v === 'true' || v === 1 || v === '1';
+  const pub = (videos || []).filter((v) => isOn(v.published) && v.youtubeId);
+  const missing = pub.filter((v) => !entries[v.youtubeId]).map((v) => v.title || v.youtubeId);
+  const stale = Object.keys(entries).filter((id) => !pub.some((v) => v.youtubeId === id));
+  if (missing.length) WARN(area, `${missing.length} published video(s) have no crop entry (${missing.slice(0, 4).join('; ')}${missing.length > 4 ? '; ...' : ''}). Run: python3 tools/video-thumbs/build.py`);
+  if (stale.length) INFO(area, `${stale.length} crop entries no longer match a published video (harmless; the tool drops them on its next run)`);
+  if (!missing.length) {
+    const modes = {}; Object.values(entries).forEach((e) => { modes[e.mode] = (modes[e.mode] || 0) + 1; });
+    INFO(area, `${pub.length} published videos all have crop entries (${modes.none || 0} clean, ${modes.zoom || 0} zoom, ${modes.ambient || 0} ambient)`);
+  }
+}
+
 // ---------- main ----------
 (async () => {
   const t0 = Date.now();
@@ -318,6 +339,7 @@ function checkPageMeta(pageMeta) {
   checkSitemap();
   checkPageMeta(pageMeta);
   checkSearchIndex({ releases, lyrics, entities, merch, blogPosts, videos });
+  checkVideoThumbCrops(videos);
   checkSwBump();
 
   const order = { ERROR: 0, WARN: 1, INFO: 2 };
