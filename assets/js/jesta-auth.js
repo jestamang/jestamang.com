@@ -789,6 +789,7 @@ window.openSocial = function(platform) {
 //     live: false,                                // true subscribes with onSnapshot instead of one get()
 //     serverOnRetry: true,                        // a retry reads with {source:'server'} so a stale empty cache cannot answer again
 //     onState: function (state) { }               // optional: 'loading' | 'ready' | 'empty' | 'error'
+//     readTimeoutMs: 15000                        // optional: a read with no answer by then shows the error card; a late answer still renders
 //   });
 //   h.reload()  runs the read again (bounces the connection first); h.cancel() stops a live listener.
 (function () {
@@ -828,7 +829,8 @@ window.openSocial = function(platform) {
     var errorText = opts.errorText || 'This could not be loaded. Check your connection.';
     var retryText = opts.retryText || 'Try again';
     var maxWait = opts.maxWaitMs || 8000;
-    var unsub = null, cancelled = false;
+    var readTimeout = opts.readTimeoutMs || 15000;
+    var unsub = null, cancelled = false, seq = 0, timer = null;
     function setState(s) { if (typeof opts.onState === 'function') { try { opts.onState(s); } catch (e) {} } }
     function card(kind, text, withRetry) {
       if (!box) return;
@@ -849,14 +851,22 @@ window.openSocial = function(platform) {
       if (box) { var old = box.querySelectorAll('.jesta-state'); for (var i = 0; i < old.length; i++) old[i].parentNode.removeChild(old[i]); }
       try { opts.render(docs, snap); setState('ready'); } catch (e) { fail(e); }
     }
+    // A read that never answers (a stalled connection the SDK has not yet called offline) would leave the page on its
+    // loading state forever: after readTimeout it fails, so the error card with Retry shows. Each run has its own number,
+    // so only the newest run's answer counts; that answer still renders if it arrives after the timeout.
     function run(db, fromServer) {
       if (cancelled) return;
       var q;
       try { q = opts.query(db); } catch (e) { fail(e); return; }
       setState('loading');
       if (unsub) { try { unsub(); } catch (e) {} unsub = null; }
-      if (opts.live) { unsub = q.onSnapshot(deliver, fail); }
-      else { q.get(fromServer && opts.serverOnRetry !== false ? { source: 'server' } : undefined).then(deliver, fail); }
+      var mine = ++seq, answered = false;
+      clearTimeout(timer);
+      timer = setTimeout(function () { if (mine === seq && !answered && !cancelled) fail(new Error('read timed out after ' + readTimeout + 'ms')); }, readTimeout);
+      function onData(snap) { if (mine !== seq || cancelled) return; answered = true; clearTimeout(timer); deliver(snap); }
+      function onError(err) { if (mine !== seq || cancelled) return; answered = true; clearTimeout(timer); fail(err); }
+      if (opts.live) { unsub = q.onSnapshot(onData, onError); }
+      else { q.get(fromServer && opts.serverOnRetry !== false ? { source: 'server' } : undefined).then(onData, onError); }
     }
     function waitForDb(cb) {
       var waited = 0, iv = setInterval(function () {
@@ -871,7 +881,7 @@ window.openSocial = function(platform) {
         var bounce = (db.disableNetwork && db.enableNetwork) ? db.disableNetwork().then(function () { return db.enableNetwork(); }) : Promise.resolve();
         bounce.catch(function () {}).then(function () { run(db, true); });
       },
-      cancel: function () { cancelled = true; if (unsub) { try { unsub(); } catch (e) {} unsub = null; } }
+      cancel: function () { cancelled = true; clearTimeout(timer); if (unsub) { try { unsub(); } catch (e) {} unsub = null; } }
     };
     waitForDb(run);
     return handle;
