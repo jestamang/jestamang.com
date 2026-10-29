@@ -205,7 +205,9 @@ function buildLyrHtml(aSlug,alSlug,songs){
   (songs||[]).forEach(function(song,i){
     var accId='acc-dyn-'+aSlug+'-'+alSlug+'-'+i;
     var lyrHtml='';
-    if(song.lyrics){song.lyrics.split('\n').forEach(function(line){lyrHtml+='<p>'+(line?esc(line):'&nbsp;')+'</p>';});}
+    /* a line with nothing but whitespace (a space, tab, no-break space or stray \r typed or pasted in the admin
+       editor) is a stanza break: as text it would render as an empty <p> that collapses to zero height */
+    if(song.lyrics){song.lyrics.split(/\r\n|\r|\n/).forEach(function(line){lyrHtml+='<p>'+(/\S/.test(line)?esc(line):'&nbsp;')+'</p>';});}
     html+='<div class="accordion"><div class="acc-row"><button class="acc-hdr lyr-dyn" data-acc="'+accId+'" aria-expanded="false" aria-controls="'+accId+'">'+esc(song.title)+'<span class="acc-arr">▾</span></button>'
         +'<button type="button" class="lyr-play" data-song="'+esc(song.title)+'" aria-label="Play '+esc(song.title)+'" aria-pressed="false" title="Play" style="visibility:hidden">'+PLAY_SVG+'</button></div>'
         +'<div class="acc-body" id="'+accId+'">'+lyrHtml+'</div></div>';
