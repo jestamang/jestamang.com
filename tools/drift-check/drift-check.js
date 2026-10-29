@@ -122,6 +122,7 @@ function checkEventLd(html, file, next) {
   if (norm(ev.location && ev.location.name) !== norm(next.venue)) ERR(area, `location.name ${JSON.stringify(ev.location && ev.location.name)} vs venue ${JSON.stringify(next.venue)}`);
   const loc = norm((next.city || '').split(',')[0]);
   if (norm(ev.location && ev.location.address && ev.location.address.addressLocality) !== loc) ERR(area, `addressLocality vs city ${JSON.stringify(next.city)}`);
+  if (/^\d{2}:\d{2}$/.test(next.endTime || '') && (ev.endDate || '').slice(11, 16) !== next.endTime) ERR(area, `endDate ${ev.endDate} vs show end time ${next.endTime}`);
   if (!hasErr(area)) INFO(area, `matches next show ${next.date} ${next.venue}; image exists`);
 }
 function checkShowsPage({ next, past }) {
