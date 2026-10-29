@@ -154,7 +154,46 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   }
 </style>
 <script>(function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[]).push(arguments);};l=d.createElement(e);l.async=1;l.src=u;n=d.getElementsByTagName(e)[0];n.parentNode.insertBefore(l,n);})(window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');ml('account','2245401');</script>
-<script type="application/ld+json" id="shows-ld-json">[]</script>
+<script type="application/ld+json" id="shows-ld-json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "Jestamang Live at Noise Feast @ 621 Gallery",
+  "startDate": "2026-11-21T11:00:00-05:00",
+  "endDate": "2026-11-21T14:00:00-05:00",
+  "location": {
+    "@type": "Place",
+    "name": "Noise Feast @ 621 Gallery",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Tallahassee",
+      "addressRegion": "FL",
+      "addressCountry": "US"
+    }
+  },
+  "organizer": {
+    "@type": "Organization",
+    "name": "Jestamang LLC",
+    "url": "https://jestamang.com"
+  },
+  "eventStatus": "https://schema.org/EventScheduled",
+  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+  "image": "https://jestamang.com/assets/homepage/logo%20png.png",
+  "description": "Jestamang performing live at Noise Feast @ 621 Gallery. Presented by Jestamang.",
+  "performer": {
+    "@type": "MusicGroup",
+    "name": "Jestamang"
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": "https://jestamang.com/shows.html",
+    "availability": "https://schema.org/InStock",
+    "validFrom": "2026-10-22",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
 <link rel="stylesheet" href="assets/css/jesta-search.css">
 </head> <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -179,12 +218,16 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 <!-- Static fallback: what crawlers and no-JS visitors see, and what stays if Firestore fails.
      Mirrors the next `shows` doc exactly as renderUpcoming() would draw it. Update when the show changes. -->
 <div id="shows-fallback">
-<div class="show-card show-card--empty visible">
-  <span class="show-status">Nothing booked yet</span>
-  <h3 class="show-venue">The next conjuring is not on the calendar.</h3>
+<article class="show-card visible">
+  <span class="show-numeral">I</span>
+  <span class="show-status">Upcoming</span>
+  <p class="show-date">Nov 21, ’26</p>
+  <h3 class="show-venue">Noise Feast @ 621 Gallery</h3>
+  <p class="show-city">Tallahassee, FL</p>
   <div class="show-rule"></div>
-  <p class="show-detail">Join the list below and you will hear first.</p>
-</div>
+  <p class="show-detail">Doors 11:00 AM · Free</p>
+  <div class="show-ticket-wrap"><span class="show-free-entry">Free Entry</span></div>
+</article>
 </div>
 
 <section id="shows-past-section" class="past-section" style="display:none;">
