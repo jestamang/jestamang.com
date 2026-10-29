@@ -160,7 +160,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   "@type": "Event",
   "name": "Jestamang Live at Noise Feast @ 621 Gallery",
   "startDate": "2026-11-21T11:00:00-05:00",
-  "endDate": "2026-11-21T14:00:00-05:00",
+  "endDate": "2026-11-21T12:00:00-05:00",
   "location": {
     "@type": "Place",
     "name": "Noise Feast @ 621 Gallery",
@@ -481,12 +481,22 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
 
   function jPad2(n) { return n < 10 ? '0' + n : '' + n; }
 
-  function jEndIso(dateStr, timeStr) {
+  // The show's end time (Conjuring Manager > End Time) when it has one; one earlier than the start runs past
+  // midnight. Without one, the set is assumed to run 3 hours.
+  function jEndIso(dateStr, timeStr, endStr) {
     var tz = jEdt(dateStr);
     var t = (timeStr && /^\d{2}:\d{2}$/.test(timeStr)) ? timeStr : '20:00';
-    var end = new Date(new Date(dateStr + 'T' + t + ':00' + tz).getTime() + 3 * 60 * 60 * 1000);
-    return end.getFullYear() + '-' + jPad2(end.getMonth() + 1) + '-' + jPad2(end.getDate()) +
-           'T' + jPad2(end.getHours()) + ':' + jPad2(end.getMinutes()) + ':00' + tz;
+    var start = new Date(dateStr + 'T' + t + ':00' + tz).getTime();
+    var end = new Date(start + 3 * 60 * 60 * 1000);
+    if (endStr && /^\d{2}:\d{2}$/.test(endStr)) {
+      var e = new Date(dateStr + 'T' + endStr + ':00' + tz).getTime();
+      end = new Date(e > start ? e : e + 24 * 60 * 60 * 1000);
+    }
+    // written as Eastern wall-clock time whatever the browser's own zone (crawlers often render in UTC)
+    var off = (tz.charAt(0) === '-' ? -1 : 1) * (parseInt(tz.slice(1, 3), 10) * 60 + parseInt(tz.slice(4, 6), 10));
+    var et = new Date(end.getTime() + off * 60 * 1000);
+    return et.getUTCFullYear() + '-' + jPad2(et.getUTCMonth() + 1) + '-' + jPad2(et.getUTCDate()) +
+           'T' + jPad2(et.getUTCHours()) + ':' + jPad2(et.getUTCMinutes()) + ':00' + tz;
   }
 
   function injectEventSchema(upcoming) {
@@ -509,7 +519,7 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
         '@type': 'Event',
         'name': s.name || ('Jestamang Live at ' + (s.venue || locality)),
         'startDate': startIso,
-        'endDate': jEndIso(s.date, s.time),
+        'endDate': jEndIso(s.date, s.time, s.endTime),
         'location': {
           '@type': 'Place',
           'name': s.venue || cityStr,

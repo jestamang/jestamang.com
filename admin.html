@@ -992,6 +992,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <input class="field-input" id="sh-time" type="time">
         </div>
       </div>
+      <label class="field-label" for="sh-endtime">End Time</label>
+      <input class="field-input" id="sh-endtime" type="time">
+      <div style="font-size:0.6rem;color:rgba(201,168,76,0.3);letter-spacing:0.06em;margin:2px 0 12px;">Optional. The end time search engines see. Left blank, the set is assumed to run 3 hours.</div>
       <div class="form-grid">
         <div>
           <label class="field-label" for="sh-tickets">Ticket URL</label>
@@ -3998,7 +4001,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   function shClearForm() {
     _shEditId = null;
-    ['sh-venue','sh-city','sh-time','sh-tickets','sh-price','sh-lineup','sh-tagline'].forEach(function(id){document.getElementById(id).value='';});
+    ['sh-venue','sh-city','sh-time','sh-endtime','sh-tickets','sh-price','sh-lineup','sh-tagline'].forEach(function(id){document.getElementById(id).value='';});
     document.getElementById('sh-date').value = new Date().toISOString().slice(0,10);
     document.getElementById('sh-autonotify').checked = false;
     document.getElementById('sh-add-btn').textContent = 'Add Conjuring';
@@ -4011,6 +4014,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     document.getElementById('sh-date').value      = d.date      || '';
     document.getElementById('sh-city').value      = d.city      || '';
     document.getElementById('sh-time').value      = d.time      || '';
+    document.getElementById('sh-endtime').value   = d.endTime   || '';
     document.getElementById('sh-tickets').value   = d.ticketUrl || '';
     document.getElementById('sh-price').value     = d.price     || '';
     document.getElementById('sh-lineup').value    = d.lineup    || '';
@@ -4035,6 +4039,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var date       = (document.getElementById('sh-date').value    ||'').trim();
       var city       = (document.getElementById('sh-city').value    ||'').trim();
       var time       = (document.getElementById('sh-time').value    ||'').trim();
+      var endTime    = (document.getElementById('sh-endtime').value ||'').trim();
       var tickets    = (document.getElementById('sh-tickets').value ||'').trim();
       var price      = (document.getElementById('sh-price').value   ||'').trim();
       var lineup     = (document.getElementById('sh-lineup').value  ||'').trim();
@@ -4048,7 +4053,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       this.disabled=true; statusEl.textContent='';
       var self=this;
       var fields = {
-        venue:venue, date:date, city:city, time:time,
+        venue:venue, date:date, city:city, time:time, endTime:endTime,
         ticketUrl:tickets, price:price, lineup:lineup, tagline:tagline
       };
 
