@@ -2508,6 +2508,47 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       _ixEntPool = pool; _ixEntLoaded = true; cb && cb();
     }).catch(function(){ _ixEntLoaded = true; cb && cb(); });
   }
+  /* Entity of the Day fixed songs, keyed like the captions. Value "album|||title" from the R2 catalog, '' = Rotate.
+     Built-in pairings mirror EOTD_SONG_DEFAULTS in index.html; a saved siteConfig/eotdSongs entry wins. */
+  var EOTD_SONG_DEFAULTS = {
+    'ONE OF THE CHILDREN|Porphigen':'Zodiac|||Leo',
+    'ONE OF THE CHILDREN|Kek-Buh':'Zodiac|||Taurus',
+    'ONE OF THE CHILDREN|Cricket Om':'Zodiac|||Scorpio',
+    'ONE OF THE CHILDREN|Israel':'Zodiac|||Aries',
+    'ONE OF THE CHILDREN|Austinich':'Zodiac|||Gemini',
+    'ONE OF THE CHILDREN|The Ace of Chase':'Zodiac|||Pisces'
+  };
+  var EOTD_SONG_MANIFEST = 'https://pub-75f71ff978d340cfa0ee8e4b628e3ea4.r2.dev/manifest.json';
+  var _eotdSongSaved = null, _eotdSongEdit = {}, _eotdSongOpts = null, _eotdSongSet = {};
+  var _eotdSongGuard = window.jestaLoadGuard('ix-list', 'eotdsongs', 'ENTITY SONGS');
+  function eotdSongCurrent(key){
+    if (_eotdSongEdit.hasOwnProperty(key)) return _eotdSongEdit[key];
+    if (_eotdSongSaved && _eotdSongSaved.hasOwnProperty(key)) return _eotdSongSaved[key];
+    return EOTD_SONG_DEFAULTS[key] || '';
+  }
+  /* the saved choices and the R2 catalog (the dropdown only offers songs that have a file); then cb */
+  function loadEotdSongs(cb){
+    var pending = 2;
+    function done(){ if (--pending === 0 && cb) cb(); }
+    function retry(){ _eotdSongGuard.loading(); loadEotdSongs(cb); }
+    if (window.jestaDB) {
+      db.collection('siteConfig').doc('eotdSongs').get().then(function(d){ _eotdSongSaved = d.exists ? (d.data().songs || {}) : null; _eotdSongGuard.ok(); done(); })
+        .catch(function(){ _eotdSongSaved = null; _eotdSongGuard.failed(retry); done(); });
+    } else { _eotdSongGuard.failed(retry); done(); }
+    fetch(EOTD_SONG_MANIFEST).then(function(r){ return r.json(); }).then(function(m){
+      var albums = {}, order = [];
+      (m.tracks || []).forEach(function(t){ if (!t.album || !t.title) return; if (!albums[t.album]) { albums[t.album] = { artist: t.artist || '', tracks: [] }; order.push(t.album); } albums[t.album].tracks.push(t); });
+      order.sort(function(a,b){ return a.toLowerCase().localeCompare(b.toLowerCase()); });
+      var html = '<option value="">Rotate (default)</option>', set = {};
+      order.forEach(function(a){
+        var al = albums[a]; al.tracks.sort(function(x,y){ return (x.trackNum||0)-(y.trackNum||0); });
+        html += '<optgroup label="' + esc(a + (al.artist ? ' \u00b7 ' + al.artist : '')) + '">';
+        al.tracks.forEach(function(t){ var v = a + '|||' + t.title; if (set[v]) return; set[v] = 1; html += '<option value="' + esc(v) + '">' + esc(t.title) + '</option>'; });
+        html += '</optgroup>';
+      });
+      _eotdSongOpts = html; _eotdSongSet = set; done();
+    }).catch(function(){ _eotdSongOpts = null; done(); });
+  }
   var EOTD_CAP_DEFAULTS = {
 'ONE OF THE CHILDREN|The Ace of Chase':'Born between the worlds, this one chases harmonics through the astral corridor.',
 'ONE OF THE CHILDREN|Austinich':'His frequencies predate the stars. He carries the first sound inside his chest.',
@@ -2544,8 +2585,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     function retry(){ _eotdCapLoaded = false; _eotdCapGuard.loading(); loadEotdCaps(cb); }
     function finish(){
       if (window.jestaDB) {
-        db.collection('siteConfig').doc('eotdCaptions').get().then(function(d){ _eotdCapSaved = (d.exists && d.data().captions) || {}; _eotdCapLoaded = true; _eotdCapGuard.ok(); cb && cb(); }).catch(function(){ _eotdCapLoaded = true; _eotdCapGuard.failed(retry); cb && cb(); });
-      } else { _eotdCapLoaded = true; _eotdCapGuard.failed(retry); cb && cb(); }
+        db.collection('siteConfig').doc('eotdCaptions').get().then(function(d){ _eotdCapSaved = (d.exists && d.data().captions) || {}; _eotdCapLoaded = true; _eotdCapGuard.ok(); loadEotdSongs(cb); }).catch(function(){ _eotdCapLoaded = true; _eotdCapGuard.failed(retry); loadEotdSongs(cb); });
+      } else { _eotdCapLoaded = true; _eotdCapGuard.failed(retry); loadEotdSongs(cb); }
     }
     fetch('entities.html').then(function(r){return r.text();}).then(function(html){
       var doc = new DOMParser().parseFromString(html, 'text/html'), arr = [], seen = {};
@@ -3236,6 +3277,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           pinHtml += '<div style="margin-top:8px;width:100%;"><label style="display:block;font-size:0.6rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:4px;">FEATURE AN ENTITY (overrides daily rotation)</label><select class="field-input ix-entpin" data-i="' + i + '" style="width:100%;margin:0;font-size:0.78rem;">' + eopts + '</select></div>';
         }
       }
+      /* the song shown on the card for one entity: Rotate (default) or one fixed R2 song */
+      function eotdSongRow(e){
+        var cur = eotdSongCurrent(e.key);
+        if (_eotdSongOpts == null) return '<div style="margin-top:4px;font-size:0.66rem;color:rgba(251,56,56,0.8);">Song list could not load (R2 catalog). Reload to change songs.</div>';
+        var missing = (cur && !_eotdSongSet[cur]) ? '<option value="' + esc(cur) + '">Not in R2: ' + esc(cur.replace('|||', ' \u00b7 ')) + '</option>' : '';
+        return '<div style="display:flex;align-items:center;gap:8px;margin-top:4px;"><span style="font-size:0.56rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);flex:0 0 auto;">SONG</span>'
+          + '<select class="field-input eotd-song" data-key="' + esc(e.key) + '" data-cur="' + esc(cur) + '" aria-label="Song on the card for ' + esc(e.name) + ' (' + esc(e.type) + ')" style="flex:1;min-width:0;margin:0;font-size:0.74rem;">' + missing + _eotdSongOpts + '</select></div>';
+      }
       var capHtml = '';
       if (spec.captions) {
         if (!_eotdCapLoaded) {
@@ -3244,13 +3293,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           var capRows = '';
           _eotdCapList.forEach(function(e){
             var cv = (_eotdCapEdit[e.key]!=null) ? _eotdCapEdit[e.key] : ((_eotdCapSaved[e.key]!=null) ? _eotdCapSaved[e.key] : (EOTD_CAP_DEFAULTS[e.key]||''));
-            capRows += '<div style="margin-bottom:9px;"><label style="display:block;font-size:0.7rem;color:rgba(240,230,210,0.8);margin-bottom:3px;">' + esc(e.name) + ' <span style="color:rgba(201,168,76,0.4);font-size:0.56rem;letter-spacing:0.1em;">' + esc(e.type) + '</span></label><textarea class="field-input eotd-cap" data-key="' + esc(e.key) + '" rows="2" style="width:100%;margin:0;font-size:0.76rem;line-height:1.5;resize:vertical;font-style:italic;">' + esc(cv) + '</textarea></div>';
+            capRows += '<div style="margin-bottom:9px;"><label style="display:block;font-size:0.7rem;color:rgba(240,230,210,0.8);margin-bottom:3px;">' + esc(e.name) + ' <span style="color:rgba(201,168,76,0.4);font-size:0.56rem;letter-spacing:0.1em;">' + esc(e.type) + '</span></label><textarea class="field-input eotd-cap" data-key="' + esc(e.key) + '" rows="2" style="width:100%;margin:0;font-size:0.76rem;line-height:1.5;resize:vertical;font-style:italic;">' + esc(cv) + '</textarea>' + eotdSongRow(e) + '</div>';
           });
           capHtml = '<div style="margin-top:14px;border-top:1px solid rgba(201,168,76,0.15);padding-top:12px;">'
             + '<div style="font-size:0.6rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:10px;">ENTITY CAPTIONS — the italic line shown under each entity (blank = built-in default)</div>'
             + capRows
             + '<button class="eotd-cap-save" style="margin-top:4px;padding:7px 16px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:inherit;font-size:0.72rem;letter-spacing:0.12em;cursor:pointer;border-radius:3px;">SAVE CAPTIONS</button>'
             + '<span class="eotd-cap-status" style="margin-left:12px;font-size:0.72rem;color:rgba(2,225,39,0.85);"></span>'
+            + '<div style="margin-top:8px;"><button class="eotd-song-save" style="padding:7px 16px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:inherit;font-size:0.72rem;letter-spacing:0.12em;cursor:pointer;border-radius:3px;">SAVE SONGS</button>'
+            + '<span class="eotd-song-status" style="margin-left:12px;font-size:0.72rem;color:rgba(2,225,39,0.85);"></span></div>'
             + '</div>';
         }
       }
@@ -3307,6 +3358,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       list.querySelectorAll('.ix-pin').forEach(function(b){ b.addEventListener('change', function(){ var i=+this.getAttribute('data-i'); if(!_ixState[i].extras) _ixState[i].extras={}; _ixState[i].extras.pinId=this.value; }); });
       list.querySelectorAll('.ix-entpin').forEach(function(b){ b.addEventListener('change', function(){ var i=+this.getAttribute('data-i'); if(!_ixState[i].extras) _ixState[i].extras={}; _ixState[i].extras.pinName=this.value; }); });
       list.querySelectorAll('.eotd-cap').forEach(function(t){ t.addEventListener('input', function(){ _eotdCapEdit[this.getAttribute('data-key')] = this.value; }); });
+      list.querySelectorAll('.eotd-song').forEach(function(sel){ sel.value = sel.getAttribute('data-cur'); sel.addEventListener('change', function(){ _eotdSongEdit[this.getAttribute('data-key')] = this.value; }); });
+      list.querySelectorAll('.eotd-song-save').forEach(function(b){ b.addEventListener('click', function(){
+        var stat = this.parentNode.querySelector('.eotd-song-status');
+        if (!_eotdSongGuard.canSave(stat)) return;
+        if (_eotdSongOpts == null) { if (stat) { stat.style.color='rgba(251,56,56,0.9)'; stat.textContent='The song list did not load. Reload before saving.'; } return; }
+        var map = {};                                  /* every entity is saved explicitly; '' = Rotate */
+        list.querySelectorAll('.eotd-song').forEach(function(sel){ map[sel.getAttribute('data-key')] = sel.value; });
+        if (stat) { stat.style.color='rgba(201,168,76,0.7)'; stat.textContent='Saving…'; }
+        window.jestaVerifiedSave(db.collection('siteConfig').doc('eotdSongs'), {songs:map}, 'set').then(function(res){ if(!res.ok){ if(stat){stat.style.color='rgba(251,56,56,0.9)';stat.textContent='Saved, but the server copy does not match ('+res.mismatches.join(', ')+'). Reload and check.';} return; }
+          _eotdSongSaved = map; _eotdSongEdit = {};
+          if (stat) { stat.style.color='rgba(2,225,39,0.85)'; stat.textContent='Songs saved ✦'; }
+        }).catch(function(e){ if (stat) { stat.style.color='rgba(251,56,56,0.9)'; stat.textContent='Error: '+((e&&e.message)||'failed'); } });
+      }); });
       list.querySelectorAll('.eotd-cap-save').forEach(function(b){ b.addEventListener('click', function(){
         var stat = this.parentNode.querySelector('.eotd-cap-status');
         if (!_eotdCapGuard.canSave(stat)) return;
