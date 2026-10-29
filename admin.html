@@ -4175,7 +4175,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         +'<td>'+esc(d.price||'—')+'</td>'
         +'<td>'+(hidden?'':'<button class="btn-ghost btn-sm" onclick="notifyShow(\''+vid+'\',\''+ci+'\',\''+dt+'\')">Notify</button>')+'</td>'
         +'<td>'+(hidden
-          ?'<button class="btn-ghost btn-sm" onclick="restoreShow(\''+id+'\')">Restore</button>'
+          ?'<button class="btn-ghost btn-sm" onclick="restoreShow(\''+id+'\')">Restore</button> '
+            +'<button class="btn-danger btn-sm" onclick="deleteShow(this,\''+id+'\')">Delete</button>'
           :'<button class="btn-ghost btn-sm" onclick="editShow(\''+id+'\')">Edit</button> '
             +'<button class="btn-ghost btn-sm" onclick="toggleUpcoming(\''+id+'\','+(isUpcoming?'true':'false')+')">'+(isUpcoming?'Mark Past':'Mark Upcoming')+'</button> '
             +'<button class="btn-danger btn-sm" onclick="hideShow(\''+id+'\',\''+vid+'\',\''+dt+'\')">Remove</button>')+'</td>'
@@ -4256,6 +4257,33 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       active: false,
       hiddenAt: firebase.firestore.FieldValue.serverTimestamp()
     }).catch(function(){});
+  };
+
+  /* Permanent delete, offered only on hidden shows. Two steps: the first click arms the button for 5 seconds,
+     the second deletes. The server is then read back to confirm the document is gone; the list redraws itself
+     from the live listener. */
+  window.deleteShow = function(btn, id) {
+    var d = _shDocs[id] || {};
+    var label = '"' + (d.venue || 'this show') + '"' + (d.date ? ' (' + d.date + ')' : '') + (d.city ? ', ' + d.city : '');
+    var statusEl = document.getElementById('sh-status');
+    function say(msg, err) { if (statusEl) { statusEl.textContent = msg; statusEl.className = 'status-msg' + (err ? ' status-err' : ''); } }
+    if (btn.getAttribute('data-armed') !== '1') {
+      btn.setAttribute('data-armed', '1'); btn.textContent = 'Confirm delete';
+      say('Click "Confirm delete" within 5 seconds to permanently delete ' + label + '. This cannot be undone.', true);
+      clearTimeout(btn._shDelTimer);
+      btn._shDelTimer = setTimeout(function () { btn.removeAttribute('data-armed'); btn.textContent = 'Delete'; say(''); }, 5000);
+      return;
+    }
+    clearTimeout(btn._shDelTimer);
+    btn.disabled = true; btn.textContent = 'Deleting…';
+    var ref = db.collection('shows').doc(id);
+    ref.delete().then(function () { return ref.get({ source: 'server' }); }).then(function (snap) {
+      if (snap.exists) { btn.disabled = false; btn.removeAttribute('data-armed'); btn.textContent = 'Delete'; say('Delete did not take: ' + label + ' is still on the server. Reload and try again.', true); return; }
+      say('Deleted ' + label + ' permanently · verified');
+    }).catch(function (e) {
+      btn.disabled = false; btn.removeAttribute('data-armed'); btn.textContent = 'Delete';
+      say('Delete failed: ' + ((e && e.message) || 'unknown error'), true);
+    });
   };
 
   window.restoreShow = function(id) {
