@@ -1,6 +1,6 @@
-/* GENERATED FILE. Built by tools/search-index/build.js from Firestore (releases, lyrics, entities, merch, blogPosts, videos)
+/* GENERATED FILE. Built by tools/search-index/build.js from Firestore (releases, lyrics, entities, merch, videos)
    plus the page and game lists in that script. Do not edit by hand: run  node tools/search-index/build.js  and commit.
-   566 entries. Shape: n name, u link, c category, i icon, t extra keywords. */
+   557 entries. Shape: n name, u link, c category, i icon, t extra keywords. */
 var IDX=[
 {"n":"Home","u":"/index.html","c":"Page","i":"⌂","t":"homepage start jestamang main collective"},
 {"n":"Entities","u":"/entities.html","c":"Page","i":"✶","t":"characters cartoons children cosmos"},
@@ -527,15 +527,6 @@ var IDX=[
 {"n":"Polyphonies","u":"/merch.html#merch-polyphonies","c":"Merch","i":"◉","t":"polyphonies the jestamang text merch buy shop artifact"},
 {"n":"The Jestamang Puzzle","u":"/merch.html#merch-the-jestamang-puzzle","c":"Merch","i":"◉","t":"the jestamang puzzle original artwork merch buy shop artifact"},
 {"n":"The Jestamang Card Deck","u":"/merch.html#merch-the-jestamang-card-deck","c":"Merch","i":"◉","t":"the jestamang card deck 52 unique cards merch buy shop artifact"},
-{"n":"For the Jestagang","u":"/blog.html#post-UdRN7EPHLhKM2xBbRALI","c":"Blog Post","i":"◇","t":"for the jestagang porphigen testimony blog post writing"},
-{"n":"Pagans in Fort Myers?","u":"/blog.html#post-PphjHStJXJU9cFHYdWCA","c":"Blog Post","i":"◇","t":"pagans in fort myers new æon summer solstice parade nporphigen chronicle blog post writing"},
-{"n":"Is Copernicus wrong?","u":"/blog.html#post-rgvr7XmaCfkA94WbSqPb","c":"Blog Post","i":"◇","t":"is copernicus wrong does it even matter nporphigen thought blog post writing"},
-{"n":"Reclaimed Understanding","u":"/blog.html#post-ZJeZSksoLsYUfNfYtDlO","c":"Blog Post","i":"◇","t":"reclaimed understanding kek buh thought blog post writing"},
-{"n":"I Divorce Myself From You, America","u":"/blog.html#post-chmWQsDpENOnevTts1bG","c":"Blog Post","i":"◇","t":"i divorce myself from you america walk my own way nkek buh thought blog post writing"},
-{"n":"The Great Dagma","u":"/blog.html#post-dFSBJIKFIuJ7LyFQg1VY","c":"Blog Post","i":"◇","t":"the great dagma kek buh poem blog post writing"},
-{"n":"To the Shining Father and Eternal Mother","u":"/blog.html#post-6yoNBrRGf7ELrMORvTUX","c":"Blog Post","i":"◇","t":"to the shining father and eternal mother kek buh poem blog post writing"},
-{"n":"The Prickly Being","u":"/blog.html#post-NrnZIQZpsLMxCQCKl80I","c":"Blog Post","i":"◇","t":"the prickly being jestamang origin blog post writing"},
-{"n":"Two Musicians","u":"/blog.html#post-hiuwEuYqVrlHJ01lH9YK","c":"Blog Post","i":"◇","t":"two musicians porphigen poem blog post writing"},
 {"n":"Kek-Būh Alasol Live at Summer Solstice Jubilee","u":"/videos.html#video-4B-oL1Tr2ms","c":"Video","i":"▷","t":"kek buh alasol live at summer solstice jubilee other video youtube watch film"},
 {"n":"Jestamang Live at Prison Break","u":"/videos.html#video-31DacId6G1E","c":"Video","i":"▷","t":"jestamang live at prison break other video youtube watch film"},
 {"n":"Jestamang Live at 529","u":"/videos.html#video-Ty0YL3Twaak","c":"Video","i":"▷","t":"jestamang live at 529 other video youtube watch film"},

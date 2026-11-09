@@ -596,7 +596,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
         <div>
           <label class="field-label" for="bp-category">Category Tag</label>
-          <input class="field-input" id="bp-category" type="text" placeholder="NEW MUSIC" maxlength="40">
+          <select class="field-input" id="bp-category">
+            <option value="">No category</option>
+            <option value="TESTIMONY">TESTIMONY</option>
+            <option value="CHRONICLE">CHRONICLE</option>
+            <option value="THOUGHT">THOUGHT</option>
+            <option value="POEM">POEM</option>
+            <option value="ORIGIN">ORIGIN</option>
+            <option value="NEW MUSIC">NEW MUSIC</option>
+            <option value="__new">Add a new category…</option>
+          </select>
+          <input class="field-input" id="bp-category-new" type="text" placeholder="NEW CATEGORY" maxlength="40" aria-label="New category name" style="display:none;margin-top:6px;text-transform:uppercase;">
         </div>
       </div>
 
@@ -618,6 +628,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div style="margin-top:32px;">
         <div style="font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.3);margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px;">Recent Posts</div>
         <div id="bp-post-list"><div style="color:rgba(201,168,76,0.2);font-size:0.7rem;">Loading...</div></div>
+        <div class="status-msg" id="bp-index-status" role="status" style="margin-top:8px;"></div>
         <div id="bp-pager" style="display:none;align-items:center;justify-content:center;gap:18px;margin-top:16px;font-family:'Luminari',serif;">
           <button id="bp-prev" class="btn-ghost btn-sm" aria-label="Previous page" style="min-width:44px;">←</button>
           <span id="bp-page-indicator" style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,168,76,0.55);"></span>
@@ -2181,11 +2192,65 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   var _blogPostsPage = 0;
   var BP_PER_PAGE    = 5;
 
+  /* Category: one of a fixed list (plus any already used), stored in capitals, so the blog's filter chips never split
+     "THOUGHT" and "Thought". "Add a new category" reveals a text box. */
+  function bpCategoryValue() {
+    var sel = document.getElementById('bp-category'), nw = document.getElementById('bp-category-new');
+    var v = sel.value === '__new' ? (nw.value || '') : sel.value;
+    return v.trim().replace(/\s+/g, ' ').toUpperCase();
+  }
+  function bpCategoryEnsure(v) {
+    var sel = document.getElementById('bp-category'); if (!v || !sel) return;
+    for (var i = 0; i < sel.options.length; i++) if (sel.options[i].value === v) return;
+    var o = document.createElement('option'); o.value = v; o.textContent = v;
+    sel.insertBefore(o, sel.querySelector('option[value="__new"]'));
+  }
+  function bpCategorySet(v) {
+    var sel = document.getElementById('bp-category'), nw = document.getElementById('bp-category-new');
+    v = String(v || '').trim().toUpperCase(); bpCategoryEnsure(v);
+    sel.value = v; nw.value = ''; nw.style.display = 'none';
+  }
+  (function () {
+    var sel = document.getElementById('bp-category'), nw = document.getElementById('bp-category-new');
+    if (sel && nw) sel.addEventListener('change', function () { var on = sel.value === '__new'; nw.style.display = on ? '' : 'none'; if (on) nw.focus(); });
+  })();
+
+  /* The blog archive summary, siteConfig/blogIndex: one entry per PUBLISHED post (title, date, category, author,
+     teaser, reading time, pinned), which blog.html and the site search read instead of every full post.
+     Rebuilt from the post list each time it loads (after every save, publish, unpublish, pin or delete), written
+     only when it changed. Entry rules mirror summarize() in blog.html. */
+  function bpSummaryOf(id, d) {
+    var body = String(d.content || '');
+    var teaser = String(d.excerpt || body).replace(/\s+/g, ' ').trim();
+    var flat = body.replace(/\s+/g, ' ').trim();
+    if (teaser.length > 220) teaser = teaser.slice(0, 217).replace(/\s+\S*$/, '') + '\u2026';
+    else if (teaser && flat.length > teaser.length && !/[.!?\u2026"\u201d\u2019)]$/.test(teaser)) teaser = teaser.replace(/\s+\S*$/, '') + '\u2026';   /* an excerpt cut mid-word */
+    var words = body ? body.split(/\s+/).filter(Boolean).length : 0;
+    var lines = String(d.subtitle || '').split(/\\n|\n/).map(function (x) { return x.trim(); }).filter(Boolean);
+    return { id: id, title: d.title || '', date: d.date || '', dateFormatted: d.dateFormatted || '', category: String(d.category || '').trim().toUpperCase(),
+      subtitle: d.subtitle || '', author: lines.length ? lines[lines.length - 1] : '', teaser: teaser,
+      minutes: Math.max(1, Math.ceil(words / 230)), featured: d.featured === true, ts: d.timestamp && d.timestamp.toMillis ? d.timestamp.toMillis() : 0 };
+  }
+  function syncBlogIndex(all) {
+    var stat = document.getElementById('bp-index-status');
+    var posts = all.filter(function (p) { return p.data.published === true && p.data.title; }).map(function (p) { return bpSummaryOf(p.id, p.data); });
+    posts.sort(function (a, b) { if (a.date !== b.date) return a.date > b.date ? -1 : 1; if (a.ts !== b.ts) return b.ts - a.ts; return a.title.localeCompare(b.title); });
+    var ref = db.collection('siteConfig').doc('blogIndex');
+    return ref.get({ source: 'server' }).then(function (doc) {
+      var cur = doc.exists ? (doc.data().posts || null) : null;
+      if (cur && JSON.stringify(cur) === JSON.stringify(posts)) { if (stat) { stat.textContent = 'Archive summary up to date · ' + posts.length + ' published'; stat.className = 'status-msg'; } return; }
+      return window.jestaVerifiedSave(ref, { posts: posts, count: posts.length, updated: firebase.firestore.FieldValue.serverTimestamp() }, 'set').then(function (res) {
+        if (stat) { stat.className = 'status-msg'; window.jestaVerifyStatus(stat, res, 'Archive summary updated · ' + posts.length + ' published'); }
+      });
+    }).catch(function (e) { if (stat) { stat.textContent = 'Archive summary not updated: ' + ((e && e.message) || 'failed') + '. Reopen the blog panel to retry.'; stat.className = 'status-msg status-err'; } });
+  }
+  window.syncBlogIndexNow = function () { return db.collection('blogPosts').get().then(function (snap) { var all = []; snap.forEach(function (d) { all.push({ id: d.id, data: d.data() }); }); return syncBlogIndex(all); }); };
+
   function saveBlogPost(publish) {
     var title       = (document.getElementById('bp-title').value    || '').trim();
     var dateUnknown = document.getElementById('bp-date-unknown').checked;
     var dateVal     = dateUnknown ? '' : (document.getElementById('bp-date').value || '').trim();
-    var category = (document.getElementById('bp-category').value || '').trim();
+    var category = bpCategoryValue();
     var subtitle = (document.getElementById('bp-subtitle').value || '').trim();
     var content  = (document.getElementById('bp-content').value  || '').trim();
     var excerpt  = (document.getElementById('bp-excerpt').value  || '').trim() || content.slice(0,150);
@@ -2217,7 +2282,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       statusEl.className = 'status-msg';
       window.jestaVerifyStatus(statusEl, res, publish ? 'PUBLISHED \u2726' : 'DRAFT SAVED \u2726');
       document.getElementById('bp-title').value    = '';
-      document.getElementById('bp-category').value = '';
+      bpCategorySet('');
       document.getElementById('bp-subtitle').value = '';
       document.getElementById('bp-content').value  = '';
       document.getElementById('bp-excerpt').value  = '';
@@ -2250,6 +2315,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       if (_blogPostsPage > totalPages - 1) _blogPostsPage = totalPages - 1;
       if (_blogPostsPage < 0) _blogPostsPage = 0;
       renderRecentPostsPage();
+      _blogPostsAll.forEach(function (p) { bpCategoryEnsure(String(p.data.category || '').trim().toUpperCase()); });
+      syncBlogIndex(_blogPostsAll);
     }).catch(function(e){ el.innerHTML='<div style="color:rgba(251,56,56,0.5);font-size:0.7rem;">Error: '+esc(e.message)+'</div>'; });
   }
 
@@ -2340,7 +2407,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     document.getElementById('bp-date-unknown').checked = unk;
     document.getElementById('bp-date').disabled         = unk;
     document.getElementById('bp-date').value            = unk ? '' : (d.date || '');
-    document.getElementById('bp-category').value = d.category || '';
+    bpCategorySet(d.category || '');
     document.getElementById('bp-subtitle').value = d.subtitle || '';
     document.getElementById('bp-content').value  = d.content  || '';
     document.getElementById('bp-excerpt').value  = d.excerpt  || '';
@@ -2372,7 +2439,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     document.getElementById('bp-date-unknown').checked = false;
     document.getElementById('bp-date').disabled         = false;
     document.getElementById('bp-date').value            = new Date().toISOString().slice(0,10);
-    document.getElementById('bp-category').value = '';
+    bpCategorySet('');
     document.getElementById('bp-subtitle').value = '';
     document.getElementById('bp-content').value  = '';
     document.getElementById('bp-excerpt').value  = '';
@@ -4716,6 +4783,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         }).catch(function(e){ throw new Error('STEP_BLOG: ' + e.message); });
       }).then(function () {
         setCheck('aa-check-blog', true);
+        if (window.syncBlogIndexNow) window.syncBlogIndexNow().catch(function () {});
         // Step 3: notifications (gated by checkbox)
         if (!doNotify) { setCheck('aa-check-notif', true); return Promise.resolve(); }
         return db.collection('notifications').add({

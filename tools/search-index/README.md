@@ -21,7 +21,7 @@ Sources, in file order (file order is the tie-break the overlay uses between equ
 | Entities and Children | Firestore `entities` (visible); slugs from the `ENT_SLUG` map in entities.html | `entities.html#entity-<slug>` or `#child-<slug>` |
 | Tracks | every track on every visible release, plus lyrics songs no release lists | the lyrics song (`lyrics.html#lp-<artist>-<album>-<n>`, slugs as lyrics.html builds them) when the song exists in Firestore `lyrics`, else the album drawer |
 | Merch | Firestore `merch` (active), page order | `merch.html#merch-<slug of the name>` |
-| Blog Posts | Firestore `blogPosts` (published), newest first | `blog.html#post-<document id>` |
+| Blog Posts | Not built in. `assets/js/jesta-search.js` reads them live from `siteConfig/blogIndex` (the archive summary Admin keeps on every blog save) and puts them here, newest first | `blog.html#post-<document id>` |
 
 Members, Dossier and Profile are deliberately not indexed (they need a signed-in account). Login is.
 

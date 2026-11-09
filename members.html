@@ -1234,7 +1234,7 @@ document.addEventListener('DOMContentLoaded', function(){
        be detected and members-only writings take that slot (published ones only, as the rules
        require; the published + timestamp index exists for that query). */
     db.collection('blogPosts')
-      .where('timestamp','>',lastVisitTs).orderBy('timestamp','desc').limit(5).get()
+      .where('published','==',true).where('timestamp','>',lastVisitTs).orderBy('timestamp','desc').limit(5).get()
       .then(function(snap){
         snap.forEach(function(doc){
           var d=doc.data();

@@ -2,7 +2,7 @@
 /**
  * build.js: generates assets/js/jesta-search-index.js, the data behind the sitewide search
  * overlay, from the same sources the pages render at runtime: Firestore releases, lyrics,
- * entities, merch, blogPosts and videos (public REST reads, same web key the site ships), plus the
+ * entities, merch and videos (public REST reads, same web key the site ships), plus the
  * short static lists of pages and games kept in this file.
  *
  * Usage:  node tools/search-index/build.js            write the file and print what changed
@@ -103,8 +103,8 @@ async function fsList(cfg, coll) {
 }
 async function fetchSources(repo) {
   const cfg = firebaseConfig(repo);
-  const [releases, lyrics, entities, merch, blogPosts, videos] = await Promise.all(['releases', 'lyrics', 'entities', 'merch', 'blogPosts', 'videos'].map((c) => fsList(cfg, c)));
-  return { releases, lyrics, entities, merch, blogPosts, videos };
+  const [releases, lyrics, entities, merch, videos] = await Promise.all(['releases', 'lyrics', 'entities', 'merch', 'videos'].map((c) => fsList(cfg, c)));
+  return { releases, lyrics, entities, merch, videos };
 }
 
 // ---------- the build ----------
@@ -186,9 +186,8 @@ function buildIndex(data, repo) {
   const merch = (data.merch || []).filter((m) => isOn(m.active) && m.name).sort((a, b) => num(a.order) - num(b.order) || String(a.name).localeCompare(String(b.name)));
   for (const m of merch) add(m.name, `/merch.html#merch-${toSlug(m.name)}`, 'Merch', ICON.merch, words(m.name, m.subtitle, 'merch buy shop artifact'));
 
-  // blog
-  const posts = (data.blogPosts || []).filter((p) => isOn(p.published) && p.title).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || String(a.title).localeCompare(String(b.title)));
-  for (const p of posts) add(p.title, `/blog.html#post-${p.id}`, 'Blog Post', ICON.blog, words(p.title, p.subtitle, p.category, 'blog post writing'));
+  // blog posts are not built in: assets/js/jesta-search.js reads them live from siteConfig/blogIndex (the summary Admin
+  // keeps on every blog save) and places them here, after Merch, so a new post never makes this file stale.
 
   // videos: published, in the page's order (order ascending, missing last), linked to the player on videos.html
   const videos = (data.videos || []).filter((v) => isOn(v.published) && v.title && v.youtubeId).sort((a, b) => (a.order != null ? num(a.order) : 9e15) - (b.order != null ? num(b.order) : 9e15) || String(a.title).localeCompare(String(b.title)));
@@ -198,7 +197,7 @@ function buildIndex(data, repo) {
 }
 
 function serialize(entries) {
-  return '/* GENERATED FILE. Built by tools/search-index/build.js from Firestore (releases, lyrics, entities, merch, blogPosts, videos)\n' +
+  return '/* GENERATED FILE. Built by tools/search-index/build.js from Firestore (releases, lyrics, entities, merch, videos)\n' +
     '   plus the page and game lists in that script. Do not edit by hand: run  node tools/search-index/build.js  and commit.\n' +
     `   ${entries.length} entries. Shape: n name, u link, c category, i icon, t extra keywords. */\n` +
     'var IDX=[\n' + entries.map((e) => JSON.stringify(e)).join(',\n') + '\n];\n';

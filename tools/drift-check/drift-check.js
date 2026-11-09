@@ -326,8 +326,8 @@ function checkVideoThumbCrops(videos) {
   const t0 = Date.now();
   if (!exists('index.html') || !exists('sw.js')) { console.error('repo not found at ' + REPO + ' (use --repo)'); process.exit(2); }
   const cfg = firebaseConfig();
-  const [shows, releases, entities, lyrics, photos, merch, blogPosts, videos, indexSections, pageMeta, manifest] = await Promise.all([
-    fsList(cfg, 'shows'), fsList(cfg, 'releases'), fsList(cfg, 'entities'), fsList(cfg, 'lyrics'), fsList(cfg, 'photos'), fsList(cfg, 'merch'), fsList(cfg, 'blogPosts'), fsList(cfg, 'videos'),
+  const [shows, releases, entities, lyrics, photos, merch, videos, indexSections, pageMeta, manifest] = await Promise.all([
+    fsList(cfg, 'shows'), fsList(cfg, 'releases'), fsList(cfg, 'entities'), fsList(cfg, 'lyrics'), fsList(cfg, 'photos'), fsList(cfg, 'merch'), fsList(cfg, 'videos'),
     fsDoc(cfg, 'siteConfig/indexSections'), fsDoc(cfg, 'siteConfig/pageMeta'), fetch(MANIFEST_URL).then((r) => r.json()),
   ]);
   const extras = ((indexSections && indexSections.sections) || []).find((s) => s.key === 'shows');
@@ -347,7 +347,7 @@ function checkVideoThumbCrops(videos) {
   checkPhotos(photos);
   checkSitemap();
   checkPageMeta(pageMeta);
-  checkSearchIndex({ releases, lyrics, entities, merch, blogPosts, videos });
+  checkSearchIndex({ releases, lyrics, entities, merch, videos });
   checkVideoThumbCrops(videos);
   checkSwBump();
 
