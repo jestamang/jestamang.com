@@ -137,7 +137,9 @@ service cloud.firestore {
 
     // ── BLOG POSTS ───────────────────────────────────────────────────────────
     match /blogPosts/{postId} {
-      allow read:  if true;
+      // Published posts are public; drafts only for the admin. A list query from the site must ask for
+      // published == true (blog.html, members.html) or the whole query is refused.
+      allow read:  if resource.data.published == true || isAdmin();
       allow write: if isAdmin();
     }
 
