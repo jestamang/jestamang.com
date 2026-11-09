@@ -260,6 +260,27 @@ h1,h2,h3{text-shadow:0 0 30px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,1),0 0 60px 
   .bl-year{margin:14px 10px 4px}
 }
 @media (max-width:560px){.bl-feature{grid-template-columns:minmax(0,1fr)}.bl-tile.wide{grid-column:auto;padding:18px}.bl-tile.wide .t{font-size:1.5rem}.bl-tile{min-height:0}.bl-press-grid{grid-template-columns:minmax(0,1fr)}.bl-nb{grid-template-columns:minmax(0,1fr)}.bl-nb a.older{grid-column:auto}}
+/* reading view (body.bl-reading, set while a post is open): a slim banner and a tighter post, so the text
+   starts near the top of the screen. The archive view keeps the full banner. */
+body.bl-reading .page-wrap{padding-top:68px}
+body.bl-reading .header{margin-bottom:4px;animation:none;opacity:1}
+body.bl-reading .header-title{font-size:1.35rem;letter-spacing:0.4em;text-indent:0.4em;margin:0;text-shadow:0 0 18px rgba(var(--gold-rgb,201,168,76),0.35),0 2px 6px rgba(0,0,0,0.9)}
+body.bl-reading .header-subtitle,body.bl-reading .header-ornament{display:none}
+body.bl-reading #bl-reader{gap:8px;margin-top:0}
+body.bl-reading .bl-back{min-height:40px}
+#bl-article.post{padding:30px 40px 28px}
+#bl-article .post-tag{margin-bottom:8px}
+#bl-article .post-date{margin:4px 0 8px}
+#bl-article .post-title{margin-bottom:8px}
+#bl-article .post-title + p{margin-bottom:12px!important}
+#bl-article .post-body{font-size:16px;line-height:1.6;max-width:38em}
+#bl-article .post-body p{margin-bottom:0.85em!important}
+@media (max-width:720px){
+  body.bl-reading .page-wrap{padding-top:60px}
+  body.bl-reading .header-title{font-size:1.1rem}
+  #bl-article.post{padding:20px 16px 22px}
+  #bl-article .post-body{font-size:15px;line-height:1.55}
+}
 </style>
 <!-- ══ BLOG ARCHIVE: browse view (filters, featured tiles, year-grouped list) and reading view (#post-<id>).
      Data: the archive summary siteConfig/blogIndex, kept by Admin on every blog save; a post's full text loads only when opened. -->
@@ -700,6 +721,7 @@ article.post{scroll-margin-top:72px}#inner-expand-btn{margin-bottom:2rem;}#inner
   function showBrowse() {
     var wasReading = !$('bl-reader').hidden;
     _readerId = null; _depth = 0; _dropListeners();
+    document.body.classList.remove('bl-reading');
     $('bl-reader').hidden = true; $('bl-browse').hidden = false;
     var press = $('bl-press'); if (press && press.getAttribute('data-ready')) press.hidden = false;
     document.title = _baseTitle;
@@ -710,11 +732,12 @@ article.post{scroll-margin-top:72px}#inner-expand-btn{margin-bottom:2rem;}#inner
     _readerId = id;
     var art = $('bl-article');
     $('bl-browse').hidden = true; $('bl-reader').hidden = false;
+    document.body.classList.add('bl-reading');                 /* slim banner, tighter post */
     var press = $('bl-press'); if (press) press.hidden = true;
     art.className = 'post visible'; art.style.background = '';
     art.innerHTML = '<p class="bl-state">Opening the transmission…</p>';
     $('bl-nb').innerHTML = '';
-    var top = function () { if (!keepScroll) { var r = $('bl-reader').getBoundingClientRect().top + window.scrollY - 70; window.scrollTo(0, Math.max(0, r)); } };
+    var top = function () { if (!keepScroll) window.scrollTo(0, 0); };   /* the slim banner sits right above the post */
     top();
     getPost(id).then(function (d) {
       if (_readerId !== id) return;
