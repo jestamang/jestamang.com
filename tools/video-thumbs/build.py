@@ -13,8 +13,10 @@ Entry shape per YouTube id: t, b, l, r = bar fractions of height/width; mode = n
   ambient the visible picture would need a zoom of AMBIENT_AT or more, so the page shows it whole
           over a blurred fill instead (vertical and near-square sources)
 Run it again whenever videos are added; drift-check warns about published videos with no entry.
+A video whose thumbnail is YouTube's stand-in (a 404, or the 120x90 grey image) is private or deleted: it is skipped
+and named, with no entry, so the page shows its title placeholder; drift-check names it too.
 """
-import io, json, os, re, sys, urllib.request
+import io, json, os, re, sys, urllib.error, urllib.request
 try:
     from PIL import Image
 except ImportError:
@@ -72,9 +74,17 @@ def bars(img):
     f = lambda v, n: round(v / n, 3) if v / n >= MIN_BAR else 0.0
     return f(t, h), f(b, h), f(l, w), f(r, w)
 
+STANDIN = (120, 90)   # YouTube's grey stand-in for a private or deleted video, sent with a 404 (a real mqdefault is 320x180)
+class Standin(Exception): pass
+
 def measure(vid):
-    data = urllib.request.urlopen(f'https://img.youtube.com/vi/{vid}/mqdefault.jpg', timeout=30).read()
-    t, b, l, r = bars(Image.open(io.BytesIO(data)))
+    try: data = urllib.request.urlopen(f'https://img.youtube.com/vi/{vid}/mqdefault.jpg', timeout=30).read()
+    except urllib.error.HTTPError as e:
+        if e.code == 404: raise Standin()
+        raise
+    img = Image.open(io.BytesIO(data))
+    if img.size == STANDIN: raise Standin()
+    t, b, l, r = bars(img)
     vis_h, vis_w = 1 - t - b, 1 - l - r
     zoom = max(1 / vis_h, 1 / vis_w) if vis_h > 0 and vis_w > 0 else 1
     mode = 'none' if (t + b + l + r) == 0 else ('ambient' if zoom >= AMBIENT_AT else 'zoom')
@@ -88,6 +98,7 @@ def main():
     entries = {}
     for vid, title in vids:
         try: entries[vid] = measure(vid)
+        except Standin: print(f'  SKIP   {title} ({vid}): YouTube serves its stand-in thumbnail, so the video is private or deleted; no crop recorded')
         except Exception as e: print(f'  {title}: thumbnail could not be read ({e})'); entries[vid] = {'t': 0.0, 'b': 0.0, 'l': 0.0, 'r': 0.0, 'mode': 'none'}
     old = {}
     if os.path.exists(OUT):
