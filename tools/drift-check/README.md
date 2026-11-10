@@ -27,6 +27,7 @@ What it compares
 - `siteConfig/pageMeta` overrides vs the static title/description they replace
 - pre-push guard: uncommitted HTML/JS/CSS changes without a `CACHE_NAME` bump in sw.js
 - search index: `assets/js/jesta-search-index.js` equals a fresh build by `tools/search-index/build.js` (releases, lyrics, entities, merch, videos; blog posts are read live by the search instead)
+- video thumbnails: every published video has a crop entry in `assets/data/video-thumb-crops.json`; a video whose YouTube thumbnail is the grey stand-in (404) is named as private or deleted (WARN)
 
 Known intentional differences it does not flag: radio counts (35 albums / 24 artists) vs
 catalog counts (37 releases / 27 entities); Revolution Epilogue and Sleep Cycle absent from R2.
