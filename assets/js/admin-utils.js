@@ -99,8 +99,8 @@
           });
           item.appendChild(dlBtn);
         }).catch(function (err) {
-          console.warn('[__adminUtils] compressImage failed — original file should be used:', err);
-          statusSpan.textContent = 'compression failed \u2014 use original file';
+          console.warn('[__adminUtils] compressImage failed, original file should be used:', err);
+          statusSpan.textContent = 'compression failed, use original file';
           statusSpan.style.color = 'rgba(251,56,56,0.6)';
         });
       });
@@ -135,7 +135,7 @@ window.__adminUtils.buildPhotoZipWidget = function(opts){
   inp.addEventListener('change', function(){
     var files=[].slice.call(inp.files); rows.innerHTML=''; dl.innerHTML='';
     if(!files.length) return;
-    if(typeof JSZip==='undefined'){ status.textContent='ZIP library not loaded — refresh admin and retry.'; return; }
+    if(typeof JSZip==='undefined'){ status.textContent='ZIP library not loaded. Refresh admin and retry.'; return; }
     var zip=new JSZip(), pf=zip.folder('photos'), pt=zip.folder('thumbs'), i=0, ok=0, failed=0;
     status.textContent='Processing 0/'+files.length+'…';
     function nextFile(){
@@ -146,11 +146,11 @@ window.__adminUtils.buildPhotoZipWidget = function(opts){
         pf.file(outName,b[0]); pt.file(outName,b[1]); ok++;
         onDownload(outName);
         var r=document.createElement('div'); r.style.cssText='font-size:13px;opacity:.85';
-        r.textContent=outName+' — '+Math.round(file.size/1024)+'KB → full '+Math.round(b[0].size/1024)+'KB · thumb '+Math.round(b[1].size/1024)+'KB';
+        r.textContent=outName+' · '+Math.round(file.size/1024)+'KB → full '+Math.round(b[0].size/1024)+'KB · thumb '+Math.round(b[1].size/1024)+'KB';
         rows.appendChild(r);
       }).catch(function(){
         failed++; var r=document.createElement('div'); r.style.cssText='font-size:13px;color:#FB3838';
-        r.textContent=file.name+' — could not read (HEIC/RAW? export to JPEG first)'; rows.appendChild(r);
+        r.textContent=file.name+': could not read (HEIC/RAW? export to JPEG first)'; rows.appendChild(r);
       }).then(function(){ status.textContent='Processing '+(ok+failed)+'/'+files.length+'…'; nextFile(); });
     }
     function finish(){
