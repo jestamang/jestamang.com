@@ -24,6 +24,25 @@ service cloud.firestore {
       return isMember() && request.auth.uid == uid;
     }
 
+    // Display names reserved for the admin account. "Jestamang" in any case, with spaces,
+    // punctuation, look-alike digits or a dropped letter is caught on the squashed name; the
+    // words admin / administrator / moderator / official only as whole words, so a name like
+    // "Brad Minor" (squashed: "bradminor") is not caught by accident.
+    function squashName(s) {
+      return s.lower().replace('[^a-z0-9]', '')
+              .replace('3', 'e').replace('4', 'a').replace('0', 'o')
+              .replace('1', 'i').replace('5', 's').replace('7', 't');
+    }
+    function reservedName(s) {
+      return squashName(s).matches('.*(jestaman|jstamang|jestmang|jestamng|jestamag).*')
+          || s.lower().matches('(.*[^a-z])?(admin|administrator|moderator|official)([^a-z].*)?');
+    }
+    function nameAllowed(n) {
+      // the name is checked first, so an ordinary name never reaches isAdmin() (an anonymous
+      // guest has no email in its token)
+      return (n is string && !reservedName(n)) || isAdmin();
+    }
+
     // ── ADMIN WILDCARD — full access to everything ────────────────────────
     match /{document=**} {
       allow read, write: if isAdmin();
@@ -106,6 +125,7 @@ service cloud.firestore {
                     && request.resource.data.score >= 0
                     && request.resource.data.score <= 10000000
                     && request.resource.data.uid == request.auth.uid
+                    && nameAllowed(request.resource.data.name)
                     && request.resource.data.timestamp == request.time
                     && (!('photoURL' in request.resource.data)
                         || request.resource.data.photoURL == null
@@ -129,7 +149,25 @@ service cloud.firestore {
     // ── COMMENTS ─────────────────────────────────────────────────────────────
     match /comments/{commentId} {
       allow read:   if true;
-      allow create: if isMember();
+      // A member writes only their own comment (userId must be the caller), in the shape blog.html
+      // writes, under a name not reserved for the admin account; only the admin may mark one official.
+      allow create: if isMember()
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.keys().hasOnly(['userId','username','photoURL','postId','text','timestamp','official'])
+                    && request.resource.data.keys().hasAll(['userId','username','postId','text','timestamp'])
+                    && request.resource.data.text is string
+                    && request.resource.data.text.size() >= 1
+                    && request.resource.data.text.size() <= 1000
+                    && request.resource.data.username is string
+                    && request.resource.data.username.size() <= 60
+                    && nameAllowed(request.resource.data.username)
+                    && request.resource.data.postId is string
+                    && request.resource.data.postId.size() <= 120
+                    && (!('photoURL' in request.resource.data)
+                        || request.resource.data.photoURL == null
+                        || (request.resource.data.photoURL is string && request.resource.data.photoURL.size() <= 150000))
+                    && (!('official' in request.resource.data) || (isAdmin() && request.resource.data.official == true))
+                    && request.resource.data.timestamp == request.time;
       allow update: if false;
       allow delete: if isOwner(resource.data.userId) || isAdmin();
     }
@@ -170,13 +208,15 @@ service cloud.firestore {
       allow read:   if isMember();
       allow create: if isMember()
                     && request.resource.data.uid == request.auth.uid
-                    && request.resource.data.keys().hasOnly(['uid','name','photo','text','ts'])
+                    && request.resource.data.keys().hasOnly(['uid','name','photo','text','ts','official'])
                     && request.resource.data.keys().hasAll(['uid','name','text','ts'])
                     && request.resource.data.text is string
                     && request.resource.data.text.size() >= 1
                     && request.resource.data.text.size() <= 500
                     && request.resource.data.name is string
                     && request.resource.data.name.size() <= 60
+                    && nameAllowed(request.resource.data.name)
+                    && (!('official' in request.resource.data) || (isAdmin() && request.resource.data.official == true))
                     && (!('photo' in request.resource.data)
                         || (request.resource.data.photo is string && request.resource.data.photo.size() <= 150000))
                     && request.resource.data.ts == request.time;
@@ -187,8 +227,19 @@ service cloud.firestore {
 
     // ── USERS ────────────────────────────────────────────────────────────────
     match /users/{userId} {
-      allow read:  if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId) || isAdmin();
+      allow read:   if isOwner(userId) || isAdmin();
+      // The profile username (shown in chat) may not be one reserved for the admin account. It is
+      // checked only when it changes, so a member who already has such a name can still update the
+      // rest of their profile.
+      allow create: if isAdmin()
+                    || (isOwner(userId)
+                        && (!('username' in request.resource.data) || nameAllowed(request.resource.data.username)));
+      allow update: if isAdmin()
+                    || (isOwner(userId)
+                        && (!('username' in request.resource.data)
+                            || request.resource.data.username == resource.data.get('username', null)
+                            || nameAllowed(request.resource.data.username)));
+      allow delete: if isOwner(userId) || isAdmin();
     }
 
     match /users/{userId}/natalChart/{docId} {
@@ -207,6 +258,7 @@ service cloud.firestore {
                     && request.resource.data.keys().hasAll(['planets','name','sharedAt'])
                     && request.resource.data.name is string
                     && request.resource.data.name.size() <= 60
+                    && nameAllowed(request.resource.data.name)
                     && request.resource.data.sharedAt == request.time;
       allow delete: if isOwner(userId) || isAdmin();
     }
