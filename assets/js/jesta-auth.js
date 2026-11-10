@@ -170,8 +170,28 @@
 
   // Reject blank/whitespace-only or digits-and-spaces-only auth displayNames (e.g. "141 711")
   // so they fall through the caller's || chain instead of being saved as a username.
-  function usableName(n){ n=(n||'').trim(); if(!n) return ''; if(/^[0-9 ]+$/.test(n)) return ''; return n; }
+  // With a user, a name reserved for the admin account is also rejected unless that user is the admin,
+  // so it falls through to the caller's fallback (the rules would refuse the write).
+  function usableName(n, user){ n=(n||'').trim(); if(!n) return ''; if(/^[0-9 ]+$/.test(n)) return ''; if(user !== undefined && reservedFor(n, user)) return ''; return n; }
   window.jestaUsableName = usableName;
+
+  // ── Names reserved for the admin account ──────────────────────
+  // Mirrors reservedName() in firestore.rules, so a page can say "That name is reserved" before
+  // writing instead of failing on the rules. Keep the two in step.
+  function isAdminUser(user){ return !!(user && user.email === 'thejestamang@gmail.com'); }
+  function squashName(s){
+    return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+      .replace(/3/g, 'e').replace(/4/g, 'a').replace(/0/g, 'o')
+      .replace(/1/g, 'i').replace(/5/g, 's').replace(/7/g, 't');
+  }
+  function reservedName(s){
+    return /(jestaman|jstamang|jestmang|jestamng|jestamag)/.test(squashName(s))
+        || /(^|[^a-z])(admin|administrator|moderator|official)([^a-z]|$)/.test(String(s || '').toLowerCase());
+  }
+  // true when the name is reserved and this user is not the admin
+  function reservedFor(n, user){ return reservedName(n) && !isAdminUser(user); }
+  window.jestaIsAdmin = isAdminUser;
+  window.jestaReservedName = reservedFor;
 
   // ── Nav badges ────────────────────────────────────────────────
   var _badgeUnsub = null;
