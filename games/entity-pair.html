@@ -746,7 +746,7 @@ if(kind==='saving'){if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent=
 if(ns)ns.disabled=false;
 if(kind==='ok'){if(st)st.textContent='';if(_lbFromModal){_lbFromModal=false;if(nm)nm.classList.remove('lb-open');openLB(_score);}return;}
 var txt=String((e&&e.code)||'')+' '+String((e&&e.message)||'');
-var msg=/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED. SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED. SIGNAL LOST, TRY AGAIN';
+var msg=kind==='reserved'?'THAT NAME IS RESERVED. CHOOSE ANOTHER':/permission|unauthenticated/i.test(txt)?'SCORE NOT SAVED. SIGN IN TO MARK THE SCROLLS':'SCORE NOT SAVED. SIGNAL LOST, TRY AGAIN';
 if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=msg;}
 if(nm&&!nm.classList.contains('lb-open'))nm.classList.add('lb-open');
 }
@@ -763,6 +763,7 @@ function saveScore(name,score){
   try{var pb=JSON.parse(localStorage.getItem(pbKey)||'null');if(!pb||ps>pb.score){localStorage.setItem(pbKey,JSON.stringify({score:ps,date:new Date().toISOString()}));}}catch(e){}
   var uid=null,photoURL=null;
   try{if(window.jestaAuth&&window.jestaAuth.currentUser){uid=window.jestaAuth.currentUser.uid;photoURL=window.jestaAuth.currentUser.photoURL||null;}}catch(e){}
+  if(window.jestaReservedName&&jestaReservedName(san(name)||'Unknown',window.jestaAuth&&window.jestaAuth.currentUser)){_docId=null;lbSaveStatus('reserved');return;} /* the rules refuse a name reserved for the admin account */
   return db.collection('leaderboards').add({
     game:gameId(),name:san(name)||'Unknown',score:ps,
     uid:uid,photoURL:photoURL,

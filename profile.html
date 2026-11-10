@@ -3585,6 +3585,11 @@ document.addEventListener('DOMContentLoaded', function(){
       statusEl.textContent = 'Name is required.';
       return;
     }
+    /* checked only when the name changes, as the rules do */
+    if(usernameVal !== (dossierData.username || '') && window.jestaReservedName && jestaReservedName(usernameVal, currentUser)){
+      statusEl.textContent = 'That name is reserved.';
+      return;
+    }
     var newData = {
       username:       usernameVal,
       dateOfBirth:    document.getElementById('f-dob').value,
@@ -3634,6 +3639,10 @@ document.addEventListener('DOMContentLoaded', function(){
     var val = document.getElementById('username-input').value.trim();
     var usernameStatusEl = document.getElementById('username-save-status');
     if(!val) return;
+    if(val !== (dossierData.username || '') && window.jestaReservedName && jestaReservedName(val, currentUser)){
+      if(usernameStatusEl){ usernameStatusEl.textContent = 'That name is reserved.'; usernameStatusEl.style.color = 'rgba(251,56,56,0.8)'; }
+      return;
+    }
     var saveBtn = document.getElementById('username-save-btn');
     saveBtn.disabled = true;
     saveBtn.textContent = '...';
@@ -4486,6 +4495,7 @@ document.addEventListener('DOMContentLoaded', function(){
     PUBLIC_CHART_FIELDS.forEach(function(k){ if (savedNatalChart[k] !== undefined && savedNatalChart[k] !== null) pub[k] = savedNatalChart[k]; });
     var nameEl = document.getElementById('nr-name');
     pub.name = ((nameEl && nameEl.textContent.trim()) || 'Inner Circle Member').slice(0, 60);
+    if (window.jestaReservedName && jestaReservedName(pub.name, currentUser)) pub.name = 'Inner Circle Member'; /* a name saved before the rule */
     pub.sharedAt = firebase.firestore.FieldValue.serverTimestamp();
     btn.disabled = true;
     firebase.firestore().collection('publicCharts').doc(currentUser.uid).set(pub).then(function(){

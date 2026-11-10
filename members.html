@@ -491,6 +491,7 @@ body::before{
   color:rgba(var(--gold-rgb,201,168,76),0.78);
 }
 .chat-msg--me .chat-name{color:rgba(160,100,255,0.85);}
+.chat-official{padding:1px 6px;border:1px solid rgba(201,168,76,0.6);border-radius:3px;color:#c9a84c;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;}
 .chat-time{
   font-family:'Luminari',serif;
   font-size:0.6rem;
@@ -1009,7 +1010,13 @@ document.addEventListener('DOMContentLoaded', function(){
     function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
     /* Personalized greeting */
-    var fallback = (window.jestaUsableName ? jestaUsableName(user.displayName) : user.displayName) || 'Inner Circle Member'; /* never the email prefix: the name goes into chat messages */
+    var fallback = (window.jestaUsableName ? jestaUsableName(user.displayName, user) : user.displayName) || 'Inner Circle Member'; /* never the email prefix: the name goes into chat messages */
+    /* the name a chat message carries: one reserved for the admin account (a profile name saved before
+       the rule) falls back, and it is cut to the 60 characters the rules allow */
+    function chatName(n){
+      if(window.jestaReservedName && jestaReservedName(n, user)) n = 'Inner Circle Member';
+      return Array.from(String(n||'Inner Circle Member')).slice(0,60).join('');
+    }
     db.collection('users').doc(user.uid).get()
       .then(function(doc){
         if(doc.exists){
@@ -1019,7 +1026,7 @@ document.addEventListener('DOMContentLoaded', function(){
         } else {
           currentUserPhoto = user.photoURL || '/assets/homepage/jesta jr.jpg';
         }
-        currentName = fallback;
+        currentName = chatName(fallback);
         document.getElementById('hero-name').textContent =
           'Jestamang sees you, '+fallback+'.';
         initChat();
@@ -1027,7 +1034,7 @@ document.addEventListener('DOMContentLoaded', function(){
       })
       .catch(function(){
         currentUserPhoto = user.photoURL || '/assets/homepage/jesta jr.jpg';
-        currentName = fallback;
+        currentName = chatName(fallback);
         document.getElementById('hero-name').textContent =
           'Jestamang sees you, '+fallback+'.';
         initChat();
@@ -1069,13 +1076,15 @@ document.addEventListener('DOMContentLoaded', function(){
       sendBtn.disabled = true;
       if(chatStatusEl){ chatStatusEl.textContent = 'Sending...'; chatStatusEl.className = 'status-msg'; }
       /* the box is cleared only once the write has succeeded, so a failed send keeps the message */
-      db.collection('innerCircleChat').add({
+      var msg = {
         uid:  currentUser.uid,
         name: currentName,
         photo: currentUserPhoto,
         text: text,
         ts:   firebase.firestore.FieldValue.serverTimestamp()
-      }).then(function(){
+      };
+      if(window.jestaIsAdmin && jestaIsAdmin(currentUser)) msg.official = true;
+      db.collection('innerCircleChat').add(msg).then(function(){
         sendBtn.disabled = false;
         if(chatStatusEl){ chatStatusEl.textContent = ''; }
         if(input.value.trim() === text){ input.value = ''; autoResize(); }
@@ -1153,6 +1162,7 @@ document.addEventListener('DOMContentLoaded', function(){
           (canDel ? '<button class="chat-del-btn'+(isAdmin&&!isMe?' admin-del':'')+'" title="Delete message" aria-label="Delete message">&#215;</button>' : '')+
           '<div class="chat-meta">'+
             '<span class="chat-name">'+esc(d.name||'Unknown')+'</span>'+
+            (d.official===true ? '<span class="chat-official">\u2726 Official</span>' : '')+
             '<span class="chat-time">'+timeStr+'</span>'+
           '</div>'+
           '<div class="chat-text">'+esc(d.text||'')+'</div>'+

@@ -549,18 +549,24 @@ window.submitScore=function(game,score,lowerBetter,cb,extra){
     var _uid=null,_photo=null;try{var _cu=window.firebase&&window.firebase.auth&&window.firebase.auth().currentUser;if(_cu){_uid=_cu.uid||null;_photo=_cu.photoURL||null;}}catch(e){}
     var _rec={game:game,name:_san(name),score:score,uid:_uid,photoURL:_photo,timestamp:window.firebase.firestore.FieldValue.serverTimestamp()};
     if(extra){for(var _k in extra){if(Object.prototype.hasOwnProperty.call(extra,_k)&&_k!=='game'&&_k!=='score'&&_k!=='name'&&_k!=='uid'&&_k!=='photoURL'&&_k!=='timestamp')_rec[_k]=extra[_k];}}
+    if(window.jestaReservedName&&jestaReservedName(_rec.name,window.firebase.auth().currentUser)){lbSaveStatus('reserved');return;} /* the rules refuse a name reserved for the admin account; the box stays open for another */
     db.collection('leaderboards').add(_rec)
       .then(function(){lbSaveStatus('ok');if(cb)cb();}).catch(function(e){console.warn('lb:',e);lbSaveStatus('fail',e);if(cb)cb();});
   }
-  try{var auth=window.firebase&&window.firebase.auth&&window.firebase.auth();if(auth&&auth.currentUser&&auth.currentUser.displayName){doSave(auth.currentUser.displayName);return;}}catch(e){}
+  var _nameReserved=false;
+  try{var auth=window.firebase&&window.firebase.auth&&window.firebase.auth();if(auth&&auth.currentUser&&auth.currentUser.displayName){
+    /* a sign-in name reserved for the admin account opens the name box instead */
+    if(!(window.jestaReservedName&&jestaReservedName(_san(auth.currentUser.displayName),auth.currentUser))){doSave(auth.currentUser.displayName);return;}
+    _nameReserved=true;}}catch(e){}
   var nm=document.getElementById('lb-name-modal');var inp=document.getElementById('lb-name-inp');
   nm.classList.add('open');inp.value='';setTimeout(function(){inp.focus();},100);
+  if(_nameReserved){var _st0=document.getElementById('lb-name-status');if(_st0){_st0.style.color='rgba(251,56,56,0.9)';_st0.textContent='That name is reserved. Choose another';}}
   function lbSaveStatus(kind,e){var st=document.getElementById('lb-name-status');var ok=document.getElementById('lb-name-confirm');var nm2=document.getElementById('lb-name-modal');
     if(kind==='saving'){if(st){st.style.color='rgba(201,168,76,0.7)';st.textContent='Sealing your score\u2026';}if(ok)ok.disabled=true;return;}
     if(ok)ok.disabled=false;
     if(kind==='ok'){if(st)st.textContent='';if(nm2)nm2.classList.remove('open');if(typeof inp!=='undefined'&&inp)cleanup();return;}
     var txt=String((e&&e.code)||'')+' '+String((e&&e.message)||'');
-    if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=/permission|unauthenticated/i.test(txt)?'Score not saved. Sign in to mark the scrolls':'Score not saved. Signal lost, try again';}
+    if(st){st.style.color='rgba(251,56,56,0.9)';st.textContent=kind==='reserved'?'That name is reserved. Choose another':/permission|unauthenticated/i.test(txt)?'Score not saved. Sign in to mark the scrolls':'Score not saved. Signal lost, try again';}
     if(nm2&&!nm2.classList.contains('open'))nm2.classList.add('open');}
   function doCancel(){nm.classList.remove('open');cleanup();if(cb)cb();}
   function doConfirm(){var n=inp.value.trim();if(!n){inp.focus();return;}lbSaveStatus('saving');doSave(n);}
