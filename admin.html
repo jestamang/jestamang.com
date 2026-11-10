@@ -610,13 +610,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
 
-      <label class="field-label" for="bp-subtitle">Subtitle / Byline <span style="color:rgba(201,168,76,0.3);font-size:0.58rem;">(optional — use \n for a line break, e.g. New Æon Summer Solstice Parade\nPorphigen)</span></label>
+      <label class="field-label" for="bp-subtitle">Subtitle / Byline <span style="color:rgba(201,168,76,0.3);font-size:0.58rem;">(optional, use \n for a line break, e.g. New Æon Summer Solstice Parade\nPorphigen)</span></label>
       <input class="field-input" id="bp-subtitle" type="text" placeholder="Author name, subtitle, or byline..." maxlength="200">
 
       <label class="field-label" for="bp-content">Content</label>
       <textarea class="field-input field-textarea" id="bp-content" placeholder="Write the transmission..." style="min-height:160px;" maxlength="100000"></textarea>
 
-      <label class="field-label" for="bp-excerpt">Excerpt (optional — auto-generated if blank)</label>
+      <label class="field-label" for="bp-excerpt">Excerpt (optional, auto-generated if blank)</label>
       <input class="field-input" id="bp-excerpt" type="text" placeholder="Short preview..." maxlength="200">
 
       <div class="btn-row">
@@ -637,8 +637,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
     <div class="adm-ornament">✦</div>
-    <div class="adm-section" id="sec-35"> <div class="adm-section-title">✦ Arcade</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Edit the Arcade's curated text — the header (title + subtitle) and each game's name, description, tag, and glyph. Blank = the hardcoded default stays (fallback-first). Leaderboards and play links are not editable here.</div> <div id="am-form"></div> </div>
-<div class="adm-section" id="sec-36"> <div class="adm-section-title">✦ Profile — Cosmic Signature</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Edit the shared Sun / Moon / Rising narrative templates shown on the natal chart. These are the same for every visitor with that sign — per-user birth data is not editable here. Blank a field (or restore it to the default text) to fall back to the hardcoded site default. Save writes a full snapshot; only genuine edits are stored.</div> <div id="pf-form"></div> </div>
+    <div class="adm-section" id="sec-35"> <div class="adm-section-title">✦ Arcade</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Edit the Arcade's curated text: the header (title + subtitle) and each game's name, description, tag, and glyph. Blank = the hardcoded default stays (fallback-first). Leaderboards and play links are not editable here.</div> <div id="am-form"></div> </div>
+<div class="adm-section" id="sec-36"> <div class="adm-section-title">✦ Profile · Cosmic Signature</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Edit the shared Sun / Moon / Rising narrative templates shown on the natal chart. These are the same for every visitor with that sign; per-user birth data is not editable here. Blank a field (or restore it to the default text) to fall back to the hardcoded site default. Save writes a full snapshot; only genuine edits are stored.</div> <div id="pf-form"></div> </div>
 <div class="adm-section" id="sec-38"> <div class="adm-section-title">✦ Search Copy</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">The words in the sitewide search overlay. Leave a field blank to use the built-in text shown as its placeholder. Saves to siteConfig/searchCopy; every page picks it up on its next load.</div>
       <label class="field-label" for="scp-placeholder">Box placeholder</label>
       <input class="field-input" id="scp-placeholder" type="text" maxlength="80" placeholder="Search the Jestamang universe">
@@ -654,8 +654,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="status-msg" id="scp-status"></div>
     </div>
 <div class="adm-section" id="sec-37"> <div class="adm-section-title">✦ Comix</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Edit the Comix cover's title and subtitle. Blank a field (or restore the default text) to fall back to the hardcoded site default. The comic's pages, count, and order are positional (assets/comix/N.jpg) and are not editable here. Changing those is a code change.</div> <div id="cx-form"></div> </div>
-<div class="adm-section" id="sec-34"> <div class="adm-section-title">✦ Radio</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Edit the Listening Chamber's curated text — heading, subtitle, and the Station / Frequency / Albums / Entities / Shows panels. Blank = the hardcoded default stays (fallback-first). The music, Elsewhere links, email signup, and live Shows data are managed elsewhere.</div> <div id="rm-form"></div> </div>
-<div class="adm-section" id="sec-33"> <div class="adm-section-title">✦ Page Metadata</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Override the browser-tab title and meta description per page. Blank = the hardcoded default stays (fallback-first). The tab title updates instantly; the description is picked up by Google when it re-renders. Social-share link previews (OG tags) are NOT affected by this — those need a code push.</div> <div id="pmeta-list"></div> </div>
+<div class="adm-section" id="sec-34"> <div class="adm-section-title">✦ Radio</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Edit the Listening Chamber's curated text: heading, subtitle, and the Station / Frequency / Albums / Entities / Shows panels. Blank = the hardcoded default stays (fallback-first). The music, Elsewhere links, email signup, and live Shows data are managed elsewhere.</div> <div id="rm-form"></div> </div>
+<div class="adm-section" id="sec-33"> <div class="adm-section-title">✦ Page Metadata</div> <div class="adm-section-underline"></div> <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:20px;">Override the browser-tab title and meta description per page. Blank = the hardcoded default stays (fallback-first). The tab title updates instantly; the description is picked up by Google when it re-renders. Social-share link previews (OG tags) are NOT affected by this; those need a code push.</div> <div id="pmeta-list"></div> </div>
 <div class="adm-section" id="sec-32">
       <div class="adm-section-title">✦ Index</div>
       <div class="adm-section-underline"></div>
@@ -848,7 +848,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="adm-section" id="sec-30">
       <div class="adm-section-title">✦ Caption Editor</div>
       <div class="adm-section-underline"></div>
-      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:24px;">Edit visible text on any page and save it live — no code push needed.</div>
+      <div style="font-size:0.65rem;letter-spacing:0.18em;color:rgba(201,168,76,0.3);margin-bottom:24px;">Edit visible text on any page and save it live, no code push needed.</div>
       <div class="lym-form-grid" style="gap:0 20px;margin-bottom:16px;">
         <div>
           <label class="field-label" for="cap-page">Page</label>
@@ -1067,7 +1067,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <label class="field-label" for="pm-title">Article Title</label>
       <input class="field-input" id="pm-title" type="text" placeholder="Jestamang Defies Genre on New Release" maxlength="160">
 
-      <label class="field-label" for="pm-caption">Caption / Subtitle <span style="color:rgba(201,168,76,0.3);font-size:0.58rem;">(optional — use \n for a line break)</span></label>
+      <label class="field-label" for="pm-caption">Caption / Subtitle <span style="color:rgba(201,168,76,0.3);font-size:0.58rem;">(optional, use \n for a line break)</span></label>
       <input class="field-input" id="pm-caption" type="text" placeholder="A short subtitle or context line..." maxlength="200">
 
       <div class="form-grid">
@@ -1097,7 +1097,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
       <label class="radio-label" style="margin-top:16px;gap:10px;">
         <input type="checkbox" id="pm-featured" style="accent-color:#c9a84c;width:15px;height:15px;" aria-label="Mark as featured">
-        <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.85);">Pin to top — featured articles show above the See-All fold</span>
+        <span style="font-size:0.68rem;letter-spacing:0.1em;color:rgba(240,230,210,0.85);">Pin to top: featured articles show above the See-All fold</span>
       </label>
 
       <div style="display:flex;gap:10px;">
@@ -1159,7 +1159,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <label class="field-label" for="treat-url">URL / Link <span style="color:rgba(201,168,76,0.3);font-size:0.58rem;">(not needed for Photo type)</span></label>
         <input class="field-input" id="treat-url" type="text" placeholder="photos.html or https://..." maxlength="500">
 
-        <label class="field-label" for="treat-photos" style="margin-top:14px;">Photo URLs / Paths <span style="color:rgba(201,168,76,0.3);font-size:0.58rem;">(one per line — photo type only)</span></label>
+        <label class="field-label" for="treat-photos" style="margin-top:14px;">Photo URLs / Paths <span style="color:rgba(201,168,76,0.3);font-size:0.58rem;">(one per line, photo type only)</span></label>
         <textarea class="field-input field-textarea" id="treat-photos" rows="5" maxlength="5000" placeholder="One image URL or path per line&#10;e.g. assets/photos/exclusive/bts1.jpg&#10;or a full https:// URL"></textarea>
 
         <label class="field-label" for="treat-icon">Icon</label>
@@ -2483,8 +2483,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       {k:'btnUrl', ph:'Tickets URL (https://…)', w:'100%', max:400},
       {k:'viewall', ph:'View all appearances →', w:'260px'}
     ]},
-    'entities': { label:'Featured grid — 8 slots (name + image path) + button', fields:[
-      {k:'ent0name', ph:'The Ace of Chase', w:'200px'}, {k:'ent0img', ph:'image path 1 — blank = keep', w:'100%', max:200},
+    'entities': { label:'Featured grid: 8 slots (name + image path) + button', fields:[
+      {k:'ent0name', ph:'The Ace of Chase', w:'200px'}, {k:'ent0img', ph:'image path 1 (blank = keep)', w:'100%', max:200},
       {k:'ent1name', ph:'Israel', w:'200px'}, {k:'ent1img', ph:'image path 2', w:'100%', max:200},
       {k:'ent2name', ph:'Caleb Mars', w:'200px'}, {k:'ent2img', ph:'image path 3', w:'100%', max:200},
       {k:'ent3name', ph:'Kek-Buh', w:'200px'}, {k:'ent3img', ph:'image path 4', w:'100%', max:200},
@@ -2494,8 +2494,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       {k:'ent7name', ph:'Cricket Om', w:'200px'}, {k:'ent7img', ph:'image path 8', w:'100%', max:200},
       {k:'cta', ph:'Enter (button label)', w:'200px'}
     ]},
-    'albums': { label:'Featured strip — 8 cards (title + image path) + button', fields:[
-      {k:'alb0name', ph:'Jestress Melody', w:'200px'}, {k:'alb0img', ph:'image path 1 — blank = keep', w:'100%', max:200},
+    'albums': { label:'Featured strip: 8 cards (title + image path) + button', fields:[
+      {k:'alb0name', ph:'Jestress Melody', w:'200px'}, {k:'alb0img', ph:'image path 1 (blank = keep)', w:'100%', max:200},
       {k:'alb1name', ph:'Niga Denots', w:'200px'}, {k:'alb1img', ph:'image path 2', w:'100%', max:200},
       {k:'alb2name', ph:'New Æon', w:'200px'}, {k:'alb2img', ph:'image path 3', w:'100%', max:200},
       {k:'alb3name', ph:'Zodiac', w:'200px'}, {k:'alb3img', ph:'image path 4', w:'100%', max:200},
@@ -2505,8 +2505,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       {k:'alb7name', ph:'Ode to Bonnie', w:'200px'}, {k:'alb7img', ph:'image path 8', w:'100%', max:200},
       {k:'cta', ph:'Enter (button label)', w:'200px'}
     ]},
-    'comix': { label:'Preview strip — 6 page images + button', fields:[
-      {k:'img0', ph:'page image 1 — blank = keep (e.g. assets/comix/1.jpg)', w:'100%', max:200},
+    'comix': { label:'Preview strip: 6 page images + button', fields:[
+      {k:'img0', ph:'page image 1 (blank = keep, e.g. assets/comix/1.jpg)', w:'100%', max:200},
       {k:'img1', ph:'page image 2', w:'100%', max:200},
       {k:'img2', ph:'page image 3', w:'100%', max:200},
       {k:'img3', ph:'page image 4', w:'100%', max:200},
@@ -2514,8 +2514,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       {k:'img5', ph:'page image 6', w:'100%', max:200},
       {k:'cta', ph:'Enter (button label)', w:'200px'}
     ]},
-    'games': { label:'Games list — 9 entries (name + glyph + link) + button', fields:[
-      {k:'game0name', ph:'The Daily Sigil', w:'180px'}, {k:'game0glyph', ph:'☀︎', w:'60px', max:8}, {k:'game0link', ph:'link 1 — blank = keep', w:'100%', max:120},
+    'games': { label:'Games list: 9 entries (name + glyph + link) + button', fields:[
+      {k:'game0name', ph:'The Daily Sigil', w:'180px'}, {k:'game0glyph', ph:'☀︎', w:'60px', max:8}, {k:'game0link', ph:'link 1 (blank = keep)', w:'100%', max:120},
       {k:'game1name', ph:'Memory Vault', w:'180px'}, {k:'game1glyph', ph:'꩜', w:'60px', max:8}, {k:'game1link', ph:'link 2', w:'100%', max:120},
       {k:'game2name', ph:'Chord Conjurer', w:'180px'}, {k:'game2glyph', ph:'𝄞', w:'60px', max:8}, {k:'game2link', ph:'link 3', w:'100%', max:120},
       {k:'game3name', ph:'Pitch Oracle', w:'180px'}, {k:'game3glyph', ph:'♩', w:'60px', max:8}, {k:'game3link', ph:'link 4', w:'100%', max:120},
@@ -2526,8 +2526,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       {k:'game8name', ph:'Entity Pair', w:'180px'}, {k:'game8glyph', ph:'⊕', w:'60px', max:8}, {k:'game8link', ph:'link 9', w:'100%', max:120},
       {k:'cta', ph:'Enter (button label)', w:'200px'}
     ]},
-    'merch': { label:'Featured items — 9 (name + price + image path) + button', fields:[
-      {k:'m0name', ph:'Zodiac Cassette', w:'200px'}, {k:'m0price', ph:'$25', w:'90px'}, {k:'m0img', ph:'image path 1 — blank = keep', w:'100%', max:200},
+    'merch': { label:'Featured items: 9 (name + price + image path) + button', fields:[
+      {k:'m0name', ph:'Zodiac Cassette', w:'200px'}, {k:'m0price', ph:'$25', w:'90px'}, {k:'m0img', ph:'image path 1 (blank = keep)', w:'100%', max:200},
       {k:'m1name', ph:'New Aeon Cassette', w:'200px'}, {k:'m1price', ph:'$25', w:'90px'}, {k:'m1img', ph:'image path 2', w:'100%', max:200},
       {k:'m2name', ph:'Niga Denots Cassette', w:'200px'}, {k:'m2price', ph:'$25', w:'90px'}, {k:'m2img', ph:'image path 3', w:'100%', max:200},
       {k:'m3name', ph:'Jestress Melody Cassette', w:'200px'}, {k:'m3price', ph:'$25', w:'90px'}, {k:'m3img', ph:'image path 4', w:'100%', max:200},
@@ -2541,7 +2541,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     'blog': { label:'Featured post preview + button', fields:[
       {k:'date', ph:'July 18, 2024', w:'200px'},
       {k:'posttitle', ph:'The Prickly Being (post title)', w:'280px'},
-      {k:'excerpt', ph:'Excerpt — blank = keep', w:'100%', max:400},
+      {k:'excerpt', ph:'Excerpt (blank = keep)', w:'100%', max:400},
       {k:'cta', ph:'Enter (button label)', w:'200px'}
     ]},
     'photos': { label:'Button (grid is managed in Photos admin + rotates daily)', fields:[
@@ -2668,7 +2668,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   function initArcadeManager() {
     var ARC_HEADER = { title:'Arcade', sub:'Games forged in the Jestamang universe.\nPlay at your own risk.' };
     var ARC_GAMES = [
-      {href:'game-oracle.html', name:'The Daily Sigil', desc:'One draw. One reading. The cosmos speaks — if you are willing to listen.', tag:'DIVINATION', glyph:'☀︎'},
+      {href:'game-oracle.html', name:'The Daily Sigil', desc:'One draw. One reading. The cosmos speaks, if you are willing to listen.', tag:'DIVINATION', glyph:'☀︎'},
       {href:'game-memory.html', name:'Memory Vault', desc:'Flip the cards. Match the albums. Eight pairs stand between you and the vault.', tag:'MEMORY', glyph:'꩜'},
       {href:'games/chord-conjurer.html', name:'Chord Conjurer', desc:'Build chords from sacred intervals. Learn the architecture of harmony.', tag:'THEORY', glyph:'<span class="glyph-clef">𝄞</span>'},
       {href:'games/harmony-oracle.html', name:'Harmony Oracle', desc:'Identify consonance, tonality, chord progressions, and full harmonic analysis. Four levels of harmonic depth.', tag:'THEORY', glyph:'<span class="glyph-natural">♮</span>'},
@@ -2714,18 +2714,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var _amGuard = window.jestaLoadGuard('am-form', 'arcade', 'ARCADE TEXT'), _gcGuard = window.jestaLoadGuard('am-form', 'gamecontent', 'GAME PAGE TEXT'), _pnGuard = window.jestaLoadGuard('am-form', 'pitchnotes', 'PITCH NOTE TEXT');
     var NOTE_ORDER=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
     var NOTE_DESC_DEFAULTS={
-      'C':'The tonic — foundation of Western harmony. C major is the first scale most students learn.',
+      'C':'The tonic, foundation of Western harmony. C major is the first scale most students learn.',
       'C#':'A half-step above C. Adds darkness and jazz colour. Enharmonic with D♭.',
       'D':'Bright and resonant. D major carries a heroic, triumphant character.',
-      'D#':'Warm and expressive. The minor third of C — at the heart of minor harmony. Enharmonic with E♭.',
+      'D#':'Warm and expressive. The minor third of C, at the heart of minor harmony. Enharmonic with E♭.',
       'E':'Warm and intimate. The major third of C, defining the brightness of C major.',
-      'F':'The subdominant of C — a pivotal note in harmony, pulling gently toward resolution.',
-      'F#':'The tritone from C — the most dissonant interval in Western music. Enharmonic with G♭.',
-      'G':'The dominant — strong and resolving. Melody naturally wants to return home from here.',
+      'F':'The subdominant of C, a pivotal note in harmony, pulling gently toward resolution.',
+      'F#':'The tritone from C, the most dissonant interval in Western music. Enharmonic with G♭.',
+      'G':'The dominant, strong and resolving. Melody naturally wants to return home from here.',
       'G#':'Lush and bittersweet. The minor sixth above C. Common in romantic and jazz idioms. Enharmonic with A♭.',
-      'A':'A440 — the universal tuning standard. Every orchestra in the world tunes to this pitch.',
+      'A':'A440, the universal tuning standard. Every orchestra in the world tunes to this pitch.',
       'A#':'An ornamental blues note. A half-step below the tonic B. Enharmonic with B♭.',
-      'B':'The leading tone — just a half-step below the octave, creating powerful upward pull.'
+      'B':'The leading tone, just a half-step below the octave, creating powerful upward pull.'
     };
     var _pnSaved={}, _pnEdit={};
     function pnCur(nt){ if(_pnEdit[nt]!=null) return _pnEdit[nt]; return (_pnSaved[nt]!=null&&(''+_pnSaved[nt]).trim())?_pnSaved[nt]:(NOTE_DESC_DEFAULTS[nt]||''); }
@@ -2941,46 +2941,46 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     var SIGNS=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
     var INTERP_DEFAULTS = {
     Sun:{
-      Aries:'You arrived here as a kind of detonation. The Sun in Aries marks the self that refuses to wait for permission — you ignite things simply by showing up. Your chart carries the frequency of the pioneer, the one who begins before the path is visible. The cosmos encoded in you a capacity for pure impulse that most people only dream about.',
-      Taurus:'The Sun in Taurus says this: you were built to last. While others scatter their energy across passing obsessions, yours consolidates — slowly, deliberately, with the patience of stone becoming mountain. You carry a deep understanding of pleasure and permanence. The material world is not a trap for you but a sacred territory, and you move through it with the authority of one who has never doubted that beauty is worth the work.',
-      Gemini:'The Sun in Gemini means you arrived with two minds and have been living between them ever since. You are not inconsistent — you are prismatic. Every situation refracts through you into its full spectrum of possibility, and your genius is in seeing all angles simultaneously. You were made for transmission: the exchange of ideas, the collision of thoughts, the electric pleasure of a conversation that shifts something.',
-      Cancer:'The Sun in Cancer places your identity in the deep waters — in feeling, in memory, in the sacred architecture of belonging. You are not fragile; you are profoundly permeable, and that is a different thing entirely. Your chart codes the lunar rhythm into your very sense of self: you ebb and flood with the tides of your interior life. Home is wherever you have decided to pour your care.',
-      Leo:'The Sun in Leo is the chart\'s solar signature at maximum brightness. You are not performing ego — you are enacting the principle of radiance itself. Something in you was built to be witnessed, to warm the people around you the way fire warms a room without losing any of itself. Your calling is to shine with such specificity that no one else could do it in your place.',
-      Virgo:'The Sun in Virgo hides its power in the details. You see what others miss, feel the disruption in what doesn\'t fit, understand that the sacred lives inside the precise. Your intelligence is not flashy — it is surgical, devoted, and more powerful for its restraint. The cosmos placed in your chart the frequency of discernment: the knowledge that some things must be refined endlessly before they are offered to the world.',
-      Libra:'The Sun in Libra means your identity is formed in the space between. Not inside you, but in the architecture of relationship — in how things calibrate against each other, how beauty is built from tension and balance held. You understand justice not as a concept but as an aesthetic: the universe should be elegant, and you spend your life making it so.',
-      Scorpio:'The Sun in Scorpio does not glow — it burns from the inside out. Your identity is forged in depth, in the places other people turn away from. You carry the occult frequency: a natural access to what is hidden, what is transforming, what refuses to be sanitized. You have always known that the surface of things is just the beginning of the story.',
-      Sagittarius:'The Sun in Sagittarius means you were assembled from arrows — aimed at horizons you cannot yet see. Your chart codes the philosopher and the nomad into the same body: one who must understand everything, go everywhere, stretch the container of what is possible. You carry the frequency of expansion, and wherever you go, you take the edge of the known world with you.',
-      Capricorn:'The Sun in Capricorn is the chart\'s most quietly ambitious signature. Your identity is built on the long game — on choosing difficulty deliberately, on earning what you claim. You understand that structure is not a prison but a form of respect: for the work, for the craft, for the people who will inherit what you build. The mountain does not move for you; you move the mountain.',
-      Aquarius:'The Sun in Aquarius arrived in this century as a frequency ahead of its time, as it always has. Your identity is organized around the deviation from pattern — the refusal to normalize what the collective has accepted too easily. You carry the signal of revolution inside you as a kind of background radiation, always slightly ahead of the frequency everyone else is on.',
-      Pisces:'The Sun in Pisces does not anchor — it dissolves. Your identity is oceanic: boundless, absorbing, carrying the sediment of every shore it has touched. You were built to transcend the ordinary categories of self, to access the current beneath consensus reality, to feel what others have filed away as unverifiable. The mystic and the artist in you are not two people; they are one frequency flowing through you.',
+      Aries:'You arrived here as a kind of detonation. The Sun in Aries marks the self that refuses to wait for permission. You ignite things simply by showing up. Your chart carries the frequency of the pioneer, the one who begins before the path is visible. The cosmos encoded in you a capacity for pure impulse that most people only dream about.',
+      Taurus:'The Sun in Taurus says this: you were built to last. While others scatter their energy across passing obsessions, yours consolidates, slowly, deliberately, with the patience of stone becoming mountain. You carry a deep understanding of pleasure and permanence. The material world is not a trap for you but a sacred territory, and you move through it with the authority of one who has never doubted that beauty is worth the work.',
+      Gemini:'The Sun in Gemini means you arrived with two minds and have been living between them ever since. You are not inconsistent. You are prismatic. Every situation refracts through you into its full spectrum of possibility, and your genius is in seeing all angles simultaneously. You were made for transmission: the exchange of ideas, the collision of thoughts, the electric pleasure of a conversation that shifts something.',
+      Cancer:'The Sun in Cancer places your identity in the deep waters, in feeling, in memory, in the sacred architecture of belonging. You are not fragile; you are profoundly permeable, and that is a different thing entirely. Your chart codes the lunar rhythm into your very sense of self: you ebb and flood with the tides of your interior life. Home is wherever you have decided to pour your care.',
+      Leo:'The Sun in Leo is the chart\'s solar signature at maximum brightness. You are not performing ego. You are enacting the principle of radiance itself. Something in you was built to be witnessed, to warm the people around you the way fire warms a room without losing any of itself. Your calling is to shine with such specificity that no one else could do it in your place.',
+      Virgo:'The Sun in Virgo hides its power in the details. You see what others miss, feel the disruption in what doesn\'t fit, understand that the sacred lives inside the precise. Your intelligence is not flashy. It is surgical, devoted, and more powerful for its restraint. The cosmos placed in your chart the frequency of discernment: the knowledge that some things must be refined endlessly before they are offered to the world.',
+      Libra:'The Sun in Libra means your identity is formed in the space between. Not inside you, but in the architecture of relationship, in how things calibrate against each other, how beauty is built from tension and balance held. You understand justice not as a concept but as an aesthetic: the universe should be elegant, and you spend your life making it so.',
+      Scorpio:'The Sun in Scorpio does not glow. It burns from the inside out. Your identity is forged in depth, in the places other people turn away from. You carry the occult frequency: a natural access to what is hidden, what is transforming, what refuses to be sanitized. You have always known that the surface of things is just the beginning of the story.',
+      Sagittarius:'The Sun in Sagittarius means you were assembled from arrows, aimed at horizons you cannot yet see. Your chart codes the philosopher and the nomad into the same body: one who must understand everything, go everywhere, stretch the container of what is possible. You carry the frequency of expansion, and wherever you go, you take the edge of the known world with you.',
+      Capricorn:'The Sun in Capricorn is the chart\'s most quietly ambitious signature. Your identity is built on the long game, on choosing difficulty deliberately, on earning what you claim. You understand that structure is not a prison but a form of respect: for the work, for the craft, for the people who will inherit what you build. The mountain does not move for you; you move the mountain.',
+      Aquarius:'The Sun in Aquarius arrived in this century as a frequency ahead of its time, as it always has. Your identity is organized around the deviation from pattern, the refusal to normalize what the collective has accepted too easily. You carry the signal of revolution inside you as a kind of background radiation, always slightly ahead of the frequency everyone else is on.',
+      Pisces:'The Sun in Pisces does not anchor. It dissolves. Your identity is oceanic: boundless, absorbing, carrying the sediment of every shore it has touched. You were built to transcend the ordinary categories of self, to access the current beneath consensus reality, to feel what others have filed away as unverifiable. The mystic and the artist in you are not two people; they are one frequency flowing through you.',
     },
     Moon:{
-      Aries:'The Moon in Aries means your emotional life moves at the speed of fire. You feel first, process later — and your instinct is almost never wrong. There is a warrior frequency coded into your inner world: when something threatens what you love, the response is immediate, total, and primal. You need emotional honesty the way other people need air.',
-      Taurus:'The Moon in Taurus roots your emotional body in the earth. You feel safest when things are stable, beautiful, and predictable in the best sense of that word. Your inner life has a slow, luminous quality — you do not spike and crash but deepen gradually, like a wine that opens with time. Comfort is not laziness for you; it is a survival mechanism coded into your bones.',
-      Gemini:'The Moon in Gemini means your emotions arrive in language. You process feeling through communication, through the telling and retelling of experience until it becomes a story you can live with. Your inner life is quick, curious, and sometimes difficult to pin down — but that multiplicity is not instability. It is the signature of a mind that can hold contradiction with grace.',
-      Cancer:'The Moon in Cancer is at home — literally. This is the Moon\'s native frequency, and in your chart it means your emotional body is fully awake, fully feeling, fully tuned to the invisible currents around you. You absorb other people\'s inner weather without meaning to. The practice for you is learning to know which of your feelings belong to you.',
-      Leo:'The Moon in Leo means your emotional life is theatrical in the highest sense — you feel with a grandeur that cannot be contained. Your inner world has a performance quality not because you are performing, but because for you, emotion IS expression. You need to be witnessed in your feeling. The warmth you generate when loved is one of the most healing forces in any room you occupy.',
-      Virgo:'The Moon in Virgo processes emotion through analysis. You feel and immediately begin to categorize, to understand, to find the function of the feeling. This is not avoidance — it is how you metabolize. Your emotional body is precise and devoted to getting it right. The danger is the inner critic who turns that precision on yourself; the gift is a capacity for care that misses nothing.',
-      Libra:'The Moon in Libra needs beauty and equilibrium the way the body needs water. Your emotional wellbeing is directly tied to the harmony of your environment and your relationships — when things are out of balance, you feel it in your bones before you can name it. You have a gift for creating peace, but you must learn to include yourself in the negotiations.',
-      Scorpio:'The Moon in Scorpio means your emotional life has no surface. You feel with the full depth of the ocean — dark pressures, hidden currents, the weight of what lies at the bottom. You are not dramatic; you are simply awake to dimensions of feeling that most people have closed off. Your emotional intelligence is one of the most powerful instruments in any room.',
-      Sagittarius:'The Moon in Sagittarius means your feelings arrive as philosophies. You experience emotion as meaning — every feeling points toward a larger truth you are trying to locate. You need freedom in your emotional life the way fire needs oxygen. When the world feels too small, your inner life begins to suffocate, and the only cure is expansion: travel, learning, the open sky.',
-      Capricorn:'The Moon in Capricorn moves quietly through its inner world, rarely announcing what it carries. You feel deeply but prefer to demonstrate emotion through action — through loyalty, through showing up, through building something that lasts. You carry the ancestral frequency in your emotional body: a responsibility to the line, to what was inherited and what will be passed forward.',
-      Aquarius:'The Moon in Aquarius processes emotion at a slight remove — not because you don\'t feel, but because feeling, for you, is always also a kind of research. You observe your own inner states with the fascination of a scientist watching a phenomenon. Your emotional world is organized around ideals, around the collective, around the vision of what could be if only the world would catch up.',
-      Pisces:'The Moon in Pisces is an open channel. Your emotional body has no firewall — you receive everything: the grief in the room, the beauty in the weather, the feeling of music before the first note sounds. This is both your gift and your burden. You were assembled to feel on behalf of others, and the practice of your life is learning when to be the ocean and when to be the shore.',
+      Aries:'The Moon in Aries means your emotional life moves at the speed of fire. You feel first, process later, and your instinct is almost never wrong. There is a warrior frequency coded into your inner world: when something threatens what you love, the response is immediate, total, and primal. You need emotional honesty the way other people need air.',
+      Taurus:'The Moon in Taurus roots your emotional body in the earth. You feel safest when things are stable, beautiful, and predictable in the best sense of that word. Your inner life has a slow, luminous quality. You do not spike and crash but deepen gradually, like a wine that opens with time. Comfort is not laziness for you; it is a survival mechanism coded into your bones.',
+      Gemini:'The Moon in Gemini means your emotions arrive in language. You process feeling through communication, through the telling and retelling of experience until it becomes a story you can live with. Your inner life is quick, curious, and sometimes difficult to pin down, but that multiplicity is not instability. It is the signature of a mind that can hold contradiction with grace.',
+      Cancer:'The Moon in Cancer is at home, literally. This is the Moon\'s native frequency, and in your chart it means your emotional body is fully awake, fully feeling, fully tuned to the invisible currents around you. You absorb other people\'s inner weather without meaning to. The practice for you is learning to know which of your feelings belong to you.',
+      Leo:'The Moon in Leo means your emotional life is theatrical in the highest sense. You feel with a grandeur that cannot be contained. Your inner world has a performance quality not because you are performing, but because for you, emotion IS expression. You need to be witnessed in your feeling. The warmth you generate when loved is one of the most healing forces in any room you occupy.',
+      Virgo:'The Moon in Virgo processes emotion through analysis. You feel and immediately begin to categorize, to understand, to find the function of the feeling. This is not avoidance. It is how you metabolize. Your emotional body is precise and devoted to getting it right. The danger is the inner critic who turns that precision on yourself; the gift is a capacity for care that misses nothing.',
+      Libra:'The Moon in Libra needs beauty and equilibrium the way the body needs water. Your emotional wellbeing is directly tied to the harmony of your environment and your relationships. When things are out of balance, you feel it in your bones before you can name it. You have a gift for creating peace, but you must learn to include yourself in the negotiations.',
+      Scorpio:'The Moon in Scorpio means your emotional life has no surface. You feel with the full depth of the ocean, dark pressures, hidden currents, the weight of what lies at the bottom. You are not dramatic; you are simply awake to dimensions of feeling that most people have closed off. Your emotional intelligence is one of the most powerful instruments in any room.',
+      Sagittarius:'The Moon in Sagittarius means your feelings arrive as philosophies. You experience emotion as meaning. Every feeling points toward a larger truth you are trying to locate. You need freedom in your emotional life the way fire needs oxygen. When the world feels too small, your inner life begins to suffocate, and the only cure is expansion: travel, learning, the open sky.',
+      Capricorn:'The Moon in Capricorn moves quietly through its inner world, rarely announcing what it carries. You feel deeply but prefer to demonstrate emotion through action, through loyalty, through showing up, through building something that lasts. You carry the ancestral frequency in your emotional body: a responsibility to the line, to what was inherited and what will be passed forward.',
+      Aquarius:'The Moon in Aquarius processes emotion at a slight remove, not because you don\'t feel, but because feeling, for you, is always also a kind of research. You observe your own inner states with the fascination of a scientist watching a phenomenon. Your emotional world is organized around ideals, around the collective, around the vision of what could be if only the world would catch up.',
+      Pisces:'The Moon in Pisces is an open channel. Your emotional body has no firewall. You receive everything: the grief in the room, the beauty in the weather, the feeling of music before the first note sounds. This is both your gift and your burden. You were assembled to feel on behalf of others, and the practice of your life is learning when to be the ocean and when to be the shore.',
     },
     Rising:{
-      Aries:'Aries rising means the world meets a detonation when it meets you. Your presence arrives first — quick, direct, charged with a kinetic energy that makes other people\'s systems recalibrate. You lead with the body, with action, with the refusal to wait. The mask you wear to face the world is also your truest face: someone who was born moving forward.',
-      Taurus:'Taurus rising means the world meets you as solid ground. Your presence carries a quality of permanence — people instinctively sense that you will not scatter, that you can be trusted to stay. You arrive in rooms with a sensory gravity, and others often don\'t know why they feel calmed until much later. You lead with beauty and with the kind of patience that only comes from knowing your own weight.',
-      Gemini:'Gemini rising means the world meets quicksilver when it meets you. Your face is the face of intelligence in motion — curious, multi-directional, always asking the question the room hasn\'t thought to ask yet. You adapt your presentation to your audience with the ease of someone who has always known that the self is a fluid territory. The twins are your mask, and you have learned to use all of them.',
-      Cancer:'Cancer rising means the world meets you as something that must be approached carefully — not because you are fragile, but because there is a protective quality in your bearing that reads as depth. People sense your feeling capacity before you speak. You lead with care, with receptivity, with a shell that you lower only when trust has been built slowly, the right way.',
-      Leo:'Leo rising means you were built to be seen. Your presence has a solar quality — warm, commanding, organizing the room around itself without effort. People look at you first, and they remember you after. This is not vanity; it is the frequency you were assigned. Your task is to learn to hold that attention without being consumed by the hunger for it.',
+      Aries:'Aries rising means the world meets a detonation when it meets you. Your presence arrives first, quick, direct, charged with a kinetic energy that makes other people\'s systems recalibrate. You lead with the body, with action, with the refusal to wait. The mask you wear to face the world is also your truest face: someone who was born moving forward.',
+      Taurus:'Taurus rising means the world meets you as solid ground. Your presence carries a quality of permanence. People instinctively sense that you will not scatter, that you can be trusted to stay. You arrive in rooms with a sensory gravity, and others often don\'t know why they feel calmed until much later. You lead with beauty and with the kind of patience that only comes from knowing your own weight.',
+      Gemini:'Gemini rising means the world meets quicksilver when it meets you. Your face is the face of intelligence in motion, curious, multi-directional, always asking the question the room hasn\'t thought to ask yet. You adapt your presentation to your audience with the ease of someone who has always known that the self is a fluid territory. The twins are your mask, and you have learned to use all of them.',
+      Cancer:'Cancer rising means the world meets you as something that must be approached carefully, not because you are fragile, but because there is a protective quality in your bearing that reads as depth. People sense your feeling capacity before you speak. You lead with care, with receptivity, with a shell that you lower only when trust has been built slowly, the right way.',
+      Leo:'Leo rising means you were built to be seen. Your presence has a solar quality, warm, commanding, organizing the room around itself without effort. People look at you first, and they remember you after. This is not vanity; it is the frequency you were assigned. Your task is to learn to hold that attention without being consumed by the hunger for it.',
       Virgo:'Virgo rising means the world meets precision when it meets you. Your presence reads as discerning, composed, organized in a way that suggests you have already seen the problem and begun to solve it. You lead with service and with the quiet authority of someone who understands the difference between what is real and what is merely impressive.',
       Libra:'Libra rising means the world meets grace when it meets you. Your face is the face of the diplomat, the artist, the one who makes things more beautiful simply by being in proximity to them. People feel at ease with you before they know why. You lead with the principle of fairness, and your first instinct in any situation is to find the balance point.',
-      Scorpio:'Scorpio rising means the world meets intensity when it meets you — even when you are doing nothing, even when you are simply standing there. Your presence has a magnetic weight that other people feel but often cannot name. You lead with depth, with the sense that you are seeing through the surface of things directly into what\'s underneath. People do not forget you.',
-      Sagittarius:'Sagittarius rising means the world meets a fire aimed at the horizon when it meets you. Your presence reads as expansive, philosophical, restless with the need to move and understand. You lead with truth-telling — sometimes before the room is ready for it. Your laugh is a frequency that expands whatever space you enter, and your absence from any gathering is felt immediately.',
-      Capricorn:'Capricorn rising means the world meets authority when it meets you — the quiet, earned kind that does not need to announce itself. Your presence reads as someone who has already done the work, who has paid costs others refused to pay. You lead with discipline and with the long view. People sense that you carry something real, and they are often drawn to your gravity.',
-      Aquarius:'Aquarius rising means the world meets a frequency slightly out of phase with the present when it meets you. Your presence reads as different, visionary, organized around a logic that makes perfect sense only once you explain it — and sometimes not even then. You lead with your deviation. Your task is to transmit what you carry without apologizing for arriving ahead of schedule.',
-      Pisces:'Pisces rising means the world meets a mirror when it meets you. Your presence shifts to reflect what others need to see — compassionate, dreamy, slightly other-dimensional. People often project onto you before they know you, and the work of your life is to know where the projection ends and you begin. You lead with empathy, and the worlds you move through receive you as a kind of sacred frequency.',
+      Scorpio:'Scorpio rising means the world meets intensity when it meets you, even when you are doing nothing, even when you are simply standing there. Your presence has a magnetic weight that other people feel but often cannot name. You lead with depth, with the sense that you are seeing through the surface of things directly into what\'s underneath. People do not forget you.',
+      Sagittarius:'Sagittarius rising means the world meets a fire aimed at the horizon when it meets you. Your presence reads as expansive, philosophical, restless with the need to move and understand. You lead with truth-telling, sometimes before the room is ready for it. Your laugh is a frequency that expands whatever space you enter, and your absence from any gathering is felt immediately.',
+      Capricorn:'Capricorn rising means the world meets authority when it meets you, the quiet, earned kind that does not need to announce itself. Your presence reads as someone who has already done the work, who has paid costs others refused to pay. You lead with discipline and with the long view. People sense that you carry something real, and they are often drawn to your gravity.',
+      Aquarius:'Aquarius rising means the world meets a frequency slightly out of phase with the present when it meets you. Your presence reads as different, visionary, organized around a logic that makes perfect sense only once you explain it, and sometimes not even then. You lead with your deviation. Your task is to transmit what you carry without apologizing for arriving ahead of schedule.',
+      Pisces:'Pisces rising means the world meets a mirror when it meets you. Your presence shifts to reflect what others need to see, compassionate, dreamy, slightly other-dimensional. People often project onto you before they know you, and the work of your life is to know where the projection ends and you begin. You lead with empathy, and the worlds you move through receive you as a kind of sacred frequency.',
     }
   };
     var formEl=document.getElementById('pf-form');
@@ -3255,7 +3255,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             h += '<button class="pmeta-revert" data-f="' + esc(p.f) + '" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:rgba(201,168,76,0.6);font-family:inherit;font-size:0.7rem;letter-spacing:0.12em;padding:7px 14px;cursor:pointer;border-radius:3px;">REVERT TO DEFAULT</button>';
             h += '<span class="pmeta-status" data-f="' + esc(p.f) + '" style="font-size:0.72rem;color:rgba(2,225,39,0.85);"></span>';
             h += '</div>';
-            h += '<div style="margin-top:7px;font-size:0.62rem;color:rgba(201,168,76,0.3);line-height:1.5;">Hardcoded default — title: ' + esc(cur.title || '—') + '</div>';
+            h += '<div style="margin-top:7px;font-size:0.62rem;color:rgba(201,168,76,0.3);line-height:1.5;">Hardcoded default title: ' + esc(cur.title || '—') + '</div>';
             h += '</div>';
           }
         }
@@ -3329,8 +3329,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         if (!_ixLyricLoaded) {
           pinHtml = '<div style="margin-top:8px;font-size:0.72rem;color:rgba(201,168,76,0.5);">Loading lyric list…</div>';
         } else {
-          var opts = '<option value="">— Daily rotation (default) —</option>';
-          _ixLyricPool.forEach(function(p){ var id = p.artist + '|||' + p.track; opts += '<option value="' + esc(id) + '"' + (id===cur?' selected':'') + '>' + esc(p.artist + ' — ' + p.track) + '</option>'; });
+          var opts = '<option value="">Daily rotation (default)</option>';
+          _ixLyricPool.forEach(function(p){ var id = p.artist + '|||' + p.track; opts += '<option value="' + esc(id) + '"' + (id===cur?' selected':'') + '>' + esc(p.artist + ' · ' + p.track) + '</option>'; });
           pinHtml = '<div style="margin-top:8px;width:100%;"><label style="display:block;font-size:0.6rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:4px;">FEATURE A LYRIC (overrides daily rotation)</label><select class="field-input ix-pin" data-i="' + i + '" style="width:100%;margin:0;font-size:0.78rem;">' + opts + '</select></div>';
         }
       }
@@ -3339,7 +3339,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         if (!_ixEntLoaded) {
           pinHtml += '<div style="margin-top:8px;font-size:0.72rem;color:rgba(201,168,76,0.5);">Loading entity list…</div>';
         } else {
-          var eopts = '<option value="">— Daily rotation (default) —</option>';
+          var eopts = '<option value="">Daily rotation (default)</option>';
           _ixEntPool.forEach(function(nm){ eopts += '<option value="' + esc(nm) + '"' + (nm===ecur?' selected':'') + '>' + esc(nm) + '</option>'; });
           pinHtml += '<div style="margin-top:8px;width:100%;"><label style="display:block;font-size:0.6rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:4px;">FEATURE AN ENTITY (overrides daily rotation)</label><select class="field-input ix-entpin" data-i="' + i + '" style="width:100%;margin:0;font-size:0.78rem;">' + eopts + '</select></div>';
         }
@@ -3363,7 +3363,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             capRows += '<div style="margin-bottom:9px;"><label style="display:block;font-size:0.7rem;color:rgba(240,230,210,0.8);margin-bottom:3px;">' + esc(e.name) + ' <span style="color:rgba(201,168,76,0.4);font-size:0.56rem;letter-spacing:0.1em;">' + esc(e.type) + '</span></label><textarea class="field-input eotd-cap" data-key="' + esc(e.key) + '" rows="2" style="width:100%;margin:0;font-size:0.76rem;line-height:1.5;resize:vertical;font-style:italic;">' + esc(cv) + '</textarea>' + eotdSongRow(e) + '</div>';
           });
           capHtml = '<div style="margin-top:14px;border-top:1px solid rgba(201,168,76,0.15);padding-top:12px;">'
-            + '<div style="font-size:0.6rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:10px;">ENTITY CAPTIONS — the italic line shown under each entity (blank = built-in default)</div>'
+            + '<div style="font-size:0.6rem;letter-spacing:0.14em;color:rgba(201,168,76,0.45);margin-bottom:10px;">ENTITY CAPTIONS: the italic line shown under each entity (blank = built-in default)</div>'
             + capRows
             + '<button class="eotd-cap-save" style="margin-top:4px;padding:7px 16px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;font-family:inherit;font-size:0.72rem;letter-spacing:0.12em;cursor:pointer;border-radius:3px;">SAVE CAPTIONS</button>'
             + '<span class="eotd-cap-status" style="margin-left:12px;font-size:0.72rem;color:rgba(2,225,39,0.85);"></span>'
@@ -3373,7 +3373,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         }
       }
       return '<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(201,168,76,0.12);">'
-        + '<div style="font-size:0.6rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);margin-bottom:8px;">' + esc(spec.label) + ' — blank = keep default</div>'
+        + '<div style="font-size:0.6rem;letter-spacing:0.18em;color:rgba(201,168,76,0.4);margin-bottom:8px;">' + esc(spec.label) + ' (blank = keep default)</div>'
         + '<div style="display:flex;flex-wrap:wrap;align-items:center;">' + inner + '</div>'
         + pinHtml
         + capHtml
@@ -3489,7 +3489,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     if (resetBtn) resetBtn.addEventListener('click', function(){
       _ixState = defaultState(); render();
       var statusEl = document.getElementById('ix-status');
-      if (statusEl) { statusEl.textContent = 'Reset to default — click Save to apply'; statusEl.className = 'status-msg'; }
+      if (statusEl) { statusEl.textContent = 'Reset to default. Click Save to apply'; statusEl.className = 'status-msg'; }
     });
 
     load();
@@ -4013,7 +4013,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         var isRead=!!d.read;
         var cardClass='inq-card'+(isRead?' read':' unread');
         var product=esc((d.product||d.item)||'your inquiry');
-        var defaultMsg='Thank you for reaching out about '+product+'. We have received your inquiry and will follow up with you shortly.\n\n\u2014 Jestamang';
+        var defaultMsg='Thank you for reaching out about '+product+'. We have received your inquiry and will follow up with you shortly.\n\nJestamang';
         html+='<div class="'+cardClass+'" id="inq-'+doc.id+'">'
           +'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">'
           +'<div>'
@@ -4118,7 +4118,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       }, 1800);
     }).catch(function (err) {
       var msg = (err && err.text) ? err.text : (err && err.message ? err.message : 'check EmailJS config');
-      statusEl.textContent = 'SEND FAILED \u2014 ' + msg;
+      statusEl.textContent = 'SEND FAILED: ' + msg;
       statusEl.className = 'status-msg status-err';
     });
   };
@@ -4776,7 +4776,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         setCheck('aa-check-release', true);
         // Step 2: blogPosts
         return db.collection('blogPosts').add({
-          title: a + ' \u2014 ' + t + ' OUT NOW',
+          title: a + ' \u00b7 ' + t + ' OUT NOW',
           content: tx, excerpt: tx.slice(0, 150),
           category: 'NEW MUSIC', authorRole: 'admin',
           published: true, timestamp: ts
@@ -4788,7 +4788,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         if (!doNotify) { setCheck('aa-check-notif', true); return Promise.resolve(); }
         return db.collection('notifications').add({
           title: 'NEW RELEASE',
-          body: a + ' \u2014 ' + t + ' available now',
+          body: a + ' \u00b7 ' + t + ' available now',
           link: 'albums.html', timestamp: ts, seen: []
         }).catch(function(e){ throw new Error('STEP_NOTIF: ' + e.message); });
       }).then(function () {
@@ -4803,7 +4803,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       }).catch(function (e) {
         var m = e.message.match(/^STEP_(\w+): (.+)$/);
         if (m) {
-          statusEl.textContent = 'Failed at ' + m[1] + ' step: ' + m[2] + '. Previous steps may have committed \u2014 check Firestore before retrying.';
+          statusEl.textContent = 'Failed at ' + m[1] + ' step: ' + m[2] + '. Previous steps may have committed, so check Firestore before retrying.';
         } else {
           statusEl.textContent = 'Error: ' + e.message;
         }
@@ -5102,7 +5102,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       var total = _merchSorted.length;
       var pager = document.getElementById('merch-pager');
       if (!total) {
-        container.innerHTML = '<div style="color:rgba(201,168,76,0.3);font-size:0.72rem;letter-spacing:0.12em;padding:8px 0;">No products yet \u2014 add one below.</div>';
+        container.innerHTML = '<div style="color:rgba(201,168,76,0.3);font-size:0.72rem;letter-spacing:0.12em;padding:8px 0;">No products yet. Add one below.</div>';
         if (pager) pager.style.display = 'none';
         return;
       }
@@ -5244,7 +5244,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           }
         }
         var statusEl = card.querySelector('.merch-card-status');
-        if (statusEl) { statusEl.textContent = 'Restored — visible on live site'; statusEl.className = 'merch-card-status status-msg status-ok'; }
+        if (statusEl) { statusEl.textContent = 'Restored, visible on live site'; statusEl.className = 'merch-card-status status-msg status-ok'; }
       }
     }).catch(function (e) { alert('Error: ' + e.message); });
   };
@@ -5399,7 +5399,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         savedAt: firebase.firestore.FieldValue.serverTimestamp(),
         savedBy: ADMIN_EMAIL
       }).then(function () {
-        statusEl.textContent = 'TRANSMISSION DRAFTED ✦ — open MailerLite to send';
+        statusEl.textContent = 'TRANSMISSION DRAFTED ✦ Open MailerLite to send';
         statusEl.className = 'status-msg status-ok';
         document.getElementById('ec-subject').value = '';
         document.getElementById('ec-preview').value = '';

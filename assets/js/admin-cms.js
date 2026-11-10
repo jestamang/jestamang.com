@@ -505,7 +505,7 @@ window.asmDoDelete = function(slug){
     })
     .catch(function(e){
       if (statusBox){
-        var msg = (e && e.message==='not-empty') ? 'Section still has albums — reassign them first.' : ('Delete failed: '+((e&&e.message)||e));
+        var msg = (e && e.message==='not-empty') ? 'Section still has albums. Reassign them first.' : ('Delete failed: '+((e&&e.message)||e));
         statusBox.innerHTML = '<span class="alm-confirm-q" style="color:#FB3838;">'+msg+'</span>';
       }
     });
