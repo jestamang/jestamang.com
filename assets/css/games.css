@@ -11,3 +11,23 @@ a:focus-visible {
   outline: 2px solid rgba(201,168,76,0.6);
   outline-offset: 2px;
 }
+
+/* "About this game": a short frosted note under each game's start controls, so the page carries a
+   real description in its HTML (search engines read it before any script runs). */
+.game-about{max-width:34rem;width:100%;margin:26px auto 0;padding:14px 20px 16px;text-align:center;
+  background:rgba(10,8,18,0.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border:1px solid rgba(var(--gold-rgb,201,168,76),0.22);border-radius:6px;
+  box-shadow:0 0 34px rgba(var(--gold-rgb,201,168,76),0.06)}
+.game-about h2{font-family:'Luminari',serif;font-weight:normal;font-size:0.6rem;letter-spacing:0.42em;
+  text-transform:uppercase;color:rgba(var(--gold-rgb,201,168,76),0.72);margin:0 0 9px}
+.game-about p{font-family:'Luminari',serif;font-size:0.78rem;line-height:1.75;letter-spacing:0.03em;
+  color:rgba(255,255,255,0.7);margin:0;text-transform:none}
+.game-about a{color:rgba(var(--gold-rgb,201,168,76),0.9);text-decoration:none;border-bottom:1px solid rgba(var(--gold-rgb,201,168,76),0.35)}
+/* a fixed start screen that holds the note may scroll on short screens instead of clipping its top */
+#ss:has(> .game-about),#scr-start:has(> .game-about){overflow-y:auto;justify-content:flex-start}
+#ss:has(> .game-about) > :first-child,#scr-start:has(> .game-about) > :first-child{margin-top:auto}
+#ss > .game-about,#scr-start > .game-about{margin-bottom:auto}
+@media(max-width:600px){.game-about{margin-top:20px;padding:12px 16px 14px}.game-about p{font-size:0.74rem;line-height:1.7}}
+/* on a one-screen game page the note follows the game, just below the fold */
+.game-about--below{position:relative;z-index:1;margin:8px auto 28px}
+#ss.ltn-open > .game-about{display:none}
