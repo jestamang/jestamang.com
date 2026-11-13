@@ -31,6 +31,8 @@ html,body{min-height:100%}
 #game-title .gt-line+.gt-line::before{content:" "}
 body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cover;background-position:center;background-attachment:fixed;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:0 20px 20px}
 .oracle-wrap{position:relative;z-index:1;text-align:center;max-width:560px;width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+/* the game keeps one full screen; the About note below it only adds height under the fold */
+.oracle-wrap{flex-shrink:0;min-height:calc(100vh - var(--game-header-h,60px) - 29px);min-height:calc(100dvh - var(--game-header-h,60px) - 29px)}
 .oracle-title{font-size:clamp(1.6rem,5vw,2.8rem);letter-spacing:0.55em;text-indent:0.55em;color:var(--gold,#c9a84c);text-transform:uppercase;text-shadow:0 0 40px rgba(var(--gold-rgb,201,168,76),0.55);margin-bottom:6px;font-family:'Luminari',serif;transition:all 0.3s ease}
 .oracle-sub{font-size:0.75rem;letter-spacing:0.45em;color:rgba(255,255,255,0.25);text-transform:uppercase;margin-bottom:16px;font-family:'Luminari',serif}
 .streak-display{font-size:0.78rem;letter-spacing:0.35em;color:rgba(var(--gold-rgb,201,168,76),0.6);text-transform:uppercase;margin-bottom:8px;min-height:1.2em;font-family:'Luminari',serif;transition:opacity 0.3s ease}
@@ -220,6 +222,7 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;background-size:cov
     <button class="reset-btn" id="reset-btn" style="display:none" aria-label="Reset game"></button>
   </div>
 </div>
+  <section class="game-about game-about--below" aria-labelledby="about-h"><h2 id="about-h">About the Daily Sigil</h2><p>The Daily Sigil is a one-card oracle from the Jestamang universe. Once a day you draw a single card from the Jestamang deck and receive its reading, a small transmission to carry with you. A new sigil waits each day, your streak grows with every day you return, and any card you draw can be shared.</p></section>
 
 
 <script>

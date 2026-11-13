@@ -234,9 +234,8 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
 
   <!-- Loading / error -->
   <div id="ep-loading">Consulting the cosmos...</div>
-  <div id="ep-error">
-    <div>The universe cannot be reached.</div>
-    <div>Try again later.</div>
+  <div id="ep-error" role="alert">
+    <div id="ep-error-msg"></div>
     <button id="ep-retry-btn">Retry</button>
   </div>
 
@@ -254,6 +253,7 @@ body{font-family:'Luminari',serif;color:#fff;background:#000;min-height:100vh;pa
   <div id="ep-controls" style="display:none">
     <button class="ep-ctrl-btn" id="btn-restart">Shuffle &amp; Restart</button>
   </div>
+  <section class="game-about" aria-labelledby="about-h"><h2 id="about-h">About Entity Pair</h2><p>Entity Pair is a daily memory game built from the <a href="../entities.html">entities of the Jestamang universe</a>. Turn the cards to pair each entity's face with its name in Visions, or with one of its albums in Revelations. A new puzzle arrives every day, and a finished board can be entered on the Cosmic Scrolls leaderboard.</p></section>
 </div>
 
 <!-- WIN OVERLAY -->
@@ -626,7 +626,8 @@ function showError(msg){
   document.getElementById('ep-controls').style.display='none';
   var el=document.getElementById('ep-error');
   el.style.display='block';
-  if(msg){el.querySelector('div').innerHTML=msg;}
+  /* the message is written only here, when loading has actually failed, so it never sits in the page's HTML */
+  document.getElementById('ep-error-msg').textContent=msg||'The universe cannot be reached. Try again later.';
   document.getElementById('ep-retry-btn').style.display='inline-block';
 }
 function showBoard(){
